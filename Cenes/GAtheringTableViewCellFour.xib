@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="GAtheringTableViewCellFour" rowHeight="44" id="KGk-i7-Jjw" customClass="GAtheringTableViewCellFour" customModule="Cenes" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="63.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yz2-GR-EtF">
+                        <rect key="frame" x="4" y="0.0" width="312" height="44"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="44" id="0Ce-4c-9ex"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Event Details" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cLx-c4-Lww">
+                        <rect key="frame" x="70" y="2" width="238" height="40"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="40" id="7Os-Fy-Liq"/>
+                        </constraints>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
+                        <connections>
+                            <outlet property="delegate" destination="KGk-i7-Jjw" id="jRJ-uA-STG"/>
+                        </connections>
+                    </textField>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="EventDetails" translatesAutoresizingMaskIntoConstraints="NO" id="0HT-Na-TPq">
+                        <rect key="frame" x="25" y="12" width="20" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="6Ra-bb-oFf"/>
+                            <constraint firstAttribute="width" constant="20" id="gIa-3c-Knx"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <color key="backgroundColor" red="0.94509803920000002" green="0.94509803920000002" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
+                <constraints>
+                    <constraint firstItem="0HT-Na-TPq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="4" id="07p-Kj-dQq"/>
+                    <constraint firstItem="cLx-c4-Lww" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2" id="BVC-As-Rie"/>
+                    <constraint firstItem="cLx-c4-Lww" firstAttribute="leading" secondItem="0HT-Na-TPq" secondAttribute="trailing" constant="25" id="Lh0-bt-8oA"/>
+                    <constraint firstItem="yz2-GR-EtF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="4" id="Ria-q8-s40"/>
+                    <constraint firstItem="yz2-GR-EtF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="ihL-gE-CSJ"/>
+                    <constraint firstAttribute="trailing" secondItem="yz2-GR-EtF" secondAttribute="trailing" constant="4" id="m7q-2Z-aAo"/>
+                    <constraint firstAttribute="trailing" secondItem="cLx-c4-Lww" secondAttribute="trailing" constant="12" id="uRa-bI-oYv"/>
+                </constraints>
+            </tableViewCellContentView>
+            <constraints>
+                <constraint firstItem="0HT-Na-TPq" firstAttribute="leading" secondItem="KGk-i7-Jjw" secondAttribute="leading" constant="25" id="Axw-xs-o3m"/>
+            </constraints>
+            <connections>
+                <outlet property="eventDetailsField" destination="cLx-c4-Lww" id="aJ4-9I-LBE"/>
+            </connections>
+            <point key="canvasLocation" x="-57" y="58"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="EventDetails" width="51" height="60"/>
+    </resources>
+</document>

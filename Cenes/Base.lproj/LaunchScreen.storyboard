@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Lato-Bold.ttf">
+            <string>Lato-Bold</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
+                        <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash background" translatesAutoresizingMaskIntoConstraints="NO" id="dUW-79-DD5">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ceneslogowhite" translatesAutoresizingMaskIntoConstraints="NO" id="mby-Pb-0Cb">
+                                <rect key="frame" x="156" y="232.5" width="62" height="61"/>
+                            </imageView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First Predictive &amp; Intelligent Calendar" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8NZ-Gm-Rsn">
+                                <rect key="frame" x="64" y="324.5" width="247" height="18"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="15"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="dUW-79-DD5" secondAttribute="trailing" id="4EP-3w-sEH"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="dUW-79-DD5" secondAttribute="bottom" id="BKP-rZ-HcQ"/>
+                            <constraint firstItem="8NZ-Gm-Rsn" firstAttribute="centerX" secondItem="dUW-79-DD5" secondAttribute="centerX" id="EI6-56-R7k"/>
+                            <constraint firstItem="mby-Pb-0Cb" firstAttribute="centerX" secondItem="dUW-79-DD5" secondAttribute="centerX" id="Zna-ja-fR8"/>
+                            <constraint firstItem="8NZ-Gm-Rsn" firstAttribute="top" secondItem="mby-Pb-0Cb" secondAttribute="bottom" constant="31" id="b4s-Fl-W8B"/>
+                            <constraint firstItem="dUW-79-DD5" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="hVT-f2-Bqi"/>
+                            <constraint firstItem="dUW-79-DD5" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="-20" id="hdK-mA-0zP"/>
+                            <constraint firstItem="8NZ-Gm-Rsn" firstAttribute="centerY" secondItem="dUW-79-DD5" secondAttribute="centerY" id="sAa-et-YBh"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="ceneslogowhite" width="62" height="61"/>
+        <image name="splash background" width="375" height="667"/>
+    </resources>
+</document>

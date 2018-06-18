@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="CreateReminderCellFour" rowHeight="126" id="KGk-i7-Jjw" customClass="CreateReminderCellFour" customModule="Cenes" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="126"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="125.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="gkn-oz-wZS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="126"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="amG-Yq-YgH">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add People" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jwG-Q5-JFC">
+                                        <rect key="frame" x="70" y="7" width="289" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LocationIconHome" translatesAutoresizingMaskIntoConstraints="NO" id="jeR-6a-AQP">
+                                        <rect key="frame" x="30" y="10" width="25" height="25"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="YNv-pJ-yUK"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3w3-hF-FbU">
+                                <rect key="frame" x="0.0" y="44" width="375" height="82"/>
+                                <subviews>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="w3l-IQ-2i1">
+                                        <rect key="frame" x="70" y="0.0" width="290" height="81"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="cBc-Sg-K27">
+                                            <size key="itemSize" width="74" height="77"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <connections>
+                                            <outlet property="dataSource" destination="KGk-i7-Jjw" id="XWf-E0-D11"/>
+                                            <outlet property="delegate" destination="KGk-i7-Jjw" id="UEZ-9R-dtM"/>
+                                        </connections>
+                                    </collectionView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="w3l-IQ-2i1" firstAttribute="leading" secondItem="3w3-hF-FbU" secondAttribute="leading" constant="70" id="BPW-d1-ttc"/>
+                                    <constraint firstAttribute="trailing" secondItem="w3l-IQ-2i1" secondAttribute="trailing" constant="15" id="CAX-CP-2yp"/>
+                                    <constraint firstItem="w3l-IQ-2i1" firstAttribute="top" secondItem="3w3-hF-FbU" secondAttribute="top" id="H1K-Dg-a80"/>
+                                    <constraint firstAttribute="bottom" secondItem="w3l-IQ-2i1" secondAttribute="bottom" constant="1" id="Y2h-If-wyJ"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="amG-Yq-YgH" firstAttribute="top" secondItem="gkn-oz-wZS" secondAttribute="top" id="9NK-ZB-oLR"/>
+                            <constraint firstAttribute="height" constant="126" id="CZR-E5-JoN"/>
+                            <constraint firstItem="amG-Yq-YgH" firstAttribute="leading" secondItem="gkn-oz-wZS" secondAttribute="leading" id="NUw-d4-Kbn"/>
+                            <constraint firstAttribute="trailing" secondItem="amG-Yq-YgH" secondAttribute="trailing" id="QgM-Kp-HPS"/>
+                        </constraints>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="gkn-oz-wZS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="7cg-Kh-1ym"/>
+                    <constraint firstAttribute="bottom" secondItem="gkn-oz-wZS" secondAttribute="bottom" constant="-0.5" id="Fho-kN-uTY"/>
+                    <constraint firstAttribute="trailing" secondItem="gkn-oz-wZS" secondAttribute="trailing" id="Z2i-2c-eb4"/>
+                    <constraint firstItem="gkn-oz-wZS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="gfH-a3-8L5"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="friendsView" destination="w3l-IQ-2i1" id="Oyv-eC-Pvb"/>
+                <outlet property="lowerView" destination="3w3-hF-FbU" id="WIh-a2-tu8"/>
+                <outlet property="peopleIcon" destination="jeR-6a-AQP" id="BXs-ZD-CV2"/>
+                <outlet property="upperView" destination="amG-Yq-YgH" id="G0I-EF-xro"/>
+            </connections>
+            <point key="canvasLocation" x="36.5" y="-2"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="LocationIconHome" width="16" height="16"/>
+    </resources>
+</document>
