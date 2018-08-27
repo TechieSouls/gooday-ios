@@ -16,7 +16,8 @@ import SideMenu
 
 
 class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
-
+    @IBOutlet weak var notificationCount_label: UILabel!
+    
     var type : Int = 0
     var buttonTag = -1
     @IBOutlet weak var profileImage: UIImageView!
@@ -29,7 +30,11 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
         // Do any additional setup after loading the view.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool)
+    {
+        NotificationListApi()
+        notificationCount_label.layer.cornerRadius = notificationCount_label.frame.size.height/2
+        notificationCount_label.clipsToBounds =  true
         userName.text = setting.value(forKey: "name") as? String
         self.profileImage.image = appDelegate?.getProfileImage()
     }
@@ -38,7 +43,30 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+    func NotificationListApi()
+    {
+        let webservice = WebService()
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        webservice.getNotificationsCounter(){ (returnedDict) in
+            print("Got results")
+            print(returnedDict)
+            self.stopAnimating()
+            if returnedDict.value(forKey: "Error") as? Bool == true {
+                
+                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                
+            }else{
+                print(returnedDict)
+                self.notificationCount_label.text =  String(returnedDict["data"] as! Int) as? String
+                //  self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                
+                //Setting badge counts in prefrences
+                let userDefaults = UserDefaults.standard
+                userDefaults.setValue(returnedDict["data"] , forKey: "badgeCounts");
+                userDefaults.synchronize()
+            }
+    }
+    }
     
     /*
     // MARK: - Navigation
@@ -121,6 +149,12 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 break
             case 5:
                 print("Help")
+                let help = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "help") as? HelpViewController
+                help?.hidesBottomBarWhenPushed = true
+                self.dismiss(animated: true, completion: nil)
+                let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
+                navController.popToRootViewController(animated: false)
+                navController.pushViewController(help!, animated: true)
                 break
             case 6:
                 print("About")

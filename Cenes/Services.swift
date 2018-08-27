@@ -1277,6 +1277,108 @@ class WebService
         
     }
     
+    func getNotificationsRead( complete: @escaping(NSMutableDictionary)->Void){
+        print( "Inside getting Notifications read data")
+        // Both calls are equivalent
+        
+        let returnedDict = NSMutableDictionary()
+        returnedDict["Error"] = false
+        returnedDict["ErrorMsg"] = ""
+        //let searchSTr = nameString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+        
+        let userid = setting.value(forKey: "userId") as! NSNumber
+        let uid = "\(userid)"
+        
+        let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
+
+        Alamofire.request("\(apiUrl)api/notification/markReadByUserIdAndNotifyId?userId=\(uid)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+            
+            var json : NSDictionary!
+            switch response.result {
+            case .success:
+                print("getting holidays Successful")
+                
+                json = response.result.value as! NSDictionary
+                
+                let json = response.result.value as! NSDictionary
+                
+                if json["errorCode"] as? Int == 0 {
+                    
+                    returnedDict["data"] = json["data"]
+                    
+                }else {
+                    returnedDict["Error"] = true
+                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
+                    
+                }
+                
+                print(json)
+                
+            case .failure(let error):
+                print(error)
+                returnedDict["Error"] = true
+                returnedDict["ErrorMsg"] = error.localizedDescription
+            }
+            
+            
+            complete(returnedDict)
+        }
+        
+    }
+    
+    
+    
+    func getNotificationsCounter(complete: @escaping(NSMutableDictionary)->Void){
+        print( "Inside getting Notifications data")
+        // Both calls are equivalent
+        
+        let returnedDict = NSMutableDictionary()
+        returnedDict["Error"] = false
+        returnedDict["ErrorMsg"] = ""
+        //let searchSTr = nameString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+        
+        let userid = setting.value(forKey: "userId") as! NSNumber
+        let uid = "\(userid)"
+        
+        let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
+        
+        Alamofire.request("\(apiUrl)api/notification/unreadbyuser?userId=\(uid)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+            
+            var json : NSDictionary!
+            switch response.result {
+            case .success:
+                print("getting holidays Successful")
+                
+                json = response.result.value as! NSDictionary
+                
+                let json = response.result.value as! NSDictionary
+                
+                if json["errorCode"] as? Int == 0 {
+                    
+                    returnedDict["data"] = json["data"]
+                    
+                }else {
+                    returnedDict["Error"] = true
+                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
+                    
+                }
+                
+                print(json)
+                
+            case .failure(let error):
+                print(error)
+                returnedDict["Error"] = true
+                returnedDict["ErrorMsg"] = error.localizedDescription
+            }
+            
+            
+            complete(returnedDict)
+        }
+        
+    }
+    
+    
+    
     func getEventDetails(eventid:String,complete: @escaping(NSMutableDictionary)->Void){
         print( "Inside getting Event details data")
         // Both calls are equivalent
@@ -1335,6 +1437,37 @@ class WebService
         let Auth_header = [ "token" : setting.value(forKey: "token") as! String ]
 
         Alamofire.request("\(apiUrl)api/reminder/delete?reminderId=\(reminderID)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+            
+            switch response.result {
+            case .success:
+                print("Deleting reminder Successful")
+                
+                let json = response.result.value as! [String: Any]
+                
+                if json["errorCode"] as? Int == 0 {
+                    returnedDict["data"] = json["data"]
+                }else {
+                    returnedDict["Error"] = true
+                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
+                }
+                print(json)
+            case .failure(let error):
+                print(error)
+                returnedDict["Error"] = true
+                returnedDict["ErrorMsg"] = error.localizedDescription
+            }
+            complete(returnedDict)
+        }
+    }
+    func removeEventFromList(EVEntID: String, complete: @escaping([String: Any])-> Void) {
+        var returnedDict: [String: Any] = [:]
+        
+        returnedDict["Error"] = false
+        returnedDict["ErrorMsg"] = ""
+        
+        let Auth_header = [ "token" : setting.value(forKey: "token") as! String ]
+        
+        Alamofire.request("\(apiUrl)api/event/delete?event_id=\(EVEntID)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
             
             switch response.result {
             case .success:
@@ -1855,6 +1988,20 @@ class WebService
             complete(returnedDict)
         }
         
+    }
+    
+    func resetBadgeCount() {
+        
+        if (setting.object(forKey: "token") != nil) {
+            let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
+            
+            let userid = setting.value(forKey: "userId") as! NSNumber
+            let uid = "\(userid)"
+            
+            Alamofire.request("\(apiUrl)api/notification/setBadgeCountsToZero?userId=\(uid)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+                
+            }
+        }
     }
     
 }

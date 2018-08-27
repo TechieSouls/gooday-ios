@@ -25,6 +25,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     func fetchReminders() {
 
 //        self.remindersTableView.reloadData()
+        WebService().resetBadgeCount();
         
         let webservice = WebService()
       //  self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
@@ -46,7 +47,8 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     }
     
     //Delete Reminder
-    func deleteReminder(reminder: ReminderModel, indexpath: IndexPath) {
+    func deleteReminder(reminder: ReminderModel, indexpath: IndexPath)
+    {
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
         
         WebService().removeReminder(reminderID: String(describing: reminder.reminderID as NSNumber)) { (returnedDict) in
@@ -250,8 +252,9 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
         super.viewWillAppear(animated)
         
         self.profileImage = appDelegate?.getProfileImage()
-        
-        if SideMenuManager.default.menuLeftNavigationController?.isHidden == true{
+        if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+
+//        if SideMenuManager.menuLeftNavigationController.isHidden == true{
 //        openReminders.removeAll()
 //        closedReminders.removeAll()
         
@@ -265,7 +268,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     
     
     @objc func profileButtonPressed(){
-        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
         // self.performSegue(withIdentifier: "openSideMenu", sender: self)
     }
     

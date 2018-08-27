@@ -352,7 +352,9 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if self.isNewInvite == false {
-            if SideMenuManager.default.menuLeftNavigationController?.isHidden == true{
+            if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+
+//            if SideMenuManager.menuLeftNavigationController?.isHidden == true{
             self.confirmedButtonPressed(UIButton())
             }
         }
@@ -583,7 +585,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     
     @objc func profileButtonPressed(){
-        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
         //self.performSegue(withIdentifier: "openSideMenu", sender: self)
     }
     
@@ -860,6 +862,36 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         cell.titleLabel.text = sectionTitle
         return cell
         
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath)
+    {
+        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        //  /api/event/delete?event_id={select event id}
+        
+        if (obj.dataType != "Reminder"){
+            
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            
+            WebService().removeEventFromList(EVEntID: obj.eventId) { (returnedDict) in
+                if returnedDict["Error"] as? Bool == true {
+                    self.stopAnimating()
+                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                }else{
+                    self.stopAnimating()
+                    self.viewDidAppear(true)
+                    
+                    //                self.remindersTableView.deleteRows(at: [indexpath], with: )
+                }
+            }
+        }
+        else{
+            self.showAlert(title: "Alert!", message:"This is reminder and cannot be deleted.")
+        }
+        
+        
+        
+        print(obj.eventId)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

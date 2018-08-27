@@ -567,18 +567,28 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             print(dateFormatter.string(from: self.dateTimePicker.date))
             self.gatheringDelegate.setDateTimeValues!(tag: .EndDate, value: dateFormatter.string(from: self.dateTimePicker.date))
             
-            
+//---------------------------------------------------------------
         case PickerType.StartTime:
             dateFormatter.dateFormat = "h:mm a"
             print(dateFormatter.string(from: self.dateTimePicker.clampedDate))
+//            let timeValue = dateFormatter.string(from: self.dateTimePicker.clampedDate)
+//            let index = timeValue.index(timeValue.startIndex, offsetBy: 2)
+//            let endIndex = timeValue.index(timeValue.endIndex, offsetBy:-3)
+//           print(timeValue[index ..< endIndex])
+//            let secondValue = timeValue[index ..< endIndex]
+//            if ((((secondValue as NSString).integerValue) % 5 == 0) || (((secondValue as NSString).integerValue) == 0)){
             self.gatheringDelegate.setDateTimeValues!(tag: .StartTime, value: dateFormatter.string(from: self.dateTimePicker.date))
+//            }
+//            else{
+//              self.showAlert(title: "Alert!", message: "Please select minutes as a multiple of 5 eg. 3.05, 3.10")
+//            }
             
         case PickerType.EndTime:
             dateFormatter.dateFormat = "h:mm a"
             print(dateFormatter.string(from: self.dateTimePicker.clampedDate))
+                self.gatheringDelegate.setDateTimeValues!(tag: .EndTime, value: dateFormatter.string(from: self.dateTimePicker.date))
             
-            self.gatheringDelegate.setDateTimeValues!(tag: .EndTime, value: dateFormatter.string(from: self.dateTimePicker.date))
-            
+         //---------------------------------------------------------------
         default:
             print("default printed")
         }
@@ -632,9 +642,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 
             }else{
                 self.dateTimePicker.datePickerMode = .time
-                self.dateTimePicker.minuteInterval = 1
+                self.dateTimePicker.minuteInterval = 5
                 if self.pickerType == PickerType.StartTime {
-                    
                     var datecomponent = DateComponents()
                     datecomponent.day = 1
                     let newDate = Calendar.current.date(byAdding: datecomponent, to: Date())

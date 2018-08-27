@@ -52,6 +52,11 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
         webservice.getNotifications(){ (returnedDict) in
             print("Got results")
+            //Setting badge counts in prefrences
+            let userDefaults = UserDefaults.standard
+            userDefaults.setValue(0 , forKey: "badgeCounts");
+            userDefaults.synchronize();
+            
             self.stopAnimating()
             if returnedDict.value(forKey: "Error") as? Bool == true {
                 
@@ -162,6 +167,7 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
             notification.time =  self.getTimeFromTimestamp(timeStamp: key)
             notification.notificationImageURL = data.value(forKey: "senderPicture") as? String
             notification.notificationTypeId = data.value(forKey: "notificationTypeId") as? NSNumber
+             notification.notificationId = data.value(forKey: "notificationId") as? NSNumber
             notification.type = data.value(forKey: "type") as? String
             
             let isTimeNew = self.checkTimeIsNew(timeStamp: key)
@@ -372,34 +378,52 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
              }else{
                  notification = self.earlierDict[indexPath.row]
             }
+            let notificationID = notification?.notificationId as! NSNumber
             
-            
-            if notification.type != nil && notification.type == "Gathering" {
-                if let cenesTabBarViewControllers = appDelegate?.cenesTabBar?.viewControllers {
-                    appDelegate?.cenesTabBar?.selectedIndex = 2
+            let webservice = WebService()
+            webservice.getNotificationsRead(){ (returnedDict) in
+                print("Got results")
+
+                if returnedDict.value(forKey: "Error") as? Bool == true {
                     
+                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                     
-                    let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
+                }
+                else
+                {
+                    print(returnedDict)
                     
-                    
-                    gathering?.dismiss(animated: false, completion: nil)
-                    (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers = [gathering!]
-                    self.navigationController?.popViewController(animated: true)
-                    gathering?.invitationView.isHidden = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        gathering?.isNewInvite = true
-                        gathering?.invitationView.isHidden = true
-                        let eventId = "\(notification.notificationTypeId!)"
-                        let invitationData = CenesCalendarData()
-                        invitationData.eventId = eventId
-                        gathering?.invitationData = invitationData
-                        gathering?.setInvitation()
+                    if notification.type != nil && notification.type == "Gathering"
+                    {
+                        if let cenesTabBarViewControllers = appDelegate?.cenesTabBar?.viewControllers {
+                            appDelegate?.cenesTabBar?.selectedIndex = 2
+                            
+                            
+                            let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
+                            
+                            
+                            gathering?.dismiss(animated: false, completion: nil)
+                            (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers = [gathering!]
+                            self.navigationController?.popViewController(animated: true)
+                            gathering?.invitationView.isHidden = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                gathering?.isNewInvite = true
+                                gathering?.invitationView.isHidden = true
+                                let eventId = "\(notification.notificationTypeId!)"
+                                let invitationData = CenesCalendarData()
+                                invitationData.eventId = eventId
+                                gathering?.invitationData = invitationData
+                                gathering?.setInvitation()
+                            }
+                        }
+                    }else if notification.type == "Reminder"{
+                        let eventId = notification.notificationTypeId!
+                        appDelegate?.showReminderInvite(forTitle: notification.title, reminderID: eventId)
                     }
                 }
-            }else if notification.type == "Reminder"{
-                let eventId = notification.notificationTypeId!
-                appDelegate?.showReminderInvite(forTitle: notification.title, reminderID: eventId)
+                
             }
+
         }
         
         func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

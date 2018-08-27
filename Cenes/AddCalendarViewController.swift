@@ -267,7 +267,7 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
                 }
             }
             else{
-                print("failed to save event with error : \(error!) or access not granted")
+               // print("failed to save event with error : \(error!) or access not granted")
                 self.showAlert(title: "Error", message: "Please provide Permission to Cenes App to access your Device Calendar.")
             }
         }

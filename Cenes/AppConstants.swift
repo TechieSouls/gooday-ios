@@ -27,3 +27,15 @@ let commonColor = UIColor(red: 240/255, green: 120/255, blue: 81/255, alpha: 1)
 
 let cenesDelegate = UIApplication.shared.delegate as! AppDelegate
 let loadinIndicatorSize = CGSize(width: 30, height: 30)
+
+
+let onboardingStep2Title = "GATHERING";
+let onboardingStep3Title = "COLLABORATIVE\nREMINDERS";
+let onboardingStep4Title = "MeTIME";
+let onboardingStep5Title = "MAKE LIFE EASIER TO SOCIALIZE";
+
+
+let onboardingStep2Desc = "Making plans can't get any easier.\nA tap on your phone will find the best\ntime for everyone to meet.\n\n\nNo more back and forth messaging.\nNo more time wasting.\nKeep it simple.";
+let onboardingStep3Desc = "Collaborative Reminders is not just for\nyourself. Share it with others and track\n its progress.\n\n\nWe're making productivity a little\nmore social.";
+let onboardingStep4Desc = "Finding time is difficult. We\nget it.\nMeTIME provides a\ncustomizable schedule to set\naside some much deserved\ntime to yourself.\n\n\nIf something is worth doing,\nwe'll make the time for it.";
+let onboardingStep5Desc = "";

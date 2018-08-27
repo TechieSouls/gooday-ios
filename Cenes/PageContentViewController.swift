@@ -16,6 +16,8 @@ class PageContentViewController: UIViewController {
     @IBOutlet weak var labelTwo: UILabel!
     @IBOutlet weak var separatorView : UIView!
     
+    @IBOutlet weak var onboardingImage: UIImageView!
+    
     var pageIndex: Int?
     var titleText : String!
     var imageName : String!
@@ -26,7 +28,8 @@ class PageContentViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.image.image = UIImage(named: imageName)
+        //self.image.image = UIImage(named: imageName)
+        self.onboardingImage.image = UIImage(named: imageName)
         self.label.text = self.titleText
         self.labelTwo.text = self.descText
         

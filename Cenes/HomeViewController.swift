@@ -162,11 +162,10 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
               self.createAlarm()
         }
         
-        actionButton = ActionButton(attachedToView: self.view, items: [gathering, reminder,alarm])
+        actionButton = ActionButton(attachedToView: self.view, items: [gathering, reminder])
         
         
         actionButton?.action = { button in button.toggleMenu() }
-        
         
     }
     
@@ -187,6 +186,18 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        
+        //Google Analytics Tracking
+        guard let tracker = GAI.sharedInstance().defaultTracker else { return }
+        tracker.set(kGAIScreenName, value: "HomeScreenIos")
+        
+        
+        
+        //guard let builder = GAIDictionaryBuilder.createScreenView() else { return }
+        //tracker.send(builder.build() as [NSObject : AnyObject])
+        let email = setting.value(forKey: "email") as! String
+        tracker.send(GAIDictionaryBuilder.createEvent(withCategory: "User", action: "logged In", label: email+" - ios", value: nil).build() as [NSObject : AnyObject])
+
         self.profileImage = appDelegate?.getProfileImage()
         
        // print("button pressed \((sMenu?.buttonTag)!)")
@@ -210,13 +221,18 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if SideMenuManager.default.menuLeftNavigationController?.isHidden == true {
+        if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+
+//        if SideMenuManager.menuLeftNavigationController?.isHidden == true {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 
                 
                 self.calendar.reloadData()
                 self.dataObjectArray.removeAll(keepingCapacity: true)
                 self.tableView.reloadData()
+                
+                WebService().resetBadgeCount();
+                
                 let webservice = WebService()
              //   self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
                 
@@ -611,7 +627,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
     @objc func profileButtonPressed(){
         
-        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
        // self.performSegue(withIdentifier: "openSideMenu", sender: self)
        
     }
@@ -746,9 +762,6 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                cell.reminderlabel.textColor = UIColor.black
             }
             
-            
-            
-            
             return cell
         }
         
@@ -772,12 +785,42 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         
         let identifier = "HeaderCell"
         let cell: HomeTableViewCellHeader! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellHeader
-        
+//        cell.isEditing = true;
         cell.titleLabel.text = sectionTitle
         
         return cell
         
     }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath)
+    {
+        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        //  /api/event/delete?event_id={select event id}
+
+        if (obj.dataType != "Reminder"){
+
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        
+        WebService().removeEventFromList(EVEntID: obj.eventId) { (returnedDict) in
+            if returnedDict["Error"] as? Bool == true {
+                self.stopAnimating()
+                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+            }else{
+                self.stopAnimating()
+               self.viewDidAppear(true)
+             
+                //                self.remindersTableView.deleteRows(at: [indexpath], with: )
+            }
+        }
+    }
+    else{
+             self.showAlert(title: "Alert!", message:"This is reminder and cannot be deleted.")
+    }
+        
+      
+        
+        print(obj.eventId)
+      }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         

@@ -135,7 +135,7 @@ class AlarmViewController: UIViewController {
         self.profileImage = appDelegate?.getProfileImage()
         self.showOrHideNoAlarmsLabel()
         
-        SideMenuManager.default.menuEnableSwipeGestures = false
+        SideMenuManager.menuEnableSwipeGestures = false
     }
 
     
@@ -161,7 +161,7 @@ class AlarmViewController: UIViewController {
     }
     
     @objc func profileButtonPressed(){
-        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
         // self.performSegue(withIdentifier: "openSideMenu", sender: self)
     }
     

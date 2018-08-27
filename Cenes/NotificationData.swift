@@ -17,4 +17,6 @@ class NotificationData: NSObject {
     var notificationImage : UIImage!
     var type : String!
     var notificationTypeId : NSNumber!
+    var notificationId : NSNumber!
+
 }

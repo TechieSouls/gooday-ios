@@ -16,8 +16,9 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
    
     @IBOutlet weak var fbLoginBtnPlaceholder: UIButton!
     @IBOutlet weak var loginBtn: UIButton!
-    @IBOutlet weak var accountAskLabel: UILabel!
-    @IBOutlet weak var displayLabele: UILabel!
+//    @IBOutlet weak var accountAskLabel: UILabel!
+    @IBOutlet weak var emailBtn: UIButton!
+    //    @IBOutlet weak var displayLabele: UILabel!
     
     var fbLoginBtn : FBSDKLoginButton!
     
@@ -37,10 +38,24 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
     
         // start here
         //cusom uielements
-        let buttonText = NSAttributedString(string: "JOIN US WITH FACEBOOK")
+        
+        fbLoginBtnPlaceholder.layer.cornerRadius = 12
+        fbLoginBtnPlaceholder.layer.borderWidth = 1.5
+        fbLoginBtnPlaceholder.layer.borderColor = UIColor.white.cgColor
+        
+        
+        emailBtn.layer.cornerRadius = 12
+        emailBtn.layer.borderWidth = 1.5
+        emailBtn.layer.borderColor = UIColor.white.cgColor
+        
+        loginBtn.layer.cornerRadius = 12
+        loginBtn.layer.borderWidth = 1.5
+        loginBtn.layer.borderColor = UIColor.white.cgColor
+        
+        let buttonText = NSAttributedString(string: "Join us with Facebook")
         fbLoginBtn = FBSDKLoginButton(frame:fbLoginBtnPlaceholder.frame)
         fbLoginBtn.setAttributedTitle(buttonText, for: .normal)
-        fbLoginBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        fbLoginBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         fbLoginBtn.setImage(nil, for: UIControlState.normal)
         fbLoginBtn.setBackgroundImage(nil, for: .normal)
         fbLoginBtn.backgroundColor = UIColor.clear
@@ -48,12 +63,10 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
         fbLoginBtn.readPermissions = ["public_profile", "email", "user_friends","user_events"];
         fbLoginBtn.delegate = self
 
-        accountAskLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        accountAskLabel.numberOfLines = 0
-        loginBtn.backgroundColor = .clear
-        loginBtn.layer.cornerRadius = 5
-        loginBtn.layer.borderWidth = 1
-        loginBtn.layer.borderColor = UIColor.lightGray.cgColor
+//        accountAskLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+//        accountAskLabel.numberOfLines = 0
+//        loginBtn.backgroundColor = .clear
+     
         
     }
     override func viewWillAppear(_ animated: Bool) {

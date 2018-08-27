@@ -14,7 +14,6 @@ import UserNotifications
 import GoogleSignIn
 import Google
 import SideMenu
-
  
 let setting = UserDefaults.standard
 
@@ -56,10 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
              window?.rootViewController = OnBoardingController.onboardingViewController()
         }
         
-        
-        
         //User Notification
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound,.badge]) {(accepted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {(accepted, error) in
             if !accepted {
                 print("Notification access denied.")
                 
@@ -77,10 +74,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GGLContext.sharedInstance().configureWithError(&configureError)
         assert(configureError == nil, "Error configuring Google services: \(String(describing: configureError))")
         
-       //
+       //Google Analytics code
+        guard let gai = GAI.sharedInstance() else {
+            assert(false, "Google Analytics not configured correctly")
+            return true;
+        }
+        gai.tracker(withTrackingId: "UA-97875532-2")
+        // Optional: automatically report uncaught exceptions.
+        gai.trackUncaughtExceptions = true
+        
+        // Optional: set Logger to VERBOSE for debug information.
+        // Remove before app release.
+        gai.logger.logLevel = .verbose;
+        
+        WebService().resetBadgeCount();
+        
         return true
     }
-
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -93,11 +104,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        WebService().resetBadgeCount();
+
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         application.applicationIconBadgeNumber = 0
+        WebService().resetBadgeCount();
+        
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -260,12 +275,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
         print("RECIEVE PUSH\(userInfo)")
+        
         completionHandler(.newData)
     }
-    
-    
-    
-    
+
     func creatGradientImage(layer:CALayer) -> UIImage? {
         
         var image: UIImage? = nil
@@ -396,27 +409,26 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         print(response.notification.request.content.userInfo)
-        
         if response.notification.request.content.userInfo.count == 0 {
             return
         }
         
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
-        if userInfo!["notificationType"] as? String == "Gathering" {
+        if userInfo!["type"] as? String == "Gathering" {
             if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 2
                 
                 
                 let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
                 
-                
-                if SideMenuManager.default.menuLeftNavigationController?.isHidden == true{
+                if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+//                if SideMenuManager.menuLeftNavigationController.isHidden == true{
                 
                 gathering?.dismiss(animated: false, completion: nil)
                 }else{
                     
-                    let side = SideMenuManager.default.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
+                    let side = SideMenuManager.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
                    side.dismiss(animated: true, completion: nil)
                 }
                 (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers = [gathering!]
@@ -424,7 +436,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 gathering?.isNewInvite = true
                 
-                let eventId = "\((userInfo!["notificationTypeId"] as? NSNumber)!)"
+                let eventId = "\((userInfo!["id"] as? NSNumber)!)"
                 let invitationData = CenesCalendarData()
                     invitationData.eventId = eventId
                 gathering?.invitationData = invitationData
@@ -433,19 +445,20 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             }
         }
         
-        if userInfo!["notificationType"] as? String == "Reminder" {
+        if userInfo!["type"] as? String == "Reminder" {
 //            print(userInfo)
             
             let alertDict = userInfo?.object(forKey: "alert") as? NSDictionary
             var invitationTitle = alertDict?.object(forKey: "title") as? String
-            
-            if SideMenuManager.default.menuLeftNavigationController?.isHidden == false{
+            if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == false{
+
+//            if SideMenuManager.menuLeftNavigationController.isHidden == false{
                 
-                let side = SideMenuManager.default.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
+                let side = SideMenuManager.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
                 side.dismiss(animated: true, completion: nil)
             }
             
-            self.fetchReminder(reminderID: (userInfo!["notificationTypeId"] as? NSNumber)!, title: invitationTitle!)
+            self.fetchReminder(reminderID: (userInfo!["id"] as? NSNumber)!, title: invitationTitle!)
             
 //            self.showReminderInvite(forTitle: invitationTitle!, reminderID: (userInfo!["notificationTypeId"] as? NSNumber)!)
             

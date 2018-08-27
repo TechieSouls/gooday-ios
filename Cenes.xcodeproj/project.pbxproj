@@ -178,7 +178,13 @@
 		F4E9C22D1F15F554002BE9B8 /* OnBoardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E9C22C1F15F554002BE9B8 /* OnBoardingController.swift */; };
 		F4E9C2301F1606D9002BE9B8 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F4E9C22E1F1606D9002BE9B8 /* Onboarding.storyboard */; };
 		F4F4DFDC1F0EC1BF00169990 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F4DFDB1F0EC1BF00169990 /* SignUpViewController.swift */; };
+		FA2BDD50212710E600CF25C6 /* OnBoardingStep1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2BDD4F212710E600CF25C6 /* OnBoardingStep1ViewController.swift */; };
+		FA39E9832127460300A47B93 /* OnBoardingStep2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA39E9822127460300A47B93 /* OnBoardingStep2ViewController.swift */; };
+		FA39E98521274FB900A47B93 /* OnboardingStep3ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA39E98421274FB900A47B93 /* OnboardingStep3ViewController.swift */; };
+		FA39E9872127506A00A47B93 /* OnboardingStep4ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA39E9862127506A00A47B93 /* OnboardingStep4ViewController.swift */; };
+		FA39E9892127507F00A47B93 /* OnboardingStep5ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA39E9882127507F00A47B93 /* OnboardingStep5ViewController.swift */; };
 		FAB7652220D7ED5700695F2C /* AlarmInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942C76D01F9937DD00817FD6 /* AlarmInfoViewController.swift */; };
+		FABBBB8A210F6FA6007ED875 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABBBB89210F6FA6007ED875 /* HelpViewController.swift */; };
 		FAFFE18C20D6AB700052AFA2 /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAFFE18B20D6AB6F0052AFA2 /* PushKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -384,6 +390,12 @@
 		F4E9C22F1F1606D9002BE9B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
 		F4F4DFDB1F0EC1BF00169990 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		F890D00FAD77304335E8E5FB /* Pods_Cenes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cenes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA2BDD4F212710E600CF25C6 /* OnBoardingStep1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingStep1ViewController.swift; sourceTree = "<group>"; };
+		FA39E9822127460300A47B93 /* OnBoardingStep2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingStep2ViewController.swift; sourceTree = "<group>"; };
+		FA39E98421274FB900A47B93 /* OnboardingStep3ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStep3ViewController.swift; sourceTree = "<group>"; };
+		FA39E9862127506A00A47B93 /* OnboardingStep4ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStep4ViewController.swift; sourceTree = "<group>"; };
+		FA39E9882127507F00A47B93 /* OnboardingStep5ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStep5ViewController.swift; sourceTree = "<group>"; };
+		FABBBB89210F6FA6007ED875 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		FAFFE18B20D6AB6F0052AFA2 /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -715,6 +727,7 @@
 		F4B871F11F0DDEF1001A9963 /* Cenes */ = {
 			isa = PBXGroup;
 			children = (
+				FABBBB89210F6FA6007ED875 /* HelpViewController.swift */,
 				B94B39951FA7FA5700A806FE /* Sounds */,
 				AE7D84A41F90C132005ABB81 /* GoogleService-Info.plist */,
 				F47C35881F17F92300CAE09A /* Utils */,
@@ -772,6 +785,11 @@
 		F4F4DFDA1F0EA94900169990 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				FA39E9882127507F00A47B93 /* OnboardingStep5ViewController.swift */,
+				FA39E9862127506A00A47B93 /* OnboardingStep4ViewController.swift */,
+				FA39E98421274FB900A47B93 /* OnboardingStep3ViewController.swift */,
+				FA39E9822127460300A47B93 /* OnBoardingStep2ViewController.swift */,
+				FA2BDD4F212710E600CF25C6 /* OnBoardingStep1ViewController.swift */,
 				AE8F47131FB9B61B00C153F0 /* Diary */,
 				B9710C8C1FA3B800000A45B3 /* Reminders */,
 				AE8184DA1F95BF3700D885A2 /* Home */,
@@ -866,7 +884,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
 				LastUpgradeCheck = 0900;
-				ORGANIZATIONNAME = "Redblink Pvt Ltd";
+				ORGANIZATIONNAME = "Cenes Pvt Ltd";
 				TargetAttributes = {
 					F4B871EE1F0DDEF1001A9963 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1164,9 +1182,12 @@
 				AE4D06C3200E18A600225D97 /* ForgotPasswordController.swift in Sources */,
 				944A7B531F980494001491D3 /* AlarmTableViewCell.swift in Sources */,
 				B9710C941FA3C697000A45B3 /* ReminderModel.swift in Sources */,
+				FA39E9892127507F00A47B93 /* OnboardingStep5ViewController.swift in Sources */,
 				AE8F471A1FB9B70100C153F0 /* DiaryCellOne.swift in Sources */,
 				AE32774A1FBC4F5F00F981B1 /* DiaryInfoViewController.swift in Sources */,
+				FA39E98521274FB900A47B93 /* OnboardingStep3ViewController.swift in Sources */,
 				B9710C8E1FA3B82B000A45B3 /* RemindersViewController.swift in Sources */,
+				FA39E9832127460300A47B93 /* OnBoardingStep2ViewController.swift in Sources */,
 				5EC73CEF1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift in Sources */,
 				F47C358A1F17F93700CAE09A /* AppConstants.swift in Sources */,
 				B99D55C91FC1358D0020AC50 /* Alarm+CoreDataClass.swift in Sources */,
@@ -1176,6 +1197,7 @@
 				F411018A1F16A0CD001A6B7D /* HomeViewController.swift in Sources */,
 				AEDD81491FB0734500F15742 /* ProfileViewController.swift in Sources */,
 				942F78C41FA174D2006A7C61 /* Scheduler.swift in Sources */,
+				FABBBB8A210F6FA6007ED875 /* HelpViewController.swift in Sources */,
 				B99D55CC1FC169FB0020AC50 /* AddAlarmViewController+Extensions.swift in Sources */,
 				AE8F3A761FC40FCD00ED13CC /* OutlookService.swift in Sources */,
 				F40A89A11F1FD74B002BBC17 /* UtilMethod.swift in Sources */,
@@ -1186,6 +1208,7 @@
 				AE5A7C211F6798EE00C7B10C /* AddLocationViewController.swift in Sources */,
 				F4103CC81F2AF4220071B3D6 /* Reminder.swift in Sources */,
 				AE8423E91F8F55CD007DBACB /* CenesUser.swift in Sources */,
+				FA39E9872127506A00A47B93 /* OnboardingStep4ViewController.swift in Sources */,
 				F4E9C2271F159523002BE9B8 /* PageContentViewController.swift in Sources */,
 				AE8184E11F95F51600D885A2 /* HomeUserCellFirst.swift in Sources */,
 				F4F4DFDC1F0EC1BF00169990 /* SignUpViewController.swift in Sources */,
@@ -1197,6 +1220,7 @@
 				F4B871F31F0DDEF1001A9963 /* AppDelegate.swift in Sources */,
 				B956ADB61FB04E00005B13CA /* FriendsModel+CoreDataProperties.swift in Sources */,
 				FAB7652220D7ED5700695F2C /* AlarmInfoViewController.swift in Sources */,
+				FA2BDD50212710E600CF25C6 /* OnBoardingStep1ViewController.swift in Sources */,
 				AE5841B11FBB15DF000D4F86 /* DiaryCell.swift in Sources */,
 				AE2F2EBD1F9DCC3200B05A92 /* NotificationData.swift in Sources */,
 				F4B1C72F1F2E94EC00174414 /* LocationViewController.swift in Sources */,
@@ -1372,7 +1396,7 @@
 			baseConfigurationReference = C5B66AE36B2076110D4E7253 /* Pods-Cenes.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cenes/Cenes.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: techiesoulsin@gmail.com (4S4GWJFWF7)";
@@ -1380,7 +1404,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1398,7 +1422,7 @@
 			baseConfigurationReference = 41625937A252FD6FFB066D87 /* Pods-Cenes.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cenes/Cenes.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: techiesoulsin@gmail.com (4S4GWJFWF7)";
@@ -1406,7 +1430,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
