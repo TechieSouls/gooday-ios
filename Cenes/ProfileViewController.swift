@@ -326,13 +326,13 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
         print("choose")
         self.genderTF.text = "Trans"
         }
-        actionSheetController.addAction(transButton)
+        //actionSheetController.addAction(transButton)
     
         let othersButton = UIAlertAction(title: "Other", style: .default) { action -> Void in
         print("choose")
         self.genderTF.text = "Other"
         }
-        actionSheetController.addAction(othersButton)
+       // actionSheetController.addAction(othersButton)
     
         
         let deleteActionButton = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in

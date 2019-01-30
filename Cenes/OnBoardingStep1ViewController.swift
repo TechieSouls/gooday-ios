@@ -10,9 +10,19 @@ import UIKit
 
 class OnBoardingStep1ViewController: UIViewController {
 
+    @IBOutlet weak var bottomBOrder: UIView!
+    class func MainViewController() -> UIViewController{
+        
+        let viewController = UIStoryboard(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnBoardingStep1ViewController")
+        
+        return viewController
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        bottomBOrder.frame = CGRect(0,self.view.bounds.height - 60, self.view.bounds.width, 1.0)
+        bottomBOrder.backgroundColor = UIColor.white
         // Do any additional setup after loading the view.
     }
 
@@ -33,3 +43,22 @@ class OnBoardingStep1ViewController: UIViewController {
     */
 
 }
+
+extension UIImage {
+    func imageWithInsets(insetDimen: CGFloat) -> UIImage {
+        return imageWithInset(insets: UIEdgeInsets(top: insetDimen, left: insetDimen, bottom: insetDimen, right: insetDimen))
+    }
+    
+    func imageWithInset(insets: UIEdgeInsets) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(
+            CGSize(width: self.size.width + insets.left + insets.right,
+                   height: self.size.height + insets.top + insets.bottom), false, self.scale)
+        let origin = CGPoint(x: insets.left, y: insets.top)
+        self.draw(at: origin)
+        let imageWithInsets = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return imageWithInsets!
+    }
+    
+}
+

@@ -23,32 +23,34 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
     
     
     func getStepOne() -> OnBoardingStep1ViewController {
-        return self.storyboard?.instantiateViewController(withIdentifier: "OnBoardingStep1ViewController") as! OnBoardingStep1ViewController
-    }
+        return UIStoryboard.init(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnBoardingStep1ViewController") as! OnBoardingStep1ViewController
+        }
     
     func getStepTwo() -> OnBoardingStep2ViewController {
-        return self.storyboard?.instantiateViewController(withIdentifier: "OnBoardingStep2ViewController") as! OnBoardingStep2ViewController
+        return UIStoryboard.init(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnBoardingStep2ViewController") as! OnBoardingStep2ViewController
     }
     
     func getStepThree() -> OnboardingStep3ViewController {
-        return self.storyboard?.instantiateViewController(withIdentifier: "OnboardingStep3ViewController") as! OnboardingStep3ViewController
+        return UIStoryboard.init(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnboardingStep3ViewController") as! OnboardingStep3ViewController
     }
     
     func getStepFour() -> OnboardingStep4ViewController {
-        return self.storyboard?.instantiateViewController(withIdentifier: "OnboardingStep4ViewController") as! OnboardingStep4ViewController
+        return UIStoryboard.init(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnboardingStep4ViewController") as! OnboardingStep4ViewController
     }
     func getStepFive() -> OnboardingStep5ViewController {
-        return self.storyboard?.instantiateViewController(withIdentifier: "OnboardingStep5ViewController") as! OnboardingStep5ViewController
+        return UIStoryboard.init(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnboardingStep5ViewController") as! OnboardingStep5ViewController
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         skipButton.titleLabel?.textColor = UIColor.white
         nextButton.titleLabel?.textColor = UIColor.white
-
+        //  getStarted.backgroundColor = UIColor.white.withAlphaComponent(0.2)
+        //getStarted.layer.borderWidth = 1
+        // getStarted.layer.borderColor =  UIColor.white.cgColor
         // Do any additional setup after loading the view.
-        //  pageViewController = self.storyboard?.instantiateViewController(withIdentifier: "PageViewController") as! UIPageViewController
-        pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.horizontal, options: nil)
+          pageViewController = self.storyboard?.instantiateViewController(withIdentifier: "PageViewController") as! UIPageViewController
+        //pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.horizontal, options: nil)
         self.pageViewController.dataSource = self
         self.pageViewController.delegate = self
         setupPageControl()
@@ -66,7 +68,10 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
     /// - Returns: OnBoardingController
     
     class func onboardingViewController() -> OnBoardingController{
-        return UIStoryboard(name: "Onboarding", bundle: nil).instantiateInitialViewController() as! OnBoardingController
+        //return UIStoryboard(name: "Onboarding", bundle: nil).instantiateInitialViewController() as! OnBoardingController
+        let onboardingBoard: UIStoryboard = UIStoryboard.init(name: "Onboarding", bundle: nil);
+        return onboardingBoard.instantiateViewController(withIdentifier: "OnBoardingController") as! OnBoardingController;
+        
     }
     
     
@@ -94,7 +99,8 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
     
     @IBAction func getStartedPressed(_ sender: Any) {
         setting.setValue(1, forKey: "onboarding")
-        UIApplication.shared.keyWindow?.rootViewController = LoginViewController.MainViewController()
+        //UIApplication.shared.keyWindow?.rootViewController = LoginViewController.MainViewController()
+        UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
         
     }
     
@@ -108,7 +114,8 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
     
     @IBAction func skipButtonPressed(_ sender: Any) {
         setting.setValue(1, forKey: "onboarding")
-        UIApplication.shared.keyWindow?.rootViewController = LoginViewController.MainViewController()
+        //UIApplication.shared.keyWindow?.rootViewController = LoginViewController.MainViewController()
+        UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
     }
     
     
@@ -171,6 +178,7 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
             
             index = index + 1
             
+            
             return self.viewControllerAtIndex(index: index)
         }
         
@@ -184,11 +192,10 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
         if index > 0 {
             
             index = index - 1
-            
+
             return self.viewControllerAtIndex(index: index)
         }
-        
-        return nil
+        return nil;
     }
     func resetPageControl(index :Int)
     {

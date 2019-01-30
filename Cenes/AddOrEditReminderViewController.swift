@@ -151,7 +151,9 @@ class AddOrEditReminderViewController: BaseViewController, NVActivityIndicatorVi
                 self.stopAnimating()
                 
                 if self.dateTextField.text!.count > 0 {
-                    self.scheduleReminder(returnedDict: returnedDict)
+                    //This is used to save the reminder in app and
+                    // schedule it for later use.
+                    //self.scheduleReminder(returnedDict: returnedDict)
                 }
                 if self.isEdit {
                     self.navigationController?.popViewController(animated: true)

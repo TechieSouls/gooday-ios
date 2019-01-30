@@ -16,6 +16,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
     
     @IBOutlet weak var user: UITextField!
     @IBOutlet weak var password: UITextField!
+    
     var isMailId = false
     
     @IBOutlet weak var fbLoginBtnPlaceholder: UIButton!
@@ -65,6 +66,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
         
         self.user.resignFirstResponder()
         self.password.resignFirstResponder()
+        
         guard Util.isnameLenth(name: user.text!)else{
             
             user.backgroundColor =  commonColor
@@ -86,6 +88,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
             
             return
         }
+        
         let webServ = WebService()
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
         // new hud
@@ -93,40 +96,35 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
         webServ.emailSignIn(email: user.text!, password: password.text!, complete: { (returnedDict) in
             
           
-            
+             self.stopAnimating()
             if returnedDict.value(forKey: "Error") as? Bool == true {
-                 self.stopAnimating()
                 self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
-            
-                setting.setValue(2, forKey: "onboarding")
                 
-                self.stopAnimating()
+                WebService().setPushToken();
                 
-                DispatchQueue.main.async {
-                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                    WebService().setPushToken()
-                }
+                let refreshAlert = UIAlertController(title: "Sync Contacts", message: "Would you like to sync contacts.", preferredStyle: UIAlertControllerStyle.alert)
                 
+                refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+                    //print("Handle Ok logic here")
+                    self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                    
+                    UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
+                        
+                        self.stopAnimating()
+                        
+                        self.moveToOnbaordingOnEmailLogin();
+
+                    });
+                }))
                 
-                
-                let url = setting.value(forKey:"photo") as? String
-                
-                if url != nil && url != "" {
-                    let webServ = WebService()
-                    webServ.profilePicFromFacebook(url: url!, completion: { image in
-                        DispatchQueue.main.async {
-                        print("Image Downloaded")
-                        appDelegate?.profileImageSet(image: image!)
-                        appDelegate?.cenesTabBar?.loadViewIfNeeded()
-                        let index = appDelegate?.cenesTabBar?.selectedIndex
-                        let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
-                        navController.viewControllers.first?.viewDidLayoutSubviews()
-                        }
-                    })
-                }
-                
+                refreshAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
+                    //print("Handle Cancel Logic here")
+                    
+                    self.moveToOnbaordingOnEmailLogin()
+                }))
+                self.present(refreshAlert, animated: true, completion: nil)
             }
         })
     }
@@ -212,63 +210,35 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
                 let webServ = WebService()
                 webServ.facebookSignUp(facebookAuthToken:tokenStr!, facebookID: dictValue?["id"]! as! String , complete: { (returnedDict) in
                     
-                    
-                    
-                    
+                    self.stopAnimating()
+
                     if returnedDict.value(forKey: "Error") as? Bool == true {
-                        self.stopAnimating()
                         self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
-                        
-                    }
-                    else{
+                    } else{
                     
-                    setting.setValue(2, forKey: "onboarding")
-                    
-                    webServ.facebookEvent(facebookAuthToken: tokenStr!,cenesToken: setting.value(forKey: "token") as! String, facebookID: dictValue?["id"]! as! String, complete: { (returnedDict) in
+                        let refreshAlert = UIAlertController(title: "Sync Contacts", message: "Would you like to sync contacts.", preferredStyle: UIAlertControllerStyle.alert)
                         
+                        refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+                            //print("Handle Ok logic here")
+                            
+                            self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+
+                            UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
+                                
+                                self.stopAnimating()
+                                
+                                self.moveToBoardingStepsOnFbLogin(webServ: webServ,returnedDict: returnedDict,tokenStr: tokenStr!,dictValue :dictValue!)
+                            });
+                            
+                           
+                        }))
                         
-                        if returnedDict.value(forKey: "Error") as? Bool == true {
+                        refreshAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
+                            //print("Handle Cancel Logic here")
                             
-                            self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
-                            
-                            }
-                        
-                        })
-                    
-                        let dict = returnedDict.value(forKey: "data") as? NSDictionary
-                        
-                        let isNew = dict?.value(forKey: "isNew") as? Bool
-                        
-                        if isNew != nil {
-                            
-                            self.stopAnimating()
-                            
-                            DispatchQueue.main.async {
-                                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                                WebService().setPushToken()
-                            }
-                            
-                            let url = dict?.value(forKey: "photo") as? String
-                            if url != nil && url != "" {
-                                if url != nil && url != "" {
-                                    let webServ = WebService()
-                                    webServ.profilePicFromFacebook(url: url!, completion: { image in
-                                        DispatchQueue.main.async {
-                                            print("Image Downloaded")
-                                            appDelegate?.profileImageSet(image: image!)
-                                            appDelegate?.cenesTabBar?.loadViewIfNeeded()
-                                            let index = appDelegate?.cenesTabBar?.selectedIndex
-                                            let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
-                                            navController.viewControllers.first?.viewDidLayoutSubviews()
-                                        }
-                                    })
-                                }
-                            }
-                        }else{
-                            self.stopAnimating()
-                            let camera = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "onbooardingNavigation") as? UINavigationController
-                            UIApplication.shared.keyWindow?.rootViewController = camera
-                        }
+                            self.moveToBoardingStepsOnFbLogin(webServ: webServ,returnedDict: returnedDict,tokenStr: tokenStr!,dictValue :dictValue!)
+                        }))
+                        self.present(refreshAlert, animated: true, completion: nil)
                     }
                     
                 })
@@ -277,6 +247,81 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
                 print(error)
                 self.stopAnimating()
             }
+        }
+    }
+    
+    func moveToBoardingStepsOnFbLogin(webServ: WebService,returnedDict: NSMutableDictionary,tokenStr: String,dictValue :[String: Any]) {
+        setting.setValue(2, forKey: "onboarding")
+        
+        webServ.facebookEvent(facebookAuthToken: tokenStr,cenesToken: setting.value(forKey: "token") as! String, facebookID: dictValue["id"]! as! String, complete: { (returnedDict) in
+            
+            
+            if returnedDict.value(forKey: "Error") as? Bool == true {
+                
+                self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
+                
+            }
+            
+        })
+        
+        let dict = returnedDict.value(forKey: "data") as? NSDictionary
+        
+        let isNew = dict?.value(forKey: "isNew") as? Bool
+        
+        if isNew != nil {
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                WebService().setPushToken()
+            }
+            
+            let url = dict?.value(forKey: "photo") as? String
+            if url != nil && url != "" {
+                if url != nil && url != "" {
+                    let webServ = WebService()
+                    webServ.profilePicFromFacebook(url: url!, completion: { image in
+                        DispatchQueue.main.async {
+                            print("Image Downloaded")
+                            appDelegate?.profileImageSet(image: image!)
+                            appDelegate?.cenesTabBar?.loadViewIfNeeded()
+                            let index = appDelegate?.cenesTabBar?.selectedIndex
+                            let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
+                            navController.viewControllers.first?.viewDidLayoutSubviews()
+                        }
+                    })
+                }
+            }
+        }else{
+            self.stopAnimating()
+            let camera = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "onbooardingNavigation") as? UINavigationController
+            UIApplication.shared.keyWindow?.rootViewController = camera
+        }
+    }
+    
+    func moveToOnbaordingOnEmailLogin() {
+        setting.setValue(2, forKey: "onboarding")
+        
+        DispatchQueue.main.async {
+            UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+            WebService().setPushToken()
+        }
+        
+        
+        
+        let url = setting.value(forKey:"photo") as? String
+        
+        if url != nil && url != "" {
+            let webServ = WebService()
+            webServ.profilePicFromFacebook(url: url!, completion: { image in
+                DispatchQueue.main.async {
+                    print("Image Downloaded")
+                    appDelegate?.profileImageSet(image: image!)
+                    appDelegate?.cenesTabBar?.loadViewIfNeeded()
+                    let index = appDelegate?.cenesTabBar?.selectedIndex
+                    let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
+                    navController.viewControllers.first?.viewDidLayoutSubviews()
+                }
+            })
         }
     }
     

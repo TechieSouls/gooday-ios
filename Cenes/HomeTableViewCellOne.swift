@@ -9,13 +9,13 @@
 import UIKit
 import IoniconsSwift
 
-class HomeTableViewCellOne: UITableViewCell {
+class HomeCenesEventTableViewCell: UITableViewCell {
     
     var imageDownloadsInProgress = [IndexPath : IconDownloader]()
     
     @IBOutlet weak var eventView: UIView!
     
-    @IBOutlet weak var friendsView: UICollectionView!
+    //@IBOutlet weak var friendsView: UICollectionView!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var timeTitle: UILabel!
     @IBOutlet weak var timeSubTitle: UILabel!
@@ -28,7 +28,6 @@ class HomeTableViewCellOne: UITableViewCell {
     @IBOutlet weak var bubbleView: UIView!
     @IBOutlet weak var locationView: UIView!
     @IBOutlet weak var locationIcon: UIImageView!
-    @IBOutlet weak var eventsImageOuterView: UIView!
     
     var HomeView : HomeViewController!
     
@@ -42,9 +41,8 @@ class HomeTableViewCellOne: UITableViewCell {
         timeTitle.lineBreakMode = NSLineBreakMode.byWordWrapping
         timeTitle.numberOfLines = 0
         locationView.isHidden = true
-        eventsImageOuterView.isHidden = true
-        self.friendsView.register(UINib(nibName: "HomeUserCellFirst", bundle: Bundle.main), forCellWithReuseIdentifier: "HomeUserCellFirst")
-        self.friendsView.register(UINib(nibName: "HomeUserCellLast", bundle: Bundle.main), forCellWithReuseIdentifier: "HomeUserCellLast")
+        //self.friendsView.register(UINib(nibName: "HomeUserCellFirst", bundle: Bundle.main), forCellWithReuseIdentifier: "HomeUserCellFirst")
+        //self.friendsView.register(UINib(nibName: "HomeUserCellLast", bundle: Bundle.main), forCellWithReuseIdentifier: "HomeUserCellLast")
         
     }
     
@@ -60,11 +58,11 @@ class HomeTableViewCellOne: UITableViewCell {
     
     func reloadFriends(){
        // print("Reloading data for \(self.timeLabel.text!) ")
-        self.friendsView.reloadData()
+        //self.friendsView.reloadData()
     }
 }
 
-extension HomeTableViewCellOne : UICollectionViewDataSource ,UICollectionViewDelegate {
+extension HomeCenesEventTableViewCell : UICollectionViewDataSource ,UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return FriendArray.count
     }
@@ -133,7 +131,7 @@ extension HomeTableViewCellOne : UICollectionViewDataSource ,UICollectionViewDel
     }
     
     func loadImagesForOnscreenRows() {
-        guard self.FriendArray.count != 0 else { return }
+        /* guard self.FriendArray.count != 0 else { return }
         
         let visibleIndexPaths = self.friendsView.indexPathsForVisibleItems
         for indexPath in visibleIndexPaths {
@@ -145,7 +143,7 @@ extension HomeTableViewCellOne : UICollectionViewDataSource ,UICollectionViewDel
             }else{
                 
             }
-        }
+        } */
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -154,9 +152,9 @@ extension HomeTableViewCellOne : UICollectionViewDataSource ,UICollectionViewDel
     
 }
 
-extension HomeTableViewCellOne: IconDownloaderDelegate {
+extension HomeCenesEventTableViewCell: IconDownloaderDelegate {
     func iconDownloaderDidFinishDownloadingImage(_ iconDownloader: IconDownloader, error: NSError?) {
-        guard let cell = self.friendsView.cellForItem(at:iconDownloader.indexPath as IndexPath) as? HomeUserCellFirst else {
+       /* guard let cell = self.friendsView.cellForItem(at:iconDownloader.indexPath as IndexPath) as? HomeUserCellFirst else {
             //self.HomeView.tableView.reloadData()
             print("Not got cellCollectiionView")
             return }
@@ -168,6 +166,8 @@ extension HomeTableViewCellOne: IconDownloaderDelegate {
            // print(iconDownloader.cenesUser.name+" user profile updated")
         }
         self.imageDownloadsInProgress.removeValue(forKey: iconDownloader.indexPath as IndexPath)
+        
+        */
     }
 }
 

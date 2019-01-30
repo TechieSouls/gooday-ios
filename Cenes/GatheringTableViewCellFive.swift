@@ -1,3 +1,4 @@
+
 //
 //  GatheringTableViewCellFive.swift
 //  Cenes
@@ -15,9 +16,6 @@ protocol GatheringTableViewCellFiveDelegate : class {
     func setCase(caseHeight : CellHeight , cellIndex : IndexPath)
     func timePick(cell:GatheringTableViewCellFive,tag:Int)
 }
-
-
-
 
 class GatheringTableViewCellFive: UITableViewCell,CreateGatheringViewControllerDelegate ,NVActivityIndicatorViewable{
     
@@ -102,23 +100,41 @@ class GatheringTableViewCellFive: UITableViewCell,CreateGatheringViewControllerD
         calendarView.placeholderType = FSCalendarPlaceholderType.none
         arrayColor = [self.colorRed,self.commonOrange,self.commonYellow,self.commonLime,self.commonGreen]
         
-        
-        
         let dateFormatterNew = DateFormatter()
         
             dateFormatterNew.dateFormat = "MMM dd, YYYY"
         
             //self.setDateTimeValues(tag: .StartDate, value: dateFormatterNew.string(from: Date()))
             
-            var datecomponent = DateComponents()
-            datecomponent.minute = 1
+        var datecomponent: DateComponents! = DateComponents()
+        
+            //Getting minutes from current date to check if its multiple of 5
+            let minute = Calendar.current.component(.minute, from: Date())
+            var minutesToAddForMakingMultipleOfFive = 0;
+            if (minute % 5 != 0) {
+                datecomponent.minute = (5 - minute % 5);
+                minutesToAddForMakingMultipleOfFive = (5 - minute % 5);
+            }
+        
+        print("minutesToAddForMakingMultipleOfFive :\(minutesToAddForMakingMultipleOfFive)")
             let startDate = Calendar.current.date(byAdding: datecomponent, to: Date().clampedDate)
+        //print(startDate?.clampedDate.addingTimeInterval(60.0 * Double(minutesToAddForMakingMultipleOfFive)));
+
+        
+            startDate?.clampedDate.addingTimeInterval(60.0 * Double(minutesToAddForMakingMultipleOfFive));
+        //gatheringView.startTime = "\(startDate?.millisecondsSince1970 ?? Date().millisecondsSince1970)" ;
+            datecomponent.minute = 60;
             let endDate = Calendar.current.date(byAdding: datecomponent, to: startDate!)
+        
+            //if ((endDate?.millisecondsSince1970)! < (startDate?.millisecondsSince1970)!) {
+              //  let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: startDate!)
+                //gatheringView.endTime = "\(tomorrow?.millisecondsSince1970 ?? Date().millisecondsSince1970)";
+            //}
         
             //self.setDateTimeValues(tag: .EndDate, value: dateFormatterNew.string(from: Date()))
         
             dateFormatterNew.dateFormat = "h:mm a"
-        self.setDateTimeValues(tag: .StartTime, value: dateFormatterNew.string(from: (startDate?.clampedDate)!))
+        self.setDateTimeValues(tag: .StartTime, value: dateFormatterNew.string(from: startDate!))
         
         self.setDateTimeValues(tag: .EndTime, value: dateFormatterNew.string(from: endDate!))
         
@@ -132,6 +148,7 @@ class GatheringTableViewCellFive: UITableViewCell,CreateGatheringViewControllerD
     
     func setUpdatedDate(){
         
+        print("[setUpdatedDate] : Inside Function");
         if self.gatheringView != nil {
         if self.gatheringView.FirstDate >= self.gatheringView.SecondDate{
             
@@ -460,7 +477,7 @@ class GatheringTableViewCellFive: UITableViewCell,CreateGatheringViewControllerD
         
         if self.gatheringView != nil {
             self.setFirstDateSecondDate()
-            self.setUpdatedDate()
+            //self.setUpdatedDate()
             
         }
         
@@ -571,8 +588,17 @@ class GatheringTableViewCellFive: UITableViewCell,CreateGatheringViewControllerD
             
             
             self.gatheringView.startTime = "\((self.getSelectedFirstDate(first: true, dateFrom: self.gatheringView.selectedDate).millisecondsSince1970))"
+            
+            
             self.gatheringView.endTime = "\((self.getSelectedFirstDate(first: false, dateFrom: self.gatheringView.selectedDate).millisecondsSince1970))"
             
+            //Checking if end time is next day time, then get next day milli seconds.
+            if (Int64(self.gatheringView.endTime!)! <  Int64(self.gatheringView.startTime!)!) {
+                
+                var dateTemp = Date(timeIntervalSince1970: (Double(self.gatheringView.endTime!)! / 1000.0))
+                let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: dateTemp)
+                self.gatheringView.endTime = "\(tomorrow?.millisecondsSince1970 ?? Date().millisecondsSince1970)";
+            }
             
             let dateformatter = DateFormatter()
             

@@ -8,23 +8,38 @@
 
 import UIKit
 import NVActivityIndicatorView
+import MessageUI
 
 protocol SelectUsersDelegate {
     func selectUser(user: CenesUser)
 }
 
+protocol SelectedFriendsProtocol {
+    func selectedUserList(userContacts: [UserContact])
+}
+
 class InviteFriendViewController: UIViewController,NVActivityIndicatorViewable {
     
-    var searchBar:UISearchBar!
-    var searchText : String?
+    var searchText : String!
     var searchOn : Bool! = false
     var imageDownloadsInProgress = [IndexPath : IconDownloader]()
+    var checkboxStateHolder: [Int: Bool] = [:];
+    var selectedFriendHolder: [Int: UserContact] = [:]
+    var userContacts: [UserContact] = [];
+    var allUserContacts: [UserContact] = [];
+    var userContactIdMapList: [Int: UserContact] = [:];
     
     var delegate: SelectUsersDelegate?
+    var selectedFriendsDelegate: SelectedFriendsProtocol?
+    
+    @IBOutlet weak var searchTextField: UITextField!
     
     @IBOutlet weak var tableBottomViewConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var inviteFriendsTableView: UITableView!
+    
+    @IBOutlet weak var friendshorizontalColView: UICollectionView!;
+    
     var DataArray = [CenesUser]()
     var filteredDataArray = [CenesUser]()
     var gatheringView : CreateGatheringViewController!
@@ -33,50 +48,82 @@ class InviteFriendViewController: UIViewController,NVActivityIndicatorViewable {
     var boolStatus = false
     var nBarcolor : UIColor!
     
+    let tableTopView: Int = 60;
+    let tableTopViewAfterSelection: Int = 150
+    let collectionViewHeight: Int = 90;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.hidesBackButton = true
-        self.navigationController?.navigationBar.barTintColor = UIColor.lightGray
-         inviteFriendsTableView.register(UINib(nibName: "InviteFriendTableViewCell", bundle: nil), forCellReuseIdentifier: "InviteFriendTableViewCell")
-        self.inviteFriendsTableView.isHidden = false
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-        self.navigationController?.navigationBar.tintColor = UIColor.white
-        self.setSearchBar()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-          //  self.searchBar.becomeFirstResponder()
+        
+        self.view.backgroundColor = themeColor;
+        
+        let imageView = UIImageView();
+        imageView.image = #imageLiteral(resourceName: "search_icon");
+        self.searchTextField.leftView = imageView;
+        self.searchTextField.leftViewMode = UITextFieldViewMode.always
+        self.searchTextField.leftViewMode = .always
+        
+
+        self.setupNavigationBarItems();
+        //self.navigationController?.navigationBar.isHidden = false;
+        
+        self.friendshorizontalColView.register(UINib(nibName: "FriendsViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "friendCell")
+        
+        self.inviteFriendsTableView.register(UINib(nibName: "InviteFriendTableViewCell", bundle: nil), forCellReuseIdentifier: "InviteFriendTableViewCell")
+        
+        self.setSearchBar();
+    }
+    
+    func setupNavigationBarItems() {
+        
+        let closeButton = UIButton(type: .system)
+        closeButton.setImage(UIImage.init(named: "crossIcon.png"), for: UIControlState.normal)
+        closeButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20);
+        closeButton.addTarget(self, action: #selector(selectFriendsCancel(_ :)), for: .touchUpInside)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: closeButton);
+        
+        let doneButton = UIButton(type: .system);
+        doneButton.setTitle("DONE", for: .normal);
+        doneButton.setTitleColor(cenesLabelBlue, for: .normal)
+        doneButton.addTarget(self, action: #selector(selectFriendsDone(_ :)), for: .touchUpInside)
+
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);
+    }
+
+    @objc func selectFriendsDone(_ sender: UIButton) {
+        
+        var userContacts: [UserContact] = [];
+        for (key, value) in self.selectedFriendHolder {
+            userContacts.append(value);
         }
         
-        let gradient = CAGradientLayer()
-        gradient.frame = (self.navigationController?.navigationBar.bounds)!
-        gradient.colors = [UIColor(red: 244/255, green: 106/255, blue: 88/255, alpha: 1).cgColor,UIColor(red: 249/255, green: 153/255, blue: 44/255, alpha: 1).cgColor]
-        gradient.locations = [1.0,0.3]
-        gradient.startPoint = CGPoint(x: 0, y: 0.5)
-        gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-        self.navigationController?.navigationBar.setBackgroundImage(cenesDelegate.creatGradientImage(layer: gradient), for: .default)
+        if self.selectedFriendsDelegate != nil {
+            self.selectedFriendsDelegate?.selectedUserList(userContacts: userContacts);
+        }
+        self.navigationController?.popViewController(animated: true)
         
-       //
-        // Do any additional setup after loading the view.
+    }
+    
+    @objc func selectFriendsCancel(_ sender: UIButton) {
+        var userContacts: [UserContact] = [];
+        self.selectedFriendsDelegate?.selectedUserList(userContacts: userContacts);
+        self.navigationController?.popViewController(animated: true)
     }
     
     func setSearchBar() {
-        
-        searchBar = UISearchBar(frame: CGRect(x: 0, y: 20, width: self.view.frame.size.width, height: 44))
-        searchBar.placeholder = "Search"
-        searchBar.delegate = self
-        searchBar.backgroundImage = UIImage()
-        
-       // UIApplication.shared.keyWindow!.addSubview(searchBar)
-        searchBar.returnKeyType = .done
-        self.navigationItem.titleView = searchBar
-        //UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).tintColor = UIColor.gray
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //boolStatus = true
+        
+        self.view.backgroundColor = themeColor;
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.backgroundColor = themeColor
+        self.navigationController?.navigationBar.tintColor = themeColor;
+        
+        self.setSearchBar()
         self.getFriendsWithName(nameStartsWith: "")
-       // self.setNeedsStatusBarAppearanceUpdate()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -87,22 +134,19 @@ class InviteFriendViewController: UIViewController,NVActivityIndicatorViewable {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            self.tableBottomViewConstraint.constant = keyboardSize.height
             
         }
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        self.tableBottomViewConstraint.constant  = 0
-    }
+        //self.tableBottomViewConstraint.constant  = 0
     
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        self.navigationController?.navigationBar.barTintColor = UIColor.init(red: 247.0, green: 247.0, blue: 247.0, alpha: 1.0)
-        searchBar.removeFromSuperview()
     }
     
     override func didReceiveMemoryWarning() {
@@ -131,242 +175,139 @@ class InviteFriendViewController: UIViewController,NVActivityIndicatorViewable {
         webservice.cancelAll()
         
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        webservice.getFriends(nameString: nameStartsWith, complete: { (returnedDict) in
+        
+        UserService().findUserFriendsByUserId(complete: { (returnedDict) in
             self.stopAnimating()
-            
-            print("Got Friends")
             if returnedDict.value(forKey: "Error") as? Bool == true {
                 
                 self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
-                let returnedArray = returnedDict["data"] as? NSArray
                 
+                var userContact = UserContact();
                 
-                if ((returnedArray?.count) != nil) {
-                    print(returnedArray!)
-                    
-                    for user in returnedArray!{
-                        let userDict = user as! NSDictionary
-                        let cenesUser = CenesUser()
-                        cenesUser.name = userDict.value(forKey: "name") as? String
-                        cenesUser.photoUrl = userDict.value(forKey: "photo") as? String
-                        cenesUser.userId = "\((userDict.value(forKey: "userId") as? NSNumber)!)"
-                        cenesUser.userName = userDict.value(forKey: "username") as? String
-                        
-                        
-                        var skipUser : Bool = false
-                        if self.gatheringView != nil {
-                            
-                            for friends in self.gatheringView.FriendArray{
-                                if friends.userId == cenesUser.userId{
-                                    skipUser = true
-                                    break
-                                }
-                            }
-                            
-                        }
-                        
-                        if self.delegate != nil {
-                            
-                            if let diary = self.delegate as? CreateDiaryViewController {
-                                for users in diary.diaryData.eventUsers{
-                                    if users.userId == cenesUser.userId{
-                                        skipUser = true
-                                        break
-                                    }
-                                }
-                            }
-                            
-                            if let reminders = self.delegate as? AddOrEditReminderViewController{
-                                for users in reminders.selectedUsers{
-                                    if users.userId == cenesUser.userId{
-                                        skipUser = true
-                                        break
-                                    }
-                                }
-                            }
-                            
-                        }
-                        
-                        
-                        if skipUser == true {
-                            continue
-                        }
-                        
-                        self.DataArray.append(cenesUser)
-                    }
-                    
-                    self.reloadFriends()
-                    self.searchBar.becomeFirstResponder()
+                self.userContacts = userContact.loadUserContactList(userContactArray: returnedDict["data"] as! NSArray);
+                self.allUserContacts = userContact.loadUserContactList(userContactArray: returnedDict["data"] as! NSArray);
+                for userContact in self.userContacts {
+                    self.userContactIdMapList[userContact.userContactId] = userContact;
                 }
+                
+                self.inviteFriendsTableView.reloadData();
             }
-            
-        })
+        });
     }
     
     
     func reloadFriends(){
-        
-        if self.searchOn == false{
-            
-            if self.DataArray.count > 0 {
-                self.inviteFriendsTableView.isHidden = false
-            }else{
-                self.inviteFriendsTableView.isHidden = true
-            }
-        }else{
-            if self.filteredDataArray.count > 0 {
-                self.inviteFriendsTableView.isHidden = false
-            }else{
-                self.inviteFriendsTableView.isHidden = true
-            }
-        }
-        
+
         self.inviteFriendsTableView.reloadData()
+        self.friendshorizontalColView.reloadData();
+    }
+    
+    func deleteCEll(tag:Int,cell:FriendsViewCell){
+        print("\(cell.tag) to be Deleted")
+        
+        let key = Array(self.selectedFriendHolder.keys)[tag]
+        let userContact = self.selectedFriendHolder[key] as! UserContact;
+        
+        self.selectedFriendHolder.removeValue(forKey: key);
+        self.checkboxStateHolder[key] = false;
+        
+        self.reloadFriends();
     }
 }
 
 
-
-extension InviteFriendViewController : UISearchBarDelegate {
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        
-        self.inviteFriendsTableView.reloadData()
-        searchBar.setShowsCancelButton(true, animated: true)
-        
-        return true
-    }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        
-        searchOn = false
-        inviteFriendsTableView.reloadData()
-        
-    }
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchOn = false
-        searchBar.text = ""
-        inviteFriendsTableView.reloadData()
-        searchBar.setShowsCancelButton(false, animated: true)
-        searchBar.resignFirstResponder()
-    }
-    
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchOn = false
-        searchBar.text = ""
-        inviteFriendsTableView.reloadData()
-        searchBar.setShowsCancelButton(false, animated: true)
-        searchBar.resignFirstResponder()
-        self.navigationController?.popViewController(animated: true)
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.searchText = searchText
-        
-        //print("\(self.searchText)")
-        if self.searchText != "" {
-            searchOn = true
-        }else{
-            searchOn = false
-        }
-        
-        self.getfilterArray(str: self.searchText!)
-        
-        self.reloadFriends()
-        inviteFriendsTableView.setContentOffset(CGPoint.zero, animated:true)
-        
-    }
-}
-
-extension InviteFriendViewController : UITextFieldDelegate{
+/*************** EXTENSIONS  ******************/
+extension InviteFriendViewController : UITextFieldDelegate {
     
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
-    
+   
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let text = textField.text as NSString? {
-            let textAfterUpdate = text.replacingCharacters(in: range, with: string)
-            print(textAfterUpdate)
-            if textAfterUpdate != "" {
-                self.getFriendsWithName(nameStartsWith: textAfterUpdate)
-            }else{
-                self.DataArray = [CenesUser]()
-                self.reloadFriends()
-            }
-        }
+        let updatedString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
+        self.searchText = updatedString
+
+        self.getfilterArray(str: self.searchText.capitalized)
+
+        self.inviteFriendsTableView.reloadData();
+        
         return true
     }
     
     func getfilterArray(str:String){
         
-        filteredDataArray.removeAll()
+        var userContact = UserContact();
+        self.userContacts = [];
         
-        let predicate : NSPredicate = NSPredicate(format: "SELF BEGINSWITH [cd] %@" ,str)
-        
-        var arr : [CenesUser]
-        arr = DataArray.filter(){$0.name.lowercased().starts(with: str.lowercased())}
-        //arr = DataArray.filtered(using: predicate) as! [CenesUser]//.filter { predicate.evaluateWithObject($0) }
-        
-        filteredDataArray = arr
-        
-        //[filteredContacts removeAllObjects];
-        //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name contains[cd] %@",searchText];
-        //NSArray *tempArray = [contacts filteredArrayUsingPredicate:predicate];
-        //filteredContacts = [NSMutableArray arrayWithArray:tempArray];
-        print(filteredDataArray)
+        if (str == "") {
+            self.userContacts = self.allUserContacts;
+        } else {
+            //let predicate : NSPredicate = NSPredicate(format: "name BEGINSWITH [cd] %@" ,str)
+            self.userContacts = userContact.filtered(userContacts: self.allUserContacts, predicate: str);
+        }
     }
     
 }
 
-extension InviteFriendViewController : UITableViewDelegate,UITableViewDataSource{
+extension InviteFriendViewController : UITableViewDelegate,UITableViewDataSource, MFMessageComposeViewControllerDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.searchOn == false{
-            
-        return self.DataArray.count
-        }else{
-            return self.filteredDataArray.count
-        }
+        return self.userContacts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
         let identifier = "InviteFriendTableViewCell"
         let cell: InviteFriendTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? InviteFriendTableViewCell)!
         
-        var user : CenesUser!
-        if self.searchOn == false{
-             user = DataArray[indexPath.row]
+        let userContact = userContacts[indexPath.row] ;
+        cell.nameLabel.text = userContact.name;
+        cell.profileImageView.image = #imageLiteral(resourceName: "profile icon")
+
+        if userContact.photo != nil {
+            WebService().profilePicFromFacebook(url: userContact.photo, completion: { image in
+                cell.profileImageView.image = image
+            })
         }else{
-             user = filteredDataArray[indexPath.row]
+            cell.profileImageView.image = #imageLiteral(resourceName: "profile icon")
         }
+    
+        let userContactId: Int = userContact.userContactId;
         
-        
-        
-        cell.nameLabel.text = user.name
-        
-        if let icon = user.profileImage {
-            cell.profileImageView.image = icon
+        let keyExists = self.checkboxStateHolder[userContactId] != nil
+        if (keyExists && self.checkboxStateHolder[userContactId] == true) {
+            cell.inviteUerCheckbox.isSelected = true;
         } else {
-            if user.photoUrl != nil && user.photoUrl != "" {
-            self.startIconDownload(cenesUser: user, forIndexPath: indexPath)
-                cell.profileImageView.image = #imageLiteral(resourceName: "profile icon")
-            }else{
-                cell.profileImageView.image = #imageLiteral(resourceName: "profile icon")
-            }
-            
+            cell.inviteUerCheckbox.isSelected = false;
         }
-        
+        if let btnChk = cell.inviteUerCheckbox {
+            btnChk.tag = Int(userContactId);
+            btnChk.addTarget(self, action: #selector(checkboxClicked(_ :)), for: .touchUpInside)
+        }
         
         return cell
     }
     
+    @objc func checkboxClicked(_ sender: UIButton) {
+        
+        print("\(sender.tag) isSelected : \(!sender.isSelected)")
+        self.checkboxStateHolder[sender.tag] = !sender.isSelected;
+        print("\(self.checkboxStateHolder) summary");
+        if (!sender.isSelected == true) {
+            self.selectedFriendHolder[sender.tag] = self.userContactIdMapList[sender.tag];
+        } else {
+            self.selectedFriendHolder.removeValue(forKey: sender.tag);
+        }
+        sender.isSelected = !sender.isSelected
+        
+        self.inviteFriendsTableView.reloadData();
+        self.friendshorizontalColView.reloadData();
+        
+    }
     
     func startIconDownload(cenesUser: CenesUser, forIndexPath indexPath: IndexPath) {
         guard self.imageDownloadsInProgress[indexPath] == nil else { return }
@@ -387,30 +328,9 @@ extension InviteFriendViewController : UITableViewDelegate,UITableViewDataSource
         return 1
     }
     
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected")
-        
-        var cenesUser : CenesUser!
-        
-        
-        if self.searchOn == false{
-            cenesUser = DataArray[indexPath.row]
-        }else{
-            cenesUser = filteredDataArray[indexPath.row]
-        }
-        
-        
-        if self.gatheringView != nil {
-            self.gatheringView.FriendArray.append(cenesUser)
-        }
-        
-        
-        if self.delegate != nil {
-            self.delegate?.selectUser(user: cenesUser)
-        }
-        
-        self.navigationController?.popViewController(animated: true)
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        //... handle sms screen actions
+        self.dismiss(animated: true, completion: nil)
     }
     
     func loadImagesForOnscreenRows() {
@@ -439,6 +359,40 @@ extension InviteFriendViewController : UITableViewDelegate,UITableViewDataSource
     
 }
 
+extension InviteFriendViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("print : \(self.selectedFriendHolder.count)")
+        return self.selectedFriendHolder.count;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "friendCell", for: indexPath) as! FriendsViewCell;
+        
+        print("row Number : \(indexPath.row)")
+        let key = Array(self.selectedFriendHolder.keys)[indexPath.row]
+        let userContact = self.selectedFriendHolder[key] as! UserContact;
+        print("Array : \(userContact)")
+
+        var photo = "";
+        if (userContact.photo != nil) {
+            WebService().profilePicFromFacebook(url: photo, completion: { image in
+                cell.profileImage.image = image
+            })
+        } else{
+            cell.profileImage.image = #imageLiteral(resourceName: "profile icon")
+        }
+        cell.nameLabel.text = userContact.name;
+        cell.tag = userContact.userContactId;
+        cell.inviteFriendCtrl = self;
+        return cell
+    }
+}
 extension InviteFriendViewController: IconDownloaderDelegate {
     func iconDownloaderDidFinishDownloadingImage(_ iconDownloader: IconDownloader, error: NSError?) {
         guard let cell = self.inviteFriendsTableView.cellForRow(at: iconDownloader.indexPath as IndexPath) as? InviteFriendTableViewCell else { return }

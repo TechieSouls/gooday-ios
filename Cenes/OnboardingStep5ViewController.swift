@@ -11,6 +11,7 @@ import UIKit
 class OnboardingStep5ViewController: UIViewController {
     @IBOutlet weak var step5title: UILabel!
     
+    @IBOutlet weak var borderBottom: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,6 +24,9 @@ class OnboardingStep5ViewController: UIViewController {
         step5title.font = step5title.font.withSize(40)
         step5title.sizeToFit()
         // Do any additional setup after loading the view.
+        
+        borderBottom.frame = CGRect( 0,  self.view.bounds.height - 60, self.view.bounds.width, 1.0)
+        borderBottom.backgroundColor = UIColor.white
     }
 
     override func didReceiveMemoryWarning() {

@@ -116,7 +116,7 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
                 
                 let title = result?["title"] as? String
                 
-                let day = result?["recurringPattersn"] as?  [String: Any]
+                //let day = result?["recurringPattersn"] as?  [String: Any]
                 
                 let recurringPatterns = result?["recurringPatterns"] as! NSArray
                 
@@ -195,7 +195,16 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
         let endDate = NSDate(timeIntervalSince1970:endTimeinterval)
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mma"
+        let locale = NSLocale.current
+        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)!
+        if formatter.contains("a") {
+            //phone is set to 12 hours
+            dateFormatter.dateFormat = "h:mma"
+        } else {
+            //phone is set to 24 hours
+            dateFormatter.dateFormat = "HH:mma"
+        }
+        
         
         var value = dateFormatter.string(from: startDate as Date)
         print(value)
@@ -266,9 +275,18 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
                             print("Nothing")
                         }
                         
+                        let locale = NSLocale.current
+                        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)!
                         
-                        let startTime = (valuesDict[key as! String] as! String).components(separatedBy: "/").first
-                        let endTime =  (valuesDict[key as! String] as! String).components(separatedBy: "/").last
+                        var startTime = (valuesDict[key as! String] as! String).components(separatedBy: "/").first
+                        var endTime =  (valuesDict[key as! String] as! String).components(separatedBy: "/").last
+                        if formatter.contains("a") {
+                            //phone is set to 12 hours
+                        } else {
+                            //phone is set to 24 hours
+                            startTime = startTime?.replacingOccurrences(of: "AM", with: "").replacingOccurrences(of: "PM", with: "")
+                            endTime = endTime?.replacingOccurrences(of: "AM", with: "").replacingOccurrences(of: "PM", with: "")
+                        }
                         
                         
                         let dateFormatter = DateFormatter()
@@ -279,12 +297,19 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
                         var startTimeString = dateFormatter.string(from: cDate)
                         var endTimeString = dateFormatter.string(from: cDate)
                         
+                        let tempStartDate = dateFormatter.date(from: startTimeString)
+                        let tempEndDate = dateFormatter.date(from: endTimeString)
                         
-                        var tempStartDate = dateFormatter.date(from: startTimeString)
-                        var tempEndDate = dateFormatter.date(from: endTimeString)
+                        
+                        if formatter.contains("a") {
+                            //phone is set to 12 hours
+                            dateFormatter.dateFormat = "yyyy-MM-dd h:mma"
+                        } else {
+                            //phone is set to 24 hours
+                             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+                        }
                         
                         startTimeString += " \(startTime!)"
-                        dateFormatter.dateFormat = "yyyy-MM-dd h:mma"
                         endTimeString += " \(endTime!)"
                         
                         let newStartDate = dateFormatter.date(from: startTimeString)
@@ -437,11 +462,24 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
         var timeArray = [String]()
         let dateFormatter = DateFormatter()
         
-        dateFormatter.dateFormat = "EEE, MMM dd, YYYY, h:mm a"
+        let locale = NSLocale.current
+        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)!
+        if formatter.contains("a") {
+            //phone is set to 12 hours
+            dateFormatter.dateFormat = "EEE, MMM dd, YYYY, h:mm a"
+        } else {
+            //phone is set to 24 hours
+            dateFormatter.dateFormat = "EEE, MMM dd, YYYY, HH:mm a"
+        }
+        
         print(dateFormatter.string(from: self.picker.clampedDate))
-        
-        
-        dateFormatter.dateFormat = "h"
+        if formatter.contains("a") {
+            //phone is set to 12 hours
+            dateFormatter.dateFormat = "h"
+        } else {
+            //phone is set to 24 hours
+            dateFormatter.dateFormat = "HH"
+        }
         timeArray.insert(dateFormatter.string(from: self.picker.clampedDate), at: 0)
         dateFormatter.dateFormat = "mm"
         timeArray.insert(dateFormatter.string(from: self.picker.clampedDate), at: 1)
@@ -470,8 +508,15 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
         
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
-        
+        let locale = NSLocale.current
+        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)!
+        if formatter.contains("a") {
+            //phone is set to 12 hours
+            dateFormatter.dateFormat = "h:mm a"
+        } else {
+            //phone is set to 24 hours
+            dateFormatter.dateFormat = "HH:mm a"
+        }
         print(dateFormatter.string(from: datePicker.date))
         
     }
@@ -584,24 +629,3 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
             return 1
         }
     }
-
-
-extension Date {
-    public var clampedDate: Date {
-        let referenceTimeInterval = self.timeIntervalSinceReferenceDate
-        let remainingSeconds = referenceTimeInterval.truncatingRemainder(dividingBy: TimeInterval(1*60))
-        let timeRoundedToInterval = referenceTimeInterval - remainingSeconds
-        return Date(timeIntervalSinceReferenceDate: timeRoundedToInterval)
-    }
-}
-
-extension UIDatePicker {
-    /// Returns the date that reflects the displayed date clamped to the `minuteInterval` of the picker.
-    /// - note: Adapted from [ima747's](http://stackoverflow.com/users/463183/ima747) answer on [Stack Overflow](http://stackoverflow.com/questions/7504060/uidatepicker-with-15m-interval-but-always-exact-time-as-return-value/42263214#42263214})
-    public var clampedDate: Date {
-        let referenceTimeInterval = self.date.timeIntervalSinceReferenceDate
-        let remainingSeconds = referenceTimeInterval.truncatingRemainder(dividingBy: TimeInterval(minuteInterval*60))
-        let timeRoundedToInterval = referenceTimeInterval - remainingSeconds
-        return Date(timeIntervalSinceReferenceDate: timeRoundedToInterval)
-    }
-}

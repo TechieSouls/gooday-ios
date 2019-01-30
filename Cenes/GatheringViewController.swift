@@ -20,6 +20,11 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     var profileImage = UIImage(named: "profile icon")
     
     @IBOutlet weak var confirmSelectView: UIView!
+    @IBOutlet weak var acceptedBtn: UIButton!
+    
+    @IBOutlet weak var pendingBtn: UIButton!
+    
+    @IBOutlet weak var declinedBtn: UIButton!
     
     @IBOutlet weak var invitationView: UIView!
     
@@ -54,26 +59,35 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     }()
     
     var selectedTab : Int = 0
-    
+    var badgeCount: String? = "0"
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Gatherings"
         
-        self.title = "My Gatherings"
+        self.gatheringTableView.backgroundColor = themeColor;
         
-        let gradient = CAGradientLayer()
+        
+        
+        /*let gradient = CAGradientLayer()
         gradient.frame = (self.navigationController?.navigationBar.bounds)!
         gradient.colors = [UIColor(red: 244/255, green: 106/255, blue: 88/255, alpha: 1).cgColor,UIColor(red: 249/255, green: 153/255, blue: 44/255, alpha: 1).cgColor]
         gradient.locations = [1.0,0.3]
         gradient.startPoint = CGPoint(x: 0, y: 0.5)
         gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-        self.navigationController?.navigationBar.setBackgroundImage(cenesDelegate.creatGradientImage(layer: gradient), for: .default)
+        self.navigationController?.navigationBar.setBackgroundImage(cenesDelegate.creatGradientImage(layer: gradient), for: .default)*/
         
         
         
-        gatheringTableView.register(UINib(nibName: "HomeTableViewCellOne", bundle: Bundle.main), forCellReuseIdentifier: "cellOne")
-        gatheringTableView.register(UINib(nibName: "HomeTableViewCellTwo", bundle: Bundle.main), forCellReuseIdentifier: "cellTwo")
-        gatheringTableView.register(UINib(nibName: "HomeTableViewCellHeader", bundle: Bundle.main), forCellReuseIdentifier: "HeaderCell")
+        gatheringTableView.register(UINib(nibName: "GatheringCardTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringCardTableViewCell")
+        gatheringTableView.register(UINib(nibName: "GatheringCardHeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringCardHeaderTableViewCell")
+       
+        /*gatheringTableView.register(UINib(nibName: "HomeTableViewCellTwo", bundle: Bundle.main), forCellReuseIdentifier: "cellTwo")*/
+        /*gatheringTableView.register(UINib(nibName: "HomeTableViewCellHeader", bundle: Bundle.main), forCellReuseIdentifier: "HeaderCell")*/
+        
+        
+        
         gatheringTableView.register(UINib(nibName: "InvitationViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InvitationViewCell")
         
         
@@ -329,194 +343,28 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
                 self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
-                self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                //self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                self.dataObjectArray = GatheringManager().parseGatheringResults(resultArray: (returnedDict["data"] as? NSArray)!);
+                
+                self.reloadGatherings();
             }
         }
-        
-        
-//        webservice.getHomeEvents(dateString: self.dateFormatter.string(from: Date()), timeZoneString: "") { (returnedDict) in
-//            print("Got results")
-//            let hud = MBProgressHUD(for: self.view.window!)
-//            hud?.hide(animated: true)
-//            if returnedDict.value(forKey: "Error") as? Bool == true {
-//                
-//                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
-//                
-//            }else{
-//                self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
-//            }
-//            
-//        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.backgroundColor = themeColor
+        self.navigationController?.navigationBar.tintColor = themeColor;
+        
+
         if self.isNewInvite == false {
             if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
-
-//            if SideMenuManager.menuLeftNavigationController?.isHidden == true{
             self.confirmedButtonPressed(UIButton())
             }
         }
     }
-    
-    
-    func parseResults(resultArray: NSArray){
-        
-        
-        let dict = NSMutableDictionary()
-        
-        for i : Int in (0..<resultArray.count) {
-            
-            
-            let outerDict = resultArray[i] as! NSDictionary
-            
-            let keyNum = outerDict.value(forKey: "startTime") as! NSNumber
-            var key = "\(keyNum)"
-            
-            let dateString = self.getDateString(timeStamp: key)
-            
-            let time = self.getTimeFromTimestamp(timeStamp: key)
-            key = self.getDateFromTimestamp(timeStamp: key)
-            
-            
-            
-            let title = (outerDict.value(forKey: "title") != nil) ? outerDict.value(forKey: "title") as? String : nil
-            
-            let location = (outerDict.value(forKey: "location") != nil) ? outerDict.value(forKey: "location") as? String : nil
-            
-            
-            
-            
-            
-            let  eventPicture = (outerDict.value(forKey: "eventPicture") != nil) ? outerDict.value(forKey: "eventPicture") as? String : nil
-            
-            
-            let  description = (outerDict.value(forKey: "description") != nil) ? outerDict.value(forKey: "description") as? String : nil
-            
-            
-            
-            
-            
-            let  e_id = (outerDict.value(forKey: "eventId") != nil) ? outerDict.value(forKey: "eventId") as? NSNumber : nil
-            let event_id = "\(e_id!)"
-            
-            
-            
-            let eventMembers = (outerDict.value(forKey: "eventMembers") != nil) ? outerDict.value(forKey: "eventMembers") as? NSArray : nil
-            
-            let senderName = outerDict.value(forKey: "sender") as? String
-            
-            let cenesEventObject : CenesCalendarData = CenesCalendarData()
-            
-            cenesEventObject.title = title
-            cenesEventObject.subTitle = location
-            cenesEventObject.eventImageURL = eventPicture
-            cenesEventObject.eventId = event_id
-            cenesEventObject.time = time
-            cenesEventObject.eventDescription = description
-            
-            
-            let startTime = outerDict.value(forKey: "startTime") as? NSNumber
-            let endTime = outerDict.value(forKey: "endTime") as? NSNumber
-            
-            cenesEventObject.startTimeMillisecond = startTime
-            cenesEventObject.endTimeMillisecond = endTime
-            
-            
-            cenesEventObject.dateValue = dateString
-            cenesEventObject.senderName = senderName
-            
-            let members = outerDict.value(forKey: "eventMembers") as! NSArray
-            let MyId = setting.value(forKey: "userId") as! NSNumber
-            for eMember in members{
-                let eventMember = eMember as! [String : Any]
-                let uId = eventMember["userId"] as? NSNumber
-                if MyId == uId {
-                    cenesEventObject.eventMemberId = "\(eventMember["eventMemberId"] as! NSNumber)"
-                    break
-                }
-            }
-            
-            if location != nil && location != "" {
-                let locationModel = LocationModel()
-                locationModel.locationName = location
-                
-                
-                let longString = outerDict.value(forKey: "longitude") as? String
-                if longString != nil && longString != "" {
-                    let long = Float(longString!)
-                    let longitude = NSNumber(value:long!)
-                    locationModel.longitude = longitude
-                }
-                
-                
-                let latString = outerDict.value(forKey: "latitude") as? String
-                if latString != nil && latString != "" {
-                    let lat = Float(latString!)
-                    let latitude = NSNumber(value:lat!)
-                    locationModel.latitude = latitude
-                }
-                cenesEventObject.locationModel = locationModel
-            }
-            
-            
-            let friendDict = eventMembers as! [NSDictionary]
-            
-            for userDict in friendDict {
-                let cenesUser = CenesUser()
-                cenesUser.name = userDict.value(forKey: "name") as? String
-                cenesUser.photoUrl = userDict.value(forKey: "picture") as? String
-                
-                let uid =  userDict.value(forKey: "userId") as? NSNumber
-                if uid != nil{
-                    cenesUser.userId = "\((uid)!)"
-                }
-                
-                if let isOwner = userDict.value(forKey: "owner") as? Bool {
-                    cenesUser.isOwner = isOwner
-                }
-                cenesUser.userName = userDict.value(forKey: "username") as? String
-                cenesEventObject.eventUsers.append(cenesUser)
-            }
-            
-            
-            
-            
-            if dict.value(forKey: key) != nil {
-                
-                
-                var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                array?.append(cenesEventObject)
-                dict.setValue(array, forKey: key)
-                
-                
-                if let cenesEvent = self.dataObjectArray.first(where: { $0.sectionName == key}){
-                    print(cenesEvent.sectionName)
-                    cenesEvent.sectionObjects = array
-                }
-            }else{
-                var array = [CenesCalendarData]()
-                array.append(cenesEventObject)
-                dict.setValue(array, forKey: key)
-                
-                let cenesEvent = CenesEvent()
-                cenesEvent.sectionName = key
-                cenesEvent.sectionObjects = array
-                
-                self.dataObjectArray.append(cenesEvent)
-                
-            }
-            
-        }
-        
-        self.reloadGatherings()
-        
-        
-        
-        
-    }
-    
+
     
     func reloadGatherings(){
         if self.dataObjectArray.count > 0 {
@@ -593,36 +441,68 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     
     func setUpNavBar(){
-        let profileButton = UIButton.init(type: .custom)
-        self.profileImage = appDelegate?.getProfileImage()
-        //let image = self.profileImage?.compressImage(newSizeWidth: 35, newSizeHeight: 35, compressionQuality: 1.0)
-        profileButton.imageView?.contentMode = .scaleAspectFill
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
-        profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
-        profileButton.layer.cornerRadius = profileButton.frame.height/2
-        profileButton.clipsToBounds = true
-        profileButton.backgroundColor = UIColor.white
-        profileButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
-        profileButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
-        profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        let profileButton = SSBadgeButton()//UIButton.init(type: .custom) //
         
+        self.profileImage = appDelegate?.getProfileImage()
+        
+        profileButton.imageView?.contentMode = .scaleAspectFill
+        
+        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
+        profileButton.layer.cornerRadius = profileButton.frame.height/2
+        
+        profileButton.clipsToBounds = true
+        profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
+        profileButton.backgroundColor = UIColor.white
+        profileButton.badge = badgeCount;
+        profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
+        profileButton.badgeFont = profileButton.badgeFont.withSize(10)
         
         let barButton = UIBarButtonItem.init(customView: profileButton)
         self.navigationItem.leftBarButtonItem = barButton
         
         
-        let editButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createGathering))
+        let editButton = UIButton.init(type: .custom)
+        editButton.setImage(UIImage.init(named: "plus.png"), for: UIControlState.normal)
+        editButton.addTarget(self, action:#selector(createGathering), for:.touchUpInside)
+        editButton.frame = CGRect.init(x: 0, y: 0, width: 40, height: 40) //CGRectMake(0, 0, 30, 30)
+        let rightEditButton = UIBarButtonItem.init(customView: editButton)
         if self.isNewInvite == true {
         self.navigationItem.rightBarButtonItem = nil
         }else{
-          self.navigationItem.rightBarButtonItem = editButton
+          self.navigationItem.rightBarButtonItem = rightEditButton
         }
         
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-        self.navigationController?.navigationBar.tintColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.tintColor = themeColor
+        self.navigationController?.navigationBar.barTintColor = themeColor
         
     }
-    
+    func getNotificationCounts () {
+        let webservice = WebService();
+        webservice.getNotificationsCounter(){ (returnedDict) in
+            print(returnedDict)
+            self.stopAnimating()
+            if returnedDict.value(forKey: "Error") as? Bool == true {
+                
+                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                
+            }else{
+                print(returnedDict)
+                self.badgeCount =  String(returnedDict["data"] as! Int) as? String
+                self.setUpNavBar()
+                
+                //  self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                
+                //Setting badge counts in prefrences
+                let userDefaults = UserDefaults.standard
+                userDefaults.setValue(returnedDict["data"] , forKey: "badgeCounts");
+                userDefaults.synchronize()
+            }
+        }
+    }
     
     
     override func didReceiveMemoryWarning() {
@@ -642,10 +522,13 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     */
     @IBAction func confirmedButtonPressed(_ sender: UIButton) {
         selectedTab = 0
-        self.tabTitleLabel.text = "Your Gatherings"
+        //self.tabTitleLabel.text = "Your Gatherings"
         self.dataObjectArray = [CenesEvent]()
-        self.gatheringTableView.separatorStyle = .singleLine
         self.gatheringTableView.reloadData()
+        
+        self.acceptedBtn.setTitleColor(selectedColor, for: .normal)
+        self.pendingBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
+        self.declinedBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
         
         self.confirmSelectView.isHidden = false
         self.mayBeSelectView.isHidden = true
@@ -656,10 +539,15 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     @IBAction func mayBeButtonPressed(_ sender: UIButton) {
         selectedTab = 1
-        self.tabTitleLabel.text = "Your Invitaitons"
-        self.gatheringTableView.separatorStyle = .none
+        //self.tabTitleLabel.text = "Your Invitations"
         self.dataObjectArray = [CenesEvent]()
         self.reloadGatherings()
+        
+        
+        self.acceptedBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
+        self.pendingBtn.setTitleColor(selectedColor, for: .normal)
+        self.declinedBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
+        
         self.confirmSelectView.isHidden = true
         self.mayBeSelectView.isHidden = false
         self.declineSelectView.isHidden = true
@@ -668,10 +556,14 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     @IBAction func declineButtonPressed(_ sender: UIButton) {
         selectedTab = 2
-        self.tabTitleLabel.text = "Declined Invitations"
-        self.gatheringTableView.separatorStyle = .singleLine
+        //self.tabTitleLabel.text = "Declined Invitations"
         self.dataObjectArray = [CenesEvent]()
         self.reloadGatherings()
+        
+        self.acceptedBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
+        self.pendingBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
+        self.declinedBtn.setTitleColor(selectedColor, for: .normal)
+        
         self.confirmSelectView.isHidden = true
         self.mayBeSelectView.isHidden = true
         self.declineSelectView.isHidden = false
@@ -780,75 +672,121 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         
+        var height = 200;
         
-            let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
-            var height =  113
-            if obj.eventUsers.count == 0 && (obj.subTitle == nil || obj.subTitle == ""){
-                height = 58
-            }else if obj.eventUsers.count == 0 && !(obj.subTitle == nil || obj.subTitle == ""){
-                height = 70
-            }else if obj.eventUsers.count > 0 && !(obj.subTitle == nil || obj.subTitle == ""){
-                height = 113
-            }else if obj.eventUsers.count > 0 && (obj.subTitle == nil || obj.subTitle == ""){
-                height = 90
-            }
+        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        //if (obj.locationStr == nil || obj.locationStr == "") {
+        //    height = height - 20;
+        //}
+        
+        var eventUsers = obj.eventUsers;
+        var eventMemberCounts: Int = 0;
+        for eventUser in eventUsers {
             
-            return CGFloat(height)
+            var memebrId: NSNumber = 0;
+            let loggedInUserId = setting.value(forKey: "userId") as! NSNumber;
+            if let myInteger = Int(eventUser.userId) {
+                memebrId = NSNumber(value: myInteger);
+            }
+            if (memebrId != loggedInUserId) {
+                eventMemberCounts = eventMemberCounts + 1;
+            }
+        }
+        if (eventMemberCounts == 0) {
+            height = height - 50;
+        }
+        
+        /*if obj.eventUsers.count == 0 && (obj.subTitle == nil || obj.subTitle == ""){
+            height = 58
+        }else if obj.eventUsers.count == 0 && !(obj.subTitle == nil || obj.subTitle == ""){
+            height = 70
+        }else if obj.eventUsers.count > 0 && !(obj.subTitle == nil || obj.subTitle == ""){
+            height = 113
+        }else if obj.eventUsers.count > 0 && (obj.subTitle == nil || obj.subTitle == ""){
+            height = 90
+        }*/
+        
+        return CGFloat(height)
             
     }
     
-    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50;
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return dataObjectArray[section].sectionObjects.count
-        
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         var obj : CenesCalendarData!
        
          obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
+        let identifier = "GatheringCardTableViewCell";
+        let cell: GatheringCardTableViewCell! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringCardTableViewCell
+        
+        cell.title.text = obj.title
+        cell.startTime.text = obj.time
+        let eventMembers: [CenesUser] = obj.eventUsers;
+        var owner: CenesUser?
+        var memebrId : NSNumber;
+        
+        var eventMembersExceptOwner: [CenesUser] = [];
+        
+        var counter: Int = 0;
+        for eventMember in eventMembers {
+            
+            if (counter == 4) {
+                break;
+            }
+            let loggedInUserId = setting.value(forKey: "userId") as! NSNumber;
+            if let myInteger = Int(eventMember.userId) {
+             memebrId = NSNumber(value: myInteger);
+            }else{
+                memebrId = 0;
+            }
+            if (memebrId == loggedInUserId) {
+                owner = eventMember;
+            } else {
+                eventMembersExceptOwner.append(eventMember);
+                counter = counter + 1;
+            }
+        }
+        cell.bubbleNumbers = eventMembers.count - 1;
+        
+        let formattedText = NSMutableAttributedString();
+        formattedText.bold((owner?.name)!).normal(" is hosting");
+        cell.ownerLabel.attributedText = formattedText;
+        if (owner?.photoUrl != nil) {
+            cell.profilePic.cacheImage(urlString: (owner?.photoUrl)!)
+            cell.profilePic.setRounded()
+        } else {
+            cell.profilePic.image = #imageLiteral(resourceName: "profile icon");
+        }
+        
+        //Hiding Location View if location is empty or null
+        if obj.locationStr == nil || obj.locationStr == "" {
+            cell.locationView.isHidden = true;
+        } else {
+            cell.locationView.isHidden = false;
+            cell.location.text = obj.locationStr;
+        }
         
         
-            
-            let identifier = "cellOne"
-            let cell: HomeTableViewCellOne! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellOne
-            
-        
-            cell.timeTitle.text = obj.title
-            cell.timeLabel.text = obj.time
-            
-                if obj.subTitle == nil || obj.subTitle == ""{
-                    cell.locationView.isHidden = true
-                }else{
-                    cell.timeSubTitle.text =  obj.subTitle
-                    cell.locationView.isHidden = false
-                }
-            
-                if obj.eventUsers.count == 0 {
-                    cell.eventsImageOuterView.isHidden = true
-                }else{
-                    cell.eventsImageOuterView.isHidden = false
-                }
-                
-                cell.eventView.backgroundColor = commonColor
-                
-                cell.FriendArray = obj.eventUsers
-                
-                cell.reloadFriends()
-            
-            return cell
-        
+        //Hiding Horizontal StackView if There are no event Members except Owner
+        if eventMembersExceptOwner.count == 0 {
+            cell.membersCollectionView.isHidden = true;
+        } else {
+            cell.membersCollectionView.isHidden = false;
+            cell.members = eventMembersExceptOwner;
+            cell.reloadFriends();
+        }
+        return cell
     }
     func numberOfSections(in tableView: UITableView) -> Int {
         return dataObjectArray.count
-    }
-    
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 42
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -857,10 +795,17 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
        
         let sectionTitle = dataObjectArray[section].sectionName
         
-        let identifier = "HeaderCell"
-        let cell: HomeTableViewCellHeader! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellHeader
-        cell.titleLabel.text = sectionTitle
-        return cell
+        //let identifier = "HeaderCell"
+        let identifier = "GatheringCardHeaderTableViewCell"
+        let cell: GatheringCardHeaderTableViewCell! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringCardHeaderTableViewCell
+        
+        
+        var headerTitleArr: [String]  = sectionTitle!.components(separatedBy: " ");
+        let finalDateStr = NSMutableAttributedString();
+        finalDateStr.normal(headerTitleArr[0]).bold(headerTitleArr[1]);
+        
+        cell.headerLabel.attributedText = finalDateStr;
+        return cell;
         
     }
     

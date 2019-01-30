@@ -13,6 +13,10 @@ class OnboardingStep4ViewController: UIViewController {
     @IBOutlet weak var Step4Title: UILabel!
     
     @IBOutlet weak var Step4Description: UILabel!
+    
+    @IBOutlet weak var borderBottom: UIView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -27,12 +31,23 @@ class OnboardingStep4ViewController: UIViewController {
         
         Step4Description.frame = CGRect(x: 30, y: 200, width: 270, height: 400)
         Step4Description.text = onboardingStep4Desc;
-        Step4Description.padding = UIEdgeInsets(top: 30, left: 15, bottom: 30, right: 20)
+        Step4Description.padding = UIEdgeInsets(top: 25, left: 15, bottom: 25, right: 15)
         Step4Description.font =  Step4Description.font.withSize(20)
         Step4Description.numberOfLines = 0;
         Step4Description.textColor = UIColor.white
+        Step4Description.adjustsFontSizeToFitWidth = true
         Step4Description.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        
+        let attrString = NSMutableAttributedString(string: onboardingStep4Desc)
+        var style = NSMutableParagraphStyle()
+        style.lineSpacing = 5 // change line spacing between paragraph like 36 or 48
+        //style.minimumLineHeight = 20 // change line spacing between each line like 30 or 40
+        attrString.addAttribute(NSAttributedStringKey.paragraphStyle, value: style, range: NSRange(location: 0, length: onboardingStep4Desc.characters.count))
+        Step4Description.attributedText = attrString
         // Do any additional setup after loading the view.
+        
+        borderBottom.frame = CGRect(0,self.view.bounds.height - 60, self.view.bounds.width, 1.0)
+        borderBottom.backgroundColor = UIColor.white
     }
 
     override func didReceiveMemoryWarning() {

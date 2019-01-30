@@ -60,7 +60,7 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
         fbLoginBtn.setBackgroundImage(nil, for: .normal)
         fbLoginBtn.backgroundColor = UIColor.clear
         fbLoginBtnPlaceholder.addSubview(fbLoginBtn)
-        fbLoginBtn.readPermissions = ["public_profile", "email", "user_friends","user_events"];
+        fbLoginBtn.readPermissions = ["public_profile", "email", "user_friends","user_events", "user_mobile_phone"];
         fbLoginBtn.delegate = self
 
 //        accountAskLabel.lineBreakMode = NSLineBreakMode.byWordWrapping

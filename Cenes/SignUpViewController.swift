@@ -13,19 +13,24 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
     
     
     @IBOutlet weak var nameTextField: UITextField!
+    //@IBOutlet weak var nameTextField: UITextField!
 
     @IBOutlet weak var emailTextField: UITextField!
+    //@IBOutlet weak var emailTextField: UITextField!
     
     @IBOutlet weak var passwordTextField: UITextField!
+    //@IBOutlet weak var passwordTextField: UITextField!
     
+    @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var signupButton: UIButton!
     
     @IBOutlet weak var buttonView: UIView!
     
     @IBOutlet weak var textFieldView: UIView!
     var keyBoard = false
+    var keyboardInc = 0;
     
-    @IBOutlet weak var buttonViewBottom: NSLayoutConstraint!
+    //@IBOutlet weak var buttonViewBottom: NSLayoutConstraint!
     
     @IBOutlet weak var buttonViewTop: NSLayoutConstraint!
     override func viewDidLoad() {
@@ -39,26 +44,27 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
         nameTextField.delegate = self
         emailTextField.delegate = self
         passwordTextField.delegate = self
+        phoneTextField.delegate = self
         //buttonViewTop.constant = CGFloat(BOTTOM_BEFORE_KEYBOARD)
         
         configureTextField(withImage: #imageLiteral(resourceName: "loginusername"), textfield: nameTextField)
         configureTextField(withImage: #imageLiteral(resourceName: "loginPasswords"), textfield: passwordTextField)
         configureTextField(withImage: #imageLiteral(resourceName: "loginemail"), textfield: emailTextField)
+        configureTextField(withImage: #imageLiteral(resourceName: "signup_phone"), textfield: phoneTextField)
         
         NotificationCenter.default.addObserver(self, selector: #selector(SignUpViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SignUpViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
-        
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-                    self.buttonViewBottom.constant = keyboardSize.height
-            
-        }
+        keyboardInc += 50;
+        self.view.frame.origin.y -= 50
+
     }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-            self.buttonViewBottom.constant  = 187
+        self.view.frame.origin.y = CGFloat(0)
+        keyboardInc = 0;
         
     }
     override func didReceiveMemoryWarning() {
@@ -78,10 +84,10 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
         //textfield.backgroundColor = UIColor.white
     }
     
-    @IBAction func signupButtonPressed(_ sender: Any) {
+    @IBAction func signupButtonPressed(_ sender: UIButton) {
         
         guard Util.isnameLenth(name: nameTextField.text!)else{
-    
+            
             nameTextField.backgroundColor =  commonColor
             
             alertMessage(message: "Name is empty")
@@ -102,7 +108,16 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
             
             passwordTextField.backgroundColor =  commonColor
             
-            alertMessage(message: "password should be greater than 3")
+            alertMessage(message: "Password should be greater than 3")
+            
+            return
+        }
+        
+        guard Util.isPhoneLength(phone: phoneTextField.text!)else{
+            
+            phoneTextField.backgroundColor =  commonColor
+            
+            alertMessage(message: "Phone must be a 10 digit number")
             
             return
         }
@@ -111,21 +126,32 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
         
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
         
-        webServ.emailSignUp(email: emailTextField.text!, name:nameTextField.text! , password: passwordTextField.text!, username: nameTextField.text!, complete: { (returnedDict) in
+        /*webServ.emailSignUp(email: emailTextField.text!, name:nameTextField.text! , password: passwordTextField.text!, username: nameTextField.text!,phone: phoneTextField.text!, complete: { (returnedDict) in
             
-            self.stopAnimating()
+            //self.stopAnimating()
             
             if returnedDict.value(forKey: "Error") as? Bool == true {
                 
                 self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
-            
-            setting.setValue(2, forKey: "onboarding")
-            let camera = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "onbooardingNavigation") as? UINavigationController
-            UIApplication.shared.keyWindow?.rootViewController = camera
+                
+                UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
+                    
+                    self.stopAnimating()
+                    
+                    setting.setValue(2, forKey: "onboarding")
+                    let camera = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "onbooardingNavigation") as? UINavigationController
+                    UIApplication.shared.keyWindow?.rootViewController = camera
+                });
+                
+                
+                
             }
-        })
+        });*/
+        
+        
+        
     }
     
     func alertMessage (message :String)

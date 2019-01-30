@@ -47,6 +47,7 @@ class CenesEvent : NSObject {
 class CenesCalendarData : NSObject {
     var title:String!
     var subTitle :String!
+    var locationStr: String!
     var eventUsers = [CenesUser]()
     var dataType :String!
     var time : String!
@@ -63,4 +64,5 @@ class CenesCalendarData : NSObject {
     var endTime : String!
     var eventDescription : String!
     var locationModel : LocationModel!
+    var isFullDay: Bool!
 }

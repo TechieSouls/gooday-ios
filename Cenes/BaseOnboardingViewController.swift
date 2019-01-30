@@ -19,7 +19,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
     @IBOutlet var pageControl: UIPageControl!
     
     var pageViewController : UIPageViewController!
-    var pageIndex = 0
+    var pageIndex = 1
     
     let profile = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "profile") as? PCameraViewController
     let holiday = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "holiday") as? WorldHolidayCalendarViewController

@@ -20,6 +20,8 @@ class FriendsViewCell: UICollectionViewCell {
     
     var cellThree : GatheringTableViewCellThree!
     
+    var inviteFriendCtrl: InviteFriendViewController!
+    
     var indexPath : IndexPath!
     var delegate: DeleteFriendDelegate?
     
@@ -45,6 +47,9 @@ class FriendsViewCell: UICollectionViewCell {
             }
             if self.cellDiary != nil {
                 self.cellDiary.deleteCEll(tag: sender.tag,cell:self)
+            }
+            if self.inviteFriendCtrl != nil {
+                self.inviteFriendCtrl.deleteCEll(tag: sender.tag,cell:self)
             }
         }
     }

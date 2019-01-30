@@ -15,7 +15,8 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var remindersTableView: UITableView!
     
     var profileImage = UIImage(named: "profile icon")
-    
+    var badgeCount: String? = "0"
+
     var openReminders: [ReminderModel] = []
     var closedReminders: [ReminderModel] = []
     
@@ -274,25 +275,53 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     
     
     func setUpNavBar(){
-        let profileButton = UIButton.init(type: .custom)
+        let profileButton = SSBadgeButton()//UIButton.init(type: .custom) //
+        
         self.profileImage = appDelegate?.getProfileImage()
-        // let image = self.profileImage?.compressImage(newSizeWidth: 35, newSizeHeight: 35, compressionQuality: 1.0)
-        profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        
         profileButton.imageView?.contentMode = .scaleAspectFill
+        
         profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
+        
         profileButton.clipsToBounds = true
+        profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
+        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
         profileButton.backgroundColor = UIColor.white
-        profileButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
-        profileButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
-        profileButton.addTarget(self, action: #selector(RemindersViewController.profileButtonPressed), for: .touchUpInside)
+        profileButton.badge = badgeCount;
+        profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
+        profileButton.badgeFont = profileButton.badgeFont.withSize(10)
         
         
         let barButton = UIBarButtonItem.init(customView: profileButton)
         self.navigationItem.leftBarButtonItem = barButton
         
     }
-    
+    func getNotificationCounts () {
+        let webservice = WebService();
+        webservice.getNotificationsCounter(){ (returnedDict) in
+            print(returnedDict)
+            self.stopAnimating()
+            if returnedDict.value(forKey: "Error") as? Bool == true {
+                
+                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                
+            }else{
+                print(returnedDict)
+                self.badgeCount =  String(returnedDict["data"] as! Int) as? String
+                self.setUpNavBar()
+                
+                //  self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                
+                //Setting badge counts in prefrences
+                let userDefaults = UserDefaults.standard
+                userDefaults.setValue(returnedDict["data"] , forKey: "badgeCounts");
+                userDefaults.synchronize()
+            }
+        }
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

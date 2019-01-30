@@ -41,7 +41,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     }()
   
     var profileImage = UIImage(named: "profile icon")
-    
+    var badgeCount: String? = "0"
 //    private let persistentContainer = NSPersistentContainer(name: "Cenes")
 
     
@@ -57,14 +57,14 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         tabController.tabBar.items?[2].title = nil
         tabController.tabBar.items?[2].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[2].titlePositionAdjustment = UIOffsetMake(0, 80)
-        tabController.tabBar.items?[3].title = nil
+        /*tabController.tabBar.items?[3].title = nil
         tabController.tabBar.items?[3].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[3].titlePositionAdjustment = UIOffsetMake(0, 80)
         tabController.tabBar.items?[4].title = nil
         tabController.tabBar.items?[4].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
-        tabController.tabBar.items?[4].titlePositionAdjustment = UIOffsetMake(0, 80)
+        tabController.tabBar.items?[4].titlePositionAdjustment = UIOffsetMake(0, 80)*/
         cenesDelegate.cenesTabBar = tabController
-        tabController.tabBar.tintColor = commonColor
+        tabController.tabBar.tintColor = cenesLabelBlue;
 //        tabController.moreNavigationController.navigationBar.tintColor = UIColor.white
 //        tabController.moreNavigationController.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white
 //        ]
@@ -89,7 +89,8 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.tableView.backgroundColor = themeColor;
         self.title = "CENES"
         self.tabBarItem.title = nil
         
@@ -121,9 +122,17 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
        // self.tableTopConstraint.constant = 0
         self.view.layoutIfNeeded()
         
-    
-        tableView.register(UINib(nibName: "HomeTableViewCellOne", bundle: Bundle.main), forCellReuseIdentifier: "cellOne")
-        tableView.register(UINib(nibName: "HomeTableViewCellTwo", bundle: Bundle.main), forCellReuseIdentifier: "cellTwo")
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshContacts), for: .valueChanged)
+        // this is the replacement of implementing: "collectionView.addSubview(refreshControl)"
+        tableView.refreshControl = refreshControl;
+        
+        tableView.register(UINib(nibName: "HomeCenesEventTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "cellOne")
+        tableView.register(UINib(nibName: "HomeCalendarTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HomeCalendarTableViewCell")
+        tableView.register(UINib(nibName: "HomeHolidayTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HomeHolidayTableViewCell")
+        
+        
+        //tableView.register(UINib(nibName: "HomeTableViewCellTwo", bundle: Bundle.main), forCellReuseIdentifier: "cellTwo")
         tableView.register(UINib(nibName: "HomeTableViewCellHeader", bundle: Bundle.main), forCellReuseIdentifier: "HeaderCell")
         
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -131,14 +140,17 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         tableView.estimatedSectionHeaderHeight = 42
         
     
-        let gradient = CAGradientLayer()
+        //Code to set Gradient color to Navigation Bar
+        /*let gradient = CAGradientLayer()
         gradient.frame = (self.navigationController?.navigationBar.bounds)!
         gradient.colors = [UIColor(red: 244/255, green: 106/255, blue: 88/255, alpha: 1).cgColor,UIColor(red: 249/255, green: 153/255, blue: 44/255, alpha: 1).cgColor]
         gradient.locations = [1.0,0.3]
         gradient.startPoint = CGPoint(x: 0, y: 0.5)
         gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-        self.navigationController?.navigationBar.setBackgroundImage(cenesDelegate.creatGradientImage(layer: gradient), for: .default)
-        self.calendarTopConstraint.constant = CGFloat(-Int(self.calendar.frame.size.height) - 24)
+        self.navigationController?.navigationBar.setBackgroundImage(cenesDelegate.creatGradientImage(layer: gradient), for: .default) */
+ 
+ 
+ self.calendarTopConstraint.constant = CGFloat(-Int(self.calendar.frame.size.height) - 24)
         self.monthlyWeeklyButton.isHidden = true
         self.calendar.isHidden = true
        // let constraint = Int(self.calendar.frame.size.height)
@@ -177,16 +189,15 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
             var frame = self.view.frame
             frame.size.height = 772
             self.view.frame = frame
-            self.tabBarController?.tabBar.backgroundColor = UIColor.white
+            //self.tabBarController?.tabBar.backgroundColor = UIColor.white
         }
-        //setUpNavBarImages()
+        setUpNavBarImages()
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        
+
         //Google Analytics Tracking
         guard let tracker = GAI.sharedInstance().defaultTracker else { return }
         tracker.set(kGAIScreenName, value: "HomeScreenIos")
@@ -195,21 +206,19 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         
         //guard let builder = GAIDictionaryBuilder.createScreenView() else { return }
         //tracker.send(builder.build() as [NSObject : AnyObject])
-        let email = setting.value(forKey: "email") as! String
-        tracker.send(GAIDictionaryBuilder.createEvent(withCategory: "User", action: "logged In", label: email+" - ios", value: nil).build() as [NSObject : AnyObject])
+        var userLoggedInAs = "";
+        if (setting.value(forKey: "email") as? String != nil) {
+            userLoggedInAs = setting.value(forKey: "email") as! String
+        } else {
+            userLoggedInAs = setting.value(forKey: "email") as! String
+        }
+        //let email = setting.value(forKey: "email") as! String
+        tracker.send(GAIDictionaryBuilder.createEvent(withCategory: "User", action: "logged In", label: userLoggedInAs+" - ios", value: nil).build() as [NSObject : AnyObject])
 
         self.profileImage = appDelegate?.getProfileImage()
         
        // print("button pressed \((sMenu?.buttonTag)!)")
        
-        self.setUpNavBarImages()
-        
-       
-        
-    
-        
-        
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -221,12 +230,17 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.backgroundColor = themeColor
+        self.navigationController?.navigationBar.tintColor = themeColor;
+        
+        if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
 
 //        if SideMenuManager.menuLeftNavigationController?.isHidden == true {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 
-                
+                self.holidaysData = NSMutableDictionary();
                 self.calendar.reloadData()
                 self.dataObjectArray.removeAll(keepingCapacity: true)
                 self.tableView.reloadData()
@@ -341,9 +355,173 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                         self.calendar.reloadData()
                     }
                 }
+                
+                
+                let url = setting.value(forKey:"photo") as? String
+                
+                if url != nil && url != "" {
+                    let webServ = WebService()
+                    webServ.profilePicFromFacebook(url: url!, completion: { image in
+                        DispatchQueue.main.async {
+                            print("Image Downloaded")
+                            appDelegate?.profileImageSet(image: image!)
+                            appDelegate?.cenesTabBar?.loadViewIfNeeded()
+                            let index = appDelegate?.cenesTabBar?.selectedIndex
+                            let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
+                            navController.viewControllers.first?.viewDidLayoutSubviews()
+                        }
+                    })
+                }
             }
         }
 
+    }
+
+    @objc func refreshContacts(refreshControl: UIRefreshControl) {
+        print("Hello World!")
+        DispatchQueue.main.async {
+        UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
+            
+            self.showToast(message: "Contacts Synced..!");
+            HomeService().refreshGoogleEvents(complete: {(returnedDict) in
+                self.showToast(message: "Google Synced..!");
+                HomeService().refreshOutlookEvents(complete: {(returnedDict) in
+                    self.showToast(message: "Outlook Synced..!");
+                    
+                    CalendarService().fetchDeviceCalendar(complete : {(returnedDict) in
+                        refreshControl.endRefreshing()
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            
+                            
+                            self.calendar.reloadData()
+                            self.dataObjectArray.removeAll(keepingCapacity: true)
+                            self.tableView.reloadData()
+                            
+                            WebService().resetBadgeCount();
+                            
+                            let webservice = WebService()
+                            //   self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                            
+                            let str = self.dateFormatter.string(from: Date())
+                            let forMattedDate = self.dateFormatter.date(from: str)
+                            
+                            
+                            webservice.getHomeEvents(dateString: "\((forMattedDate?.millisecondsSince1970)!)", timeZoneString: "") { (returnedDict) in
+                                print("Got results")
+                                self.stopAnimating()
+                                if returnedDict.value(forKey: "Error") as? Bool == true {
+                                    
+                                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                                    
+                                }else{
+                                    self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                                }
+                                
+                            }
+                            
+                            //                if self.holidaysData.allKeys.count == 0 {
+                            //                    self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                            //                }
+                            
+                            
+                            webservice.getHolidays { (returnedDict) in
+                                //                    if self.holidaysData.allKeys.count == 0 {
+                                //                        self.stopAnimating()
+                                //                    }
+                                if returnedDict.value(forKey: "Error") as? Bool == true {
+                                    
+                                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                                    
+                                }else{
+                                    //   print (returnedDict)//self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                                    
+                                    let array = returnedDict["data"] as? NSArray
+                                    
+                                    for result in array! {
+                                        let resultData = result as! NSDictionary
+                                        
+                                        
+                                        let keyNum = resultData.value(forKey: "startTime") as! NSNumber
+                                        let key = "\(keyNum)"
+                                        
+                                        let timeinterval : TimeInterval = Double(key)! / 1000 // convert it in to NSTimeInteral
+                                        let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
+                                        let dateFormatter = DateFormatter()
+                                        //.dateFormat = "h:mm a"
+                                        dateFormatter.dateFormat = "yyyy-MM-dd"
+                                        let date = dateFormatter.string(from: dateFromServer as Date).capitalized
+                                        
+                                        let source = resultData.value(forKey: "source") as! String
+                                        let scheduleAs = resultData.value(forKey: "scheduleAs") as! String
+                                        
+                                        // print("date on \(date)")
+                                        
+                                        if source == "Cenes"{
+                                            self.holidaysData.setValue(commonColor, forKey: date)
+                                        }else if source == "Google"{
+                                            
+                                            if self.holidaysData.value(forKey: date) != nil {
+                                                let eventColor = self.holidaysData.value(forKey: date) as? UIColor
+                                                if eventColor == commonColor{
+                                                    continue
+                                                }
+                                            }
+                                            
+                                            if scheduleAs == "Holiday"{
+                                                self.holidaysData.setValue(Util.colorWithHexString(hexString: "004345"), forKey: date)
+                                            }else if scheduleAs == "Event"{
+                                                self.holidaysData.setValue(Util.colorWithHexString(hexString: "d34836"), forKey: date)
+                                            }
+                                            
+                                        }else if source == "Facebook"{
+                                            
+                                            if self.holidaysData.value(forKey: date) != nil {
+                                                let eventColor = self.holidaysData.value(forKey: date) as? UIColor
+                                                if eventColor == commonColor{
+                                                    continue
+                                                }
+                                            }
+                                            
+                                            self.holidaysData.setValue(Util.colorWithHexString(hexString: "3b5998"), forKey: date)
+                                        }else if source == "Apple"{
+                                            
+                                            if self.holidaysData.value(forKey: date) != nil {
+                                                let eventColor = self.holidaysData.value(forKey: date) as? UIColor
+                                                if eventColor == commonColor{
+                                                    continue
+                                                }
+                                            }
+                                            self.holidaysData.setValue(Util.colorWithHexString(hexString: "999999"), forKey: date)
+                                        }else if source == "Outlook" {
+                                            if self.holidaysData.value(forKey: date) != nil {
+                                                let eventColor = self.holidaysData.value(forKey: date) as? UIColor
+                                                if eventColor == commonColor{
+                                                    continue
+                                                }
+                                            }
+                                            
+                                            self.holidaysData.setValue(Util.colorWithHexString(hexString: "0072c6"), forKey: date)
+                                        }
+                                        
+                                    }
+                                    self.calendar.reloadData()
+                                }
+                            }
+                        }
+                    });
+                    
+                   
+                    
+                    
+                });
+                
+            });
+            
+        });
+            
+        }
+        // somewhere in your code you might need to call:
     }
     
     func createGathering(){
@@ -384,12 +562,12 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     func parseResults(resultArray: NSArray){
         
         let dict = NSMutableDictionary()
-        dict.setValue([CenesCalendarData](), forKey: "Reminders")
+        /*dict.setValue([CenesCalendarData](), forKey: "Reminders")
         let cenesEvent = CenesEvent()
         cenesEvent.sectionName = "Reminders"
         cenesEvent.sectionObjects = [CenesCalendarData]()
         self.dataObjectArray.append(cenesEvent)
-        
+        */
         
         
         for i : Int in (0..<resultArray.count) {
@@ -421,23 +599,24 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
             
             let cenesEventObject : CenesCalendarData = CenesCalendarData()
             
-            cenesEventObject.title = title
-            cenesEventObject.subTitle = location
-            cenesEventObject.eventImageURL = eventPicture
-            cenesEventObject.eventId = event_id
-            
             if dataType == "Reminder" {
-                    cenesEventObject.dataType = DATA_TYPE_CAL_REM
+                    //cenesEventObject.dataType = DATA_TYPE_CAL_REM
+                continue;
             }else if dataType == "Gathering" {
                     cenesEventObject.dataType = DATA_TYPE_CAL_NOR
             }else if dataType == "Event" {
                 cenesEventObject.dataType = DATA_TYPE_CAL_NOR
             }
             
-            
+            cenesEventObject.title = title
+            cenesEventObject.subTitle = location
+            cenesEventObject.eventImageURL = eventPicture
+            cenesEventObject.eventId = event_id
             
             cenesEventObject.scheduleAs = scheduleAs
             cenesEventObject.source = source
+            cenesEventObject.isFullDay = outerDict.value(forKey: "isFullDay") as? Bool
+            
             let friendDict = eventMembers as! [NSDictionary]
             
             for userDict in friendDict {
@@ -462,7 +641,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
             let keyNum = outerDict.value(forKey: "startTime") as? NSNumber
             
             if keyNum == nil {
-                var array = dict.value(forKey: "Reminders") as! [CenesCalendarData]!
+                var array = dict.value(forKey: "Reminders") as! [CenesCalendarData]?
                 array?.append(cenesEventObject)
                 dict.setValue(array, forKey: "Reminders")
                 if let cenesEvent = self.dataObjectArray.first(where: { $0.sectionName == "Reminders"}){
@@ -476,13 +655,13 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
             var key = "\(keyNum!)"
             
             let time = self.getTimeFromTimestamp(timeStamp: key)
-            key = self.getDateFromTimestamp(timeStamp: key)
+            key = self.getddMMMEEEE(timeStamp: key)
             cenesEventObject.time = time
             cenesEventObject.startTimeMillisecond = keyNum
             
             if dict.value(forKey: key) != nil {
                 
-                var array = dict.value(forKey: key) as! [CenesCalendarData]!
+                var array = dict.value(forKey: key) as! [CenesCalendarData]?
                 array?.append(cenesEventObject)
                 dict.setValue(array, forKey: key)
                 
@@ -531,13 +710,35 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         if self.dataObjectArray.count > 0 {
             self.tableView.isHidden = false
         }else{
-            self.tableView.isHidden = true
+            //self.tableView.isHidden = true
         }
         self.calendar.reloadData()
         
     }
     
-    
+    func getNotificationCounts () {
+        let webservice = WebService();
+        webservice.getNotificationsCounter(){ (returnedDict) in
+            print(returnedDict)
+            self.stopAnimating()
+            if returnedDict.value(forKey: "Error") as? Bool == true {
+                
+                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                
+            }else{
+                print(returnedDict)
+                //self.badgeCount =  String(returnedDict["data"] as! Int) as? String
+                self.setUpNavBarImages()
+
+                //  self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                
+                //Setting badge counts in prefrences
+                let userDefaults = UserDefaults.standard
+                userDefaults.setValue(returnedDict["data"] , forKey: "badgeCounts");
+                userDefaults.synchronize()
+            }
+        }
+    }
     
     @IBAction func togglePressed(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
@@ -572,25 +773,37 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
     func setUpNavBarImages() {
         
-        let profileButton = UIButton.init(type: .custom)
+        let profileButton = SSBadgeButton()//UIButton.init(type: .custom) //
         
         self.profileImage = appDelegate?.getProfileImage()
        
         profileButton.imageView?.contentMode = .scaleAspectFill
         
         profileButton.setImage(self.profileImage, for: UIControlState.normal)
-        profileButton.frame = CGRect.init(x: 0, y: 0, width: 35 , height: 35)
+        profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         
         profileButton.clipsToBounds = true
-        profileButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
-        profileButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
         profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
         profileButton.backgroundColor = UIColor.white
-        
-        
+        profileButton.badge = badgeCount;
+        profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
+        profileButton.badgeFont = profileButton.badgeFont.withSize(10)
+
+        /*let badgeIcon = UILabel.init()
+        badgeIcon.clipsToBounds = true
+        badgeIcon.frame = CGRect.init(x: 0, y: 10, width: 20 , height: 20)
+        badgeIcon.layer.cornerRadius = badgeIcon.font.pointSize * 0.60
+        badgeIcon.backgroundColor = UIColor.red
+        badgeIcon.textColor = UIColor.white
+        //badgeIcon.font = badgeIcon.font.withSize(14)
+        badgeIcon.text = badgeCount // note spaces before and after text*/
         let barButton = UIBarButtonItem.init(customView: profileButton)
-        self.navigationItem.leftBarButtonItem = barButton
+        //let badgeBarButton = UIBarButtonItem.init(customView: badgeIcon)
+
+        self.navigationItem.leftBarButtonItems = [barButton]
         
         //let calendarImage = UIImage(named: "noun_999728_cc")
         let calendarButton = UIButton.init(type: .custom)
@@ -627,12 +840,12 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
     @objc func profileButtonPressed(){
         
-        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
        // self.performSegue(withIdentifier: "openSideMenu", sender: self)
        
     }
     
-    func getAlarmsCount() -> Int {
+   /* func getAlarmsCount() -> Int {
         let moc = appDelegate?.persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<Alarm> = Alarm.fetchRequest()
         let count = try! moc?.count(for: fetchRequest)
@@ -648,7 +861,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
             addAlarmVC?.autoIncrementID = getAlarmsCount()
             addAlarmVC?.alarmVCtitle = "Add Alarm"
         }
-    }
+    } */
 }
 
 
@@ -686,20 +899,31 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        
+        print("Table Row Header Calls \(indexPath.section) and Row : \(indexPath.row)")
         let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
         
-        if(obj.dataType == DATA_TYPE_CAL_NOR)
-        {
+        //if(obj.dataType == DATA_TYPE_CAL_NOR)
+        //{
+        
         
             let identifier = "cellOne"
-            let cell: HomeTableViewCellOne! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellOne
-            
+        let cell: HomeCenesEventTableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeCenesEventTableViewCell
+        
+        
+        if (obj.scheduleAs == "Gathering") {
             cell.HomeView = self
             cell.locationView.isHidden = true
             
             cell.timeTitle.text = obj.title
-            cell.timeLabel.text = obj.time
+            
+            if (obj.isFullDay != nil && obj.isFullDay == true) {
+                cell.timeLabel.text = "00:00";
+            } else {
+                cell.timeLabel.text = obj.time
+            }
+            
             
             if obj.subTitle == nil || obj.subTitle == ""{
                 cell.locationView.isHidden = true
@@ -708,13 +932,7 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 cell.locationView.isHidden = false
             }
             
-            if obj.eventUsers.count == 0 {
-                cell.eventsImageOuterView.isHidden = true
-            }else{
-                cell.eventsImageOuterView.isHidden = false
-            }
-            
-            if obj.source == "Cenes"{
+            /*if obj.source == "Cenes"{
                 cell.eventView.backgroundColor = commonColor
             }else if obj.source == "Google"{
                 if obj.scheduleAs == "Holiday"{
@@ -729,17 +947,50 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "999999")
             }else if obj.source == "Outlook" {
                 cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "0072c6")
+            }*/
+            
+            let userId = setting.value(forKey: "userId") as! NSNumber
+            var owner: CenesUser!;
+            for member in obj.eventUsers {
+                
+                if let myInteger = Int(member.userId) {
+                    let myNumber = NSNumber(value:myInteger)
+                    if (myNumber == userId) {
+                        owner = member;
+                        break;
+                    }
+                }
+                
             }
             
-            
-            cell.FriendArray = obj.eventUsers
-            
-            cell.reloadFriends()
+            cell.profilePic.setRounded();
+            cell.profilePic.cacheImage(urlString: owner.photoUrl)
+            //cell.FriendArray = obj.eventUsers
+            //cell.reloadFriends()
             
             
             return cell
+        } else if (obj.scheduleAs == "Event") {
+            let identifier = "HomeCalendarTableViewCell"
+            let cell: HomeCalendarTableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeCalendarTableViewCell
+            
+            cell.calendarType.text = obj.source;
+            cell.calendarTitle.text = obj.title
+            cell.calendarTime.text =  obj.time
+            return cell;
+            
+        }  else if (obj.scheduleAs == "Holiday") {
+            let identifier = "HomeHolidayTableViewCell"
+            let cell: HomeHolidayTableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeHolidayTableViewCell
+            
+            cell.holidayLabel.text = obj.title;
+            return cell;
         }
-        else
+        
+        //}
+        /*
+         //To Show reminders at home page
+         else
         {
             let identifier = "cellTwo"
             let cell: HomeTableViewCellTwo = (self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellTwo)!
@@ -763,8 +1014,8 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
             }
             
             return cell
-        }
-        
+        } */
+        return cell;
     }
     func numberOfSections(in tableView: UITableView) -> Int {
          return dataObjectArray.count
@@ -786,7 +1037,13 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         let identifier = "HeaderCell"
         let cell: HomeTableViewCellHeader! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellHeader
 //        cell.isEditing = true;
-        cell.titleLabel.text = sectionTitle
+        
+        var headerTitleArr: [String]  = sectionTitle!.components(separatedBy: " ");
+        let finalDateStr = NSMutableAttributedString();
+        finalDateStr.normal(headerTitleArr[0]).bold(headerTitleArr[1]);
+        
+        cell.titleLabel.attributedText = finalDateStr;
+        
         
         return cell
         
@@ -873,7 +1130,12 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 }
                 
                 createGatheringView.locationName = location
-                createGatheringView.eventDetails = dict.value(forKey: "description") as! String
+                var description:String = "";
+                if let desc = dict.value(forKey: "description") as? String {
+                    description = desc
+                }
+                
+                createGatheringView.eventDetails = description
                 createGatheringView.selectedLocation = locationModel
                 createGatheringView.summaryBool = true
                 createGatheringView.loadSummary = true
@@ -972,12 +1234,42 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         return date
     }
     
-
+    func getddMMMEEEE(timeStamp:String) -> String{
+        let timeinterval : TimeInterval = Double(timeStamp)! / 1000 // convert it in to NSTimeInteral
+        let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
+        let dateFormatter = DateFormatter()
+        //.dateFormat = "h:mm a"
+        dateFormatter.dateFormat = "dMMM"
+        let date1Str = dateFormatter.string(from: dateFromServer as Date).uppercased()
+        
+        dateFormatter.dateFormat = "EEEE"
+        let date2Str = dateFormatter.string(from: dateFromServer as Date).uppercased()
+        return "\(date1Str) \(date2Str)";
+    }
+    
+    func showToast(message : String) {
+        
+        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 75, y: self.view.frame.size.height-100, width: 150, height: 35))
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        toastLabel.textColor = UIColor.white
+        toastLabel.textAlignment = .center;
+        toastLabel.font = UIFont(name: "Montserrat-Light", size: 12.0)
+        toastLabel.text = message
+        toastLabel.alpha = 1.0
+        toastLabel.layer.cornerRadius = 10;
+        toastLabel.clipsToBounds  =  true
+        self.view.addSubview(toastLabel)
+        UIView.animate(withDuration: 4.0, delay: 0.1, options: .curveEaseOut, animations: {
+            toastLabel.alpha = 0.0
+        }, completion: {(isCompleted) in
+            toastLabel.removeFromSuperview()
+        })
+    }
     
 }
 
 
-extension HomeViewController: FSCalendarDelegate , FSCalendarDataSource ,FSCalendarDelegateAppearance
+@IBDesignable extension HomeViewController: FSCalendarDelegate , FSCalendarDataSource ,FSCalendarDelegateAppearance
 {
     
     

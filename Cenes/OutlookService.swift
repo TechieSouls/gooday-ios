@@ -57,16 +57,17 @@ class OutlookService {
         oauth2.handleRedirectURL(url)
     }
     
-    func login(from: AnyObject, callback: @escaping (String?,_ token:String?) -> Void) -> Void {
+    func login(from: AnyObject, callback: @escaping (String?,_ token:String?, _ refreshToken:String?) -> Void) -> Void {
         oauth2.authorizeEmbedded(from: from) {
             result, error in
             if let unwrappedError = error {
-                callback(unwrappedError.description,nil)
+                callback(unwrappedError.description,nil, nil)
             } else {
                 if let unwrappedResult = result, let token = unwrappedResult["access_token"] as? String {
+                    let refreshToken = unwrappedResult["refresh_token"] as? String
                     // Print the access token to debug log
                     //NSLog("Access token: \(token)")
-                    callback(nil,token)
+                    callback(nil,token, refreshToken)
                 }
             }
         }

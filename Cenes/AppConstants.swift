@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 // Image names, Notification names , Strings, Colors
 let pageTitles = ["Welcome to CENES\nYour personal in-synced\n calendar","Time prediction\nwith no conflicts",
                   "Private Diary\nrecord your memories"]
@@ -25,6 +24,12 @@ let BOTTOM_AFTER_KEYBOARD = 0
 
 let commonColor = UIColor(red: 240/255, green: 120/255, blue: 81/255, alpha: 1)
 
+let themeColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1)
+
+let selectedColor = UIColor(red: 245/255, green: 166/255, blue: 35/255, alpha: 1)
+
+let cenesLabelBlue = UIColor(red: 59/255, green: 76/255, blue: 139/255, alpha: 1);
+
 let cenesDelegate = UIApplication.shared.delegate as! AppDelegate
 let loadinIndicatorSize = CGSize(width: 30, height: 30)
 
@@ -35,7 +40,13 @@ let onboardingStep4Title = "MeTIME";
 let onboardingStep5Title = "MAKE LIFE EASIER TO SOCIALIZE";
 
 
-let onboardingStep2Desc = "Making plans can't get any easier.\nA tap on your phone will find the best\ntime for everyone to meet.\n\n\nNo more back and forth messaging.\nNo more time wasting.\nKeep it simple.";
-let onboardingStep3Desc = "Collaborative Reminders is not just for\nyourself. Share it with others and track\n its progress.\n\n\nWe're making productivity a little\nmore social.";
-let onboardingStep4Desc = "Finding time is difficult. We\nget it.\nMeTIME provides a\ncustomizable schedule to set\naside some much deserved\ntime to yourself.\n\n\nIf something is worth doing,\nwe'll make the time for it.";
+let onboardingStep2Desc = "Making plans can't get any easier. A tap on your phone will find the best time for everyone to meet.\n\n\nNo more back and forth messaging. No more time wasting. Keep it simple.";
+let onboardingStep3Desc = "Collaborative Reminders is not just for yourself. Share it with others and track its progress.\n\n\nWe're making productivity a little more social.";
+let onboardingStep4Desc = "Finding time is difficult. We get it. MeTIME provides acustomizable schedule to set aside some much deserved time to yourself.\n\n\nIf something is worth doing, we'll make the time for it.";
 let onboardingStep5Desc = "";
+
+let inviteFriendInvitationSms = "Check out Cenes for your smartphone. Download it today from http://www.cenesgroup.com";
+
+//SETTINGS SCREEN
+let aboutUsVersionUpdateLink = "http://www.cenesgroup.com";
+let cenesWebUrl = "http://cenes-web.com.s3-website-us-east-1.amazonaws.com";

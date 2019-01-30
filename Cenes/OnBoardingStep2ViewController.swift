@@ -15,6 +15,15 @@ class OnBoardingStep2ViewController: UIViewController {
     
     @IBOutlet weak var step2Description: UILabel!
     
+    @IBOutlet weak var borderBottom: UIView!
+    
+    class func MainViewController() -> UIViewController{
+        
+        let viewController = UIStoryboard(name: "Onboarding", bundle: nil).instantiateViewController(withIdentifier: "OnBoardingStep2ViewController")
+        
+        return viewController
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,17 +39,25 @@ class OnBoardingStep2ViewController: UIViewController {
         
         
         step2Description.text = onboardingStep2Desc;
-        step2Description.fs_top = 200
-        step2Description.fs_left = 30;
-        step2Description.fs_right = 50;
+        //step2Description.fs_top = 200
+        //step2Description.fs_left = 30;
+        //step2Description.fs_right = 50;
 
+        step2Description.frame = CGRect(x: 30, y: 200, width: self.view.bounds.width - 50, height: 400)
+        step2Description.padding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        step2Description.font =  step2Description.font.withSize(20)
+        
         step2Description.numberOfLines = 0;
         step2Description.textColor = UIColor.white
         step2Description.adjustsFontSizeToFitWidth  = true
         step2Description.font = step2Description.font.withSize(20)
         step2Description.sizeToFit()
-        step2Description.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        step2Description.backgroundColor = UIColor.black.withAlphaComponent(0.2)
     
+        borderBottom.frame = CGRect(0,self.view.bounds.height - 60, self.view.bounds.width, 1.0)
+        borderBottom.backgroundColor = UIColor.white
+
+        
     }
 
     override func didReceiveMemoryWarning()

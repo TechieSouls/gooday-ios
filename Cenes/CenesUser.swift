@@ -19,4 +19,5 @@ class CenesUser: NSObject {
      var profileImage : UIImage!
     var isOwner = false
     var status : String!
+    var phone: String!
 }

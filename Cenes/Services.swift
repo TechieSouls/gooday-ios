@@ -24,71 +24,12 @@ class WebService
     
     var requestArray = NSMutableArray()
     
-    func emailSignUp(email :String ,name :String ,password :String ,username :String,complete: @escaping(NSMutableDictionary)->Void )
+    func emailSignIn(email :String ,password :String,complete: @escaping(NSMutableDictionary)->Void )
     {
         let parameters: Parameters = [
             "authType": "email",
             "email": email,
-            "name": name,
-            "password": password,
-        ]
-        print( "Inside emailSignUp")
-        
-        let returnedDict = NSMutableDictionary()
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        
-        // Both calls are equivalent
-        
-    Alamofire.request("\(apiUrl)api/users/", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate(statusCode: 200..<300).responseJSON
-            { (response ) in
-            switch response.result {
-                case .success:
-                print("emailSignUp Validation Successful")
-                debugPrint(response.result.value ?? "no value")
-                
-                let json = response.result.value as! NSDictionary
-                
-                if json["errorCode"] as? Int == 0 {
-                    
-                    let userId = json.object(forKey: "userId")
-                    let token = json.object(forKey: "token")
-                    setting.setValue(userId!, forKey: "userId")
-                    setting.setValue(token!, forKey: "token")
-                    let name = json.object(forKey: "name")
-                    let email = json.object(forKey: "email")
-                    
-                    
-                    setting.setValue(userId!, forKey: "userId")
-                    setting.setValue(name!, forKey: "name")
-                    setting.setValue(email!, forKey: "email")
-                    setting.setValue(token!, forKey: "token")
-                    
-                    
-                }else if json["errorCode"] as? Int == 103 {
-                    returnedDict["Error"] = true
-                    returnedDict["ErrorMsg"] = "Email Already Taken."
-                    
-                }else{
-                    //Work to do
-                }
-                
-                
-                case .failure(let error):
-                 print(error)
-                 returnedDict["Error"] = true
-                 returnedDict["ErrorMsg"] = error.localizedDescription
-        }
-        complete(returnedDict)
-      }
-        
-    }
-    func emailSignIn(email :String ,password :String ,complete: @escaping(NSMutableDictionary)->Void )
-    {
-        let parameters: Parameters = [
-            "authType": "email",
-            "email": email,
-            "password": password,
+            "password": password
         ]
         print( "Inside emailSignIn")
         
@@ -100,9 +41,6 @@ class WebService
             { (response ) in
                 switch response.result {
                 case .success:
-                    
-                    
-                    
                     
                     print("emailSignIn Validation Successful")
                     let json = response.result.value as! NSDictionary
@@ -229,6 +167,9 @@ class WebService
                     let name = json.object(forKey: "name")
                     setting.setValue(userId!, forKey: "userId")
                     setting.setValue(token!, forKey: "token")
+                    if let email = json.object(forKey:"email") as? String {
+                         setting.setValue(email, forKey: "email")
+                    }
                     
                     setting.setValue(name,forKey:"name")
                     returnedDict["data"] = json
@@ -341,7 +282,7 @@ class WebService
 
     }
     
-    func googleEvent(googleAuthToken :String,complete: @escaping(Bool)->Void)
+    func googleEvent(googleAuthToken :String,serverAuthCode :String, complete: @escaping(Bool)->Void)
     {
         print("googleEvent")
         let userid = setting.value(forKey: "userId") as! NSNumber
@@ -349,7 +290,8 @@ class WebService
         
         let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
         
-        Alamofire.request("\(apiUrl)api/google/events?access_token=\(googleAuthToken)&user_id=\(uid)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: Auth_header).validate(statusCode: 200..<300).responseJSON {  response in
+        let queryStr :String = "access_token=\(googleAuthToken)&serverAuthCode=\(serverAuthCode)&user_id=\(uid)"
+        Alamofire.request("\(apiUrl)api/google/events?\(queryStr)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: Auth_header).validate(statusCode: 200..<300).responseJSON {  response in
             switch response.result {
             case .success:
                 print("Validation Successful")
@@ -363,7 +305,7 @@ class WebService
         
     }
     
-    func outlookEvent(outlookAuthToken :String,complete: @escaping(Bool)->Void)
+    func outlookEvent(outlookAuthToken :String, refreshToken :String, complete: @escaping(Bool)->Void)
     {
         print("outlookEvent")
         let userid = setting.value(forKey: "userId") as! NSNumber
@@ -373,7 +315,7 @@ class WebService
         
         let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
         
-        Alamofire.request("\(apiUrl)api/iosoutlook/events?access_token=\(outlookAuthToken)&user_id=\(uid)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: Auth_header).validate(statusCode: 200..<300).responseJSON {  response in
+        Alamofire.request("\(apiUrl)api/iosoutlook/events?access_token=\(outlookAuthToken)&user_id=\(uid)&refreshToken=\(refreshToken)", method: .get, parameters: nil, encoding: JSONEncoding.default, headers: Auth_header).validate(statusCode: 200..<300).responseJSON {  response in
             switch response.result {
             case .success:
                 print("Validation Successful")
@@ -542,6 +484,7 @@ class WebService
         returnedDict["ErrorMsg"] = ""
         
         Alamofire.request("\(apiUrl)api/getEvents?user_id=\(uid)&date=\(dateString)", method: .get, parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+        //Alamofire.request("\(apiUrl)api/getEvents?user_id=8&date=\(dateString)", method: .get, parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
             
             var json : NSDictionary!
             switch response.result {
@@ -770,63 +713,6 @@ class WebService
         
         self.requestArray.add(req)
     }
-   
-    
-    func createGathering(uploadDict : [String : Any],complete: @escaping(NSMutableDictionary)->Void )
-    {
-        
-        print( "Inside Getting Predictive data")
-        // Both calls are equivalent
-        
-        
-        //let searchSTr = nameString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
-        
-        let userid = setting.value(forKey: "userId") as! NSNumber
-        let uid = "\(userid)"
-        
-        let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
-        
-        let params : Parameters = uploadDict
-        
-        let returnedDict = NSMutableDictionary()
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        
-        
-        Alamofire.request("\(apiUrl)api/event/create", method: .post , parameters: params, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
-            
-            print("Got response \(response.result)")
-            
-            switch response.result {
-            case .success:
-                print( "create gathering Successful")
-                
-                let json = response.result.value as! NSDictionary
-                
-                if json["errorCode"] as? Int == 0 {
-                    
-                    returnedDict["data"] = json["data"]
-                    
-                    
-                }else {
-                    returnedDict["Error"] = true
-                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
-                    
-                }
-                
-                print(json)
-            case .failure(let error):
-                print(error)
-                returnedDict["Error"] = true
-                returnedDict["ErrorMsg"] = error.localizedDescription
-            }
-
-            complete(returnedDict)
-            
-        }
-        
-    }
-    
     
     func getGatheringEvents(type: String,complete: @escaping(NSMutableDictionary)->Void){
         print( "Inside Getting Gathering data")
@@ -923,57 +809,6 @@ class WebService
             
             
             complete(returnedDict)
-        }
-        
-    }
-    
-    
-    
-    func uploadEventImage(image : UIImage? , complete: @escaping(NSMutableDictionary)->Void)
-    {
-        guard image != nil else { return }
-        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
-        let id = setting.integer(forKey: "userId")
-        let token =  setting.string(forKey: "token")
-        guard token != nil else { return }
-        let Auth_header    = ["token" : token!]
-        
-        
-        let returnedDict = NSMutableDictionary()
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        
-        
-        
-        Alamofire.upload(multipartFormData: { (MultipartFormData) in
-            MultipartFormData.append(imgData, withName: "mediaFile", fileName: "file.jpg", mimeType: "image/jpg")
-            MultipartFormData.append( "\(id)".data(using: .utf8)!, withName: "userId")
-            
-        }, usingThreshold: UInt64.init(), to: "\(apiUrl)api/event/upload", method: .post, headers:Auth_header) { (result) in
-            switch result {
-            case .success(let upload,_,_):
-                
-                upload.uploadProgress(closure: { (progress) in
-                    print("Upload Progress: \(progress.fractionCompleted)")
-                })
-                
-                upload.responseJSON { response in
-                    
-                    print("Suceess:\(String(describing: response.result.value ))")
-                    let json = response.result.value as! NSDictionary
-                    
-                    returnedDict["data"] = json
-                     complete(returnedDict)
-                    
-                }
-            case .failure(let encodingError):
-                print(encodingError)
-                returnedDict["Error"] = true
-                returnedDict["ErrorMsg"] = encodingError.localizedDescription
-                 complete(returnedDict)
-                
-            }
-           
         }
         
     }
@@ -1747,8 +1582,8 @@ class WebService
         let userid = setting.value(forKey: "userId") as! NSNumber
         let uid = "\(userid)"
         
-        
         Alamofire.request("\(apiUrl)api/user/getmetimes?user_id=\(uid)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+        //Alamofire.request("\(apiUrl)api/user/getmetimes?user_id=22", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
             
             var json : [String: Any] = [:]
             switch response.result {

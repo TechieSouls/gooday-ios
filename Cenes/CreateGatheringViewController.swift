@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 import NVActivityIndicatorView
-
+import MessageUI
 
 @objc protocol CreateGatheringViewControllerDelegate : class {
 @objc optional    func setEventImage(image : UIImage)
@@ -33,7 +33,7 @@ enum CellHeight : CGFloat {
 }
 
 
-class CreateGatheringViewController: UIViewController,UIImagePickerControllerDelegate ,UINavigationControllerDelegate,GatheringEventCellDelegate,NVActivityIndicatorViewable {
+class CreateGatheringViewController: UIViewController,UIImagePickerControllerDelegate ,UINavigationControllerDelegate,GatheringEventCellDelegate,NVActivityIndicatorViewable, MFMessageComposeViewControllerDelegate, SelectedFriendsProtocol {
 
     @IBOutlet weak var gatheringTableView: UITableView!
     
@@ -61,6 +61,10 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     var FriendArray = [CenesUser]()
     
+    var selectedFriends: [UserContact] = [];
+    
+    var nonCenesUsers: [UserContact] = [];
+    
     var eventName = ""
     
     var isPreditiveEnabled = false
@@ -84,8 +88,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     var FirstDate : Date!
     var SecondDate: Date!
     
-    var startTime = ""
-    var endTime = ""
+    var startTime: String!
+    var endTime: String!
     
     let picController = UIImagePickerController()
     override func viewDidLoad() {
@@ -107,7 +111,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             cellHeightTime = CellHeight.Fifth
         }
         self.pickerOuterView.isHidden = true
-        
+        self.selectedDate = Date();
          self.setUpNavBar()
         
         
@@ -121,6 +125,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             let backButton = UIButton.init(type: .custom)
             self.title = "Edit Gathering"
             backButton.setTitle("Cancel", for: UIControlState.normal)
+            backButton.setTitleColor(UIColor.black, for: .normal)
             backButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             backButton.layer.cornerRadius = backButton.frame.height/2
             backButton.clipsToBounds = true
@@ -132,7 +137,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             let nextButton = UIButton.init(type: .custom)
             
             nextButton.setTitle("Save", for: .normal)
-            nextButton.setTitleColor(UIColor.black, for: .normal)
+            nextButton.setTitleColor(cenesLabelBlue, for: .normal)
             nextButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             nextButton.layer.cornerRadius = nextButton.frame.height/2
             nextButton.clipsToBounds = true
@@ -141,7 +146,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             self.navigationItem.rightBarButtonItem = rightButton
             
-        }else if self.summaryBool{
+        } else if self.summaryBool {
         
         let backButton = UIButton.init(type: .custom)
         self.title = "Gathering Summary"
@@ -157,18 +162,30 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             let nextButton = UIButton.init(type: .custom)
             
             nextButton.setTitle("Edit", for: .normal)
-            nextButton.setTitleColor(UIColor.black, for: .normal)
+            nextButton.setTitleColor(cenesLabelBlue, for: .normal)
             nextButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             nextButton.layer.cornerRadius = nextButton.frame.height/2
             nextButton.clipsToBounds = true
             nextButton.addTarget(self, action: #selector(CreateGatheringViewController.setEditSummary), for: .touchUpInside)
             let rightButton = UIBarButtonItem.init(customView: nextButton)
             
+            var items: [UIBarButtonItem] = [];
             
             if self.isOwner == true {
-                self.navigationItem.rightBarButtonItem = rightButton
+                //self.navigationItem.rightBarButtonItem = rightButton
+                items.append(rightButton);
             }
             
+            
+            let shareEventBtn = UIButton(type: .custom)
+            let eventShareImg = UIImage(named: "event_share_icon");
+            shareEventBtn.setImage(eventShareImg, for: .normal)
+            shareEventBtn.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+            shareEventBtn.addTarget(self, action: #selector(CreateGatheringViewController.shareEventUrl), for: .touchUpInside)
+            let shareBtn = UIBarButtonItem(customView: shareEventBtn)
+            items.append(shareBtn);
+            
+            self.navigationItem.setRightBarButtonItems(items, animated: true)
         }else{
             
             self.title = "Add Gathering"
@@ -177,6 +194,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             let nextButton = UIButton.init(type: .custom)
             
             nextButton.setTitle("Save", for: UIControlState.normal)
+            nextButton.setTitleColor(cenesLabelBlue, for: .normal)
             nextButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             nextButton.layer.cornerRadius = nextButton.frame.height/2
             nextButton.clipsToBounds = true
@@ -188,6 +206,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             let cancelButton = UIButton.init(type: .custom)
             cancelButton.setTitle("Cancel", for: .normal)
+            cancelButton.setTitleColor(UIColor.black, for: .normal)
             cancelButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
             cancelButton.layer.cornerRadius = nextButton.frame.height/2
             cancelButton.clipsToBounds = true
@@ -202,6 +221,12 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     }
     
     
+    override func viewDidAppear(_ animated: Bool) {
+        self.view.backgroundColor = themeColor;
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.backgroundColor = themeColor
+        self.navigationController?.navigationBar.tintColor = themeColor;
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -243,6 +268,24 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         }
     }
     
+    // share text
+    @IBAction func shareEventUrl(_ sender: UIButton) {
+        
+        // text to share
+        let text = cenesWebUrl+"/event/"+eventId;
+        // set up activity view controller
+        let textToShare = [ text ]
+        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+        
+        // exclude some activity types from the list (optional)
+        activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
+        
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: nil)
+        
+    }
+    
     @objc func setEditSummary(){
         self.loadSummary = false
         self.summaryBool = false
@@ -274,22 +317,20 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             self.showAlert(title: "Event Title", message: "Please fill the event title.")
             return
         }
+    
         
-//        if self.locationName == "" {
-//            self.showAlert(title: "Location", message: "Please add location to the event.")
-//        }
-        
-        if self.eventDetails == "" {
-            self.showAlert(title: "Event Description", message: "Please enter event description.")
-            return
-        }
-        
-        
-        
-        if self.cellHeightTime == CellHeight.Fourth {
+        //if self.cellHeightTime == CellHeight.Fourth {
+        if (self.selectedDate != nil) {
             
             
+            if self.startTime == nil {
+                self.startTime = "\(FirstDate.millisecondsSince1970)"
+            }
+            if self.endTime == nil {
+                self.endTime = "\(SecondDate.millisecondsSince1970)"
+            }
             
+            print("Start Time : \(self.startTime), End Time : \(self.endTime)");
             let userid = setting.value(forKey: "userId") as! NSNumber
             let uid = "\(userid)"
             
@@ -298,22 +339,26 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             var eventMembers = [NSMutableDictionary]()
             
-            for result in self.FriendArray {
+            for userContact in self.selectedFriends {
+               
+                if (userContact.cenesMember == "no") {
+                    continue;
+                }
                 let dict = NSMutableDictionary()
                 
-                dict["name"] = result.name
-                dict["userId"] = result.userId
+                dict["name"] = userContact.name
+                dict["userId"] = userContact.userId
                 
-                if let status = result.status {
+                if let status = userContact.status {
                     dict["status"] = status
                 }
                 
                 let id = "\((setting.value(forKey: "userId") as? NSNumber)!)"
-                if result.userId == id {
+                if "\(userContact.userId)" == id {
                     continue
                 }
-                if result.photoUrl != nil {
-                    dict["picture"] = result.photoUrl
+                if userContact.photo != nil {
+                    dict["picture"] = userContact.photo
                 }
                 eventMembers.append(dict)
             }
@@ -342,12 +387,11 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             
             if (self.gatheringImage != nil && self.gatheringImageURL == nil) {
-                let webservice = WebService()
                 
                 startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
                 let uploadImage = self.gatheringImage.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
                 
-                webservice.uploadEventImage(image: uploadImage, complete: { (returnedDict) in
+                GatheringService().uploadEventImage(image: uploadImage, complete: { (returnedDict) in
                     
                     if returnedDict.value(forKey: "Error") as? Bool == true {
                         self.stopAnimating()
@@ -383,7 +427,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                             
                         }
                         
-                            WebService().createGathering(uploadDict: params, complete: { (returnedDict) in
+                            GatheringService().createGathering(uploadDict: params, complete: { (returnedDict) in
                                 self.stopAnimating()
                                 
                             if returnedDict.value(forKey: "Error") as? Bool == true {
@@ -397,6 +441,18 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                                 if dict?.value(forKey: "eventId")! != nil {
                                     self.eventId = "\((dict?.value(forKey: "eventId")! as? NSNumber)!)"
                                 }
+                                
+                                
+                                if self.nonCenesUsers.count > 0 {
+                                    
+                                    var phoneNumbers: String = "";
+                                    for userContact in self.nonCenesUsers {
+                                        phoneNumbers = "\(userContact.phone),\(phoneNumbers)";
+                                    }
+                                    self.sendSMSText(phoneNumber: phoneNumbers.substring(toIndex: phoneNumbers.count-1));
+                                }
+                                
+                                
                                 
                                 self.summaryBool = true
                                 self.loadSummary = true
@@ -420,6 +476,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                         params = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil &&  self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventMembers":eventMembers,"isPredictiveOn":1,"predictiveData":predictiveString]
                      }else{
                         params = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude": (self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventMembers":eventMembers,"isPredictiveOn":0]
+                        
+                        print(params)
                     }
                     
                     
@@ -440,8 +498,10 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 
                 params["eventPicture"] = self.gatheringImageURL
                 
+                print("Gathering params \(params)");
+                
                 startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-                WebService().createGathering(uploadDict: params, complete: { (returnedDict) in
+                GatheringService().createGathering(uploadDict: params, complete: { (returnedDict) in
                     self.stopAnimating()
                     if returnedDict.value(forKey: "Error") as? Bool == true {
                         
@@ -453,7 +513,17 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                         if dict?.value(forKey: "eventId")! != nil {
                             self.eventId = "\((dict?.value(forKey: "eventId")! as? NSNumber)!)"
                         }
-                        
+                       
+                       
+                        // Opening SMS Intent to send Event Card to non cenes members.
+                        if self.nonCenesUsers.count > 0 {
+                            
+                            var phoneNumbers: String! = "";
+                            for userContact in self.nonCenesUsers {
+                                phoneNumbers = userContact.phone+","+phoneNumbers;
+                            }
+                            self.sendSMSText(phoneNumber: phoneNumbers.substring(toIndex: phoneNumbers.count-1));
+                        }
                         self.summaryBool = true
                         self.loadSummary = true
                         self.editSummary = false
@@ -465,11 +535,6 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                     }
                 })
             }
-            
-            
-            
-            
-            
         }else{
             if self.isPreditiveEnabled {
                 self.showAlert(title: "You have not chosen a Date", message: "Pick a date from Predictive Calendar.")
@@ -480,11 +545,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         }
         
     }
-    
-    
-    
-    
-    
+
      func imagePickerButtonPressed() {
         
         if !self.summaryBool{
@@ -559,18 +620,18 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         switch self.pickerType! {
         case PickerType.StartDate:
             dateFormatter.dateFormat = "MMM dd, YYYY"
-            print(dateFormatter.string(from: self.dateTimePicker.date))
+            print("[timePickerDoneButtonPressed] Picker Type Start Date StartDate \(dateFormatter.string(from: self.dateTimePicker.date))")
             self.gatheringDelegate.setDateTimeValues!(tag: .StartDate, value: dateFormatter.string(from: self.dateTimePicker.date))
         case PickerType.EndDate:
             
             dateFormatter.dateFormat = "MMM dd, YYYY"
-            print(dateFormatter.string(from: self.dateTimePicker.date))
+            print("[timePickerDoneButtonPressed] Picker Type End Date \(dateFormatter.string(from: self.dateTimePicker.date))")
             self.gatheringDelegate.setDateTimeValues!(tag: .EndDate, value: dateFormatter.string(from: self.dateTimePicker.date))
             
 //---------------------------------------------------------------
         case PickerType.StartTime:
             dateFormatter.dateFormat = "h:mm a"
-            print(dateFormatter.string(from: self.dateTimePicker.clampedDate))
+            print("[timePickerDoneButtonPressed] Picker Type StartTime \(dateFormatter.string(from: self.dateTimePicker.clampedDate))")
 //            let timeValue = dateFormatter.string(from: self.dateTimePicker.clampedDate)
 //            let index = timeValue.index(timeValue.startIndex, offsetBy: 2)
 //            let endIndex = timeValue.index(timeValue.endIndex, offsetBy:-3)
@@ -578,6 +639,27 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
 //            let secondValue = timeValue[index ..< endIndex]
 //            if ((((secondValue as NSString).integerValue) % 5 == 0) || (((secondValue as NSString).integerValue) == 0)){
             self.gatheringDelegate.setDateTimeValues!(tag: .StartTime, value: dateFormatter.string(from: self.dateTimePicker.date))
+            
+            startTime = "\(self.dateTimePicker.date.millisecondsSince1970)";
+            //Setting EndTime to be 1 Hour past current time.
+             var dateComponent = DateComponents()
+            dateComponent.minute = 60;
+            print(self.dateTimePicker.date);
+            print(self.dateTimePicker.date.addingTimeInterval(60.0 * 60.0))
+            let endDate = Calendar.current.date(byAdding: dateComponent, to: self.dateTimePicker.date);
+            print("end date : \(endDate ?? Date())");
+            self.gatheringDelegate.setDateTimeValues!(tag: .EndTime, value: dateFormatter.string(from: endDate!))
+            
+            endTime = "\(endDate?.millisecondsSince1970 ?? Date().millisecondsSince1970)";
+            
+            //Checking if end time is of next day, then we change the end time date to next day
+            if (Int64(endTime!)! < Int64(startTime!)!) {
+                let ddf = DateFormatter()
+                ddf.dateFormat = "MM dd";
+                let tommorrow = Calendar.current.date(byAdding: .day, value: 1, to: endDate!);
+                print("PickerType.EndTime : Tommorrows Date : \(ddf.string(from: tommorrow!))")
+                endTime = "\(tommorrow?.millisecondsSince1970 ?? Date().millisecondsSince1970)";
+            }
 //            }
 //            else{
 //              self.showAlert(title: "Alert!", message: "Please select minutes as a multiple of 5 eg. 3.05, 3.10")
@@ -585,20 +667,33 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
         case PickerType.EndTime:
             dateFormatter.dateFormat = "h:mm a"
-            print(dateFormatter.string(from: self.dateTimePicker.clampedDate))
+            print("[timePickerDoneButtonPressed] Picker Type EndTime \(dateFormatter.string(from: self.dateTimePicker.clampedDate))")
                 self.gatheringDelegate.setDateTimeValues!(tag: .EndTime, value: dateFormatter.string(from: self.dateTimePicker.date))
+            endTime = "\(self.dateTimePicker.date.millisecondsSince1970)";
             
+            print("Start Time : \(startTime), End Time : \(endTime), Now : \(Date().millisecondsSince1970)")
+            
+            //Checking if end time is of next day, then we change the end time date to next day
+            if (startTime == nil && (Int64(endTime!)! < Date().millisecondsSince1970)) {
+                let ddf = DateFormatter()
+                ddf.dateFormat = "MM dd";
+                let tommorrow = Calendar.current.date(byAdding: .day, value: 1, to: self.dateTimePicker.date);
+                print("PickerType.EndTime : Tommorrows Date : \(ddf.string(from: tommorrow!))")
+                endTime = "\(tommorrow?.millisecondsSince1970 ?? Date().millisecondsSince1970)";
+                print("Endd Time Piker : \(endTime)")
+            } else if (startTime != nil && Int64(endTime!)! < Int64(startTime!)!) {
+                let ddf = DateFormatter()
+                ddf.dateFormat = "MM dd";
+                let tommorrow = Calendar.current.date(byAdding: .day, value: 1, to: self.dateTimePicker.date);
+                print("PickerType.EndTime : Tommorrows Date : \(ddf.string(from: tommorrow!))")
+                endTime = "\(tommorrow?.millisecondsSince1970 ?? Date().millisecondsSince1970)";
+                print("Endd Time Piker : \(endTime)")
+            }
          //---------------------------------------------------------------
         default:
             print("default printed")
         }
-        
-        
-        
-        
-        
-        
-        
+
     }
     
     
@@ -618,29 +713,34 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         }
     }
     
+    /***
+    ** This method is user when the picker is opened.
+    ***/
     func showPicker(show:Bool ,pickDate : Bool){
+        print("[ShowPicker] Starts");
         if show{
             
             closeCheck = true
             
             
-            
+            //This is for Selecting the Date from Date Picker.
             if pickDate {
                 self.dateTimePicker.datePickerMode = .date
                 
                 if self.pickerType == PickerType.StartDate {
-                    self.dateTimePicker.minimumDate = Date()
+                    //self.dateTimePicker.minimumDate = Date()
                      self.dateTimePicker.setDate(self.FirstDate, animated: false)
                 }else if self.pickerType == PickerType.EndDate {
                     var datecomponent = DateComponents()
-                    datecomponent.minute = 1
+                    datecomponent.minute = 5
                     let startDate = Calendar.current.date(byAdding: datecomponent, to: self.FirstDate.clampedDate)
-                    self.dateTimePicker.minimumDate = startDate
+                    //self.dateTimePicker.minimumDate = startDate
                     self.dateTimePicker.setDate(self.SecondDate, animated: false)
                 }
                 
                 
             }else{
+                //This is for Selecting the Time from DatePicker.
                 self.dateTimePicker.datePickerMode = .time
                 self.dateTimePicker.minuteInterval = 5
                 if self.pickerType == PickerType.StartTime {
@@ -648,11 +748,11 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                     datecomponent.day = 1
                     let newDate = Calendar.current.date(byAdding: datecomponent, to: Date())
                     
-                    if newDate! <= self.SecondDate! {
+                    /*if newDate! <= self.SecondDate! {
                         self.dateTimePicker.minimumDate = nil
                     }else{
                         self.dateTimePicker.minimumDate = self.FirstDate
-                    }
+                    }*/
                     
                     self.dateTimePicker.setDate(self.FirstDate, animated: false)
                 }else if self.pickerType == PickerType.EndTime {
@@ -664,18 +764,14 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                     datecomponent.day = 1
                     let newDate = Calendar.current.date(byAdding: datecomponent, to: self.FirstDate.clampedDate)
                     
-                    if newDate! <= self.SecondDate! {
+                    /*if newDate! <= self.SecondDate! {
                         self.dateTimePicker.minimumDate = nil
                     }else{
                         self.dateTimePicker.minimumDate = startDate
-                    }
+                    }*/
                     
                     self.dateTimePicker.setDate((self.SecondDate)!, animated: false)
                 }
-                
-                
-                
-                
             }
            
             
@@ -712,6 +808,21 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 self.present(actionSheetController, animated: true, completion: nil)
             }
             }
+    }
+    
+    func sendSMSText(phoneNumber: String) {
+        if (MFMessageComposeViewController.canSendText()) {
+            let controller = MFMessageComposeViewController()
+            controller.body = "\(cenesWebUrl)/event/"+eventId;
+            controller.recipients = phoneNumber.components(separatedBy: ",")
+            controller.messageComposeDelegate = self
+            self.present(controller, animated: true, completion: nil)
+        }
+    }
+    
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        //... handle sms screen actions
+        self.dismiss(animated: true, completion: nil)
     }
     
 }
@@ -781,243 +892,14 @@ extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
         }
     }
     
-}
-
-    extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelegate
-    {
-        
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            if self.editSummary == true{
-                return 7
-            }
-            return 6
-        }
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            
-            var identifier = "TableViewCell"
-            
-            switch indexPath.row {
-            case 0:
-                print("")
-                identifier = "GatheringEventTableViewCell"
-                let cell: GatheringEventTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringEventTableViewCell)!
-                cell.imageDelegate  = self
-                cell.indexPathCell = indexPath
-                cell.gView = self
-                if (self.gatheringImageURL != nil && self.gatheringImage == nil) {
-                cell.loadImage()
-                }
-                return cell
-                
-            case 1:
-                print("")
-                identifier = "GatheringTableViewCellTwo"
-                let cell: GatheringTableViewCellTwo = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellTwo)!
-                cell.gatheringView = self
-                
-                if self.eventName == "" {
-                    cell.eventTitleTextField.text = ""
-                }else{
-                    cell.eventTitleTextField.text = self.eventName
-                }
-                
-                if self.summaryBool{
-                    cell.eventTitleTextField.isUserInteractionEnabled = false
-                }else{
-                    cell.eventTitleTextField.isUserInteractionEnabled = true
-                }
-                
-                return cell
-            case 2:
-                print("")
-                identifier = "GatheringTableViewCellThree"
-                let cell: GatheringTableViewCellThree = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellThree)!
-                
-                cell.createGatheringView = self
-                cell.setShowArray()
-                if self.FriendArray.count > 0 {
-                    cell.lowerView.isHidden = false
-                }else{
-                    cell.lowerView.isHidden = true
-                }
-                cell.reloadFriends()
-                return cell
-                    
-            case 3:
-                print("")
-                
-                
-                
-                identifier = "GatheringTableViewCellFive"
-                let cell: GatheringTableViewCellFive = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellFive)!
-                
-                cell.cellDelegate = self
-                cell.gatheringView = self
-                
-                cell.cellIndex = indexPath
-                
-                cell.setFirstDateSecondDate()
-                
-                switch cellHeightTime! {
-                case CellHeight.First:
-                cell.setFirstCase()
-                    
-                case CellHeight.Second:
-                cell.setSecondCase()
-                
-                case CellHeight.Third :
-                cell.setThirdCase()
-                    
-                case CellHeight.Fourth :
-                cell.setFourthCase()
-                
-                case CellHeight.Fifth  :
-                cell.setFifthCase()
-                default:
-                    print("Height fails")
-                }
-                
-                if self.loadSummary == true {
-                    cell.loadSummary(startTime: self.startTime, endTime: self.endTime)
-                }
-                
-                
-                return cell
-            case 4:
-                print("")
-                identifier = "GatheringTableViewCellOne"
-                let cell: GatheringTableViewCellOne = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellOne)!
-                
-                
-                if self.selectedLocation != nil {
-                    cell.locationTitle.text = self.selectedLocation.locationName
-                }else{
-                    cell.locationTitle.text = "Add Location"
-                }
-                
-                if self.editSummary == true {
-                    if self.locationName == "No Location for event"{
-                        cell.locationTitle.text = "Add location"
-                        self.locationName = ""
-                    }
-                }
-                
-                
-                return cell
-            case 5:
-                print("")
-                identifier = "GAtheringTableViewCellFour"
-                let cell: GAtheringTableViewCellFour = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GAtheringTableViewCellFour)!
-                cell.gatheringView = self
-                
-                if self.eventDetails == "" {
-                    cell.eventDetailsField.text = ""
-                }else{
-                    cell.eventDetailsField.text = self.eventDetails
-                }
-                
-                if self.summaryBool{
-                    cell.eventDetailsField.isUserInteractionEnabled = false
-                }else{
-                    cell.eventDetailsField.isUserInteractionEnabled = true
-                }
-                
-                return cell
-                
-                case 6:
-                print("delte cell")
-                identifier = "DeleteCell"
-                let cell: DeleteCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? DeleteCell)!
-                cell.gatheringView = self
-                return cell
-            default:
-                print("")
-                return UITableViewCell()
-            }
-            
-        }
-        
-        
-        
-        
-        
-        func numberOfSections(in tableView: UITableView) -> Int {
-            return 1
-        }
-        
-        
-        
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            switch indexPath.row {
-               case 0:
-                return 127
-            case 1:
-                return 60
-            case 2:
-                if self.FriendArray.count > 0 {
-                    return 146
-                }else{
-                    return 64
-                }
-                
-                
-            case 3:
-                return cellHeightTime!.rawValue
-            case 4:
-                return 76
-            case 5:
-                return 44 //632
-            case 6 :
-                return 64
-            default:
-                print("")
-                return 100
-            }
-
-        }
-        
-        
-        
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            switch indexPath.row {
-                
-            case 0:
-             print("")
-            case 1:
-               print("")
-            case 2:
-            print("")
-            
-            if !self.summaryBool{
-                self.navigationController?.navigationBar.barTintColor = UIColor.lightGray
-                
-                let inviteFriends = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "inviteFriends") as? InviteFriendViewController
-            
-                inviteFriends?.gatheringView = self
-                self.navigationController?.pushViewController(inviteFriends!, animated: true)
-//                self.modalPresentationStyle = .overCurrentContext
-//                self.present(inviteFriends!, animated: true, completion: nil)
-                }
-                
-            case 3:
-            print("")
-            case 4:
-            print("")
-            
-//            if self.cellHeightTime == CellHeight.Third {
-//            self.cellHeightTime = CellHeight.Fourth
-//                self.gatheringTableView.reloadData()
-//            }
-            if !self.summaryBool{
-            self.performSegue(withIdentifier: "showLocation", sender: nil)
-            }
-            case 5:
-            print("")
-            
-            default:
-            print("")
-                
+    func selectedUserList(userContacts: [UserContact]) {
+        for userContact in userContacts {
+            self.selectedFriends.append(userContact);
+            if userContact.cenesMember == "no" {
+                self.nonCenesUsers.append(userContact)
             }
         }
+        //self.gatheringTableView.reloadData();
     }
+}
 

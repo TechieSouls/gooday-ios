@@ -13,6 +13,9 @@ class InviteFriendTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var profileImageView: UIImageView!
+    
+    @IBOutlet weak var inviteUerCheckbox: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -23,7 +26,6 @@ class InviteFriendTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
 }
 
 

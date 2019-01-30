@@ -28,6 +28,7 @@ class HelpViewController: UIViewController,NVActivityIndicatorViewable {
         self.helpFeedbackCloseBtn.isUserInteractionEnabled = true;
         let closeTappedGesture = UITapGestureRecognizer(target: self, action: #selector(self.closeButtonTapped));
         self.helpFeedbackCloseBtn.addGestureRecognizer(closeTappedGesture);
+        
     }
     
     @objc func closeButtonTapped() {

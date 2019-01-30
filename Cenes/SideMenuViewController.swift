@@ -158,6 +158,12 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 break
             case 6:
                 print("About")
+                let aboutUs = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "aboutUs") as? AboutViewController
+                aboutUs?.hidesBottomBarWhenPushed = true
+                self.dismiss(animated: true, completion: nil)
+                let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
+                navController.popToRootViewController(animated: false)
+                navController.pushViewController(aboutUs!, animated: true)
                 break
             case 7:
                 print("Logout")

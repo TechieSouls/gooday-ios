@@ -38,8 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        
-        UINavigationBar.appearance().tintColor = commonColor
+        print("My App Launched on Termination**************************************");
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -49,7 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = HomeViewController.MainViewController()
         }
         else if onboarding == 1{
-            window?.rootViewController = LoginViewController.MainViewController()
+            //window?.rootViewController = LoginViewController.MainViewController()
+            window?.rootViewController = ChoiceViewController.MainViewController()
            
         }else{
              window?.rootViewController = OnBoardingController.onboardingViewController()
@@ -88,6 +88,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         gai.logger.logLevel = .verbose;
         
         WebService().resetBadgeCount();
+        
+        //DispatchQueue.main.async {
+            //PhonebookService().phoneNumberWithContryCode();
+        //}
         
         return true
     }
@@ -146,15 +150,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         
-        let fetchAlarm = NSFetchRequest<NSFetchRequestResult>(entityName: "Alarm")
-        let alarmDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchAlarm)
+        //let fetchAlarm = NSFetchRequest<NSFetchRequestResult>(entityName: "Alarm")
+        //let alarmDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchAlarm)
 
-        let fetchReminder = NSFetchRequest<NSFetchRequestResult>(entityName: "RemindersModel")
-        let reminderDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchReminder)
+        //let fetchReminder = NSFetchRequest<NSFetchRequestResult>(entityName: "RemindersModel")
+        //let reminderDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchReminder)
 
         do {
-            try self.persistentContainer.viewContext.execute(alarmDeleteRequest)
-            try self.persistentContainer.viewContext.execute(reminderDeleteRequest)
+            //try self.persistentContainer.viewContext.execute(alarmDeleteRequest)
+            //try self.persistentContainer.viewContext.execute(reminderDeleteRequest)
 
             try self.persistentContainer.viewContext.save()
     

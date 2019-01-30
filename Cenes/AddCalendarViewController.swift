@@ -54,9 +54,9 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
         
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().serverClientID = "212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com";
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
             "https://www.googleapis.com/auth/calendar.readonly"]
-        
         
         if fromSideMenu {
             self.navigationItem.hidesBackButton = true
@@ -148,10 +148,10 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
         }
             // pass to webservice
         
-        service.login(from: self) { (error,token) in
+        service.login(from: self) { (error,token, refreshToken) in
             if error == nil{
                 print(token!)
-                self.outLookSync(token: token!)
+                self.outLookSync(token: token!, refreshToken: refreshToken!)
                 // token recieved and pass to webservie
             }else{
                 if let unwrappedError = error {
@@ -162,12 +162,12 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
     }
     
     
-    func outLookSync(token:String){
+    func outLookSync(token:String, refreshToken: String){
         let webService = WebService()
         
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
         
-        webService.outlookEvent(outlookAuthToken: token) { (success) in
+        webService.outlookEvent(outlookAuthToken: token, refreshToken: refreshToken) { (success) in
             self.stopAnimating()
             if success {
                 self.showAlert(title: "Outlook Accont Sync", message: "Your Outlook Account has been synched.")
@@ -192,7 +192,7 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
     {
         
         calenderButton.isUserInteractionEnabled = false
-        
+        var params : [String:Any]
         let eventStore : EKEventStore = EKEventStore()
         
         // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
@@ -270,7 +270,10 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
                // print("failed to save event with error : \(error!) or access not granted")
                 self.showAlert(title: "Error", message: "Please provide Permission to Cenes App to access your Device Calendar.")
             }
-        }
+          }
+ 
+        
+       
     }
     
     
@@ -282,12 +285,14 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
         
         let authentication = user.authentication
         print("Access token:", (authentication?.accessToken!)!)
+        print("Refresh token:", (authentication?.refreshToken!)!)
+        print("User Auth Token: ", (user?.serverAuthCode!)!)
         
         let webService = WebService()
         
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
 
-        webService.googleEvent(googleAuthToken: (authentication?.accessToken!)!) { (success) in
+            webService.googleEvent(googleAuthToken: (authentication?.accessToken!)!, serverAuthCode: (user?.serverAuthCode!)!) { (success) in
             self.stopAnimating()
             if success {
                 self.showAlert(title: "Google Accont Sync", message: "Your google Account has been synched.")

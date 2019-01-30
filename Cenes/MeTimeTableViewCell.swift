@@ -115,21 +115,39 @@ class MeTimeTableViewCell: UITableViewCell ,MeTimeViewControllerCellDelegate{
         self.outerViewSecond.addGestureRecognizer(tapGesture2)
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h"
-        OuterViewFirstHourLabel.text = dateFormatter.string(from: Date())
-        dateFormatter.dateFormat = "mm"
-        OuterViewFirstMinuteLabel.text = dateFormatter.string(from: Date())
-        dateFormatter.dateFormat = "a"
-        OuterViewFirstAMPMToggleButton.setTitle(dateFormatter.string(from: Date()), for: .normal)
-        
-        dateFormatter.dateFormat = "h"
-        OuterViewSecondHourLabel.text = dateFormatter.string(from: Date())
-        dateFormatter.dateFormat = "mm"
-        OuterViewSecondMinuteLabel.text = dateFormatter.string(from: Date())
-        dateFormatter.dateFormat = "a"
-        OuterViewSecondAMPMToggleButton.setTitle(dateFormatter.string(from: Date()), for: .normal)
-        
-        
+        let locale = NSLocale.current
+        let formatter : String = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)!
+        if formatter.contains("a") {            //phone is set to 12 hours
+            dateFormatter.dateFormat = "h"
+            OuterViewFirstHourLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "mm"
+            OuterViewFirstMinuteLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "a"
+            OuterViewFirstAMPMToggleButton.setTitle(dateFormatter.string(from: Date()), for: .normal)
+            
+            dateFormatter.dateFormat = "h"
+            OuterViewSecondHourLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "mm"
+            OuterViewSecondMinuteLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "a"
+            OuterViewSecondAMPMToggleButton.setTitle(dateFormatter.string(from: Date()), for: .normal)
+        } else {
+            //phone is set to 24 hours
+            dateFormatter.dateFormat = "HH"
+            OuterViewFirstHourLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "mm"
+            OuterViewFirstMinuteLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "a"
+            OuterViewFirstAMPMToggleButton.setTitle(dateFormatter.string(from: Date()), for: .normal)
+            
+            dateFormatter.dateFormat = "HH"
+            print(" Second date : \(dateFormatter.string(from: Date()))")
+            OuterViewSecondHourLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "mm"
+            OuterViewSecondMinuteLabel.text = dateFormatter.string(from: Date())
+            dateFormatter.dateFormat = "a"
+            OuterViewSecondAMPMToggleButton.setTitle(dateFormatter.string(from: Date()), for: .normal)
+        }
         
     }
     
@@ -264,13 +282,9 @@ class MeTimeTableViewCell: UITableViewCell ,MeTimeViewControllerCellDelegate{
             OuterViewFirstHourLabel.text = timeArray[0]
             OuterViewFirstMinuteLabel.text = timeArray[1]
             OuterViewFirstAMPMToggleButton.setTitle(timeArray[2].uppercased(), for: .normal)
-            
-            
             self.setWeekDaysValues()
-            
-            
         }else{
-            OuterViewSecondHourLabel.text = timeArray[0]
+            OuterViewSecondHourLabel.text = timeArray[0];
             OuterViewSecondMinuteLabel.text = timeArray[1]
             OuterViewSecondAMPMToggleButton.setTitle(timeArray[2].uppercased(), for: .normal)
             self.setWeekDaysValues()

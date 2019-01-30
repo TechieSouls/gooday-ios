@@ -26,7 +26,7 @@ class GatheringTableViewCellThree: UITableViewCell {
     }
     
     func setShowArray(){
-        for _ in self.createGatheringView.FriendArray {
+        for _ in self.createGatheringView.selectedFriends {
             self.showArray.append(false)
         }
     }
@@ -45,14 +45,14 @@ class GatheringTableViewCellThree: UITableViewCell {
 
 extension GatheringTableViewCellThree : UICollectionViewDataSource ,UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return createGatheringView.FriendArray.count
+        return createGatheringView.selectedFriends.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let  cell = collectionView.dequeueReusableCell(withReuseIdentifier: "friendCell", for: indexPath) as! FriendsViewCell
         
-        let user = createGatheringView.FriendArray[indexPath.row]
+        let user = createGatheringView.selectedFriends[indexPath.row]
         
         cell.nameLabel.text =  user.name
         
@@ -72,7 +72,7 @@ extension GatheringTableViewCellThree : UICollectionViewDataSource ,UICollection
         
         cell.cellThree = self
         cell.indexPath = indexPath
-        if let icon = user.profileImage {
+        /*if let icon = user.profileImage {
             cell.profileImage.image = icon
         } else {
             if user.photoUrl != nil && user.photoUrl != ""{
@@ -82,10 +82,15 @@ extension GatheringTableViewCellThree : UICollectionViewDataSource ,UICollection
                 cell.profileImage.image = #imageLiteral(resourceName: "profile icon")
             }
             
+        }*/
+         if user.photo != nil && user.photo != ""{
+            WebService().profilePicFromFacebook(url: user.photo, completion: { image in
+                cell.profileImage.image = image
+            });
+         }else{
+                cell.profileImage.image = #imageLiteral(resourceName: "profile icon")
         }
-        
         return cell
-        
     }
     
     
@@ -120,7 +125,8 @@ extension GatheringTableViewCellThree : UICollectionViewDataSource ,UICollection
     
     func deleteCEll(tag:Int,cell:FriendsViewCell){
         print("\(tag) to be Deleted")
-        self.createGatheringView.FriendArray.remove(at: tag)
+        //self.createGatheringView.FriendArray.remove(at: tag)
+        self.createGatheringView.selectedFriends.remove(at: tag)
         self.friendsView.deleteItems(at: [cell.indexPath])
         self.showArray.remove(at: tag)
         self.friendsView.reloadItems(at: self.friendsView.indexPathsForVisibleItems)
@@ -144,18 +150,28 @@ extension GatheringTableViewCellThree : UICollectionViewDataSource ,UICollection
     }
     
     func loadImagesForOnscreenRows() {
-        guard self.createGatheringView.FriendArray.count != 0 else { return }
-        
+        //guard self.createGatheringView.FriendArray.count != 0 else { return }
+         guard self.createGatheringView.selectedFriends.count != 0 else { return }
         let visibleIndexPaths = self.friendsView.indexPathsForVisibleItems
         for indexPath in visibleIndexPaths {
-            let cenesUser = self.createGatheringView.FriendArray[indexPath.row]
+            /*let cenesUser = self.createGatheringView.FriendArray[indexPath.row]
             if cenesUser.profileImage == nil {
                 if cenesUser.photoUrl != nil && cenesUser.photoUrl != ""{
                     self.startIconDownload(cenesUser: cenesUser, forIndexPath: indexPath)
                 }
             }else{
                 
+            }*/
+            
+            let userContact = self.createGatheringView.selectedFriends[indexPath.row]
+            if userContact.photo == nil {
+                //if cenesUser.photoUrl != nil && cenesUser.photoUrl != ""{
+                 //   self.startIconDownload(cenesUser: cenesUser, forIndexPath: indexPath)
+                //}
+            }else{
+                
             }
+            
         }
     }
     

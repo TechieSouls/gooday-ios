@@ -137,6 +137,14 @@ class Util{
         }
     }
     
+    class func isPhoneLength(phone: String) -> Bool {
+        if phone.characters.count > 0 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
   class  func getTimeFromTimestamp(timeStamp:String) -> String{
         let timeinterval : TimeInterval = Double(timeStamp)! / 1000 // convert it in to NSTimeInteral
         let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
@@ -251,8 +259,8 @@ extension UITextField{
 }
 
 extension Date {
-    var millisecondsSince1970:Int {
-        return Int((self.timeIntervalSince1970 * 1000.0).rounded())
+    var millisecondsSince1970:Int64 {
+        return Int64(self.timeIntervalSince1970 * 1000.0)
     }
     
     init(milliseconds:Int) {

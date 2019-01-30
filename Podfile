@@ -1,7 +1,7 @@
 # Uncomment this line to define a global platform for your project
 # platform :ios, '9.0'
 
-target 'Cenes' do
+target 'Deploy' do
 use_frameworks!
 
 # Pods for Project
@@ -16,11 +16,14 @@ pod 'NVActivityIndicatorView'
 pod 'p2.OAuth2', '~> 3.0.3'
 pod 'SideMenu'
 pod 'GoogleAnalytics'
+pod 'SwiftyJSONModel'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['SWIFT_VERSION'] = '3.0'
+      config.build_settings.delete('CODE_SIGNING_ALLOWED')
+      config.build_settings.delete('CODE_SIGNING_REQUIRED')
     end
   end
 end
