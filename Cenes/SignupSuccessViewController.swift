@@ -31,6 +31,8 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     var fbLoginBtn : FBSDKLoginButton!;
     var pImage : UIImage!
     var facebookPictureUrl: String? = nil;
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -178,7 +180,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
 
     func signupUser() {
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         var postSignupData: [String: String] = [:];
         postSignupData["email"] = textFieldEmail.text!;
@@ -207,7 +209,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     }
     
     func uploadImage() {
-        startAnimating(loadinIndicatorSize, message: "Uploading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Uploading...", type: self.nactvityIndicatorView.type)
         let uploadImage = self.chooseProfilePhoto.image?.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
         
         WebService().uploadProfilePic(image: uploadImage, complete: {       (returnedDict) in
@@ -227,7 +229,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     }
     
     func syncDeviceContacts() {
-        self.startAnimating(loadinIndicatorSize, message: "Syncing Contacts...", type: NVActivityIndicatorType(rawValue: 15))
+        self.startAnimating(loadinIndicatorSize, message: "Syncing Contacts...", type: self.nactvityIndicatorView.type)
         
         UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
             

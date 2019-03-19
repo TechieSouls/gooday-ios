@@ -22,6 +22,8 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
     
     @IBOutlet weak var secondViewContainer: UIView!
     
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     var authenticateManager: AuthenticateManager!;
     var countryCode: String = "+00";
     let userService = UserService();
@@ -85,7 +87,7 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
         if (!isValidSSignupStep1()) {
             return;
         }
-        self.startAnimating(loadinIndicatorSize, message: "Sending Verification Code..", type: NVActivityIndicatorType(rawValue: 15))
+        self.startAnimating(loadinIndicatorSize, message: "Sending Verification Code..", type: self.nactvityIndicatorView.type)
         userService.sendVerificationCode(countryCode: countryCode, phoneNumber: self.textPhoneNumber.text!, complete: { (returnDict) in
             
             self.stopAnimating()

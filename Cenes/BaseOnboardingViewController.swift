@@ -11,6 +11,8 @@ import NVActivityIndicatorView
 
 class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSource ,UIPageViewControllerDelegate,NVActivityIndicatorViewable {
     
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     @IBOutlet weak var separatorView : UIView!
     
     @IBOutlet weak var nextButton: UIButton!
@@ -134,8 +136,8 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
             
         }else if pageIndex == 1 {
             
-            if self.holiday?.countryNameTextField.text != "" {
-                startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            /*if self.holiday?.countryNameTextField.text != "" {
+                startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
                 webServ.holidayCalendar(calenderName: (self.holiday?.selectedCountry)!, complete: { (sucess) in
                     print("webservice response oomplete")
                      self.stopAnimating()
@@ -147,7 +149,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
                 self.pageIndex = self.pageIndex + 1
                 self.reset()
                 self.setpageIndex(index: pageIndex)
-            }
+            }*/
             
         }else if pageIndex == 2 {
             

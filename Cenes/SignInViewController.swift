@@ -16,6 +16,8 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     
     @IBOutlet weak var passwordTextField: UITextField!
     
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -66,7 +68,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         }
         
         let userService = UserService()
-        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         // new hud
         
         userService.emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in

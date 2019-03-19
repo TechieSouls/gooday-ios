@@ -16,18 +16,18 @@ class CenesTabController: UITabBarController{
         super.viewDidLoad()
         appDelegate?.cenesTabBar = self
         
-        if SideMenuManager.menuLeftNavigationController == nil {
+        if SideMenuManager.default.menuLeftNavigationController == nil {
             let leftMenu = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
         
-            SideMenuManager.menuLeftNavigationController = leftMenu
+            SideMenuManager.default.menuLeftNavigationController = leftMenu
         }else{
             
             //let pvc = SideMenuManager.default.menuLeftNavigationController?.presentedViewController
-              SideMenuManager.menuLeftNavigationController?.dismiss(animated: false, completion: nil)
+              SideMenuManager.default.menuLeftNavigationController?.dismiss(animated: false, completion: nil)
             
             let leftMenu = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
             
-            SideMenuManager.menuLeftNavigationController = leftMenu
+            SideMenuManager.default.menuLeftNavigationController = leftMenu
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 let home = (self.viewControllers![0] as? UINavigationController)?.viewControllers.first as? HomeViewController
@@ -40,13 +40,13 @@ class CenesTabController: UITabBarController{
         //SideMenuManager.default.menuAddPanGestureToPresent(toView: (self.view)!)
         //SideMenuManager.default.menuAddScreenEdgePanGesturesToPresent(toView: (self.view)!)
         
-        SideMenuManager.menuWidth = 300
+        SideMenuManager.default.menuWidth = 300
         
         
         // Set up a cool background image for demo purposes
-        SideMenuManager.menuAnimationBackgroundColor = UIColor(red: 241.0, green: 241.0, blue: 241.0, alpha: 1.0)
+        SideMenuManager.default.menuAnimationBackgroundColor = UIColor(red: 241.0, green: 241.0, blue: 241.0, alpha: 1.0)
         
-        SideMenuManager.menuPresentMode = .viewSlideInOut
+        SideMenuManager.default.menuPresentMode = .viewSlideInOut
         //
         
         // Do any additional setup after loading the view.

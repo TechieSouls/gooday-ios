@@ -18,10 +18,13 @@ class FriendsViewCell: UICollectionViewCell {
     
     @IBOutlet weak var crossButotn: UIButton!
     
-    var cellThree : GatheringTableViewCellThree!
+    @IBOutlet weak var nonCenesUserView: UIView!
     
-    var inviteFriendCtrl: InviteFriendViewController!
+    @IBOutlet weak var nonCenesUserName: UILabel!
     
+    
+    var cellThree : GatheringPeopleTableViewCell!
+        
     var indexPath : IndexPath!
     var delegate: DeleteFriendDelegate?
     
@@ -34,6 +37,8 @@ class FriendsViewCell: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
         crossButotn.setImage(Ionicons.iosCloseOutline.image(24, color: UIColor.black), for: .normal)
+        self.nonCenesUserView.roundedView();
+        self.nonCenesUserView.backgroundColor = themeColor;
     }
 
     @IBAction func crossButtonPressed(_ sender: UIButton) {
@@ -48,9 +53,7 @@ class FriendsViewCell: UICollectionViewCell {
             if self.cellDiary != nil {
                 self.cellDiary.deleteCEll(tag: sender.tag,cell:self)
             }
-            if self.inviteFriendCtrl != nil {
-                self.inviteFriendCtrl.deleteCEll(tag: sender.tag,cell:self)
-            }
+            
         }
     }
 }

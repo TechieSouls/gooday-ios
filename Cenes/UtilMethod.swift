@@ -155,6 +155,28 @@ class Util{
         return date
     }
     
+    class  func hhmma(timeStamp: Int64) -> String{
+        let timeinterval : TimeInterval = Double(timeStamp) / 1000 // convert it in to NSTimeInteral
+        let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mm a"
+        let date = dateFormatter.string(from: dateFromServer as Date)
+        
+        return date
+    }
+    
+    class func getddMMMEEEE(timeStamp: Int64) -> String{
+        let timeinterval : TimeInterval = Double(timeStamp) / 1000 // convert it in to NSTimeInteral
+        let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
+        let dateFormatter = DateFormatter()
+        //.dateFormat = "h:mm a"
+        dateFormatter.dateFormat = "dMMM"
+        var date1Str = dateFormatter.string(from: dateFromServer as Date).uppercased()
+        
+        dateFormatter.dateFormat = "EEEE"
+        let date2Str = dateFormatter.string(from: dateFromServer as Date).uppercased()
+        return "\(date1Str) \(date2Str)";
+    }
     
    class func getDateString(timeStamp:String)-> String {
         let timeinterval : TimeInterval = Double(timeStamp)! / 1000 // convert it in to NSTimeInteral
@@ -216,6 +238,36 @@ class Util{
         return dateString
     }
     
+    class func showToast(controller: UIViewController, message : String, seconds: Double) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+        alert.view.backgroundColor = UIColor.black
+        alert.view.alpha = 0.6
+        alert.view.layer.cornerRadius = 15
+        
+        controller.present(alert, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + seconds) {
+            alert.dismiss(animated: true)
+        }
+    }
+    
+    func daysBetweenDates(startDate: Date, endDate: Date) -> Int {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([Calendar.Component.day], from: startDate, to: endDate)
+        return components.day!
+    }
+    
+    func hoursBetweenDates(startDate: Date, endDate: Date) -> Int {
+        let distanceBetweenDates: TimeInterval? = endDate.timeIntervalSince(startDate)
+        let secondsInAnHour: Double = 3600
+        //let secondsInDays: Double = 86400
+        //let secondsInWeek: Double = 604800
+        
+        let hoursBetweenDates = Int((distanceBetweenDates! / secondsInAnHour))
+        //let daysBetweenDates = Int((distanceBetweenDates! / secondsInDays))
+        //let weekBetweenDates = Int((distanceBetweenDates! / secondsInWeek))
+        return hoursBetweenDates;
+    }
     
 }
 extension UIViewController
@@ -274,6 +326,8 @@ extension Date {
     func endOfMonth() -> Date {
         return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startOfMonth())!
     }
+    
+    
 }
 
 extension UIImage {

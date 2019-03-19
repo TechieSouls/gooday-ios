@@ -14,6 +14,8 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     
     @IBOutlet weak var remindersTableView: UITableView!
     
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     var profileImage = UIImage(named: "profile icon")
     var badgeCount: String? = "0"
 
@@ -50,7 +52,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     //Delete Reminder
     func deleteReminder(reminder: ReminderModel, indexpath: IndexPath)
     {
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         WebService().removeReminder(reminderID: String(describing: reminder.reminderID as NSNumber)) { (returnedDict) in
             if returnedDict["Error"] as? Bool == true {
@@ -108,7 +110,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
             return
         }
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         WebService().acceptReminderInvite(reminderId: String(describing: reminderID as NSNumber)) { (responseDict) in
             print(responseDict)
@@ -130,7 +132,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     
     //Update Reminder to Closed State
     func updateReminderToClosedState(indexpath: IndexPath) {
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         let reminder = openReminders[indexpath.row]
         
@@ -253,7 +255,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
         super.viewWillAppear(animated)
         
         self.profileImage = appDelegate?.getProfileImage()
-        if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+        if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
 
 //        if SideMenuManager.menuLeftNavigationController.isHidden == true{
 //        openReminders.removeAll()
@@ -269,7 +271,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
     
     
     @objc func profileButtonPressed(){
-        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
         // self.performSegue(withIdentifier: "openSideMenu", sender: self)
     }
     

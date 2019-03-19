@@ -1,0 +1,106 @@
+//
+//  Event.swift
+//  Deploy
+//
+//  Created by Cenes_Dev on 27/02/2019.
+//  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
+//
+
+import Foundation
+class Event {
+    
+    var title: String!;
+    var description: String!;
+    var eventPicture: String!;
+    var eventId: Int32!;
+    var startTime: Int64 = Date().toMillis();
+    var endTime: Int64 = Date().toMillis();
+    var location: String!;
+    var latitude: String!;
+    var longitude: String!;
+    var createdById: Int32!;
+    var source: String!;
+    var scheduleAs: String? = "Gathering";
+    var thumbnail: String!;
+    var isPredictiveOn: Bool = false;
+    var isFullDay: Bool!;
+    var placeId: String!;
+    var predictiveData: String!;
+    var predictiveDataArr : NSMutableArray!
+    var fullDayStartTime: String!;
+    var key: String!;
+    var isEditMode: Bool = false;
+    var eventClickedFrom: String = "Home";
+    
+    var eventMembers: [EventMember]!;
+    
+    func loadEventData(eventDict: NSDictionary) -> Event {
+        
+        let event = Event();
+        event.title = eventDict.value(forKey: "title") as? String;
+        event.description = eventDict.value(forKey: "description") as? String;
+        event.eventPicture = eventDict.value(forKey: "eventPicture") as? String;
+        if (eventDict.value(forKey: "eventId") != nil) {
+            event.eventId = eventDict.value(forKey: "eventId") as? Int32;
+        } else if (eventDict.value(forKey: "id") != nil) {
+            event.eventId = eventDict.value(forKey: "id") as? Int32;
+        }
+        event.startTime = eventDict.value(forKey: "startTime") as! Int64;
+        event.endTime = eventDict.value(forKey: "endTime") as! Int64;
+        event.location = eventDict.value(forKey: "location") as? String;
+        event.latitude = eventDict.value(forKey: "latitude") as? String;
+        event.longitude = eventDict.value(forKey: "longitude") as? String;
+        event.scheduleAs = eventDict.value(forKey: "scheduleAs") as? String;
+        event.createdById = eventDict.value(forKey: "createdById") as? Int32;
+        event.thumbnail = eventDict.value(forKey: "thumbnail") as? String;
+        event.isPredictiveOn = eventDict.value(forKey: "isPredictiveOn") != nil ? eventDict.value(forKey: "isPredictiveOn") as! Bool : false;
+        event.isFullDay = eventDict.value(forKey: "isFullDay") as? Bool;
+        event.placeId = eventDict.value(forKey: "placeId") as? String;
+        event.predictiveData = eventDict.value(forKey: "predictiveData") as? String;
+        event.fullDayStartTime = eventDict.value(forKey: "fullDayStartTime") as? String;
+        event.key = eventDict.value(forKey: "key") as? String;
+
+        if (eventDict.value(forKey: "eventMembers") != nil) {
+             event.eventMembers = EventMember().loadEventMembers(eventMemberArray: eventDict.value(forKey: "eventMembers") as! NSArray)
+        }
+        if (eventDict.value(forKey: "members") != nil) {
+            event.eventMembers = EventMember().loadEventMembers(eventMemberArray: eventDict.value(forKey: "members") as! NSArray)
+        }
+       
+        
+        return event;
+    }
+    
+    func toDictionary(event: Event) -> [String: Any] {
+        
+        var eventJson: [String: Any] = [:];
+        eventJson["title"] = event.title;
+        eventJson["description"] = event.description;
+        eventJson["eventPicture"] = event.eventPicture;
+        eventJson["eventId"] = event.eventId;
+        eventJson["createdById"] = event.createdById;
+        eventJson["startTime"] = event.startTime;
+        eventJson["endTime"] = event.endTime;
+        eventJson["location"] = event.location;
+        eventJson["scheduleAs"] = event.scheduleAs;
+        eventJson["longitude"] = event.longitude;
+        eventJson["longitude"] = event.longitude;
+        eventJson["createdById"] = event.createdById;
+        eventJson["thumbnail"] = event.thumbnail;
+        eventJson["isPredictiveOn"] = event.isPredictiveOn;
+        eventJson["isFullDay"] = event.isFullDay;
+        eventJson["placeId"] = event.placeId;
+        eventJson["predictiveData"] = event.predictiveData;
+        eventJson["fullDayStartTime"] = event.fullDayStartTime;
+        eventJson["key"] = event.key;
+        if (event.eventMembers != nil) {
+            var eveMembers: [[String: Any]] = [];
+            for evenMem in event.eventMembers! as NSArray {
+                eveMembers.append(EventMember().toDictionary(eventMember: evenMem as! EventMember));
+            }
+            eventJson["eventMembers"] = eveMembers;
+        }
+        return eventJson;
+    }
+    
+}

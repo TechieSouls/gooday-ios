@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import UIKit
+import NVActivityIndicatorView
 
-class CenesUtilFunc: UIViewController {
+class CenesUtilFunc: UIViewController, NVActivityIndicatorViewable {
     
     func yesNoAlert(title: String, message: String) {
     

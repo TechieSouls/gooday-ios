@@ -112,5 +112,7 @@
 	<false/>
 	<key>privacy - location usage description</key>
 	<string>Cenes would need access the location to notify on selected regions</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app will use microphone</string>
 </dict>
 </plist>

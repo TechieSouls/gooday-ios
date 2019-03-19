@@ -11,6 +11,9 @@ import MapKit
 import NVActivityIndicatorView
 
 class InvitationAcceptView: UIViewController,NVActivityIndicatorViewable {
+    
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     var invitationData : CenesCalendarData!
     
     var gatheringView : GatheringViewController!
@@ -114,7 +117,7 @@ class InvitationAcceptView: UIViewController,NVActivityIndicatorViewable {
     }
     */
     @IBAction func acceptInvitation(_ sender: UIButton) {
-        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         // Accept Invite
         
@@ -139,7 +142,7 @@ class InvitationAcceptView: UIViewController,NVActivityIndicatorViewable {
     }
     
     @IBAction func declineInvitation(_ sender: UIButton) {
-        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         // Decline Invite
         WebService().AcceptDeclineInvitation(eventMemberId: self.invitationData.eventMemberId, status: "declined") { (returnedDict) in

@@ -75,8 +75,10 @@ class AddOrEditReminderViewController: BaseViewController, NVActivityIndicatorVi
     }
     
     @IBAction func deleteReminder(_ sender: Any) {
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
+        //NVActivityIndicatorView(frame: frame, type: type, color: color, padding: padding).
+        //var abc = CGRect(origin: 300, size: 300);
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorView.init(frame: cgRectSizeLoading).type)
+
         WebService().removeReminder(reminderID: String(describing: self.selectedReminder.reminderID as NSNumber)) { (returnedDict) in
             if returnedDict["Error"] as? Bool == true {
                 self.stopAnimating()
@@ -126,8 +128,8 @@ class AddOrEditReminderViewController: BaseViewController, NVActivityIndicatorVi
             dict["reminderTime"] = "\(date.millisecondsSince1970)"
         }
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
+
         if selectedUsers.count > 0 {
             dict["reminderMembers"] = updateUsers()
         }
@@ -316,10 +318,10 @@ class AddOrEditReminderViewController: BaseViewController, NVActivityIndicatorVi
         
         self.reminderTitleTextfield.resignFirstResponder()
         
-        if segue.identifier == "showLocation" {
+        /*if segue.identifier == "showLocation" {
             let locationNavigationVC = segue.destination as? LocationTableViewController
             locationNavigationVC?.delegate = self
-        }
+        }*/
     }
     
 }
@@ -332,9 +334,7 @@ extension AddOrEditReminderViewController: UITextFieldDelegate {
             return false
         }
         else if textField == peopleTextField {
-            let inviteFriends = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "inviteFriends") as? InviteFriendViewController
-            inviteFriends?.delegate = self
-            self.navigationController?.pushViewController(inviteFriends!, animated: true)
+            
             return false
         }
         return true
@@ -353,14 +353,14 @@ extension AddOrEditReminderViewController: UITextFieldDelegate {
     }
 }
 
-extension AddOrEditReminderViewController: SelectedLocationDelegate {
+/*extension AddOrEditReminderViewController: SelectedLocationDelegate {
     func selectedLocation(location: LocationModel,url : String!) {
         self.selectedLocation = location
         locationTextField.text = location.locationName
     }
-}
+}*/
 
-extension AddOrEditReminderViewController: SelectUsersDelegate {
+extension AddOrEditReminderViewController {
     func selectUser(user: CenesUser) {
         selectedUsers.append(user)
         

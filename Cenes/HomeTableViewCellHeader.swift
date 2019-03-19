@@ -15,7 +15,6 @@ class HomeTableViewCellHeader: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         contentView.backgroundColor = themeColor
-        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

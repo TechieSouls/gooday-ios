@@ -17,6 +17,8 @@ pod 'p2.OAuth2', '~> 3.0.3'
 pod 'SideMenu'
 pod 'GoogleAnalytics'
 pod 'SwiftyJSONModel'
+pod 'SDWebImage', '~> 4.0'
+pod 'Instabug'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

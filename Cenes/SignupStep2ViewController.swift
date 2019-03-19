@@ -27,6 +27,9 @@ class SignupStep2ViewController: UIViewController, NVActivityIndicatorViewable {
     var verificationCode: String = "";
     var countryCode: String = "";
     var phoneNumber: String = "";
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -155,7 +158,7 @@ class SignupStep2ViewController: UIViewController, NVActivityIndicatorViewable {
         //Send Verification Code on Boxes filled with code
         if (self.verificationCode.count == 4) {
             
-            self.startAnimating(loadinIndicatorSize, message: "Verifying Code...", type: NVActivityIndicatorType(rawValue: 15))
+            self.startAnimating(loadinIndicatorSize, message: "Verifying Code...", type: self.nactvityIndicatorView.type)
             
             self.userService.checkVerificationCode(countryCode: self.countryCode, phoneNumber: self.phoneNumber, code: self.verificationCode) { (returnedDict) in
                 

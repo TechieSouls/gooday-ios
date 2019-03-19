@@ -28,6 +28,7 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
     
     
     var baseView : BaseOnboardingViewController!
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     
     @IBOutlet weak var tableOuterView: UIView!
@@ -101,9 +102,7 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
     
     
     func getStatus(){
-        
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         WebService().meTimeStatus() { [weak self] (jsonDict) in
             self?.stopAnimating()
             print(jsonDict)
@@ -369,7 +368,7 @@ class MeTimeViewController: UIViewController,MeTimeTableViewCellDelegate,NVActiv
        
         
         if fromSideMenu == true {
-            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             webservice.meTime(submitArray: submitArray){ (success) in
                 self.stopAnimating()
                 if success == true {

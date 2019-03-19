@@ -35,15 +35,15 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             
         case 1:
             print("")
-            identifier = "GatheringTableViewCellTwo"
-            let cell: GatheringTableViewCellTwo = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellTwo)!
+            identifier = "GatheringTitleTableViewCell"
+            let cell: GatheringTitleTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTitleTableViewCell)!
             cell.gatheringView = self
             
-            if self.eventName == "" {
+            /*if self.eventName == "" {
                 cell.eventTitleTextField.text = ""
-            }else{
-                cell.eventTitleTextField.text = self.eventName
-            }
+            }else{*/
+                cell.eventTitleTextField.text = self.event.title;
+            //}
             
             if self.summaryBool{
                 cell.eventTitleTextField.isUserInteractionEnabled = false
@@ -54,12 +54,12 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             return cell
         case 2:
             print("")
-            identifier = "GatheringTableViewCellThree"
-            let cell: GatheringTableViewCellThree = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellThree)!
+            identifier = "GatheringPeopleTableViewCell"
+            let cell: GatheringPeopleTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringPeopleTableViewCell)!
             
             cell.createGatheringView = self
             cell.setShowArray()
-            if self.selectedFriends.count > 0 {
+            if self.event.eventMembers != nil && self.event.eventMembers.count > 0 {
                 cell.lowerView.isHidden = false
             }else{
                 cell.lowerView.isHidden = true
@@ -72,8 +72,8 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             
             
             
-            identifier = "GatheringTableViewCellFive"
-            let cell: GatheringTableViewCellFive = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellFive)!
+            identifier = "GatheringDateTableViewCell"
+            let cell: GatheringDateTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringDateTableViewCell)!
             
             cell.cellDelegate = self
             cell.gatheringView = self
@@ -109,12 +109,12 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             return cell
         case 4:
             print("")
-            identifier = "GatheringTableViewCellOne"
-            let cell: GatheringTableViewCellOne = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTableViewCellOne)!
+            identifier = "GatheringLocationTableViewCell"
+            let cell: GatheringLocationTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringLocationTableViewCell)!
             
             
-            if self.selectedLocation != nil {
-                cell.locationTitle.text = self.selectedLocation.locationName
+            if self.event.location != nil {
+                cell.locationTitle.text = self.event.location;
             }else{
                 cell.locationTitle.text = "Add Location"
             }
@@ -125,20 +125,18 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
                     self.locationName = ""
                 }
             }
-            
-            
             return cell
         case 5:
             print("")
-            identifier = "GAtheringTableViewCellFour"
-            let cell: GAtheringTableViewCellFour = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GAtheringTableViewCellFour)!
+            identifier = "GatheringDescTableViewCell"
+            let cell: GatheringDescTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringDescTableViewCell)!
             cell.gatheringView = self
             
-            if self.eventDetails == "" {
+            /*if self.eventDetails == "" {
                 cell.eventDetailsField.text = ""
-            }else{
-                cell.eventDetailsField.text = self.eventDetails
-            }
+            }else{*/
+                cell.eventDetailsField.text = self.event.description
+            //}
             
             if self.summaryBool{
                 cell.eventDetailsField.isUserInteractionEnabled = false
@@ -178,7 +176,7 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
         case 1:
             return 60
         case 2:
-            if self.selectedFriends.count > 0 {
+            if self.event.eventMembers != nil && self.event.eventMembers.count > 0 {
                 return 146
             }else{
                 return 64
@@ -199,9 +197,7 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
         }
         
     }
-    
-    
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
             
@@ -212,30 +208,15 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
         case 2:
             print("")
             
-            if !self.summaryBool{
-                self.navigationController?.navigationBar.barTintColor = UIColor.lightGray
-                
-                let inviteFriends = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "inviteFriends") as? InviteFriendViewController
-                
-                //inviteFriends?.gatheringView = self
-                inviteFriends?.selectedFriendsDelegate = self;
-                self.navigationController?.pushViewController(inviteFriends!, animated: true)
-                //                self.modalPresentationStyle = .overCurrentContext
-                //                self.present(inviteFriends!, animated: true, completion: nil)
-            }
-            
+            self.performSegue(withIdentifier: "inviteFriends", sender: nil)
+
         case 3:
             print("")
         case 4:
             print("")
             
-            //            if self.cellHeightTime == CellHeight.Third {
-            //            self.cellHeightTime = CellHeight.Fourth
-            //                self.gatheringTableView.reloadData()
-            //            }
-            if !self.summaryBool{
-                self.performSegue(withIdentifier: "showLocation", sender: nil)
-            }
+            self.performSegue(withIdentifier: "showLocation", sender: nil)
+            
         case 5:
             print("")
             

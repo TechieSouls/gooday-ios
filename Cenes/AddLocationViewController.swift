@@ -18,7 +18,7 @@ class AddLocationViewController: UIViewController ,NVActivityIndicatorViewable{
     var searchBar:UISearchBar!
     var searchText : String?
     
-    var locations: [LocationModel] = []
+    var locations: [Location] = []
     
     var delegate: SelectedLocationDelegate?
     
@@ -102,8 +102,7 @@ class AddLocationViewController: UIViewController ,NVActivityIndicatorViewable{
     func getLocationWithName(nameStartsWith:String){
         //Call api for friends
         webservice.cancelAll()
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
         webservice.getLocation(nameString: nameStartsWith) { [weak self] (jsonDict) in
             self?.stopAnimating()
             
@@ -130,9 +129,9 @@ class AddLocationViewController: UIViewController ,NVActivityIndicatorViewable{
     }
 
     func parseLocations(results: [[String: Any]]) {
-        locations = [LocationModel]()
+        locations = [Location]()
         for location in results {
-            let locationModel = LocationModel()
+            let locationModel = Location()
             
 //            if let locationPoints = location["geometry"] as? [String: Any] {
 //                let latLong = locationPoints["location"] as? [String: Any]
@@ -145,8 +144,8 @@ class AddLocationViewController: UIViewController ,NVActivityIndicatorViewable{
                 let mainText = formattedAddress["main_text"] as? String
                 let secondText = formattedAddress["secondary_text"] as? String
                 
-                locationModel.formattedAddress = secondText
-                locationModel.locationName = mainText
+                locationModel.address = secondText
+                locationModel.location = mainText
             }
             locationModel.placeId = location["place_id"] as? String
             locations.append(locationModel)
@@ -200,7 +199,7 @@ extension AddLocationViewController : UISearchBarDelegate {
         if searchText != "" {
             self.getLocationWithName(nameStartsWith: searchText)
         }else{
-            self.locations = [LocationModel]()
+            self.locations = [Location]()
             self.reloadLocations()
         }
         
@@ -226,7 +225,7 @@ extension AddLocationViewController : UITextFieldDelegate{
             if textAfterUpdate != "" {
                 self.getLocationWithName(nameStartsWith: textAfterUpdate)
             }else{
-                self.locations = [LocationModel]()
+                self.locations = [Location]()
                 self.reloadLocations()
             }
         }
@@ -251,9 +250,9 @@ extension AddLocationViewController : UITableViewDelegate,UITableViewDataSource{
         
         let location = locations[indexPath.row]
         
-        cell.nameLabel.text = location.locationName
+        cell.nameLabel.text = location.location
         
-        cell.addressLabel.text = location.formattedAddress
+        cell.addressLabel.text = location.address
         
         return cell
     }
@@ -269,7 +268,7 @@ extension AddLocationViewController : UITableViewDelegate,UITableViewDataSource{
         
         let location = locations[indexPath.row]
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
         
         webservice.getLocationLatLong(id: location.placeId) { [weak self] (jsonDict) in
             self?.stopAnimating()
@@ -281,8 +280,8 @@ extension AddLocationViewController : UITableViewDelegate,UITableViewDataSource{
                     
                     if let locationPoints = locationResults["geometry"] as? [String: Any] {
                                         let latLong = locationPoints["location"] as? [String: Any]
-                                        location.latitude = latLong!["lat"] as! NSNumber
-                                        location.longitude = latLong!["lng"] as! NSNumber
+                                        location.latitude = latLong!["lat"] as! String
+                                        location.longitude = latLong!["lng"] as! String
                     }
                     
                     

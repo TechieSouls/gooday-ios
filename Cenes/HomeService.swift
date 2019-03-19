@@ -11,6 +11,8 @@ import Alamofire
 
 class HomeService {
     
+    let get_home_events: String = "api/getEvents";
+    
     var requestArray = NSMutableArray()
     
     func refreshGoogleEvents(complete: @escaping(NSMutableDictionary)->Void ) {
@@ -53,5 +55,42 @@ class HomeService {
         }
         
         self.requestArray.add(req)
+    }
+    
+    func getHomeEvents(queryStr :String ,token : String ,complete: @escaping(NSMutableDictionary)->Void ) {
+        
+        let Auth_header    = [ "token" : token ]
+        
+        let returnedDict = NSMutableDictionary()
+        returnedDict["Error"] = false
+        returnedDict["ErrorMsg"] = ""
+        
+        let url = "\(apiUrl)\(get_home_events)?\(queryStr)"
+        print("API : \(url)")
+        
+        Alamofire.request("\(url)", method: .get, parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+
+            var json : NSDictionary!
+            switch response.result {
+            case .success:
+                print( "home Events Successful")
+                
+                json = response.result.value as! NSDictionary
+                let json = response.result.value as! NSDictionary
+                if json["errorCode"] as? Int == 0 {
+                    returnedDict["data"] = json["data"]
+                }else {
+                    returnedDict["Error"] = true
+                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
+                }
+                print(json)
+            case .failure(let error):
+                print(error)
+                returnedDict["Error"] = true
+                returnedDict["ErrorMsg"] = error.localizedDescription
+            }
+            
+            complete(returnedDict)
+        }
     }
 }

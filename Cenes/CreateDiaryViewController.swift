@@ -20,6 +20,8 @@ enum CellHeightDiary : CGFloat {
 
 class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegate ,UINavigationControllerDelegate,NVActivityIndicatorViewable {
 
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     let picController = UIImagePickerController()
     
     var diaryData = DiaryData()
@@ -107,7 +109,7 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
             return
         }
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         if self.diaryData.diaryPhotoModel.count > 0 {
             self.uploadPicture(count: 0)
         }else{
@@ -119,7 +121,7 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
     
     func deleteDiary(){
         // Delete Diary
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         WebService().deleteDiary(diaryId:self.diaryData.diaryId) { (returnedDict) in
             if returnedDict["Error"] as? Bool == true {
@@ -375,7 +377,7 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
         
         if segue.identifier == "showLocation" {
             let locationNavigationVC = segue.destination as? LocationTableViewController
-            locationNavigationVC?.delegate = self
+            //locationNavigationVC?.delegate = self
         }
     }
     
@@ -491,9 +493,8 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
     }
     
     func addFriendsButton() {
-        let inviteFriends = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "inviteFriends") as? InviteFriendViewController
-        inviteFriends?.delegate = self
-        self.navigationController?.pushViewController(inviteFriends!, animated: true)
+        
+       // self.navigationController?.pushViewController(inviteFriends!, animated: true)
     }
     
 }
@@ -506,9 +507,9 @@ extension CreateDiaryViewController: UITextFieldDelegate {
             return false
         }
         else if textField == DiaryCell.addFriendsTF {
-            let inviteFriends = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "inviteFriends") as? InviteFriendViewController
-            inviteFriends?.delegate = self
-            self.navigationController?.pushViewController(inviteFriends!, animated: true)
+            /*let inviteFriends = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "inviteFriends") as? InviteFriendViewController
+            inviteFriends?.delegate = self*/
+            //self.navigationController?.pushViewController(inviteFriends!, animated: true)
             return false
         }else if textField == DiaryCell.photosTF {
             if self.diaryData.diaryPhotoModel.count <= 4{
@@ -539,15 +540,15 @@ extension CreateDiaryViewController: UITextFieldDelegate {
 }
 
 
-extension CreateDiaryViewController: SelectedLocationDelegate {
+/*extension CreateDiaryViewController: SelectedLocationDelegate {
     func selectedLocation(location: LocationModel,url:String!) {
         self.selectedLocation = location
         self.diaryData.locationName = location.locationName
         DiaryCell.locationTF.text = location.locationName
     }
-}
+}*/
 
-extension CreateDiaryViewController: SelectUsersDelegate {
+extension CreateDiaryViewController {
     func selectUser(user: CenesUser) {
         self.diaryData.eventUsers.append(user)
         DiaryCell.showArrayFriends.append(false)

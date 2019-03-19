@@ -8,24 +8,42 @@
 
 import UIKit
 import NVActivityIndicatorView
+import SideMenu
 
 class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorViewable {
-
-    @IBOutlet weak var countryNameTextField : UITextField!
-    @IBOutlet weak var countryPickerView : UIPickerView!
-    @IBOutlet weak var separatorView : UIView!
+    
+    @IBOutlet weak var imgCountryFlag: UIImageView!
+    
+    @IBOutlet weak var lblCountryName: UILabel!
+    
+    @IBOutlet weak var btnSaveCountry: UIButton!
+    @IBOutlet weak var btnChangeCountry: UIButton!
+    
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     var countryDataArray = [NSMutableDictionary]()
     
     var selectedCountry = ""
     
-    @IBOutlet weak var globeIcon: UIImageView!
     var baseView : BaseOnboardingViewController!
     
     var fromSideMenu = false
+    var loggedInUser: User!;
+    var profileImage = UIImage(named: "profile icon");
+    var image: UIImage!;
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = themeColor;
+        
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+
+        btnSaveCountry.backgroundColor = selectedColor
+        btnSaveCountry.setTitleColor(UIColor.white, for: .normal)
+        btnSaveCountry.btnCircledCorners();
+        
+        btnChangeCountry.setTitleColor(cenesLabelBlue, for: .normal);
         
         countryDataArray =  [["name":"Australian Holidays","value":"en.australian#holiday@group.v.calendar.google.com","image":"flag_au.png"],
         ["name":"Austrian Holidays","value":"en.austrian#holiday@group.v.calendar.google.com","image":"flag_br.png"],
@@ -70,81 +88,49 @@ class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorVi
         
         
         
-        countryNameTextField.inputView = countryPickerView
-        countryPickerView.removeFromSuperview()
+       // countryNameTextField.inputView = countryPickerView
+        /*countryPickerView.removeFromSuperview()
         // Do any additional setup after loading the view.
         countryPickerView.delegate = self
         countryPickerView.dataSource  = self
         separatorView.layer.shadowOffset = CGSize(width: 0, height: -1)
         separatorView.layer.shadowRadius = 1;
         separatorView.layer.shadowOpacity = 0.5;
-        separatorView.layer.masksToBounds = false
+        separatorView.layer.masksToBounds = false*/
         
-        if fromSideMenu {
-            self.navigationItem.hidesBackButton = true
-            let backButton = UIButton.init(type: .custom)
-            backButton.setTitle("Cancel", for: UIControlState.normal)
-            backButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
-            backButton.layer.cornerRadius = backButton.frame.height/2
-            backButton.clipsToBounds = true
-            backButton.addTarget(self, action: #selector(backButtonPressed(_:)), for: .touchUpInside)
-            
-            let barButton = UIBarButtonItem.init(customView: backButton)
-            self.navigationItem.leftBarButtonItem = barButton
-             self.separatorView.isHidden = true
-            
-        }
-        self.globeIcon.image = #imageLiteral(resourceName: "holidayglobeBlue")
+        //self.globeIcon.image = #imageLiteral(resourceName: "holidayglobeBlue")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if fromSideMenu {
+            self.setUpNavBar();
+            self.navigationController?.navigationBar.shouldRemoveShadow(true)
+            if self.loggedInUser.photo != nil {
+                let webServ = WebService()
+                webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in
+                    self.profileImage = image
+                    self.setUpNavBar()
+                })
+            }
+        }
+    }
     @objc func backButtonPressed(_ sender: Any) {
         
         self.navigationController?.popViewController(animated: true)
     }
     
     override func viewWillLayoutSubviews() {
-        
-        print(self.globeIcon.bounds)
-        print("self globel icon bound =\(self.globeIcon.frame)")
-        let image = #imageLiteral(resourceName: "holidayglobeBlue").compressImage(newSizeWidth: Float(self.globeIcon.bounds.width), newSizeHeight: Float(self.globeIcon.bounds.size.width), compressionQuality: 1.0)
-        if self.globeIcon.image == nil {
-            self.globeIcon.image = image
-        }
+
+        //print(self.globeIcon.bounds)
+        //print("self globel icon bound =\(self.globeIcon.frame)")
+        //let image = #imageLiteral(resourceName: "holidayglobeBlue").compressImage(newSizeWidth: Float(self.globeIcon.bounds.width), newSizeHeight: Float(self.globeIcon.bounds.size.width), compressionQuality: 1.0)
+        //if self.globeIcon.image == nil {
+         //   self.globeIcon.image = image
+        //}
     }
     
-    func setUpNavBar(set:Bool){
-        if set {
-            
-            if fromSideMenu {
-               
-                let doneButton = UIButton.init(type: .custom)
-                doneButton.setTitle("Done", for: UIControlState.normal)
-                doneButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
-                doneButton.layer.cornerRadius = doneButton.frame.height/2
-                doneButton.clipsToBounds = true
-                doneButton.addTarget(self, action: #selector(dismissPickerView), for: .touchUpInside)
-                let barButton = UIBarButtonItem.init(customView: doneButton)
-                 self.navigationItem.rightBarButtonItem = barButton
-                
-            }else{
-            baseView.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(dismissPickerView))
-            }
-        }else{
-            if fromSideMenu {
-                let saveButton = UIButton.init(type: .custom)
-                saveButton.setTitle("Save", for: UIControlState.normal)
-                saveButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
-                saveButton.layer.cornerRadius = saveButton.frame.height/2
-                saveButton.clipsToBounds = true
-                saveButton.addTarget(self, action: #selector(saveHoliday), for: .touchUpInside)
-                let barButton = UIBarButtonItem.init(customView: saveButton)
-                self.navigationItem.rightBarButtonItem = barButton
-                self.globeIcon.image = #imageLiteral(resourceName: "holidayglobeBlue")
-            }else{
-                baseView.navigationItem.rightBarButtonItem = nil
-            }
-        }
-    }
+    
     
     
     override func didReceiveMemoryWarning() {
@@ -152,19 +138,26 @@ class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorVi
         // Dispose of any resources that can be recreated.
     }
     
+    
+    @IBAction func changeCountryPressed(_ sender: Any) {
+    }
+
+    @IBAction func saveCountryPressed(_ sender: Any) {
+    }
+    
     @objc func dismissPickerView(){
-        self.countryNameTextField.endEditing(true)
+        //self.countryNameTextField.endEditing(true)
     }
     
     @objc func saveHoliday(){
-        if self.countryNameTextField.text != "" {
-            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        /*if self.countryNameTextField.text != "" {
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             WebService().holidayCalendar(calenderName: (self.selectedCountry), complete: { (sucess) in
                 print("webservice response oomplete")
                 self.stopAnimating()
                 self.navigationController?.popViewController(animated: true)
             })
-        }
+        }*/
     }
     
     @IBAction  func userDidSelectNext(sender:UIButton){
@@ -176,25 +169,63 @@ class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorVi
         let calendar = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
         self.navigationController?.pushViewController(calendar!, animated: true)
     }
+    
+    func setUpNavBar(){
+        
+        let profileButton = UIButton.init(type: .custom)
+        profileButton.imageView?.contentMode = .scaleAspectFill
+        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        profileButton.layer.cornerRadius = profileButton.frame.height/2
+        profileButton.clipsToBounds = true
+        profileButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        
+        profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        profileButton.backgroundColor = UIColor.white
+        
+        let barButton = UIBarButtonItem.init(customView: profileButton)
+        self.navigationItem.leftBarButtonItem = barButton
+        
+        let homeButton = UIButton.init(type: .custom)
+        homeButton.setImage(UIImage(named: "homeSelected"), for: .normal)
+        homeButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        homeButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
+        homeButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        
+        homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
+        
+        let rightBarButton = UIBarButtonItem.init(customView: homeButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    @objc func homeButtonPressed(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func profileButtonPressed(){
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+    }
+    
 }
 
 extension WorldHolidayCalendarViewController : UITextFieldDelegate{
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        self.countryPickerView.isHidden = false
-        self.setUpNavBar(set: true)
+        //self.countryPickerView.isHidden = false
+        //self.setUpNavBar(set: true)
         return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
-        self.countryPickerView.isHidden = true
-        self.setUpNavBar(set: false)
+        //self.countryPickerView.isHidden = true
+        //self.setUpNavBar(set: false)
     }
 }
 
 extension WorldHolidayCalendarViewController : CountryPickerDelegate {
     func countryPicker(_ picker: CountryPicker!, didSelectCountryWithName name: String!, code: String!) {
-        self.countryNameTextField.text = name
+        //self.countryNameTextField.text = name
     }
 }
 
@@ -238,7 +269,7 @@ extension WorldHolidayCalendarViewController : UIPickerViewDelegate ,UIPickerVie
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         print((countryDataArray[row]["name"] as? String)!)
-        self.countryNameTextField.text = countryDataArray[row]["name"] as? String
+        //self.countryNameTextField.text = countryDataArray[row]["name"] as? String
         selectedCountry = (countryDataArray[row]["value"] as? String)!
     }
     

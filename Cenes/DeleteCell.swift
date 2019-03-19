@@ -25,6 +25,6 @@ class DeleteCell: UITableViewCell {
     }
     
     @IBAction func deleteButtonPressed(_ sender: Any) {
-        self.gatheringView.deleteGathering()
+        //self.gatheringView.deleteGathering()
     }
 }

@@ -14,7 +14,8 @@ var imageFacebookURL :String?
 //let apiUrl =  "http://cenes.test2.redblink.net/"
 
 // Live Server
-let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
+//let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
+let apiUrl = "https://deploy.cenesgroup.com/"
 
 
 

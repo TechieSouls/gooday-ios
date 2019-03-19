@@ -20,6 +20,7 @@ import CoreData
 
 class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     @IBOutlet weak var tableView: UITableView!
    @IBOutlet weak var calendar: FSCalendar!
@@ -30,7 +31,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     var userImagesInProgress = [String:String]()
     var holidaysData = NSMutableDictionary()
     var objectArray = [CalendarObjects]()
-    var dataObjectArray = [CenesEvent]()
+    var dataObjectArray = [HomeDto]()
     var calendarDataArray = [CalendarData]()
     var sectionArray:[Int]?
     var rowsInSecionArray:[Int]?
@@ -42,6 +43,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
   
     var profileImage = UIImage(named: "profile icon")
     var badgeCount: String? = "0"
+    var loggedInUser: User!
 //    private let persistentContainer = NSPersistentContainer(name: "Cenes")
 
     
@@ -54,10 +56,10 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         tabController.tabBar.items?[1].title = nil
         tabController.tabBar.items?[1].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[1].titlePositionAdjustment = UIOffsetMake(0, 80)
-        tabController.tabBar.items?[2].title = nil
+        /*tabController.tabBar.items?[2].title = nil
         tabController.tabBar.items?[2].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[2].titlePositionAdjustment = UIOffsetMake(0, 80)
-        /*tabController.tabBar.items?[3].title = nil
+        tabController.tabBar.items?[3].title = nil
         tabController.tabBar.items?[3].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[3].titlePositionAdjustment = UIOffsetMake(0, 80)
         tabController.tabBar.items?[4].title = nil
@@ -93,6 +95,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         self.tableView.backgroundColor = themeColor;
         self.title = "CENES"
         self.tabBarItem.title = nil
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         if appDelegate?.storeLoaded == false {
             appDelegate?.storeLoaded = true
@@ -231,9 +234,9 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
-        self.navigationController?.navigationBar.backgroundColor = themeColor
-        self.navigationController?.navigationBar.tintColor = themeColor;
+        //self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        //self.navigationController?.navigationBar.backgroundColor = themeColor
+        //self.navigationController?.navigationBar.tintColor = themeColor;
         
         if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
 
@@ -262,7 +265,14 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                         self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                         
                     }else{
-                        self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                        self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                        self.tableView.reloadData()
+                        if self.dataObjectArray.count > 0 {
+                            self.tableView.isHidden = false
+                        }else{
+                            //self.tableView.isHidden = true
+                        }
+                        self.calendar.reloadData()
                     }
                     
                 }
@@ -299,7 +309,10 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                             dateFormatter.dateFormat = "yyyy-MM-dd"
                             let date = dateFormatter.string(from: dateFromServer as Date).capitalized
                             
-                            let source = resultData.value(forKey: "source") as! String
+                            var source: String = "Cenes";
+                            if (resultData.value(forKey: "source") as? String != nil) {
+                               source = resultData.value(forKey: "source") as! String
+                            }
                             let scheduleAs = resultData.value(forKey: "scheduleAs") as! String
                             
                            // print("date on \(date)")
@@ -415,7 +428,15 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                                     self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                                     
                                 }else{
-                                    self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                                    self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                                    
+                                    self.tableView.reloadData()
+                                    if self.dataObjectArray.count > 0 {
+                                        self.tableView.isHidden = false
+                                    }else{
+                                        //self.tableView.isHidden = true
+                                    }
+                                    self.calendar.reloadData()
                                 }
                                 
                             }
@@ -559,15 +580,15 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     }
     
     
-    func parseResults(resultArray: NSArray){
+    /*func parseResults(resultArray: NSArray){
         
         let dict = NSMutableDictionary()
-        /*dict.setValue([CenesCalendarData](), forKey: "Reminders")
-        let cenesEvent = CenesEvent()
-        cenesEvent.sectionName = "Reminders"
-        cenesEvent.sectionObjects = [CenesCalendarData]()
-        self.dataObjectArray.append(cenesEvent)
-        */
+        //dict.setValue([CenesCalendarData](), forKey: "Reminders")
+        //let cenesEvent = CenesEvent()
+        //cenesEvent.sectionName = "Reminders"
+        //cenesEvent.sectionObjects = [CenesCalendarData]()
+        //self.dataObjectArray.append(cenesEvent)
+        
         
         
         for i : Int in (0..<resultArray.count) {
@@ -704,17 +725,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         if Default?.sectionObjects.count == 0{
             self.dataObjectArray.remove(at: 0)
         }
-        
-        
-        self.tableView.reloadData()
-        if self.dataObjectArray.count > 0 {
-            self.tableView.isHidden = false
-        }else{
-            //self.tableView.isHidden = true
-        }
-        self.calendar.reloadData()
-        
-    }
+    }*/
     
     func getNotificationCounts () {
         let webservice = WebService();
@@ -772,7 +783,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
 
     
     func setUpNavBarImages() {
-        
+        self.navigationController?.isNavigationBarHidden = false;
         let profileButton = SSBadgeButton()//UIButton.init(type: .custom) //
         
         self.profileImage = appDelegate?.getProfileImage()
@@ -874,16 +885,24 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-         let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
-        print("subtitle \(obj.subTitle) for \(dataObjectArray[indexPath.section])")
+         let event = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        print("subtitle \(event.title) for \(dataObjectArray[indexPath.section])")
         
-        if obj.dataType == "Reminder"{
+        /*if event.dataType == "Reminder"{
             return 44
-        }
+        }*/
         
         
         var height =  113
-        if obj.eventUsers.count == 0 && (obj.subTitle == nil || obj.subTitle == ""){
+        if (event.scheduleAs == "Gathering") {
+            height = 80;
+        } else if (event.scheduleAs == "Event") {
+            height = 80;
+        } else if (event.scheduleAs == "Holiday") {
+            height  = 70;
+        }
+        
+        /*if obj.eventUsers.count == 0 && (obj.subTitle == nil || obj.subTitle == ""){
             height = 58
         }else if obj.eventUsers.count == 0 && !(obj.subTitle == nil || obj.subTitle == ""){
             height = 70
@@ -891,7 +910,7 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
             height = 113
         }else if obj.eventUsers.count > 0 && (obj.subTitle == nil || obj.subTitle == ""){
             height = 90
-        }
+        }*/
         
         
         return CGFloat(height)
@@ -901,7 +920,7 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         
         
         print("Table Row Header Calls \(indexPath.section) and Row : \(indexPath.row)")
-        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        let event = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
         
         //if(obj.dataType == DATA_TYPE_CAL_NOR)
@@ -912,78 +931,46 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         let cell: HomeCenesEventTableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeCenesEventTableViewCell
         
         
-        if (obj.scheduleAs == "Gathering") {
+        if (event.scheduleAs == "Gathering") {
             cell.HomeView = self
-            cell.locationView.isHidden = true
+            //cell.locationView.isHidden = true
             
-            cell.timeTitle.text = obj.title
+            cell.timeTitle.text = event.title
             
-            if (obj.isFullDay != nil && obj.isFullDay == true) {
+            if (event.isFullDay != nil && event.isFullDay == true) {
                 cell.timeLabel.text = "00:00";
             } else {
-                cell.timeLabel.text = obj.time
+                cell.timeLabel.text = Util.hhmma(timeStamp: event.startTime)
             }
             
             
-            if obj.subTitle == nil || obj.subTitle == ""{
+            if event.location == nil || event.location == ""{
                 cell.locationView.isHidden = true
             }else{
-                cell.timeSubTitle.text =  obj.subTitle
+                cell.timeSubTitle.text =  event.location
                 cell.locationView.isHidden = false
             }
             
-            /*if obj.source == "Cenes"{
-                cell.eventView.backgroundColor = commonColor
-            }else if obj.source == "Google"{
-                if obj.scheduleAs == "Holiday"{
-                    cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "004345")
-                }else if obj.scheduleAs == "Event"{
-                    cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "d34836")
-                }
-                
-            }else if obj.source == "Facebook"{
-                cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "3b5998")
-            }else if obj.source == "Apple"{
-                cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "999999")
-            }else if obj.source == "Outlook" {
-                cell.eventView.backgroundColor = Util.colorWithHexString(hexString: "0072c6")
-            }*/
-            
-            let userId = setting.value(forKey: "userId") as! NSNumber
-            var owner: CenesUser!;
-            for member in obj.eventUsers {
-                
-                if let myInteger = Int(member.userId) {
-                    let myNumber = NSNumber(value:myInteger)
-                    if (myNumber == userId) {
-                        owner = member;
-                        break;
-                    }
-                }
-                
-            }
-            
+            let owner = HomeManager().getHost(event: event);
             cell.profilePic.setRounded();
-            cell.profilePic.cacheImage(urlString: owner.photoUrl)
-            //cell.FriendArray = obj.eventUsers
-            //cell.reloadFriends()
-            
-            
+            if (owner != nil && owner.photo != nil){
+                cell.profilePic.sd_setImage(with: URL(string: (owner.photo)!), placeholderImage: UIImage(named: "cenes_user_no_image"));
+            }
             return cell
-        } else if (obj.scheduleAs == "Event") {
+        } else if (event.scheduleAs == "Event") {
             let identifier = "HomeCalendarTableViewCell"
             let cell: HomeCalendarTableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeCalendarTableViewCell
             
-            cell.calendarType.text = obj.source;
-            cell.calendarTitle.text = obj.title
-            cell.calendarTime.text =  obj.time
+            cell.calendarType.text = event.source;
+            cell.calendarTitle.text = event.title
+            //cell.calendarTime.text =  event.startTime
             return cell;
             
-        }  else if (obj.scheduleAs == "Holiday") {
+        }  else if (event.scheduleAs == "Holiday") {
             let identifier = "HomeHolidayTableViewCell"
             let cell: HomeHolidayTableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeHolidayTableViewCell
             
-            cell.holidayLabel.text = obj.title;
+            cell.holidayLabel.text = event.title;
             return cell;
         }
         
@@ -1036,8 +1023,8 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         
         let identifier = "HeaderCell"
         let cell: HomeTableViewCellHeader! = self.tableView.dequeueReusableCell(withIdentifier: identifier) as? HomeTableViewCellHeader
-//        cell.isEditing = true;
         
+//        cell.isEditing = true;
         var headerTitleArr: [String]  = sectionTitle!.components(separatedBy: " ");
         let finalDateStr = NSMutableAttributedString();
         finalDateStr.normal(headerTitleArr[0]).bold(headerTitleArr[1]);
@@ -1048,47 +1035,17 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         return cell
         
     }
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath)
-    {
-        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
-        //  /api/event/delete?event_id={select event id}
-
-        if (obj.dataType != "Reminder"){
-
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
-        WebService().removeEventFromList(EVEntID: obj.eventId) { (returnedDict) in
-            if returnedDict["Error"] as? Bool == true {
-                self.stopAnimating()
-                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
-            }else{
-                self.stopAnimating()
-               self.viewDidAppear(true)
-             
-                //                self.remindersTableView.deleteRows(at: [indexpath], with: )
-            }
-        }
-    }
-    else{
-             self.showAlert(title: "Alert!", message:"This is reminder and cannot be deleted.")
-    }
-        
-      
-        
-        print(obj.eventId)
-      }
-    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        let event = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
-        if obj.scheduleAs == "Gathering"{
+        if event.scheduleAs == "Gathering"{
             
         
         let webservice = WebService()
       //  startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        webservice.getEventDetails(eventid: obj.eventId!){ (returnedDict) in
+        webservice.getEventDetails(eventid: String(event.eventId)){ (returnedDict) in
             print("Got results")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.stopAnimating()
@@ -1098,93 +1055,17 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 
             }else{
                 print(returnedDict)
-                let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
+                //let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
                 
                 
                 let dict = returnedDict.value(forKey: "data") as! NSDictionary
-                createGatheringView.eventName = dict.value(forKey: "title") as! String
-                
-                var location = dict.value(forKey: "location") as! String
-                if location == "" {
-                    location = "No Location for event"
-                }
                 
                 
-                let locationModel =  LocationModel()
-                locationModel.locationName = location
                 
-                
-                let longString = dict.value(forKey: "longitude") as? String
-                if longString != nil && longString != "" {
-                    let long = Float(longString!)
-                    let longitude = NSNumber(value:long!)
-                    locationModel.longitude = longitude
-                }
-                
-                
-                let latString = dict.value(forKey: "latitude") as? String
-                if latString != nil && latString != "" {
-                    let lat = Float(latString!)
-                    let latitude = NSNumber(value:lat!)
-                    locationModel.latitude = latitude
-                }
-                
-                createGatheringView.locationName = location
-                var description:String = "";
-                if let desc = dict.value(forKey: "description") as? String {
-                    description = desc
-                }
-                
-                createGatheringView.eventDetails = description
-                createGatheringView.selectedLocation = locationModel
-                createGatheringView.summaryBool = true
-                createGatheringView.loadSummary = true
-                createGatheringView.gatheringImageURL = obj.eventImageURL
-                
-                createGatheringView.eventId = obj.eventId
-                
-                let friendDict = dict.value(forKey: "eventMembers") as! [NSDictionary]
-                
-                var friendArray = [CenesUser]()
-                
-                for userDict in friendDict {
-                    let cenesUser = CenesUser()
-                    cenesUser.name = userDict.value(forKey: "name") as? String
-                    cenesUser.photoUrl = userDict.value(forKey: "picture") as? String
-                    cenesUser.userId = "\((userDict.value(forKey: "userId") as? NSNumber)!)"
-                    cenesUser.userName = userDict.value(forKey: "username") as? String
-                    cenesUser.status = userDict.value(forKey: "status") as? String
-                    friendArray.append(cenesUser)
-                }
-                
-                createGatheringView.FriendArray = friendArray
-                
-                let userid = setting.value(forKey: "userId") as! NSNumber
-                
-                if  dict.value(forKey: "createdById") as! NSNumber == userid {
-                    createGatheringView.isOwner = true
-                }else{
-                    createGatheringView.isOwner = false
-                }
-                
-                
-                let isPredictiveOn = dict.value(forKey: "isPredictiveOn") as! Bool
-                if isPredictiveOn == true {
-                    createGatheringView.isPreditiveEnabled = true
-                    let str = dict.value(forKey: "predictiveData") as! String
-                    let abc = self.convertToDictionary(text: str)
-                    createGatheringView.predictiveData = NSMutableArray(array: abc!)
-                }else{
-                    createGatheringView.isPreditiveEnabled = false
-                }
-                let startTime = dict.value(forKey: "startTime") as! NSNumber
-                let endTime = dict.value(forKey: "endTime") as! NSNumber
-                
-                createGatheringView.startTime = "\(startTime)"
-                createGatheringView.endTime = "\(endTime)"
-                
-                self.navigationController?.pushViewController(createGatheringView, animated: true)
-                
+                let gatheringPreviewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "GatheringPreviewController") as! GatheringPreviewController
+                gatheringPreviewController.event = Event().loadEventData(eventDict: dict);
+                self.navigationController?.pushViewController(gatheringPreviewController, animated: true)
+           
             }
             }}
         }
@@ -1296,7 +1177,15 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
-                self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                
+                self.tableView.reloadData()
+                if self.dataObjectArray.count > 0 {
+                    self.tableView.isHidden = false
+                }else{
+                    //self.tableView.isHidden = true
+                }
+                self.calendar.reloadData()
             }
             
         }

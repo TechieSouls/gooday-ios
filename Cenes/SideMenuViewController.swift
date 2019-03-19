@@ -18,6 +18,8 @@ import SideMenu
 class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var notificationCount_label: UILabel!
     
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     var type : Int = 0
     var buttonTag = -1
     @IBOutlet weak var profileImage: UIImageView!
@@ -32,9 +34,9 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
     
     override func viewWillAppear(_ animated: Bool)
     {
-        NotificationListApi()
-        notificationCount_label.layer.cornerRadius = notificationCount_label.frame.size.height/2
-        notificationCount_label.clipsToBounds =  true
+        //NotificationListApi()
+        //notificationCount_label.layer.cornerRadius = notificationCount_label.frame.size.height/2
+        //notificationCount_label.clipsToBounds =  true
         userName.text = setting.value(forKey: "name") as? String
         self.profileImage.image = appDelegate?.getProfileImage()
     }
@@ -46,7 +48,7 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
     func NotificationListApi()
     {
         let webservice = WebService()
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         webservice.getNotificationsCounter(){ (returnedDict) in
             print("Got results")
             print(returnedDict)
@@ -93,11 +95,13 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 let notificationsView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "NotificationViewController") as! NotificationViewController
                 notificationsView.image = self.profileImage.image
                 notificationsView.hidesBottomBarWhenPushed = true
+                notificationsView.navigationController?.isNavigationBarHidden = true;
                 
                 
                 self.dismiss(animated: true, completion: nil)
                 let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
                 navController.popToRootViewController(animated: false)
+                navController.hidesBarsOnTap = true;
                navController.pushViewController(notificationsView, animated: true)
                // self.navigationController?.dismiss(animated: false, completion: {
                     
@@ -151,6 +155,7 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 print("Help")
                 let help = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "help") as? HelpViewController
                 help?.hidesBottomBarWhenPushed = true
+
                 self.dismiss(animated: true, completion: nil)
                 let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
                 navController.popToRootViewController(animated: false)
@@ -160,7 +165,9 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 print("About")
                 let aboutUs = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "aboutUs") as? AboutViewController
                 aboutUs?.hidesBottomBarWhenPushed = true
+                
                 self.dismiss(animated: true, completion: nil)
+
                 let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
                 navController.popToRootViewController(animated: false)
                 navController.pushViewController(aboutUs!, animated: true)
@@ -170,7 +177,7 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 
                 
                 let webservice = WebService()
-                self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
                 
                 webservice.logout() { (returnedDict) in
                     self.stopAnimating()

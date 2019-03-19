@@ -2,12 +2,10 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "outlook-ios.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "outlook-ios@2x.png",
       "scale" : "2x"
     },
     {

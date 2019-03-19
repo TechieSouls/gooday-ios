@@ -22,17 +22,25 @@ let DATA_TYPE_CAL_NOR = "Normal"
 let BOTTOM_BEFORE_KEYBOARD = 200
 let BOTTOM_AFTER_KEYBOARD = 0
 
+/////// COLORS
 let commonColor = UIColor(red: 240/255, green: 120/255, blue: 81/255, alpha: 1)
 
-let themeColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1)
+let themeColor = UIColor(red: 239/255, green: 239/255, blue: 239/255, alpha: 0.5)
 
-let selectedColor = UIColor(red: 245/255, green: 166/255, blue: 35/255, alpha: 1)
+let selectedColor = UIColor(red:0.93, green:0.61, blue:0.15, alpha:1)
 
-let cenesLabelBlue = UIColor(red: 59/255, green: 76/255, blue: 139/255, alpha: 1);
+let cenesLabelBlue = UIColor(red:0.29, green:0.56, blue:0.89, alpha:1)
+
+let unselectedColor = UIColor(red: 182/255, green: 182/255, blue: 182/255, alpha: 1);
+
+//////// IMages
+let defaultProfileImage = "profile_icon.png";
+
 
 let cenesDelegate = UIApplication.shared.delegate as! AppDelegate
 let loadinIndicatorSize = CGSize(width: 30, height: 30)
 
+let cgRectSizeLoading = CGRect(x: 0, y: 0, width: 30, height: 30)
 
 let onboardingStep2Title = "GATHERING";
 let onboardingStep3Title = "COLLABORATIVE\nREMINDERS";
@@ -47,6 +55,13 @@ let onboardingStep5Desc = "";
 
 let inviteFriendInvitationSms = "Check out Cenes for your smartphone. Download it today from http://www.cenesgroup.com";
 
+
+//THIRD PARTY TOKENS
+let instabugToken = "d81ee39bd8a6ea5c21f101ae80daef5a";
+
 //SETTINGS SCREEN
-let aboutUsVersionUpdateLink = "http://www.cenesgroup.com";
-let cenesWebUrl = "http://cenes-web.com.s3-website-us-east-1.amazonaws.com";
+let aboutUsVersionUpdateLink = "http://dev.cenesgroup.com";
+let cenesWebUrl = "https://dev.cenesgroup.com";
+let shareLinkText = " \"[Host]\" invites you to \"[Title]\". RSVP through the Cenes app. Link below: ";
+let shareEventUrl = "https://dev.cenesgroup.com/event/invitation/"
+let faqLink = "https://www.cenesgroup.com/faq";

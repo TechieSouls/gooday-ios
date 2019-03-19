@@ -86,7 +86,7 @@ class DiaryViewController: UIViewController,NVActivityIndicatorViewable {
         self.profileImage = appDelegate?.getProfileImage()
         
         self.setUpNavBar()
-        if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+        if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
 //        if SideMenuManager.menuLeftNavigationController?.isHidden == true{
             if self.isFrom == ""{
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -316,7 +316,7 @@ class DiaryViewController: UIViewController,NVActivityIndicatorViewable {
     }
     
     @objc func profileButtonPressed(){
-        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
        // self.performSegue(withIdentifier: "openSideMenu", sender: self)
     }
     

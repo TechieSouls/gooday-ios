@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -141,8 +140,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="onboarding_step2" translatesAutoresizingMaskIntoConstraints="NO" id="VDD-VF-5bW" customClass="on">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_step2" translatesAutoresizingMaskIntoConstraints="NO" id="VDD-VF-5bW" customClass="on">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Apt-Hj-0UK">
                                 <rect key="frame" x="0.0" y="741" width="375" height="1"/>
@@ -151,20 +151,23 @@
                                     <constraint firstAttribute="height" constant="1" id="XhF-bZ-UYE"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ybr-B9-0gE">
-                                <rect key="frame" x="68" y="0.0" width="42" height="76"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="50"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="GATHERING" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ybr-B9-0gE">
+                                <rect key="frame" x="60" y="80" width="291" height="76"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2am-DE-Suo">
-                                <rect key="frame" x="19" y="219" width="301" height="376"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <rect key="contentStretch" x="0.20000000000000001" y="0.20000000000000001" width="1" height="1"/>
-                                <attributedString key="attributedText">
-                                    <fragment>
-                                        <string key="content">Making plans can't get any easier.
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dBA-Mu-6jy">
+                                <rect key="frame" x="45" y="190" width="280" height="222"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2am-DE-Suo">
+                                        <rect key="frame" x="15" y="15" width="265" height="193"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <rect key="contentStretch" x="0.20000000000000001" y="0.20000000000000001" width="1" height="1"/>
+                                        <string key="text">Making plans can't get any easier.
 A tap on your phone will find the best
 time for everyone to meet.
 
@@ -172,31 +175,20 @@ time for everyone to meet.
 No more back and forth messaging.
 No more time wasting.
 Keep it simple.</string>
-                                        <attributes>
-                                            <color key="NSColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <font key="NSFont" size="20" name="HelveticaNeue"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="leftToRight" lineSpacing="1" firstLineHeadIndent="10" headIndent="10" defaultTabInterval="28" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO">
-                                                <tabStops/>
-                                            </paragraphStyle>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <size key="shadowOffset" width="0.0" height="0.0"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.84705882352941175" green="0.84705882352941175" blue="0.84705882352941175" alpha="0.5" colorSpace="calibratedRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="VDD-VF-5bW" secondAttribute="trailing" id="1dN-1o-w2o"/>
-                            <constraint firstItem="2am-DE-Suo" firstAttribute="leading" secondItem="Op7-o0-1Vg" secondAttribute="leadingMargin" constant="3" id="4hN-El-Jb7"/>
                             <constraint firstAttribute="bottom" secondItem="Apt-Hj-0UK" secondAttribute="bottom" constant="70" id="6EF-LQ-fUg"/>
-                            <constraint firstItem="2am-DE-Suo" firstAttribute="top" secondItem="S1W-xf-st0" secondAttribute="bottom" constant="175" id="Kum-Ow-GMY"/>
-                            <constraint firstItem="VDD-VF-5bW" firstAttribute="top" secondItem="Op7-o0-1Vg" secondAttribute="top" id="TYm-5l-Vjl"/>
-                            <constraint firstItem="ycU-z4-qW7" firstAttribute="top" secondItem="2am-DE-Suo" secondAttribute="bottom" constant="183" id="UbM-Pa-3Ag"/>
-                            <constraint firstAttribute="bottom" secondItem="VDD-VF-5bW" secondAttribute="bottom" id="a1c-0l-5R9"/>
-                            <constraint firstItem="VDD-VF-5bW" firstAttribute="leading" secondItem="Op7-o0-1Vg" secondAttribute="leading" id="aw7-0v-NoA"/>
                             <constraint firstItem="Apt-Hj-0UK" firstAttribute="leading" secondItem="Op7-o0-1Vg" secondAttribute="leading" id="ln1-y1-57j"/>
                             <constraint firstAttribute="trailing" secondItem="Apt-Hj-0UK" secondAttribute="trailing" id="wU2-lR-tjD"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="2am-DE-Suo" secondAttribute="trailing" constant="39" id="zmw-LQ-Z75"/>
                         </constraints>
                     </view>
                     <connections>
@@ -207,7 +199,7 @@ Keep it simple.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rsz-Or-SZ5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3364" y="-20.239880059970016"/>
+            <point key="canvasLocation" x="3364" y="-20.689655172413794"/>
         </scene>
         <!--Onboarding Step3 View Controller-->
         <scene sceneID="gOi-yh-MCX">
@@ -476,11 +468,11 @@ Keep it simple.</string>
         </scene>
     </scenes>
     <resources>
-        <image name="onboarding_step1" width="383" height="682"/>
-        <image name="onboarding_step1_logo_white" width="500" height="149"/>
-        <image name="onboarding_step2" width="500" height="889"/>
-        <image name="onboarding_step3" width="500" height="889"/>
-        <image name="onboarding_step4" width="500" height="889"/>
-        <image name="onboarding_step5" width="500" height="889"/>
+        <image name="onboarding_step1" width="863.25" height="1536"/>
+        <image name="onboarding_step1_logo_white" width="375" height="112"/>
+        <image name="onboarding_step2" width="375" height="667"/>
+        <image name="onboarding_step3" width="375" height="667"/>
+        <image name="onboarding_step4" width="375" height="667"/>
+        <image name="onboarding_step5" width="375" height="667"/>
     </resources>
 </document>

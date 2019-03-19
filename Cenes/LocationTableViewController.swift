@@ -10,13 +10,15 @@ import UIKit
 import NVActivityIndicatorView
 
 protocol SelectedLocationDelegate {
-    func selectedLocation(location: LocationModel, url : String!)
+    func selectedLocation(location: Location, url : String!)
 }
 
 class LocationTableViewController: UITableViewController ,NVActivityIndicatorViewable{
 
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     let webservice = WebService()
-    var locations: [LocationModel] = []
+    var locations: [Location] = []
     
     var delegate: SelectedLocationDelegate?
     
@@ -24,7 +26,7 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
     
     //MARK:- Fetch Locations
     func fetchLocationsWithKeyword(searchString: String) {
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
 
         webservice.getLocation(nameString: searchString) { [weak self] (jsonDict) in
             self?.stopAnimating()
@@ -42,15 +44,15 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
     
     func parseLocations(results: [[String: Any]]) {
         for location in results {
-            let locationModel = LocationModel()
+            let locationModel = Location()
            
             if let formattedAddress = location["structured_formatting"] as? [String: Any] {
                 
                 let mainText = formattedAddress["main_text"] as? String
                 let secondText = formattedAddress["secondary_text"] as? String
                 
-                locationModel.formattedAddress = secondText
-                locationModel.locationName = mainText
+                locationModel.address = secondText
+                locationModel.location = mainText
             }
             locationModel.placeId = location["place_id"] as? String
             locations.append(locationModel)
@@ -103,8 +105,8 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
         
         let location = locations[indexPath.row]
         
-        cell.textLabel?.text = location.locationName
-        cell.detailTextLabel?.text = location.formattedAddress
+        cell.textLabel?.text = location.location
+        cell.detailTextLabel?.text = location.address
         
         cell.imageView?.image = #imageLiteral(resourceName: "LocationIconHome")
 
@@ -115,7 +117,7 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
         
         let location = locations[indexPath.row]
          self.searchBar.resignFirstResponder()
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         webservice.getLocationLatLong(id: location.placeId) { [weak self] (jsonDict) in
             self?.stopAnimating()
@@ -127,8 +129,8 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
                     
                     if let locationPoints = locationResults["geometry"] as? [String: Any] {
                         let latLong = locationPoints["location"] as? [String: Any]
-                        location.latitude = latLong!["lat"] as! NSNumber
-                        location.longitude = latLong!["lng"] as! NSNumber
+                        location.latitude = (latLong!["lat"] as! NSNumber).stringValue;
+                        location.longitude = (latLong!["lng"] as! NSNumber).stringValue;
                     }
                     
                     var photoURL : String!
@@ -147,6 +149,7 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
                     
                     self?.searchBar.resignFirstResponder()
                     self?.delegate?.selectedLocation(location: location,url: photoURL)
+                    //self?.dismiss(animated: true, completion: nil)
                     self?.navigationController?.popViewController(animated: true)
                 }
             }

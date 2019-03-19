@@ -18,6 +18,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var password: UITextField!
     
     var isMailId = false
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     @IBOutlet weak var fbLoginBtnPlaceholder: UIButton!
     var fbLoginBtn : FBSDKLoginButton!
@@ -90,7 +91,9 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
         }
         
         let webServ = WebService()
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        
+        
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         // new hud
         
         webServ.emailSignIn(email: user.text!, password: password.text!, complete: { (returnedDict) in
@@ -108,7 +111,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
                 
                 refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
                     //print("Handle Ok logic here")
-                    self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                    self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
                     
                     UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
                         
@@ -198,7 +201,7 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
     }
     
     func getFBUserInfo() {
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
 
         let request = GraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"], accessToken: AccessToken.current, httpMethod: .GET, apiVersion: FacebookCore.GraphAPIVersion.defaultVersion)
         request.start { (response, result) in
@@ -221,7 +224,7 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
                         refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
                             //print("Handle Ok logic here")
                             
-                            self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                            self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
 
                             UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
                                 

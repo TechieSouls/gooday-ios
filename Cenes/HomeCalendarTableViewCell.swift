@@ -23,7 +23,7 @@ class HomeCalendarTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
-        contentView.backgroundColor = themeColor;
+        //contentView.backgroundColor = themeColor;
         self.roundView.roundedView();
         
     }

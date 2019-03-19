@@ -17,6 +17,8 @@ import SideMenu
 
 class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
 
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     var profileImage = UIImage(named: "profile icon")
     
     @IBOutlet weak var confirmSelectView: UIView!
@@ -41,7 +43,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     var objectArray = [CalendarObjects]()
     
-    var dataObjectArray = [CenesEvent]()
+    var dataObjectArray = [EventDto]()
   //  var InvitationArray = [CenesCalendarData]()
     
     var isSummary = false
@@ -49,6 +51,8 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var mayBeSelectView: UIView!
     
     @IBOutlet weak var declineSelectView: UIView!
+    
+    var loggedInUser: User!;
     
     var imageDownloadsInProgress = [IndexPath : IconDownloader]()
     
@@ -95,7 +99,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         gatheringTableView.estimatedRowHeight = 140
         gatheringTableView.estimatedSectionHeaderHeight = 42
         
-        
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         // Do any additional setup after loading the view.
     }
@@ -129,209 +133,6 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
 }
     
     
-    func setInvitation(){
-        if self.invitationData.eventId != nil {
-            // your code here
-            self.navigationController?.popToRootViewController(animated: true)
-            let webservice = WebService()
-            self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-            self.invitationView.isHidden = true
-            webservice.getEventDetails(eventid: "\(self.invitationData.eventId!)"){ (returnedDict) in
-                print("Got results")
-                
-                    self.stopAnimating()
-                    if returnedDict.value(forKey: "Error") as? Bool == true {
-                        
-                        self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
-                        
-                        let alertController = UIAlertController(title: "Error", message:(returnedDict["ErrorMsg"] as? String)!, preferredStyle: .alert)
-                        
-                        let OKButtonAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
-                            self.isNewInvite = false
-                            self.confirmedButtonPressed(UIButton())
-                            self.invitationView.isHidden = true
-                        }
-                        alertController.addAction(OKButtonAction)
-                        
-                        self.present(alertController, animated: true, completion: nil)
-                        return
-                        
-                    }else{
-                        print(returnedDict)
-                        let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
-                        
-                        
-                        var dict = returnedDict.value(forKey: "data") as? NSDictionary
-                        if dict == nil {
-                            return
-                        }
-                        
-                        
-                        
-                        let members = dict?.value(forKey: "eventMembers") as! NSArray
-                        let MyId = setting.value(forKey: "userId") as! NSNumber
-                        var showInvite = false
-                        for eMember in members{
-                            let eventMember = eMember as! [String : Any]
-                            let uId = eventMember["userId"] as? NSNumber
-                            if MyId == uId {
-                                let status = eventMember["status"] as? String
-                                if status != nil {
-                                    showInvite = false
-                                }else{
-                                    self.invitationData.eventMemberId = "\(eventMember["eventMemberId"] as! NSNumber)"
-                                    showInvite = true
-                                }
-                                break
-                            }
-                        }
-                        self.invitationData.title = dict?.value(forKey: "title") as! String
-                        let locationModel = LocationModel()
-                        locationModel.locationName = dict?.value(forKey: "location") as? String
-                        
-                        
-                    let longString = dict?.value(forKey: "longitude") as? String
-                        if longString != nil && longString != "" {
-                            let long = Float(longString!)
-                            let longitude = NSNumber(value:long!)
-                            locationModel.longitude = longitude
-                        }
-                        
-                        
-                        let latString = dict?.value(forKey: "latitude") as? String
-                        if latString != nil && latString != "" {
-                            let lat = Float(latString!)
-                            let latitude = NSNumber(value:lat!)
-                            locationModel.latitude = latitude
-                        }
-                        
-                        
-                        
-                        self.invitationLocationModel = locationModel
-                        if showInvite == true {
-                            self.invitationView.isHidden = false
-                            self.inviteTitleLabel.text = self.invitationData.title
-                            self.setUpNavBar()
-                        }else{
-                            
-                            
-                            
-                            let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
-                            
-                            
-                            let dict = returnedDict.value(forKey: "data") as! NSDictionary
-                            createGatheringView.eventName = dict.value(forKey: "title") as! String
-                            
-                            
-                            
-                            
-                            
-                            var location = dict.value(forKey: "location") as? String
-                            if location == "" || location == nil {
-                                location = "No Location for event"
-                            }
-                            
-                            createGatheringView.locationName = location!
-                            createGatheringView.eventDetails = (dict.value(forKey: "description") as? String) != nil ? (dict.value(forKey: "description") as? String)! : ""
-                            let locationModel =  LocationModel()
-                            locationModel.locationName = location
-                            
-                            
-                            let longString = dict.value(forKey: "longitude") as? String
-                            if longString != nil && longString != "" {
-                                let long = Float(longString!)
-                                let longitude = NSNumber(value:long!)
-                                locationModel.longitude = longitude
-                            }
-                            
-                            
-                            let latString = dict.value(forKey: "latitude") as? String
-                            if latString != nil && latString != "" {
-                                let lat = Float(latString!)
-                                let latitude = NSNumber(value:lat!)
-                                locationModel.latitude = latitude
-                            }
-                            
-                            
-                            let userid = setting.value(forKey: "userId") as! NSNumber
-                            
-                            if  dict.value(forKey: "createdById") as! NSNumber == userid {
-                                createGatheringView.isOwner = true
-                            }else{
-                                createGatheringView.isOwner = false
-                            }
-                            
-                            createGatheringView.summaryBool = true
-                            createGatheringView.selectedLocation = locationModel
-                            createGatheringView.loadSummary = true
-                            
-                            createGatheringView.gatheringImageURL = dict.value(forKey: "eventPicture") as? String
-                            
-                            createGatheringView.eventId = "\(dict.value(forKey: "eventId")!)"
-                            
-                            let friendDict = dict.value(forKey: "eventMembers") as! [NSDictionary]
-                            
-                            var friendArray = [CenesUser]()
-                            
-                            for userDict in friendDict {
-                                let cenesUser = CenesUser()
-                                cenesUser.name = userDict.value(forKey: "name") as? String
-                                cenesUser.photoUrl = userDict.value(forKey: "picture") as? String
-                                cenesUser.userId = "\((userDict.value(forKey: "userId") as? NSNumber)!)"
-                                cenesUser.userName = userDict.value(forKey: "username") as? String
-                                cenesUser.status = userDict.value(forKey: "status") as? String
-                                friendArray.append(cenesUser)
-                            }
-                            
-                            createGatheringView.FriendArray = friendArray
-                            
-                            let isPredictiveOn = dict.value(forKey: "isPredictiveOn") as! Bool
-                            if isPredictiveOn == true {
-                                createGatheringView.isPreditiveEnabled = true
-                                let str = dict.value(forKey: "predictiveData") as! String
-                                let abc = self.convertToDictionary(text: str)
-                                createGatheringView.predictiveData = NSMutableArray(array: abc!)
-                            }else{
-                                createGatheringView.isPreditiveEnabled = false
-                            }
-                            let startTime = dict.value(forKey: "startTime") as! NSNumber
-                            let endTime = dict.value(forKey: "endTime") as! NSNumber
-                            
-                            createGatheringView.startTime = "\(startTime)"
-                            createGatheringView.endTime = "\(endTime)"
-                            self.isSummary = true
-                            self.navigationController?.pushViewController(createGatheringView, animated: true)
-                            
-
-                            
-//                            self.showAlert(title: "Alert", message: "You have already accepted this Invitation.")
-//                            let alertController = UIAlertController(title: "Alert", message:"You have already seen this Invitation.", preferredStyle: .alert)
-//
-//                            let OKButtonAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
-//                                self.isNewInvite = false
-//                                self.confirmedButtonPressed(UIButton())
-//                                self.invitationData = nil
-//                            }
-//                            alertController.addAction(OKButtonAction)
-//
-//                            self.present(alertController, animated: true, completion: nil)
-                            
-                            return
-                        }
-                        self.invitationData.subTitle = (dict?.value(forKey: "location") as? String) != nil ? (dict?.value(forKey: "location") as? String) : ""
-                        self.invitationData.eventDescription = (dict?.value(forKey: "description") as? String) != nil ? (dict?.value(forKey: "description") as? String) : ""
-                        let startTime = dict?.value(forKey: "startTime") as! NSNumber
-                        let endTime = dict?.value(forKey: "endTime") as! NSNumber
-                        
-                        self.invitationData.startTimeMillisecond = startTime
-                        self.invitationData.endTimeMillisecond = endTime
-                        
-                    }
-            }
-        }
-    }
-    
-    
     func fetchGatheringEvents(type:String){
         let webservice = WebService()
       //  startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
@@ -359,7 +160,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         
 
         if self.isNewInvite == false {
-            if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+            if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
             self.confirmedButtonPressed(UIButton())
             }
         }
@@ -429,11 +230,14 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         
        let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
         self.navigationController?.pushViewController(createGatheringView, animated: true)
+        
+        /*let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "GatheringPreviewController") as! GatheringPreviewController
+        self.navigationController?.pushViewController(createGatheringView, animated: true)*/
     }
     
     
     @objc func profileButtonPressed(){
-        present(SideMenuManager.menuLeftNavigationController!, animated: true, completion: nil)
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
         //self.performSegue(withIdentifier: "openSideMenu", sender: self)
     }
     
@@ -523,7 +327,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     @IBAction func confirmedButtonPressed(_ sender: UIButton) {
         selectedTab = 0
         //self.tabTitleLabel.text = "Your Gatherings"
-        self.dataObjectArray = [CenesEvent]()
+        self.dataObjectArray = [EventDto]()
         self.gatheringTableView.reloadData()
         
         self.acceptedBtn.setTitleColor(selectedColor, for: .normal)
@@ -540,7 +344,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     @IBAction func mayBeButtonPressed(_ sender: UIButton) {
         selectedTab = 1
         //self.tabTitleLabel.text = "Your Invitations"
-        self.dataObjectArray = [CenesEvent]()
+        self.dataObjectArray = [EventDto]()
         self.reloadGatherings()
         
         
@@ -557,7 +361,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     @IBAction func declineButtonPressed(_ sender: UIButton) {
         selectedTab = 2
         //self.tabTitleLabel.text = "Declined Invitations"
-        self.dataObjectArray = [CenesEvent]()
+        self.dataObjectArray = [EventDto]()
         self.reloadGatherings()
         
         self.acceptedBtn.setTitleColor(UIColor.init(red: 155/255, green: 155/255, blue: 155/255, alpha: 1), for: .normal)
@@ -679,16 +483,10 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         //    height = height - 20;
         //}
         
-        var eventUsers = obj.eventUsers;
+        let eventUsers = obj.eventMembers;
         var eventMemberCounts: Int = 0;
-        for eventUser in eventUsers {
-            
-            var memebrId: NSNumber = 0;
-            let loggedInUserId = setting.value(forKey: "userId") as! NSNumber;
-            if let myInteger = Int(eventUser.userId) {
-                memebrId = NSNumber(value: myInteger);
-            }
-            if (memebrId != loggedInUserId) {
+        for eventUser in eventUsers! {
+            if loggedInUser.userId != eventUser.userId  {
                 eventMemberCounts = eventMemberCounts + 1;
             }
         }
@@ -720,58 +518,53 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var obj : CenesCalendarData!
+       // var obj : CenesCalendarData!
        
-         obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        var event : Event!;
+        event = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
         let identifier = "GatheringCardTableViewCell";
         let cell: GatheringCardTableViewCell! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringCardTableViewCell
         
-        cell.title.text = obj.title
-        cell.startTime.text = obj.time
-        let eventMembers: [CenesUser] = obj.eventUsers;
-        var owner: CenesUser?
+        cell.title.text = event.title
+        cell.startTime.text = Util.hhmma(timeStamp: event.startTime);
+        let eventMembers: [EventMember] = event.eventMembers;
         var memebrId : NSNumber;
         
-        var eventMembersExceptOwner: [CenesUser] = [];
+        var eventMembersExceptOwner: [EventMember] = [];
         
         var counter: Int = 0;
         for eventMember in eventMembers {
-            
             if (counter == 4) {
                 break;
             }
-            let loggedInUserId = setting.value(forKey: "userId") as! NSNumber;
-            if let myInteger = Int(eventMember.userId) {
-             memebrId = NSNumber(value: myInteger);
-            }else{
-                memebrId = 0;
-            }
-            if (memebrId == loggedInUserId) {
-                owner = eventMember;
-            } else {
+           
+            if (eventMember.userId != event.createdById) {
                 eventMembersExceptOwner.append(eventMember);
                 counter = counter + 1;
             }
         }
         cell.bubbleNumbers = eventMembers.count - 1;
         
+        let owner = GatheringManager().getHost(event: event);
+
         let formattedText = NSMutableAttributedString();
-        formattedText.bold((owner?.name)!).normal(" is hosting");
+        formattedText.bold((owner.name)!).normal(" is hosting");
         cell.ownerLabel.attributedText = formattedText;
-        if (owner?.photoUrl != nil) {
-            cell.profilePic.cacheImage(urlString: (owner?.photoUrl)!)
-            cell.profilePic.setRounded()
+        
+        if (owner.photo != nil) {
+            cell.profilePic.setRounded();
+            cell.profilePic.sd_setImage(with: URL(string: (owner.photo)!), placeholderImage: UIImage(named: "cenes_user_no_image"));
         } else {
             cell.profilePic.image = #imageLiteral(resourceName: "profile icon");
         }
         
         //Hiding Location View if location is empty or null
-        if obj.locationStr == nil || obj.locationStr == "" {
+        if event.location == nil || event.location == "" {
             cell.locationView.isHidden = true;
         } else {
             cell.locationView.isHidden = false;
-            cell.location.text = obj.locationStr;
+            cell.location.text = event.location;
         }
         
         
@@ -814,11 +607,9 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         //  /api/event/delete?event_id={select event id}
         
-        if (obj.dataType != "Reminder"){
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             
-            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-            
-            WebService().removeEventFromList(EVEntID: obj.eventId) { (returnedDict) in
+            WebService().removeEventFromList(EVEntID: "\(obj.eventId)") { (returnedDict) in
                 if returnedDict["Error"] as? Bool == true {
                     self.stopAnimating()
                     self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
@@ -829,10 +620,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
                     //                self.remindersTableView.deleteRows(at: [indexpath], with: )
                 }
             }
-        }
-        else{
-            self.showAlert(title: "Alert!", message:"This is reminder and cannot be deleted.")
-        }
+        
         
         
         
@@ -846,29 +634,40 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
        let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
         let webservice = WebService()
-           startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        webservice.getEventDetails(eventid: obj.eventId!){ (returnedDict) in
+           //startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
+        webservice.getEventDetails(eventid: String(obj.eventId)){ (returnedDict) in
             print("Got results")
-            self.stopAnimating()
+            //self.stopAnimating()
             if returnedDict.value(forKey: "Error") as? Bool == true {
                 
                 self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
                 print(returnedDict)
-                        let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
+                
+                //if (returnedDict.value(forKey: "success") != nil) {
+                    let data = returnedDict.value(forKey: "data") as! NSDictionary;
+                    let event = Event().loadEventData(eventDict: data);
+                    let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                    let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringPreviewController") as! GatheringPreviewController
+                    newViewController.event = event;
+                    self.navigationController?.pushViewController(newViewController, animated: true)
+                    
+                //}
+                /*
+                let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
                 
                 
                 let dict = returnedDict.value(forKey: "data") as! NSDictionary
-                createGatheringView.eventName = dict.value(forKey: "title") as! String
+                createGatheringView.event.title = dict.value(forKey: "title") as! String
                 
                 var location = dict.value(forKey: "location") as? String
                 if location == "" || location == nil {
                     location = "No Location for event"
                 }
                 
-                createGatheringView.locationName = location!
-                createGatheringView.eventDetails = (dict.value(forKey: "description") as? String) != nil ? (dict.value(forKey: "description") as? String)! : ""
+                createGatheringView.event.location = location!
+                createGatheringView.event.description = (dict.value(forKey: "description") as? String) != nil ? (dict.value(forKey: "description") as? String)! : ""
                 let locationModel =  LocationModel()
                 locationModel.locationName = location
                 
@@ -922,12 +721,12 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
                 
                 let isPredictiveOn = dict.value(forKey: "isPredictiveOn") as! Bool
                 if isPredictiveOn == true {
-                createGatheringView.isPreditiveEnabled = true
+                createGatheringView.event.isPredictiveOn = true
                     let str = dict.value(forKey: "predictiveData") as! String
                     let abc = self.convertToDictionary(text: str)
                     createGatheringView.predictiveData = NSMutableArray(array: abc!)
                 }else{
-                    createGatheringView.isPreditiveEnabled = false
+                    createGatheringView.event.isPredictiveOn = false
                 }
                 let startTime = dict.value(forKey: "startTime") as! NSNumber
                 let endTime = dict.value(forKey: "endTime") as! NSNumber
@@ -935,11 +734,12 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
                 createGatheringView.startTime = "\(startTime)"
                 createGatheringView.endTime = "\(endTime)"
                 self.navigationController?.pushViewController(createGatheringView, animated: true)
-                
+                */
             }
             
         }
-        }else if self.selectedTab == 1{
+        }
+        /*else if self.selectedTab == 1{
             
              let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
             let invitationView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "InvitationAcceptView") as! InvitationAcceptView
@@ -952,7 +752,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
             self.navigationController?.pushViewController(invitationView, animated: true)
             self.isNewInvite = false
             self.invitationView.isHidden = true
-        }
+        }*/
 }
     
     func convertToDictionary(text: String) -> NSArray? {
@@ -983,7 +783,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         self.imageDownloadsInProgress.removeAll()
     }
     
-    func loadImagesForOnscreenRows() {
+   /* func loadImagesForOnscreenRows() {
         guard self.dataObjectArray.count != 0 else { return }
 
         let visibleIndexPaths = self.gatheringTableView.indexPathsForVisibleRows
@@ -1002,7 +802,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.loadImagesForOnscreenRows()
-    }
+    }*/
     
     
 }

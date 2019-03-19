@@ -29,7 +29,7 @@ class GatheringCardTableViewCell: UITableViewCell {
     
     var bubbleNumbers: Int = 0
     
-    var members: [CenesUser] = [];
+    var members: [EventMember] = [];
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -81,11 +81,11 @@ extension GatheringCardTableViewCell: UICollectionViewDelegate, UICollectionView
             
             let  cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemberCollectionViewCell", for: indexPath) as! MemberCollectionViewCell
             
-            let user = members[indexPath.row]
+            let eventMember = members[indexPath.row]
             
-            if user.photoUrl != nil && user.photoUrl != "" {                
-                cell.profilePic.cacheImage(urlString: user.photoUrl)
-
+            cell.profilePic.roundedView();
+            if eventMember.user != nil && eventMember.user.photo != nil {
+                cell.profilePic.sd_setImage(with: URL(string: (eventMember.user.photo)!), placeholderImage: UIImage(named: "cenes_user_no_image"));
             } else {
                     cell.profilePic.image = #imageLiteral(resourceName: "profile icon");
             }

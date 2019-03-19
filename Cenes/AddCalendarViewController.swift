@@ -12,7 +12,7 @@ import GoogleSignIn
 import EventKit
 import EventKitUI
 import NVActivityIndicatorView
-
+import SideMenu
 
 class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUIDelegate,NVActivityIndicatorViewable {
 
@@ -32,14 +32,17 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
     
     @IBOutlet weak var appleCalCheckmark: UIImageView!
     
-    
     let service = OutlookService.shared()
+    var loggedInUser: User!;
+    var profileImage = UIImage(named: "profile icon");
+    var image: UIImage!;
     
-    override func viewDidLoad()
-    {
-        
-        
+    override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.backgroundColor = themeColor;
+
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         outlookCheckMark.image = #imageLiteral(resourceName: "checkMarkGray")
         googleCheckMark.image  = #imageLiteral(resourceName: "checkMarkGray")
@@ -59,38 +62,54 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
             "https://www.googleapis.com/auth/calendar.readonly"]
         
         if fromSideMenu {
-            self.navigationItem.hidesBackButton = true
-            let backButton = UIButton.init(type: .custom)
-            backButton.setTitle("Cancel", for: UIControlState.normal)
-            backButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
-            backButton.layer.cornerRadius = backButton.frame.height/2
-            backButton.clipsToBounds = true
-            backButton.addTarget(self, action: #selector(backButtonPressed(_:)), for: .touchUpInside)
-            
-            let barButton = UIBarButtonItem.init(customView: backButton)
-            self.navigationItem.leftBarButtonItem = barButton
-            
-             self.separatorView.isHidden = true
-            
-            
-            
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.getStatus()
             }
-            
-            
-            
-            
         }
-        
-        
     }
     
+   
+    func setUpNavBar(){
+        
+        let profileButton = UIButton.init(type: .custom)
+        profileButton.imageView?.contentMode = .scaleAspectFill
+        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        profileButton.layer.cornerRadius = profileButton.frame.height/2
+        profileButton.clipsToBounds = true
+        profileButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        
+        profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        profileButton.backgroundColor = UIColor.white
+        
+        let barButton = UIBarButtonItem.init(customView: profileButton)
+        self.navigationItem.leftBarButtonItem = barButton
+        
+        let homeButton = UIButton.init(type: .custom)
+        homeButton.setImage(UIImage(named: "homeSelected"), for: .normal)
+        homeButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        homeButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
+        homeButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        
+        homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
+        
+        let rightBarButton = UIBarButtonItem.init(customView: homeButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    @objc func homeButtonPressed(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func profileButtonPressed(){
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+    }
     
     func getStatus(){
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
+
         WebService().calendarSyncStatus() { [weak self] (returnedDict) in
             self?.stopAnimating()
             print(returnedDict)
@@ -109,11 +128,11 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
                 
                 let calendarType = result?["cenesProperty"] as?  [String: Any]
                 if calendarType!["name"] as? String == "device_calendar" {
-                    self?.appleCalCheckmark.image = #imageLiteral(resourceName: "CheckMarkGreen")
+                    self?.appleCalCheckmark.image = #imageLiteral(resourceName: "calendar_sync_checkmark")
                 }else if calendarType!["name"] as? String == "outlook_calendar" {
-                    self?.outlookCheckMark.image = #imageLiteral(resourceName: "CheckMarkGreen")
+                    self?.outlookCheckMark.image = #imageLiteral(resourceName: "calendar_sync_checkmark")
                 }else if calendarType!["name"] as? String == "google_calendar" {
-                    self?.googleCheckMark.image = #imageLiteral(resourceName: "CheckMarkGreen")
+                    self?.googleCheckMark.image = #imageLiteral(resourceName: "calendar_sync_checkmark")
                 }
             }
             }
@@ -121,16 +140,28 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
     }
     
     
-    @objc func backButtonPressed(_ sender: Any) {
-        
-        self.navigationController?.popViewController(animated: true)
-    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.setUpNavBar();
+        self.navigationController?.navigationBar.shouldRemoveShadow(true)
+        if self.loggedInUser.photo != nil {
+            let webServ = WebService()
+            webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in
+                self.profileImage = image
+                self.setUpNavBar()
+            })
+        }
+        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+   
     @IBAction  func userDidSelectNext() {
         UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
     }
@@ -138,8 +169,6 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
      func userDidSelectLater() {
         UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
     }
-    
-    
     
     @IBAction func outlookButtonPressed(_ sender: UIButton) {
         
@@ -165,13 +194,13 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
     func outLookSync(token:String, refreshToken: String){
         let webService = WebService()
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
+
         webService.outlookEvent(outlookAuthToken: token, refreshToken: refreshToken) { (success) in
             self.stopAnimating()
             if success {
                 self.showAlert(title: "Outlook Accont Sync", message: "Your Outlook Account has been synched.")
-                self.outlookCheckMark.image = #imageLiteral(resourceName: "CheckMarkGreen")
+                self.outlookCheckMark.image = #imageLiteral(resourceName: "calendar_sync_checkmark")
             }else{
                 self.showAlert(title: "Outlook Accont Sync", message: "Your Outlook Account has not been synched. Pleae try after sometime.")
             }
@@ -290,13 +319,13 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
         
         let webService = WebService()
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
 
             webService.googleEvent(googleAuthToken: (authentication?.accessToken!)!, serverAuthCode: (user?.serverAuthCode!)!) { (success) in
             self.stopAnimating()
             if success {
                 self.showAlert(title: "Google Accont Sync", message: "Your google Account has been synched.")
-                self.googleCheckMark.image = #imageLiteral(resourceName: "CheckMarkGreen")
+                self.googleCheckMark.image = #imageLiteral(resourceName: "calendar_sync_checkmark")
             }else{
                 self.showAlert(title: "Google Accont Sync", message: "Your google Account has not been synched. Pleae try after sometime.")
             }
@@ -310,7 +339,7 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
     
     
     func callWebservice(params:[String:Any]){
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
         WebService().syncDeviceCalendar(uploadDict: params, complete: { (returnedDict) in
             
             if returnedDict.value(forKey: "Error") as? Bool == true {
@@ -323,7 +352,7 @@ class AddCalendarViewController: UIViewController,GIDSignInDelegate, GIDSignInUI
                 print(returnedDict)
                 self.stopAnimating()
                 self.showAlert(title: "Device Calendar Sync", message: "Your Device Calendar has been synched.")
-                self.appleCalCheckmark.image = #imageLiteral(resourceName: "CheckMarkGreen")
+                self.appleCalCheckmark.image = #imageLiteral(resourceName: "calendar_sync_checkmark")
             }
         })
 

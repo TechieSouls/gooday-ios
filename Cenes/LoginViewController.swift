@@ -19,6 +19,7 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
 //    @IBOutlet weak var accountAskLabel: UILabel!
     @IBOutlet weak var emailBtn: UIButton!
     //    @IBOutlet weak var displayLabele: UILabel!
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     var fbLoginBtn : FBSDKLoginButton!
     
@@ -103,7 +104,7 @@ extension LoginViewController : FBSDKLoginButtonDelegate {
             // User is logged in, do work such as go to next view controller.
             getFBUserInfo()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             }
         }
     }

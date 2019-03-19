@@ -11,6 +11,8 @@ import NVActivityIndicatorView
 
 class ForgotPasswordController: UIViewController,NVActivityIndicatorViewable {
 
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     @IBOutlet weak var emailTF: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +31,7 @@ class ForgotPasswordController: UIViewController,NVActivityIndicatorViewable {
         
         if Util.isValidEmail(testStr: emailTF.text!){
             // call webservice
-            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             
             WebService().resetPassword(email: emailTF.text!, complete: { (returnedDict) in
                 self.stopAnimating()

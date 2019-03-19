@@ -29,6 +29,8 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var textFieldView: UIView!
     var keyBoard = false
     var keyboardInc = 0;
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     
     //@IBOutlet weak var buttonViewBottom: NSLayoutConstraint!
     
@@ -124,7 +126,7 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
         
         let webServ = WebService()
         
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+        startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         /*webServ.emailSignUp(email: emailTextField.text!, name:nameTextField.text! , password: passwordTextField.text!, username: nameTextField.text!,phone: phoneTextField.text!, complete: { (returnedDict) in
             

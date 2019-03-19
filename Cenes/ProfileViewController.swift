@@ -29,6 +29,7 @@ class ProfileViewController: UIViewController,UIImagePickerControllerDelegate ,U
     
     let picController = UIImagePickerController()
     var picChange = false
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -214,7 +215,7 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
         
         if self.picChange == true{
             
-            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             let uploadImage = self.profileImage.image?.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
             
             WebService().uploadProfilePic(image: uploadImage, complete: { (returnedDict) in
@@ -264,7 +265,7 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
             
         }else{
             
-            startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+            startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             
             WebService().updateProfile(email: self.emailTF.text!, name: self.nameTF.text!, gender: genderTF.text!, photoUrl: "", complete: { (returnedDict) in
                 self.stopAnimating()

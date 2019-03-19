@@ -128,6 +128,7 @@ class UserService {
                         setting.setValue(name!, forKey: "name")
                         setting.setValue(email!, forKey: "email")
                         setting.setValue(token!, forKey: "token")
+                        setting.setValue(token!, forKey: "birthDay")
                         setting.setValue(2, forKey: "onboarding")
 
                         if (userPhoto != "") {
@@ -159,7 +160,7 @@ class UserService {
         
     }
     
-    func findUserFriendsByUserId(complete: @escaping(NSMutableDictionary)->Void ) {
+    func findUserFriendsByUserId(complete: @escaping(NSMutableDictionary) ->Void ) {
             let userid = setting.value(forKey: "userId") as! NSNumber
             let uid = "\(userid)"
             

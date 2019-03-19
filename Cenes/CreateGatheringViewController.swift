@@ -33,9 +33,14 @@ enum CellHeight : CGFloat {
 }
 
 
-class CreateGatheringViewController: UIViewController,UIImagePickerControllerDelegate ,UINavigationControllerDelegate,GatheringEventCellDelegate,NVActivityIndicatorViewable, MFMessageComposeViewControllerDelegate, SelectedFriendsProtocol {
+class CreateGatheringViewController: UIViewController,UIImagePickerControllerDelegate ,UINavigationControllerDelegate,GatheringEventCellDelegate,NVActivityIndicatorViewable, MFMessageComposeViewControllerDelegate {
 
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
+    
     @IBOutlet weak var gatheringTableView: UITableView!
+    
+    var event: Event = Event();
+    var loggedInUser: User = User();
     
     var gatheringImage : UIImage!
     
@@ -61,16 +66,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     var FriendArray = [CenesUser]()
     
-    var selectedFriends: [UserContact] = [];
-    
     var nonCenesUsers: [UserContact] = [];
-    
-    var eventName = ""
-    
-    var isPreditiveEnabled = false
-    
-    var eventDetails = ""
-    
     
     var isOwner = true
     
@@ -94,11 +90,11 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     let picController = UIImagePickerController()
     override func viewDidLoad() {
         super.viewDidLoad()
-        gatheringTableView.register(UINib(nibName: "GatheringTableViewCellTwo", bundle: Bundle.main), forCellReuseIdentifier: "GatheringTableViewCellTwo")
-        gatheringTableView.register(UINib(nibName: "GatheringTableViewCellThree", bundle: Bundle.main), forCellReuseIdentifier: "GatheringTableViewCellThree")
-        gatheringTableView.register(UINib(nibName: "GatheringTableViewCellFive", bundle: Bundle.main), forCellReuseIdentifier: "GatheringTableViewCellFive")
-        gatheringTableView.register(UINib(nibName: "GatheringTableViewCellOne", bundle: Bundle.main), forCellReuseIdentifier: "GatheringTableViewCellOne")
-        gatheringTableView.register(UINib(nibName: "GAtheringTableViewCellFour", bundle: Bundle.main), forCellReuseIdentifier: "GAtheringTableViewCellFour")
+        gatheringTableView.register(UINib(nibName: "GatheringTitleTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringTitleTableViewCell")
+        gatheringTableView.register(UINib(nibName: "GatheringPeopleTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringPeopleTableViewCell")
+        gatheringTableView.register(UINib(nibName: "GatheringDateTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringDateTableViewCell")
+        gatheringTableView.register(UINib(nibName: "GatheringLocationTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringLocationTableViewCell")
+        gatheringTableView.register(UINib(nibName: "GatheringDescTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringDescTableViewCell")
         gatheringTableView.register(UINib(nibName: "GatheringEventTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringEventTableViewCell")
         gatheringTableView.register(UINib(nibName: "DeleteCell", bundle: Bundle.main), forCellReuseIdentifier: "DeleteCell")
         // Do any additional setup after loading the view.
@@ -106,6 +102,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         gatheringTableView.rowHeight = UITableViewAutomaticDimension
         gatheringTableView.estimatedRowHeight = 140
         gatheringTableView.keyboardDismissMode = .interactive
+                    
         cellHeightTime = CellHeight.First
         if summaryBool == true {
             cellHeightTime = CellHeight.Fifth
@@ -114,13 +111,18 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         self.selectedDate = Date();
          self.setUpNavBar()
         
-        
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        //If user is creating new event
+        if (self.loggedInUser != nil && self.event.eventId == nil) {
+            self.event.createdById = self.loggedInUser.userId;
+        }
     }
     
     
     
     func setUpNavBar() {
-        
+        self.navigationController?.isNavigationBarHidden = false;
+
         if self.editSummary == true {
             let backButton = UIButton.init(type: .custom)
             self.title = "Edit Gathering"
@@ -193,12 +195,14 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             let nextButton = UIButton.init(type: .custom)
             
-            nextButton.setTitle("Save", for: UIControlState.normal)
+            nextButton.setTitle("Preview", for: UIControlState.normal)
             nextButton.setTitleColor(cenesLabelBlue, for: .normal)
             nextButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             nextButton.layer.cornerRadius = nextButton.frame.height/2
             nextButton.clipsToBounds = true
-            nextButton.addTarget(self, action: #selector(createGatheringbuttonPressed(_:)), for: .touchUpInside)
+            //nextButton.addTarget(self, action: #selector(createGatheringbuttonPressed(_:)), for: .touchUpInside)
+            
+            nextButton.addTarget(self, action: #selector(showGatheringPreview(_:)), for: .touchUpInside)
             let rightButton = UIBarButtonItem.init(customView: nextButton)
             
             
@@ -220,7 +224,6 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         
     }
     
-    
     override func viewDidAppear(_ animated: Bool) {
         self.view.backgroundColor = themeColor;
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
@@ -230,7 +233,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.gatheringTableView.reloadData()
+        //self.gatheringTableView.reloadData()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
@@ -295,12 +298,27 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         self.gatheringTableView.reloadData()
     }
     
-    @IBAction func createGatheringbuttonPressed(_ sender: Any) {
+    @IBAction func showGatheringPreview(_ sender: Any) {
+        
+        if (self.event.title == nil) {
+            self.showAlert(title: "Event Title", message: "Please fill the event title.")
+            return
+        }
+        
+        self.performSegue(withIdentifier: "showGatheringPreview", sender: self)
+    }
+    
+    @IBAction func createGatheringbuttonPressed(_ sender: Any) throws {
+       
         var predictiveDict = [NSMutableDictionary]()
         var predictiveString : String!
         
         
-        if self.isPreditiveEnabled {
+        print("EVENT JSON : \(Event().toDictionary(event: event))")
+        
+        return;
+		
+        if self.event.isPredictiveOn {
             
             for result in self.predictiveData {
                 let dict = NSMutableDictionary(dictionary: (result as? NSDictionary)!)
@@ -313,22 +331,23 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         }
         
         
-        if self.eventName == "" {
+        /*if self.eventName == "" {
             self.showAlert(title: "Event Title", message: "Please fill the event title.")
             return
-        }
+        }*/
+        
     
         
         //if self.cellHeightTime == CellHeight.Fourth {
         if (self.selectedDate != nil) {
             
-            
-            if self.startTime == nil {
+            //Duni Code
+            /*if self.startTime == nil {
                 self.startTime = "\(FirstDate.millisecondsSince1970)"
             }
             if self.endTime == nil {
                 self.endTime = "\(SecondDate.millisecondsSince1970)"
-            }
+            }*/
             
             print("Start Time : \(self.startTime), End Time : \(self.endTime)");
             let userid = setting.value(forKey: "userId") as! NSNumber
@@ -339,7 +358,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             var eventMembers = [NSMutableDictionary]()
             
-            for userContact in self.selectedFriends {
+            for userContact in self.event.eventMembers {
                
                 if (userContact.cenesMember == "no") {
                     continue;
@@ -357,8 +376,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 if "\(userContact.userId)" == id {
                     continue
                 }
-                if userContact.photo != nil {
-                    dict["picture"] = userContact.photo
+                if userContact.user != nil {
+                    dict["picture"] = userContact.user.photo;
                 }
                 eventMembers.append(dict)
             }
@@ -388,7 +407,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             if (self.gatheringImage != nil && self.gatheringImageURL == nil) {
                 
-                startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
                 let uploadImage = self.gatheringImage.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
                 
                 GatheringService().uploadEventImage(image: uploadImage, complete: { (returnedDict) in
@@ -405,18 +424,18 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                         var params : [String:Any]
                         
                         if eventMembers.count > 0 {
-                            if self.isPreditiveEnabled == true {
-                                params   = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"eventMembers":eventMembers,"isPredictiveOn":1,"predictiveData":predictiveString]
+                            if self.event.isPredictiveOn == true {
+                                params   = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"eventMembers":eventMembers,"isPredictiveOn":1,"predictiveData":predictiveString]
                             }else{
-                                params   = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":(self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"eventMembers":eventMembers,"isPredictiveOn":0]
+                                params   = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":(self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"eventMembers":eventMembers,"isPredictiveOn":0]
                             }
                           
                         }else{
                             
-                            if self.isPreditiveEnabled == true {
-                                params    = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":(self.selectedLocation != nil && self.selectedLocation.latitude != nil ) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"isPredictiveOn":1,"predictiveData":predictiveString]
+                            if self.event.isPredictiveOn == true {
+                                params    = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":(self.selectedLocation != nil && self.selectedLocation.latitude != nil ) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"isPredictiveOn":1,"predictiveData":predictiveString]
                             }else{
-                                params    = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":self.selectedLocation.latitude != nil ? self.selectedLocation.latitude:"","longitude":self.selectedLocation.longitude != nil ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"isPredictiveOn":0]
+                                params    = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":self.selectedLocation.latitude != nil ? self.selectedLocation.latitude:"","longitude":self.selectedLocation.longitude != nil ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventPicture":eventPictureUrl!,"isPredictiveOn":0]
                             }
                             
                          
@@ -472,20 +491,20 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 var params : [String:Any]
                 
                 if eventMembers.count > 0 {
-                     if self.isPreditiveEnabled == true {
-                        params = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil &&  self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventMembers":eventMembers,"isPredictiveOn":1,"predictiveData":predictiveString]
+                     if self.event.isPredictiveOn == true {
+                        params = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil &&  self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventMembers":eventMembers,"isPredictiveOn":1,"predictiveData":predictiveString]
                      }else{
-                        params = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude": (self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventMembers":eventMembers,"isPredictiveOn":0]
+                        params = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude": (self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"eventMembers":eventMembers,"isPredictiveOn":0]
                         
                         print(params)
                     }
                     
                     
                 }else {
-                if self.isPreditiveEnabled == true {
-                    params = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"isPredictiveOn":1,"predictiveData":predictiveString]
+                if self.event.isPredictiveOn == true {
+                    params = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude": (self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"isPredictiveOn":1,"predictiveData":predictiveString]
                 }else{
-                    params = ["title":self.eventName,"description":self.eventDetails,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":(self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"isPredictiveOn":0]
+                    params = ["title":self.event.title,"description":self.event.description,"location":(self.selectedLocation != nil && self.selectedLocation.locationName != "No Location for event") ? self.selectedLocation.locationName:"","latitude":(self.selectedLocation != nil && self.selectedLocation.latitude != nil) ? self.selectedLocation.latitude:"","longitude":(self.selectedLocation != nil && self.selectedLocation.longitude != nil) ? self.selectedLocation.longitude:"","source":"Cenes","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Gathering","startTime":self.startTime,"endTime":self.endTime,"isPredictiveOn":0]
                     }
                  
                 }
@@ -500,7 +519,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 
                 print("Gathering params \(params)");
                 
-                startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
+                startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
                 GatheringService().createGathering(uploadDict: params, complete: { (returnedDict) in
                     self.stopAnimating()
                     if returnedDict.value(forKey: "Error") as? Bool == true {
@@ -536,7 +555,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 })
             }
         }else{
-            if self.isPreditiveEnabled {
+            if self.event.isPredictiveOn {
                 self.showAlert(title: "You have not chosen a Date", message: "Pick a date from Predictive Calendar.")
             }else{
                 self.showAlert(title: "You have not chosen a Date", message: "Pick a date from Calendar.")
@@ -707,9 +726,16 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if segue.identifier == "showLocation" {
+        if segue.identifier == "inviteFriends" {
+            let friendsNavigationVC = segue.destination as? FriendsViewController
+            friendsNavigationVC?.collectionFriendsDelegate = self
+        } else if segue.identifier == "showLocation" {
             let locationNavigationVC = segue.destination as? LocationTableViewController
             locationNavigationVC?.delegate = self
+        } else if(segue.identifier == "showGatheringPreview"){
+            let eventPreview = self.event;
+            let gatheringPreviewController = segue.destination as! GatheringPreviewController
+            gatheringPreviewController.event = eventPreview;
         }
     }
     
@@ -729,13 +755,16 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 
                 if self.pickerType == PickerType.StartDate {
                     //self.dateTimePicker.minimumDate = Date()
-                     self.dateTimePicker.setDate(self.FirstDate, animated: false)
+                     //self.dateTimePicker.setDate(self.FirstDate, animated: false)
+                    
+                    print("StartTime Before Date Picker Open : \(self.event.startTime)")
+                    self.dateTimePicker.setDate(Date(timeIntervalSince1970: TimeInterval(self.event.startTime)), animated: false)
                 }else if self.pickerType == PickerType.EndDate {
                     var datecomponent = DateComponents()
                     datecomponent.minute = 5
-                    let startDate = Calendar.current.date(byAdding: datecomponent, to: self.FirstDate.clampedDate)
+                    let startDate = Calendar.current.date(byAdding: datecomponent, to: Date(timeIntervalSince1970: TimeInterval(self.event.startTime)))
                     //self.dateTimePicker.minimumDate = startDate
-                    self.dateTimePicker.setDate(self.SecondDate, animated: false)
+                    self.dateTimePicker.setDate(Date(timeIntervalSince1970: TimeInterval(self.event.endTime)), animated: false)
                 }
                 
                 
@@ -746,7 +775,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                 if self.pickerType == PickerType.StartTime {
                     var datecomponent = DateComponents()
                     datecomponent.day = 1
-                    let newDate = Calendar.current.date(byAdding: datecomponent, to: Date())
+                    let newDate = Calendar.current.date(byAdding: datecomponent, to: Date(timeIntervalSince1970: TimeInterval(self.event.startTime))) as! Date
+                    print("StartTime Before Time Picker Open : \(newDate)")
                     
                     /*if newDate! <= self.SecondDate! {
                         self.dateTimePicker.minimumDate = nil
@@ -754,15 +784,15 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                         self.dateTimePicker.minimumDate = self.FirstDate
                     }*/
                     
-                    self.dateTimePicker.setDate(self.FirstDate, animated: false)
+                    self.dateTimePicker.setDate(newDate, animated: false)
                 }else if self.pickerType == PickerType.EndTime {
                     var datecomponent = DateComponents()
                     datecomponent.minute = 1
-                    let startDate = Calendar.current.date(byAdding: datecomponent, to: self.FirstDate)
+                    let startDate = Calendar.current.date(byAdding: datecomponent, to: Date(timeIntervalSince1970: TimeInterval(self.event.startTime)))
                     
                     
                     datecomponent.day = 1
-                    let newDate = Calendar.current.date(byAdding: datecomponent, to: self.FirstDate.clampedDate)
+                    let newDate = Calendar.current.date(byAdding: datecomponent, to: Date(timeIntervalSince1970: TimeInterval(self.event.startTime)))
                     
                     /*if newDate! <= self.SecondDate! {
                         self.dateTimePicker.minimumDate = nil
@@ -770,7 +800,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                         self.dateTimePicker.minimumDate = startDate
                     }*/
                     
-                    self.dateTimePicker.setDate((self.SecondDate)!, animated: false)
+                    self.dateTimePicker.setDate(Date(timeIntervalSince1970: TimeInterval(self.event.endTime)), animated: false)
                 }
             }
            
@@ -782,32 +812,6 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             self.pickerOuterView.isHidden = true
             closeCheck = false
         }
-    }
-    
-    func deleteGathering(){
-        print("DeleteGathering")
-        startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
-        
-        WebService().deleteGathering(eventId: self.eventId) { (returnedDict) in
-            if returnedDict.value(forKey: "Error") as? Bool == true {
-                self.stopAnimating()
-                self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
-                
-            }else{
-                print(returnedDict)
-                self.stopAnimating()
-                
-                let actionSheetController = UIAlertController(title: "Alert", message: "Gathering Deleted!", preferredStyle: .alert)
-                
-                let OKButtonAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
-                    print("take")
-                    self.navigationController?.popViewController(animated: true)
-                }
-                actionSheetController.addAction(OKButtonAction)
-                
-                self.present(actionSheetController, animated: true, completion: nil)
-            }
-            }
     }
     
     func sendSMSText(phoneNumber: String) {
@@ -837,14 +841,17 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     */
 
 extension CreateGatheringViewController: SelectedLocationDelegate {
-    func selectedLocation(location: LocationModel, url:String!) {
-        self.selectedLocation = location
-        self.locationName = location.locationName
-        
+    func selectedLocation(location: Location, url:String!) {
+        //self.selectedLocation = location
+        //self.locationName = location.locationName
+        self.event.location = location.location;
+        self.event.latitude = location.latitude;
+        self.event.longitude = location.longitude;
             // New
             
             if self.gatheringImage == nil {
                 self.gatheringImageURL = url
+                self.event.eventPicture = url;
                 self.gatheringTableView.reloadData()
             }else{
                 
@@ -859,6 +866,37 @@ extension CreateGatheringViewController: SelectedLocationDelegate {
     }
 }
 
+extension CreateGatheringViewController: CollectionFriendsProtocol {
+    func collectionFriendsList(selectedFriendHolder: [EventMember]) {
+        
+        print("Callback Function Called....")
+        
+        var eventMembers = self.event.eventMembers;
+        
+        if (selectedFriendHolder.count > 0) {
+            
+            if (eventMembers == nil) {
+                self.event.eventMembers = selectedFriendHolder;
+            } else {
+                for selectedMem in selectedFriendHolder {
+                    
+                    var userAlreadyExists = false;
+                    for eventMem in eventMembers! {
+                        if (eventMem.userContactId == selectedMem.userContactId) {
+                            userAlreadyExists = true;
+                            break;
+                        }
+                    }
+                    if (!userAlreadyExists) {
+                        self.event.eventMembers.append(selectedMem);
+                    }
+                }
+            }
+        }
+        
+        self.gatheringTableView.reloadData();
+    }
+}
 
 extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
     func setCase(caseHeight: CellHeight, cellIndex: IndexPath) {
@@ -870,7 +908,7 @@ extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
         self.gatheringTableView.scrollToRow(at: cellIndex , at: .top, animated: true)
     }
     
-    func timePick(cell: GatheringTableViewCellFive, tag: Int) {
+    func timePick(cell: GatheringDateTableViewCell, tag: Int) {
         
         self.gatheringDelegate = cell
         switch tag {
@@ -890,16 +928,6 @@ extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
         default:
             print("defulat tag pressed")
         }
-    }
-    
-    func selectedUserList(userContacts: [UserContact]) {
-        for userContact in userContacts {
-            self.selectedFriends.append(userContact);
-            if userContact.cenesMember == "no" {
-                self.nonCenesUsers.append(userContact)
-            }
-        }
-        //self.gatheringTableView.reloadData();
     }
 }
 

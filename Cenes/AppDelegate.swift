@@ -14,6 +14,7 @@ import UserNotifications
 import GoogleSignIn
 import Google
 import SideMenu
+import Instabug
  
 let setting = UserDefaults.standard
 
@@ -41,6 +42,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("My App Launched on Termination**************************************");
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+
+        Instabug.start(withToken:instabugToken, invocationEvents: [.none]);
+
         
         // Override point for customization after application launch.
         let onboarding = setting.integer(forKey: "onboarding")
@@ -426,13 +430,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 
                 let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
                 
-                if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == true{
+                if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
 //                if SideMenuManager.menuLeftNavigationController.isHidden == true{
                 
                 gathering?.dismiss(animated: false, completion: nil)
                 }else{
                     
-                    let side = SideMenuManager.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
+                    let side = SideMenuManager.default.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
                    side.dismiss(animated: true, completion: nil)
                 }
                 (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers = [gathering!]
@@ -444,7 +448,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 let invitationData = CenesCalendarData()
                     invitationData.eventId = eventId
                 gathering?.invitationData = invitationData
-                gathering?.setInvitation()
+                //gathering?.setInvitation()
                 }
             }
         }
@@ -454,11 +458,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             
             let alertDict = userInfo?.object(forKey: "alert") as? NSDictionary
             var invitationTitle = alertDict?.object(forKey: "title") as? String
-            if SideMenuManager.menuLeftNavigationController?.isNavigationBarHidden == false{
+            if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == false{
 
 //            if SideMenuManager.menuLeftNavigationController.isHidden == false{
                 
-                let side = SideMenuManager.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
+                let side = SideMenuManager.default.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
                 side.dismiss(animated: true, completion: nil)
             }
             

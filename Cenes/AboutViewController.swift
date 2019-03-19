@@ -7,30 +7,31 @@
 //
 
 import UIKit
+import SideMenu
 
 class AboutViewController: UIViewController {
 
     @IBOutlet weak var versionUpdateBtn: UIButton!
-    
-    @IBOutlet weak var aboutUsCloseBtn: UIImageView!
-    
     @IBOutlet weak var versionCurrentText: UILabel!
+    
+    var loggedInUser: User!;
+    var profileImage = UIImage(named: "profile icon");
+    var image: UIImage!;
+    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.versionUpdateBtn.layer.shadowOpacity = 0.1
-        self.versionUpdateBtn.layer.shadowOffset = CGSize(width: 3.0, height: 2.0)
-        self.aboutUsCloseBtn.isUserInteractionEnabled = true;
-        let closeTappedGesture = UITapGestureRecognizer(target: self, action: #selector(self.closeButtonTapped));
         
-        self.aboutUsCloseBtn.addGestureRecognizer(closeTappedGesture);
+        self.view.backgroundColor = themeColor;
+        
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        
         
         // Do any additional setup after loading the view.
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             self.versionCurrentText.text = "Version "+(version);
             
         }
-        
-       // self.versionUpdateBtn.frame = CGRect(x: 0, y: self.view.bounds.height/2 - 50, width: self.view.bounds.width, height: 50)
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,19 +41,61 @@ class AboutViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        self.setUpNavBar();
+        self.navigationController?.navigationBar.shouldRemoveShadow(true)
+        if self.loggedInUser.photo != nil {
+                let webServ = WebService()
+                webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in
+                    self.profileImage = image
+                    self.setUpNavBar()
+                })
+            }
+       
     }
-    
+
     @IBAction func versionUpdateBtbPressed(_ sender: UIButton) {
         if let url = URL(string: aboutUsVersionUpdateLink) {
             UIApplication.shared.open(url)
         }
     }
     
-    @objc func closeButtonTapped() {
-        UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-    }
+    func setUpNavBar(){
         
+        let profileButton = UIButton.init(type: .custom)
+        profileButton.imageView?.contentMode = .scaleAspectFill
+        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        profileButton.layer.cornerRadius = profileButton.frame.height/2
+        profileButton.clipsToBounds = true
+        profileButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        
+        profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        profileButton.backgroundColor = UIColor.white
+        
+        let barButton = UIBarButtonItem.init(customView: profileButton)
+        self.navigationItem.leftBarButtonItem = barButton
+        
+        let homeButton = UIButton.init(type: .custom)
+        homeButton.setImage(UIImage(named: "homeSelected"), for: .normal)
+        homeButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
+        homeButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
+        homeButton.heightAnchor.constraint(equalToConstant: 35.0).isActive = true
+        
+        homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
+        
+        let rightBarButton = UIBarButtonItem.init(customView: homeButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    @objc func homeButtonPressed(){
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func profileButtonPressed(){
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+    }
+    
     /*
     // MARK: - Navigation
 
