@@ -16,6 +16,6 @@ extension UIView {
     }
     
     func viewCircledCorners() -> Void {
-        self.layer.cornerRadius = 40;
+        self.layer.cornerRadius = 45;
     }
 }

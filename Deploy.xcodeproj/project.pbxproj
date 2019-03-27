@@ -19,8 +19,13 @@
 		5E41E95A22337D1200CEECFB /* GatheringExpiredViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41E95922337D1200CEECFB /* GatheringExpiredViewController.swift */; };
 		5E41E95C223533F700CEECFB /* EventDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41E95B223533F700CEECFB /* EventDto.swift */; };
 		5E41E95F223551AD00CEECFB /* HomeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41E95E223551AD00CEECFB /* HomeDto.swift */; };
+		5E428ADD2249095700085E8B /* MeTimeDynamicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E428ADB2249095700085E8B /* MeTimeDynamicTableViewCell.swift */; };
+		5E428ADE2249095700085E8B /* MeTimeDynamicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E428ADC2249095700085E8B /* MeTimeDynamicTableViewCell.xib */; };
 		5E6999082221098100A275B6 /* GatheringPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6999072221098100A275B6 /* GatheringPreviewController.swift */; };
 		5E69990A2221182600A275B6 /* GatheringPreviewController+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6999092221182600A275B6 /* GatheringPreviewController+UITableView.swift */; };
+		5E6AE0C42241F2320076A275 /* MeTimeUnscheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6AE0C22241F2320076A275 /* MeTimeUnscheduleTableViewCell.swift */; };
+		5E6AE0C52241F2320076A275 /* MeTimeUnscheduleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E6AE0C32241F2320076A275 /* MeTimeUnscheduleTableViewCell.xib */; };
+		5E6AE0C72242055B0076A275 /* MeTimeAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6AE0C62242055B0076A275 /* MeTimeAddViewController.swift */; };
 		5E6F572F222036F50053C21A /* GatheringPreviewImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F572D222036F50053C21A /* GatheringPreviewImageTableViewCell.swift */; };
 		5E6F5730222036F50053C21A /* GatheringPreviewImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E6F572E222036F50053C21A /* GatheringPreviewImageTableViewCell.xib */; };
 		5E6F5733222039AD0053C21A /* GatheringPreviewTitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F5731222039AD0053C21A /* GatheringPreviewTitleTableViewCell.swift */; };
@@ -34,6 +39,7 @@
 		5EC73CEF1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */; };
 		5EC73CF11F4FFDA100D9679B /* MeTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC73CF01F4FFDA100D9679B /* MeTimeViewController.swift */; };
 		5EC73CF31F4FFF3800D9679B /* BaseOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */; };
+		5ED6FECF224B687B00E940DE /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FECE224B687B00E940DE /* Connectivity.swift */; };
 		5ED747B62226BA9000C3458A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B52226BA9000C3458A /* Event.swift */; };
 		5ED747B82226BAC800C3458A /* EventMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B72226BAC800C3458A /* EventMember.swift */; };
 		5ED747BA2226BAE900C3458A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B92226BAE900C3458A /* User.swift */; };
@@ -44,10 +50,15 @@
 		5EDEE1ED2240A56800330F47 /* MeTimeItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EDEE1EB2240A56800330F47 /* MeTimeItemTableViewCell.xib */; };
 		5EDEE1EF2240A9DB00330F47 /* NewMeTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1EE2240A9DB00330F47 /* NewMeTimeViewController.swift */; };
 		5EDEE1F22240AAA600330F47 /* NewMeTimeViewController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F12240AAA600330F47 /* NewMeTimeViewController+TableView.swift */; };
+		5EDEE1F42240BE2D00330F47 /* MeTimeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F32240BE2D00330F47 /* MeTimeService.swift */; };
+		5EDEE1F62240BEE100330F47 /* HttpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F52240BEE100330F47 /* HttpService.swift */; };
+		5EDEE1F82240C75A00330F47 /* MetimeRecurringEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F72240C75A00330F47 /* MetimeRecurringEvent.swift */; };
+		5EDEE1FA2240CC7A00330F47 /* MeTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F92240CC7A00330F47 /* MeTimeManager.swift */; };
 		5EEE363E1F508DA20095517C /* CountryPicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5EEE363B1F508DA20095517C /* CountryPicker.bundle */; };
 		5EEE363F1F508DA20095517C /* CountryPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EEE363D1F508DA20095517C /* CountryPicker.m */; };
 		5EEE36431F50D78E0095517C /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEE36421F50D78E0095517C /* BaseViewController.swift */; };
 		5EEE364D1F549C1C0095517C /* AddCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEE364C1F549C1C0095517C /* AddCalendarViewController.swift */; };
+		5EF595EF224899E5005EF500 /* UILabel+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF595EE224899E5005EF500 /* UILabel+Customs.swift */; };
 		5EF8409022375EA50046E68D /* UIButton+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF8408F22375EA50046E68D /* UIButton+Custom.swift */; };
 		5EF840932237646B0046E68D /* HolidayCalendarListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF840922237646B0046E68D /* HolidayCalendarListViewController.swift */; };
 		5EF84097223765910046E68D /* CountryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF84095223765910046E68D /* CountryTableViewCell.swift */; };
@@ -306,8 +317,13 @@
 		5E41E95922337D1200CEECFB /* GatheringExpiredViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringExpiredViewController.swift; sourceTree = "<group>"; };
 		5E41E95B223533F700CEECFB /* EventDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDto.swift; sourceTree = "<group>"; };
 		5E41E95E223551AD00CEECFB /* HomeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDto.swift; sourceTree = "<group>"; };
+		5E428ADB2249095700085E8B /* MeTimeDynamicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeDynamicTableViewCell.swift; sourceTree = "<group>"; };
+		5E428ADC2249095700085E8B /* MeTimeDynamicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeDynamicTableViewCell.xib; sourceTree = "<group>"; };
 		5E6999072221098100A275B6 /* GatheringPreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringPreviewController.swift; sourceTree = "<group>"; };
 		5E6999092221182600A275B6 /* GatheringPreviewController+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GatheringPreviewController+UITableView.swift"; sourceTree = "<group>"; };
+		5E6AE0C22241F2320076A275 /* MeTimeUnscheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeUnscheduleTableViewCell.swift; sourceTree = "<group>"; };
+		5E6AE0C32241F2320076A275 /* MeTimeUnscheduleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeUnscheduleTableViewCell.xib; sourceTree = "<group>"; };
+		5E6AE0C62242055B0076A275 /* MeTimeAddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeAddViewController.swift; sourceTree = "<group>"; };
 		5E6F572D222036F50053C21A /* GatheringPreviewImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringPreviewImageTableViewCell.swift; sourceTree = "<group>"; };
 		5E6F572E222036F50053C21A /* GatheringPreviewImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GatheringPreviewImageTableViewCell.xib; sourceTree = "<group>"; };
 		5E6F5731222039AD0053C21A /* GatheringPreviewTitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringPreviewTitleTableViewCell.swift; sourceTree = "<group>"; };
@@ -321,6 +337,7 @@
 		5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldHolidayCalendarViewController.swift; sourceTree = "<group>"; };
 		5EC73CF01F4FFDA100D9679B /* MeTimeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeTimeViewController.swift; sourceTree = "<group>"; };
 		5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseOnboardingViewController.swift; sourceTree = "<group>"; };
+		5ED6FECE224B687B00E940DE /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		5ED747B52226BA9000C3458A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		5ED747B72226BAC800C3458A /* EventMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMember.swift; sourceTree = "<group>"; };
 		5ED747B92226BAE900C3458A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -331,12 +348,17 @@
 		5EDEE1EB2240A56800330F47 /* MeTimeItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeItemTableViewCell.xib; sourceTree = "<group>"; };
 		5EDEE1EE2240A9DB00330F47 /* NewMeTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMeTimeViewController.swift; sourceTree = "<group>"; };
 		5EDEE1F12240AAA600330F47 /* NewMeTimeViewController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewMeTimeViewController+TableView.swift"; sourceTree = "<group>"; };
+		5EDEE1F32240BE2D00330F47 /* MeTimeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeService.swift; sourceTree = "<group>"; };
+		5EDEE1F52240BEE100330F47 /* HttpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpService.swift; sourceTree = "<group>"; };
+		5EDEE1F72240C75A00330F47 /* MetimeRecurringEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetimeRecurringEvent.swift; sourceTree = "<group>"; };
+		5EDEE1F92240CC7A00330F47 /* MeTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeManager.swift; sourceTree = "<group>"; };
 		5EEE363A1F508DA10095517C /* Cenes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cenes-Bridging-Header.h"; sourceTree = "<group>"; };
 		5EEE363B1F508DA20095517C /* CountryPicker.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CountryPicker.bundle; sourceTree = "<group>"; };
 		5EEE363C1F508DA20095517C /* CountryPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryPicker.h; sourceTree = "<group>"; };
 		5EEE363D1F508DA20095517C /* CountryPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryPicker.m; sourceTree = "<group>"; };
 		5EEE36421F50D78E0095517C /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		5EEE364C1F549C1C0095517C /* AddCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCalendarViewController.swift; sourceTree = "<group>"; };
+		5EF595EE224899E5005EF500 /* UILabel+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Customs.swift"; sourceTree = "<group>"; };
 		5EF8408F22375EA50046E68D /* UIButton+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Custom.swift"; sourceTree = "<group>"; };
 		5EF840922237646B0046E68D /* HolidayCalendarListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolidayCalendarListViewController.swift; sourceTree = "<group>"; };
 		5EF84095223765910046E68D /* CountryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryTableViewCell.swift; sourceTree = "<group>"; };
@@ -688,6 +710,10 @@
 				5EDEE1E72240A42300330F47 /* MeTimeDescTableViewCell.xib */,
 				5EDEE1EA2240A56800330F47 /* MeTimeItemTableViewCell.swift */,
 				5EDEE1EB2240A56800330F47 /* MeTimeItemTableViewCell.xib */,
+				5E6AE0C22241F2320076A275 /* MeTimeUnscheduleTableViewCell.swift */,
+				5E6AE0C32241F2320076A275 /* MeTimeUnscheduleTableViewCell.xib */,
+				5E428ADB2249095700085E8B /* MeTimeDynamicTableViewCell.swift */,
+				5E428ADC2249095700085E8B /* MeTimeDynamicTableViewCell.xib */,
 			);
 			name = MeTimeListCells;
 			sourceTree = "<group>";
@@ -864,6 +890,7 @@
 				AE4E83EC1F6130FB0022ED7E /* MeTimeTableViewCell.swift */,
 				AE4E83ED1F6130FB0022ED7E /* MeTimeTableViewCell.xib */,
 				5EDEE1EE2240A9DB00330F47 /* NewMeTimeViewController.swift */,
+				5E6AE0C62242055B0076A275 /* MeTimeAddViewController.swift */,
 			);
 			name = MeTime;
 			sourceTree = "<group>";
@@ -1090,6 +1117,7 @@
 				5ED747B72226BAC800C3458A /* EventMember.swift */,
 				5ED747B92226BAE900C3458A /* User.swift */,
 				5ED747BB2226CF3C00C3458A /* Location.swift */,
+				5EDEE1F72240C75A00330F47 /* MetimeRecurringEvent.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1172,6 +1200,9 @@
 				FA625ED7218B50E800B6B23C /* CalendarService.swift */,
 				FA27BD0D21F2365000E674D4 /* GatheringService.swift */,
 				5E078D1E2236A5150082A013 /* NotificationService.swift */,
+				5EDEE1F32240BE2D00330F47 /* MeTimeService.swift */,
+				5EDEE1F52240BEE100330F47 /* HttpService.swift */,
+				5ED6FECE224B687B00E940DE /* Connectivity.swift */,
 			);
 			name = services;
 			sourceTree = "<group>";
@@ -1186,6 +1217,7 @@
 				FA52377521FB3A5800055B8D /* UINavigationBar+Customs.swift */,
 				FA486CBD21FF1A9800E8AF72 /* UIView+Customs.swift */,
 				5EF8408F22375EA50046E68D /* UIButton+Custom.swift */,
+				5EF595EE224899E5005EF500 /* UILabel+Customs.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -1214,6 +1246,7 @@
 				FA52377321FB377000055B8D /* DateManager.swift */,
 				FAF895CD21C95BB800AD6C86 /* HomeManager.swift */,
 				5E078D202236A6760082A013 /* GatheringManager.swift */,
+				5EDEE1F92240CC7A00330F47 /* MeTimeManager.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -1377,6 +1410,7 @@
 				AE7D84A51F90C214005ABB81 /* GoogleService-Info.plist in Resources */,
 				AE46478B1F6FE03E00B5CB67 /* flag_dk.png in Resources */,
 				AE46478E1F6FE03E00B5CB67 /* flag_fi.png in Resources */,
+				5E428ADE2249095700085E8B /* MeTimeDynamicTableViewCell.xib in Resources */,
 				AE8184DE1F95CB0200D885A2 /* HomeTableViewCell.xib in Resources */,
 				FA00904121F702D50038BF3D /* GatheringCardHeaderTableViewCell.xib in Resources */,
 				AE4647911F6FE03E00B5CB67 /* flag_hk.png in Resources */,
@@ -1421,6 +1455,7 @@
 				5EF84098223765910046E68D /* CountryTableViewCell.xib in Resources */,
 				F4E9C2301F1606D9002BE9B8 /* Onboarding.storyboard in Resources */,
 				5EFFC0A9222D1F320037D2EC /* FriendsTableViewCell.xib in Resources */,
+				5E6AE0C52241F2320076A275 /* MeTimeUnscheduleTableViewCell.xib in Resources */,
 				AE4647901F6FE03E00B5CB67 /* flag_gr.png in Resources */,
 				AE92F0271F947F490051CCF6 /* DeleteCell.xib in Resources */,
 				AE46479B1F6FE03E00B5CB67 /* flag_mx.png in Resources */,
@@ -1565,6 +1600,7 @@
 				5E6F572F222036F50053C21A /* GatheringPreviewImageTableViewCell.swift in Sources */,
 				FA00904821F73E910038BF3D /* MemberCountCollectionViewCell.swift in Sources */,
 				FAC5314A21CBE63E00E033BB /* UIDatePicker+Customs.swift in Sources */,
+				5EDEE1F82240C75A00330F47 /* MetimeRecurringEvent.swift in Sources */,
 				FA110EC0215F8AD8007DB7EA /* CountryCodeTableViewCell.swift in Sources */,
 				5EEE364D1F549C1C0095517C /* AddCalendarViewController.swift in Sources */,
 				5EF8409022375EA50046E68D /* UIButton+Custom.swift in Sources */,
@@ -1579,6 +1615,7 @@
 				AEEF8A791FA885360032D7B4 /* InvitationAcceptView.swift in Sources */,
 				5EDEE1F22240AAA600330F47 /* NewMeTimeViewController+TableView.swift in Sources */,
 				5EC73CF11F4FFDA100D9679B /* MeTimeViewController.swift in Sources */,
+				5E428ADD2249095700085E8B /* MeTimeDynamicTableViewCell.swift in Sources */,
 				5E6999082221098100A275B6 /* GatheringPreviewController.swift in Sources */,
 				FA88C5C121CAC56E00399F1C /* CreateGatheringViewController+UITableView.swift in Sources */,
 				AE5A7C231F679F4D00C7B10C /* LocationCell.swift in Sources */,
@@ -1589,6 +1626,7 @@
 				AE03512F1F5E95E0001A162B /* GatheringDateTableViewCell.swift in Sources */,
 				FA204940214C35EE004F1A13 /* ChoiceViewController.swift in Sources */,
 				FA110EC521614B94007DB7EA /* SignupSuccessViewController.swift in Sources */,
+				5E6AE0C42241F2320076A275 /* MeTimeUnscheduleTableViewCell.swift in Sources */,
 				AE03512B1F5E9550001A162B /* GatheringDescTableViewCell.swift in Sources */,
 				FA5D275421861238005EF27A /* HomeService.swift in Sources */,
 				5E2797D1222C0BB60098F295 /* FriendListItemTableViewCell.swift in Sources */,
@@ -1637,6 +1675,7 @@
 				B9710C981FA67A68000A45B3 /* LocationModel.swift in Sources */,
 				AE5841AF1FBB148B000D4F86 /* DiaryHeaderView.swift in Sources */,
 				5E41E95A22337D1200CEECFB /* GatheringExpiredViewController.swift in Sources */,
+				5ED6FECF224B687B00E940DE /* Connectivity.swift in Sources */,
 				5E41E95F223551AD00CEECFB /* HomeDto.swift in Sources */,
 				AE4E83EA1F612A190022ED7E /* AlarmViewController.swift in Sources */,
 				AE92F0261F947F490051CCF6 /* DeleteCell.swift in Sources */,
@@ -1645,6 +1684,7 @@
 				AE2043521F8B588F00C48468 /* NotificationViewController.swift in Sources */,
 				5EF840932237646B0046E68D /* HolidayCalendarListViewController.swift in Sources */,
 				B956ADB11FB04E00005B13CA /* RemindersModel+CoreDataClass.swift in Sources */,
+				5EDEE1F62240BEE100330F47 /* HttpService.swift in Sources */,
 				944A7B571F980AA0001491D3 /* AlarmDetailTableViewCell.swift in Sources */,
 				AE8969F11FC7FBFD00EE2A3A /* FriendsAddCell.swift in Sources */,
 				FA42F0682140547D00721A7A /* PhonebookService.swift in Sources */,
@@ -1652,6 +1692,7 @@
 				FA3429FB21FB687D00205876 /* HomeCalendarTableViewCell.swift in Sources */,
 				944A7B531F980494001491D3 /* AlarmTableViewCell.swift in Sources */,
 				B9710C941FA3C697000A45B3 /* ReminderModel.swift in Sources */,
+				5EDEE1F42240BE2D00330F47 /* MeTimeService.swift in Sources */,
 				FA39E9892127507F00A47B93 /* OnboardingStep5ViewController.swift in Sources */,
 				AE8F471A1FB9B70100C153F0 /* DiaryCellOne.swift in Sources */,
 				5ED747B82226BAC800C3458A /* EventMember.swift in Sources */,
@@ -1684,6 +1725,8 @@
 				F40A89A11F1FD74B002BBC17 /* UtilMethod.swift in Sources */,
 				B94B39921FA7BAF400A806FE /* RemindersEmptyTableViewCell.swift in Sources */,
 				FA42F06A2140632500721A7A /* UserService.swift in Sources */,
+				5E6AE0C72242055B0076A275 /* MeTimeAddViewController.swift in Sources */,
+				5EF595EF224899E5005EF500 /* UILabel+Customs.swift in Sources */,
 				FAF895CE21C95BB800AD6C86 /* HomeManager.swift in Sources */,
 				B9710C921FA3BB4E000A45B3 /* AddOrEditReminderViewController.swift in Sources */,
 				B9EECDB11FD4D8EB001CC478 /* RemindersViewController+Extensions.swift in Sources */,
@@ -1718,6 +1761,7 @@
 				AE2F2EBD1F9DCC3200B05A92 /* NotificationData.swift in Sources */,
 				F4B1C72F1F2E94EC00174414 /* LocationViewController.swift in Sources */,
 				5EADEB21222BBF2600569864 /* GatheringDayTableViewCell.swift in Sources */,
+				5EDEE1FA2240CC7A00330F47 /* MeTimeManager.swift in Sources */,
 				FA52377621FB3A5800055B8D /* UINavigationBar+Customs.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

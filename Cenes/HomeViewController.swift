@@ -50,12 +50,12 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     class func MainViewController() -> UITabBarController{
         
         let tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tab") as! UITabBarController
-        tabController.tabBar.items?[0].title = nil
+        /*tabController.tabBar.items?[0].title = nil
         tabController.tabBar.items?[0].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[0].titlePositionAdjustment = UIOffsetMake(0, 80)
         tabController.tabBar.items?[1].title = nil
         tabController.tabBar.items?[1].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
-        tabController.tabBar.items?[1].titlePositionAdjustment = UIOffsetMake(0, 80)
+        tabController.tabBar.items?[1].titlePositionAdjustment = UIOffsetMake(0, 80)*/
         /*tabController.tabBar.items?[2].title = nil
         tabController.tabBar.items?[2].imageInsets = UIEdgeInsetsMake(6,0,-6,0)
         tabController.tabBar.items?[2].titlePositionAdjustment = UIOffsetMake(0, 80)

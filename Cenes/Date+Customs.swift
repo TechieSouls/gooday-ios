@@ -34,4 +34,29 @@ extension Date {
         return dateFormatter.string(from: self).capitalized
         // or use capitalized(with: locale) if you want
     }
+    
+    func hmma() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mma"
+        dateFormatter.amSymbol = "AM"
+        dateFormatter.pmSymbol = "PM"
+        return dateFormatter.string(from: self)
+    }
+    
+    var currentTimeZoneDate: String {
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.current
+        formatter.amSymbol = "AM"
+        formatter.pmSymbol = "PM"
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return formatter.string(from: self)
+    }
+    
+    // Convert UTC (or GMT) to local time
+    func toLocalTime() -> Date {
+        let timezone = TimeZone.current
+        let seconds = TimeInterval(timezone.secondsFromGMT(for: self))
+        return Date(timeInterval: seconds, since: self)
+    }
 }

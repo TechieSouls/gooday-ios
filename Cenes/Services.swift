@@ -15,8 +15,8 @@ var imageFacebookURL :String?
 
 // Live Server
 //let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
-let apiUrl = "https://deploy.cenesgroup.com/"
-
+//let apiUrl = "https://deploy.cenesgroup.com/"
+let apiUrl = "http://localhost:8181/"
 
 
 

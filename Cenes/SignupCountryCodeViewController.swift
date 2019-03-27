@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol SelectedCountryProtocol {
+    func selectedCountryCode(countryCode: String);
+}
+
 class SignupCountryCodeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UITextFieldDelegate {
     
     
@@ -19,7 +23,7 @@ class SignupCountryCodeViewController: UIViewController, UITableViewDataSource, 
         self.prepareData(searchText: seacrhInputText.text!)
     }
     
-    
+    var selectedCountryCodeDelegate: SelectedCountryProtocol?;
     var countriesDict: [String: [CountryCodeService]] = ["": []];
     var countryHeaders: [String] = [];
     
@@ -72,22 +76,27 @@ class SignupCountryCodeViewController: UIViewController, UITableViewDataSource, 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let indexPath = tableView.indexPathForSelectedRow;
         let currentCell = tableView.cellForRow(at: indexPath!) as! CountryCodeTableViewCell;
-        print(currentCell.countryCode);
+        print(currentCell.countryCode.text);
         
-        self.performSegue(withIdentifier: "countryTableRowClickSegue", sender: self)
+        self.selectedCountryCodeDelegate?.selectedCountryCode(countryCode: currentCell.countryCode.text!);
         
-        //navigationController?.popViewController(animated: false);
+        
+        //self.performSegue(withIdentifier: "countryTableRowClickSegue", sender: self)
+        
+        //self.navigationController?.popViewController(animated: true);
+        
+        self.dismiss(animated: true, completion: nil )
 
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? SignupSetp1ViewController {
             
             let path = countryTable.indexPathForSelectedRow;
             let countryCell = countryTable.cellForRow(at: path!) as? CountryCodeTableViewCell
             vc.countryCode = (countryCell?.countryCode.text)!;
         }
-    }
+    }*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,7 +107,6 @@ class SignupCountryCodeViewController: UIViewController, UITableViewDataSource, 
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         imageView.image = #imageLiteral(resourceName: "search_icon")
         self.seacrhInputText.leftView = imageView
-        
         self.prepareData(searchText: "null");
     }
 

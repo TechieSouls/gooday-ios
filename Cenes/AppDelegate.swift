@@ -11,6 +11,7 @@ import CoreData
 import FBSDKLoginKit
 import FacebookCore
 import UserNotifications
+ 
 import GoogleSignIn
 import Google
 import SideMenu
@@ -28,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let cenesPersistentContainer = NSPersistentContainer(name: "Cenes")
     
     var storeLoaded = false
+    
     
     func loadPersistentContainer() {
         cenesPersistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in

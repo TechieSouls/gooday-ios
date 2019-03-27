@@ -26,13 +26,13 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         passwordTextField.delegate = self
         
         let whiteColor : UIColor = UIColor.white
- self.emailTxtField.layer.borderColor = whiteColor.cgColor
+        self.emailTxtField.layer.borderColor = UIColor.black.cgColor
         self.emailTxtField.layer.borderWidth = 1.0
         self.emailTxtField.leftView = UIView(frame: CGRect(x: 0, y: 0, width:15, height: self.emailTxtField.frame.height))
         self.emailTxtField.leftViewMode = .always
     
     
-        self.passwordTextField.layer.borderColor = whiteColor.cgColor
+        self.passwordTextField.layer.borderColor = UIColor.black.cgColor
         self.passwordTextField.layer.borderWidth = 1.0
         self.passwordTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width:15, height: self.passwordTextField.frame.height))
         self.passwordTextField.leftViewMode = .always

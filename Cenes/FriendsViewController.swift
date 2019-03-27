@@ -125,7 +125,7 @@ class FriendsViewController: UIViewController {
         }
         
         //if self.collectionFriendsProtocol != nil {
-            self.collectionFriendsDelegate?.collectionFriendsList(selectedFriendHolder: userContacts);
+        self.collectionFriendsDelegate?.collectionFriendsList(selectedFriendHolder: userContacts);
         //}
         self.navigationController?.popViewController(animated: true)
         

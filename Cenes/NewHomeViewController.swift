@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class NewHomeViewController: UIViewController {
 
     @IBOutlet weak var homeTableView: UITableView!
@@ -30,6 +31,8 @@ class NewHomeViewController: UIViewController {
         //Load Home Screen Data on user load
         self.registerTableCells()
         self.loadHomeData();
+        
+        
     }
     @IBOutlet weak var calendarView: UIView!
     

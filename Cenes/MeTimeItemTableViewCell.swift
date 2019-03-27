@@ -13,16 +13,16 @@ class MeTimeItemTableViewCell: UITableViewCell {
     
     @IBOutlet weak var meTimeCellViewDetails: UIView!
     @IBOutlet weak var meTimeImage: UIImageView!
-    
-    @IBOutlet weak var meTimeViewNoImage: UIView!
-    
     @IBOutlet weak var meTimeTitle: UILabel!
     @IBOutlet weak var meTimeDays: UILabel!
     @IBOutlet weak var meTimeHours: UILabel!
     @IBOutlet weak var meTimeScheduleView: UIView!
-    @IBOutlet weak var notSchedulesLabel: UILabel!
+    
+    @IBOutlet weak var meTimeViewNoImage: UIView!
     
     @IBOutlet weak var meTimeNoImageLabel: UILabel!
+    
+    var totalHeightOfCell = 110;
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,15 +31,22 @@ class MeTimeItemTableViewCell: UITableViewCell {
         contentView.backgroundColor = themeColor;
         
         meTimeCellViewDetails.viewCircledCorners();
+        meTimeCellViewDetails.layer.borderWidth = 1;
+        meTimeCellViewDetails.layer.borderColor = cenesLabelBlue.cgColor;
+        
         meTimeImage.setRounded()
         
+        meTimeViewNoImage.roundedView();
+        meTimeViewNoImage.layer.borderColor = cenesLabelBlue.cgColor;
+        meTimeViewNoImage.layer.borderWidth = 1;
+        
+        meTimeNoImageLabel.textColor = cenesLabelBlue;
+        
         meTimeTitle.textColor = cenesLabelBlue
-        meTimeNoImageLabel.textColor = cenesLabelBlue
         
         meTimeDays.textColor = selectedColor
         meTimeHours.textColor = selectedColor
         
-        notSchedulesLabel.textColor = unselectedColor
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

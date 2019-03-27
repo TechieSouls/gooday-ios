@@ -9,7 +9,7 @@
 import UIKit
 import NVActivityIndicatorView
 
-class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, UITextFieldDelegate  {
+class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, UITextFieldDelegate, SelectedCountryProtocol  {
 
     
     @IBOutlet weak var textPhoneNumber: UITextField!
@@ -77,8 +77,10 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
     
     @IBAction func onClickCountryDropdown(_ sender: Any) {
         
-        let signupCountryController = storyboard?.instantiateViewController(withIdentifier: "signupCountryCodeViewController") as! SignupCountryCodeViewController
-        navigationController?.pushViewController(signupCountryController, animated: false);
+        /*let signupCountryController = storyboard?.instantiateViewController(withIdentifier: "signupCountryCodeViewController") as! SignupCountryCodeViewController
+        navigationController?.pushViewController(signupCountryController, animated: false);*/
+        
+        self.performSegue(withIdentifier: "countryListSeague", sender: nil)
         
     }
     
@@ -96,6 +98,7 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
                 signupStep2Controller.phoneNumber = self.textPhoneNumber.text!
                 signupStep2Controller.countryCode = self.countryCode; self.navigationController?.pushViewController(signupStep2Controller, animated: true)
             } else {
+                print(returnDict["message"] as! String)
                 self.alertMessage(message: returnDict["message"] as! String);
             }
             
@@ -143,7 +146,7 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
         // Pass the selected object to the new view controller.
     }
     */
-    func alertMessage (message :String)
+    func alertMessage (message :String) -> Void
     {
         let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.alert)
         
@@ -154,4 +157,19 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
         self.present(alertController, animated: true, completion: nil)
     }
 
+    func selectedCountryCode(countryCode: String) {
+        self.countryCode = countryCode;
+        print("ountry Code selected : ",self.countryCode);
+        self.btnCountryDropdown.setTitle(self.countryCode, for: .normal)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        
+        if segue.identifier == "countryListSeague" {
+            let signupCountryCodeViewController = segue.destination as? SignupCountryCodeViewController
+            signupCountryCodeViewController?.selectedCountryCodeDelegate = self
+        }
+    }
 }

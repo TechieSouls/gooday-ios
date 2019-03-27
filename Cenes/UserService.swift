@@ -247,7 +247,7 @@ class UserService {
             
                 let json = response.result.value as! NSDictionary
             
-                returnedDict["messsage"] = json.value(forKey: "message")
+                returnedDict["message"] = json.value(forKey: "message")
             returnedDict["success"] = json.value(forKey: "success")
                 complete(returnedDict)
                 
