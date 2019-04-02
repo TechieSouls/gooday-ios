@@ -122,14 +122,14 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 break
             case 2:
                 print("Open me Time")
-                let meTime = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
+                /*let meTime = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
                 meTime?.hidesBottomBarWhenPushed = true
                 meTime?.fromSideMenu = true
                 
                 self.dismiss(animated: true, completion: nil)
                 let navController = appDelegate?.cenesTabBar?.viewControllers?[index!] as! UINavigationController
                 navController.popToRootViewController(animated: false)
-                navController.pushViewController(meTime!, animated: true)
+                navController.pushViewController(meTime!, animated: true)*/
                 break
             case 3:
                 print("Open calendar sync")

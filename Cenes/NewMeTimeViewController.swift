@@ -8,14 +8,13 @@
 
 import UIKit
 import NVActivityIndicatorView
+import VisualEffectView
 
 class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
 
     @IBOutlet weak var meTimeItemsTableView: UITableView!
     
-    @IBOutlet weak var meTimeAddView: UIView!
-    
-    @IBOutlet weak var transparentView: UIView!
+    @IBOutlet weak var addNewMeTimeBtn: UIImageView!
     
     var loggedInUser: User!;
     var metimeEvents = [MetimeRecurringEvent]();
@@ -29,22 +28,14 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
         meTimeItemsTableView.backgroundColor = themeColor;
         self.setupNavBar(); 
         
-        
-        view.backgroundColor = UIColor.white;
-        meTimeItemsTableView.backgroundColor = themeColor;
-        navigationController?.navigationBar.shouldRemoveShadow(true)
-        navigationController?.navigationBar.backgroundColor = themeColor
-        
         meTimeItemsTableView.register(UINib(nibName: "MeTimeDescTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "MeTimeDescTableViewCell")
         meTimeItemsTableView.register(UINib(nibName: "MeTimeItemTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "MeTimeItemTableViewCell")
         meTimeItemsTableView.register(UINib(nibName: "MeTimeUnscheduleTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "MeTimeUnscheduleTableViewCell")
+        meTimeItemsTableView.register(UINib(nibName: "MeTimeTwoLineTitleTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "MeTimeTwoLineTitleTableViewCell")
+        meTimeItemsTableView.register(UINib(nibName: "MeTimeThreeLineTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "MeTimeThreeLineTableViewCell")
         
         //Variables Initialization
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        
-        // Self-sizing magic!
-        self.meTimeItemsTableView.rowHeight = UITableViewAutomaticDimension
-        self.meTimeItemsTableView.estimatedRowHeight = 150; //Set this to any value that works for you.
     }
     
     
@@ -67,7 +58,13 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     
     func setupNavBar()-> Void{
         
-        let addButton = UIButton.init(type: .custom)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(addButtonPressed))
+        self.addNewMeTimeBtn.addGestureRecognizer(tap)
+        
+        //self.navigationController?.navigationBar.backgroundColor = themeColor;
+        //self.navigationController?.navigationBar.isHidden = true;
+        
+        /*let addButton = UIButton.init(type: .custom)
         addButton.setImage(UIImage(named: "plus_icon"), for: .normal)
         addButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
         addButton.widthAnchor.constraint(equalToConstant: 35.0).isActive = true
@@ -76,7 +73,7 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
         addButton.addTarget(self, action: #selector(addButtonPressed), for: .touchUpInside)
         
         let rightBarButton = UIBarButtonItem.init(customView: addButton)
-        self.navigationItem.rightBarButtonItem = rightBarButton
+        self.navigationItem.rightBarButtonItem = rightBarButton*/
     }
     
     func loadMeTimeData() -> Void {
@@ -99,39 +96,39 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
         });
     }
     
-    func overlayBlurredBackgroundView() {
-        
-        let blurredBackgroundView = UIVisualEffectView()
-        
-        blurredBackgroundView.frame = view.frame
-        blurredBackgroundView.effect = UIBlurEffect(style: .light)
-        
-        view.addSubview(blurredBackgroundView)
-        
-    }
     
     func removeBlurredBackgroundView() {
         
         for subview in view.subviews {
-            if subview.isKind(of: UIVisualEffectView.self) {
+            if subview.isKind(of: VisualEffectView.self) {
                 subview.removeFromSuperview()
             }
         }
     }
     
+    func addBlurBackgroundView() -> Void {
+        let bcColor = UIColor.init(red: 181/256, green: 181/256, blue: 182/256, alpha: 1)
+        let visualEffectView = VisualEffectView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        
+        // Configure the view with tint color, blur radius, etc
+        visualEffectView.colorTint = bcColor
+        visualEffectView.colorTintAlpha = 0.5
+        visualEffectView.blurRadius = 5
+        visualEffectView.scale = 1
+        
+        view.addSubview(visualEffectView)
+    }
     
     @objc func addButtonPressed(){
-        self.definesPresentationContext = true
-        //self.providesPresentationContextTransitionStyle = true
-        
-        //self.overlayBlurredBackgroundView();
+        self.tabBarController?.tabBar.isHidden = true;
+        self.addBlurBackgroundView();
         performSegue(withIdentifier: "showAddMetimeModal", sender: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showAddMetimeModal"{
-            let destinationVC = segue.destination;
-            destinationVC.modalPresentationStyle = .fullScreen
+            let destinationVC = segue.destination as! MeTimeAddViewController;
+            destinationVC.newMeTimeViewControllerDelegate  = self;
         }
     }
 }

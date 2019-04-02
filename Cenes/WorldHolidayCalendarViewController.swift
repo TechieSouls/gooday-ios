@@ -161,13 +161,13 @@ class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorVi
     }
     
     @IBAction  func userDidSelectNext(sender:UIButton){
-        let calendar = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
-        self.navigationController?.pushViewController(calendar!, animated: true)
+        /*let calendar = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
+        self.navigationController?.pushViewController(calendar!, animated: true)*/
     }
     
      func userDidSelectLater(sender: UIButton) {
-        let calendar = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
-        self.navigationController?.pushViewController(calendar!, animated: true)
+        /*let calendar = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
+        self.navigationController?.pushViewController(calendar!, animated: true)*/
     }
     
     func setUpNavBar(){

@@ -11,12 +11,14 @@ import UIKit
 class MeTimeDescTableViewCell: UITableViewCell {
 
     @IBOutlet weak var meTimeDescription: UILabel!
+    var totalHeightOfCell = 100;
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         contentView.backgroundColor = themeColor;
-        
         meTimeDescription.textColor = UIColor.black;
+        meTimeDescription.contentScaleFactor = 0.1
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

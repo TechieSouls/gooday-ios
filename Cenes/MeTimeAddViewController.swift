@@ -58,6 +58,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     var loggedInUser = User();
     let picController = UIImagePickerController();
     var imageToUpload: UIImage!;
+    var newMeTimeViewControllerDelegate: NewMeTimeViewController!;
+    
     var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView();
 
     override func viewDidLoad() {
@@ -67,7 +69,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         // Do any additional setup after loading the view.
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissMeTimeAddScreen))
         backButtonView.addGestureRecognizer(tap)
         
         //Image View
@@ -132,23 +134,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         self.setupDayButtons(button: saturday);
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        view.isOpaque = false
-        view.backgroundColor = UIColor.white
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
-        
-        if (self.metimeRecurringEvent.recurringEventId != nil) {
-            self.lblMeTimeTitle.isHidden = false;
-            self.titletextField.isHidden = true;
-            self.populateMeTimeCard();
-        } else {
-            self.lblMeTimeTitle.isHidden = true;
-            self.titletextField.isHidden = false;
-            self.titletextField.becomeFirstResponder();
-        }
-        
+        self.showMeTimeCardView();
     }
     
     @objc func startTimeViewPressed() {
@@ -160,8 +147,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         self.dateSelected = "endTime";
     }
     
-    @objc func doubleTapped() {
-        self.dismiss(animated: true, completion: nil);
+    @objc func dismissMeTimeAddScreen() {
+        self.hideMetimeCardView();
     }
     
     /**
@@ -184,10 +171,10 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         print(self.timePicker.clampedDate.millisecondsSince1970)
         if (self.dateSelected == "startTime") {
             self.metimeRecurringEvent.startTime = self.timePicker.clampedDate.millisecondsSince1970;
-            self.startTimeLabel.text = self.timePicker.clampedDate.hmma();
+            self.startTimeLabel.text = "START  \(self.timePicker.clampedDate.hmma())";
         } else if (self.dateSelected == "endTime") {
             self.metimeRecurringEvent.endTime = self.timePicker.clampedDate.millisecondsSince1970;
-            self.endTimeLabel.text = self.timePicker.clampedDate.hmma();
+            self.endTimeLabel.text = "FINISH  \(self.timePicker.clampedDate.hmma())";
 
         }
     }
@@ -202,11 +189,12 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             MeTimeService().deleteMeTimeByRecurringEventId(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
                 
                 self.stopLoading();
-                self.dismiss(animated: true, completion: nil)
+                self.newMeTimeViewControllerDelegate.loadMeTimeData();
+                self.hideMetimeCardView();
                 
             });
         } else {
-            self.dismiss(animated: true, completion: nil)
+            self.hideMetimeCardView();
         }
     }
     
@@ -413,10 +401,12 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         
         if (self.imageToUpload != nil) {
             MeTimeService().uploadMeTimeImage(image: self.imageToUpload, recurringEventId: metimeRecurringEvent.recurringEventId, token: self.loggedInUser.token, complete: {(response) in
-                self.dismiss(animated: true, completion: nil)
+                self.newMeTimeViewControllerDelegate.loadMeTimeData();
+                self.hideMetimeCardView();
             })
         } else {
-            self.dismiss(animated: true, completion: nil)
+            self.newMeTimeViewControllerDelegate.loadMeTimeData();
+            self.hideMetimeCardView();
         }
     }
     
@@ -466,8 +456,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                 }
             }
             
-            self.startTimeLabel.text = Date(millis: self.metimeRecurringEvent.startTime).hmma();
-            self.endTimeLabel.text = Date(millis: self.metimeRecurringEvent.endTime).hmma();
+            self.startTimeLabel.text = "START  \(Date(millis: self.metimeRecurringEvent.startTime).hmma())";
+            self.endTimeLabel.text = "FINISH  \(Date(millis: self.metimeRecurringEvent.endTime).hmma())";
 
         }
     }
@@ -490,6 +480,38 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         UIApplication.shared.endIgnoringInteractionEvents();
     }
     
+    func showMeTimeCardView() -> Void {
+        self.meTimeCard.center.y += self.meTimeCard.bounds.height;
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseIn],
+                       animations: {
+                        self.meTimeCard.center.y -= self.meTimeCard.bounds.height
+                        self.meTimeCard.layoutIfNeeded()
+        }, completion: nil)
+        self.meTimeCard.isHidden = false;
+        if (self.metimeRecurringEvent.recurringEventId != nil) {
+            self.lblMeTimeTitle.isHidden = false;
+            self.titletextField.isHidden = true;
+            self.populateMeTimeCard();
+        } else {
+            self.lblMeTimeTitle.isHidden = true;
+            self.titletextField.isHidden = false;
+            self.titletextField.becomeFirstResponder();
+        }
+    }
+    
+    func hideMetimeCardView() -> Void{
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear],
+                       animations: {
+                        self.meTimeCard.center.y += self.meTimeCard.bounds.height
+                        self.meTimeCard.layoutIfNeeded()
+                        
+        },  completion: {(_ completed: Bool) -> Void in
+            self.meTimeCard.isHidden = true
+            self.newMeTimeViewControllerDelegate.tabBarController?.tabBar.isHidden = false;
+            self.newMeTimeViewControllerDelegate.removeBlurredBackgroundView();
+            self.dismiss(animated: false, completion: nil);
+        })
+    }
 }
 
 

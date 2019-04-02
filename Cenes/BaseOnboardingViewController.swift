@@ -25,7 +25,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
     
     let profile = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "profile") as? PCameraViewController
     let holiday = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "holiday") as? WorldHolidayCalendarViewController
-    let meTime = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
+    //let meTime = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MeTime") as? MeTimeViewController
     let calendar = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "calendar") as? AddCalendarViewController
     
     
@@ -60,7 +60,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
         self.setpageIndex(index: self.pageIndex)
         
         holiday?.baseView = self
-        meTime?.baseView = self
+        //meTime?.baseView = self
     }
     
     
@@ -153,7 +153,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
             
         }else if pageIndex == 2 {
             
-            meTime?.userDidSelectNext()
+            //meTime?.userDidSelectNext()
             pageIndex = pageIndex + 1
             reset()
             self.setpageIndex(index: pageIndex)
@@ -212,7 +212,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
             
             return holiday
         case 2:
-            return meTime
+            return holiday
         case 3:
             return calendar
         default:
@@ -245,7 +245,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
         if type(of: viewController) == PCameraViewController.self {
             self.setpageIndex(index: 0)
             return holiday
-        }else if type(of: viewController) == WorldHolidayCalendarViewController.self {
+        }/*else if type(of: viewController) == WorldHolidayCalendarViewController.self {
             self.setpageIndex(index: 1)
             return meTime
         }
@@ -253,7 +253,7 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
            self.setpageIndex(index: 2)
             return calendar
             
-        }else  if type(of: viewController) == AddCalendarViewController.self {
+        }*/else  if type(of: viewController) == AddCalendarViewController.self {
            self.setpageIndex(index: 3)
             return nil
         }
@@ -273,15 +273,16 @@ class BaseOnboardingViewController: UIViewController ,UIPageViewControllerDataSo
             self.setpageIndex(index: 1)
             return profile
         }
-        else if type(of: viewController) == MeTimeViewController.self {
+        /*else if type(of: viewController) == MeTimeViewController.self {
             self.setpageIndex(index: 2)
             return holiday
             
-        }else  if type(of: viewController) == AddCalendarViewController.self {
+        }
+        else  if type(of: viewController) == AddCalendarViewController.self {
             
             self.setpageIndex(index: 3)
             return meTime
-        }
+        }*/
         
         return nil
         

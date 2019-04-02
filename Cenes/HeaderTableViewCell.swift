@@ -1,14 +1,14 @@
 //
-//  MeTimeDynamicTableViewCell.swift
+//  HeaderTableViewCell.swift
 //  Deploy
 //
-//  Created by Cenes_Dev on 25/03/2019.
+//  Created by Cenes_Dev on 01/04/2019.
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 
 import UIKit
 
-class MeTimeDynamicTableViewCell: UITableViewCell {
+class HeaderTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()

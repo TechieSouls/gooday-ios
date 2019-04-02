@@ -19,6 +19,7 @@ pod 'GoogleAnalytics'
 pod 'SwiftyJSONModel'
 pod 'SDWebImage', '~> 4.0'
 pod 'Instabug'
+pod 'VisualEffectView'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

@@ -169,8 +169,40 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
 //        let barButton = UIBarButtonItem.init(customView: profileButton)
 //        self.navigationItem.leftBarButtonItem = barButton
         
+        let holidayCalendarButton = UIButton.init(type: .custom)
+        holidayCalendarButton.setTitle("Holiday Calendar", for: .normal)
+        holidayCalendarButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
+        holidayCalendarButton.layer.cornerRadius = holidayCalendarButton.frame.height/2
+        holidayCalendarButton.clipsToBounds = true
+        holidayCalendarButton.addTarget(self, action: #selector(doneBarButtonPressed), for: .touchUpInside)
+        let holidayCalendarBarButton = UIBarButtonItem.init(customView: holidayCalendarButton)
+        
+        let calendarSyncButton = UIButton.init(type: .custom)
+        calendarSyncButton.setTitle("Calendar Sync", for: .normal)
+        calendarSyncButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
+        calendarSyncButton.layer.cornerRadius = calendarSyncButton.frame.height/2
+        calendarSyncButton.clipsToBounds = true
+        calendarSyncButton.addTarget(self, action: #selector(doneBarButtonPressed), for: .touchUpInside)
+        let calendarSyncBarButton = UIBarButtonItem.init(customView: calendarSyncButton)
+        
+        self.navigationItem.leftBarButtonItems = [holidayCalendarBarButton, calendarSyncBarButton]
+
+        
+        
+        let aboutUsButton = UIButton.init(type: .custom)
+        aboutUsButton.setTitle("About Us", for: .normal)
+        aboutUsButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
+        aboutUsButton.layer.cornerRadius = aboutUsButton.frame.height/2
+        aboutUsButton.clipsToBounds = true
+        aboutUsButton.addTarget(self, action: #selector(doneBarButtonPressed), for: .touchUpInside)
+        
+        
+        let aboutUsBarButton = UIBarButtonItem.init(customView: aboutUsButton)
+        
+        
+        
         let doneButton = UIButton.init(type: .custom)
-         doneButton.setTitle("Done", for: .normal)
+         doneButton.setTitle("Help And Feedback", for: .normal)
          doneButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
          doneButton.layer.cornerRadius = doneButton.frame.height/2
          doneButton.clipsToBounds = true
@@ -180,7 +212,7 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
          let doneBarButton = UIBarButtonItem.init(customView: doneButton)
         
         
-         self.navigationItem.rightBarButtonItem = doneBarButton
+         self.navigationItem.rightBarButtonItems = [aboutUsBarButton, doneBarButton]
         
         
         

@@ -340,40 +340,6 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
         }
         
         func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 85;
+            return 75;
         }
-        
-        func startIconDownload(notificationData: NotificationData, forIndexPath indexPath: IndexPath) {
-            guard self.imageDownloadsInProgress[indexPath] == nil else { return }
-            
-            let iconDownloader = IconDownloader(cenesUser: nil, cenesEventData: nil, notificationData: notificationData, indexPath: indexPath, photoDiary: nil)
-            iconDownloader.delegate = self
-            self.imageDownloadsInProgress[indexPath] = iconDownloader
-            iconDownloader.startDownload()
-            // print(cenesEventData.title+" started download")
-        }
-        
-        func terminateAllDownloads() {
-            let allDownloads = Array(self.imageDownloadsInProgress.values)
-            allDownloads.forEach { $0.cancelDownload() }
-            self.imageDownloadsInProgress.removeAll()
-        }
- 
     }
-
-
-extension NotificationViewController: IconDownloaderDelegate {
-    func iconDownloaderDidFinishDownloadingImage(_ iconDownloader: IconDownloader, error: NSError?) {
-        guard let cell = self.notificationTableView.cellForRow(at:iconDownloader.indexPath as IndexPath) as? NotificationCell else {
-            print("Not got cell")
-            return }
-        if let error = error {
-            print("error downloading Image")
-            //fatalError("Error loading thumbnails: \(error.localizedDescription)")
-        } else {
-            cell.profileImage?.image = iconDownloader.notificationData.notificationImage
-            //  print(iconDownloader.cenesEventData.title+" user profile updated")
-        }
-        self.imageDownloadsInProgress.removeValue(forKey: iconDownloader.indexPath as IndexPath)
-    }
-}
