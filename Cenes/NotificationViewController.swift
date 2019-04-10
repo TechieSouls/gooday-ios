@@ -11,13 +11,12 @@ import IoniconsSwift
 import NVActivityIndicatorView
 import SideMenu
 
-class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
+class NotificationViewController: UIViewController, NVActivityIndicatorViewable {
     
     
     @IBOutlet weak var notificationTableView: UITableView!
     
-    @IBOutlet weak var homeIcon: UIImageView!
-    @IBOutlet weak var profilePic: UIImageView!
+    @IBOutlet weak var notNotificationLabel: UILabel!
     
     var loggedInUser: User!;
     var profileImage = UIImage(named: "profile icon")
@@ -25,33 +24,48 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
     
     var image : UIImage!
     var imageDownloadsInProgress = [IndexPath : IconDownloader]()
-    var notificationDict = [NotificationData]()
-    var earlierDict = [NotificationData]()
+    var notificationPerPage = [NotificationData]()
+    var allNotifications = [NotificationData]()
+    var notificationDtos = [NotificationDto]();
+    var pageNumber = 0;
+    var totalNotificationCounts = 0;
+    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Notifications"
         self.notificationTableView.register(UINib(nibName: "NotificationGatheringTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NotificationGatheringTableViewCell")
+        self.notificationTableView.register(UINib(nibName: "HeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HeaderTableViewCell")
         
-        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.notificationTableView.isHidden = true
-        // Do any additional setup after loading the view.
-        self.loadNotification();
+        self.notificationTableView.tableFooterView?.isHidden = false;
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        
+        self.tabBarController?.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
         self.setUpNavBar();
         self.navigationController?.navigationBar.shouldRemoveShadow(true)
-        if self.loggedInUser.photo != nil {
+        /*if self.loggedInUser.photo != nil {
             let webServ = WebService()
             webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in
                 self.profileImage = image
                 self.setUpNavBar()
             })
+        }*/
+        self.tabBarController?.setTabBarDotVisible(visible: false);
+        // Do any additional setup after loading the view.
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if Connectivity.isConnectedToInternet {
+            self.initilize();
+            WebService().resetBadgeCount();
         }
     }
-
     
     @objc func profilePicPressed(profilePicGesture: UITapGestureRecognizer) {
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
@@ -61,8 +75,66 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
         self.navigationController?.popViewController(animated: true)
     }
     
+    func initilize() {
+        self.pageNumber = 0;
+        self.totalNotificationCounts = 0;
+        self.notificationPerPage = [NotificationData]();
+        self.allNotifications = [NotificationData]();
+        self.notificationDtos = [NotificationDto]();
+        
+        let queryStr = "recepientId=\(String(self.loggedInUser.userId))";
+        NotificationService().findNotificationCounts(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+            if (response["success"] as! Bool == true) {
+                self.totalNotificationCounts = response["data"] as! Int;
+                print("Total Notifications : ",self.totalNotificationCounts);
+                if (self.totalNotificationCounts > 0) {
+                    self.loadNotification();
+                } else {
+                    self.notificationTableView.isHidden = true;
+                    self.notNotificationLabel.isHidden = false;
+                }
+            } else {
+                let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true)
+            }
+        })
+    }
+    
     func loadNotification() -> Void {
-        let webservice = WebService()
+        
+        let queryStr = "userId=\(String(self.loggedInUser.userId))&pageNumber=\(self.pageNumber)&offset=20";
+        NotificationService().getPageableNotifications(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+            
+            self.notificationTableView.tableFooterView = self.spinner
+            self.notificationTableView.tableFooterView?.isHidden = true
+            
+            if (response["success"] as! Bool == true) {
+                
+                let notificationsNsArray = response["data"] as! NSArray;
+                
+                
+                if (notificationsNsArray.count > 0) {
+                     self.notificationTableView.isHidden = false
+                     self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
+                    for notification in self.notificationPerPage {
+                        self.allNotifications.append(notification);
+                    }
+                    self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+                    
+                    self.notificationTableView.layer.removeAllAnimations();
+                    self.notificationTableView.reloadData();
+                    
+                }
+            } else {
+                let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true)
+            }
+            
+        });
+        
+        /*let webservice = WebService()
         startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         webservice.getNotifications(){ (returnedDict) in
             print("Got results")
@@ -80,8 +152,7 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
                 print(returnedDict)
                 self.parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
             }
-            
-        }
+        }*/
     }
     
     func getTitleCell(sender : String ,title : String , message: String) -> NSAttributedString{
@@ -156,7 +227,7 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
     
     
     
-    func parseResults(resultArray:NSArray){
+    /*func parseResults(resultArray:NSArray){
         
          notificationDict = [NotificationData]()
          earlierDict = [NotificationData]()
@@ -181,7 +252,7 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
         }else{
             self.notificationTableView.isHidden = true
         }
-    }
+    }*/
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -203,7 +274,7 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
         profileButton.backgroundColor = UIColor.white
         
         let barButton = UIBarButtonItem.init(customView: profileButton)
-        self.navigationItem.leftBarButtonItem = barButton
+        //self.navigationItem.leftBarButtonItem = barButton
         
         let homeButton = UIButton.init(type: .custom)
         homeButton.setImage(UIImage(named: "homeSelected"), for: .normal)
@@ -214,7 +285,7 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
         homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
         
         let rightBarButton = UIBarButtonItem.init(customView: homeButton)
-        self.navigationItem.rightBarButtonItem = rightBarButton
+        //self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
     @objc func homeButtonPressed(){
@@ -224,122 +295,15 @@ class NotificationViewController: UIViewController,NVActivityIndicatorViewable {
     @objc func profileButtonPressed(){
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
-
 }
 
-    extension NotificationViewController : UITableViewDelegate , UITableViewDataSource
-    {
-
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-            let identifier = "NotificationGatheringTableViewCell"
-            let cell : NotificationGatheringTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? NotificationGatheringTableViewCell
-            cell.selectionStyle = .none
-            
-            let notification = self.notificationDict[indexPath.row]
-            
-            //cell.cellText.attributedText = self.getTitleCell(sender: notification.senderName!, title: notification.title!, message: notification.message!)
-            
-            //cell.timeLabel.text = notification.time
-            
-            if (notification.readStatus == "Read") {
-                cell.notificationBackground?.backgroundColor = unselectedColor
-                cell.readUnReadText.isHidden = false;
-                cell.timeLabel.textColor = unselectedColor;
-                cell.daysAgoText.textColor = unselectedColor;
-                cell.readUnReadText.textColor = unselectedColor;
-            } else {
-                cell.notificationBackground?.backgroundColor = cenesLabelBlue
-                cell.readUnReadText.isHidden = true;
-                cell.timeLabel.textColor = selectedColor;
-                cell.daysAgoText.textColor = selectedColor;
-            }
-            
-            cell.cellText.text = "\(notification.senderName!) \(notification.title!) \(notification.message!)";
-            
-            if let user = notification.user {
-                cell.profileImage.sd_setImage(with: URL(string: user.photo), placeholderImage: UIImage(named: "cenes_user_no_image"));
-            } else {
-                cell.profileImage.image = #imageLiteral(resourceName: "profile icon")
-            }
-            
-            let timeOfNotificaiton = Date.init(millis: notification.time!);
-            
-            cell.timeLabel.text = timeOfNotificaiton.dMMM();
-        
-            let numberOfDays = Util().daysBetweenDates(startDate: Date.init(millis: notification.time!), endDate: Date());
-            if (numberOfDays == 0) {
-                
-                let numberOfHours = Util().hoursBetweenDates(startDate: Date.init(millis: notification.time!), endDate: Date());
-                if (numberOfHours == 0) {
-                    cell.daysAgoText.text = "Just Now";
-                } else {
-                    cell.daysAgoText.text = "\(numberOfHours) hours ago";
-                }
-            } else {
-                cell.daysAgoText.text = "\(numberOfDays) days ago";
-            }
-            /*if let icon = notification.notificationImage {
-                cell.profileImage.image = icon
-            } else {
-                if notification.notificationImageURL != nil {
-                    //self.startIconDownload(notificationData: notification, forIndexPath: indexPath)
-                    cell.profileImage.image = #imageLiteral(resourceName: "profile icon")
-                }else{
-                    cell.profileImage.image = #imageLiteral(resourceName: "profile icon")
-                }
-                
-            }*/
-            return cell
-        }
-        
-        func numberOfSections(in tableView: UITableView) -> Int {
-            return 1
-        }
-
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return self.notificationDict.count;
-        }
-
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            
-            var notification : NotificationData!
-            
-            
-             notification = self.notificationDict[indexPath.row]
-            
-            let notificationTypeId = notification?.notificationTypeId as! NSNumber
-            
-            
-            if (notification.readStatus != "Read") {
-                let queryStr = "userId=\(String(loggedInUser.userId))&notificationTypeId=\(notificationTypeId)";
-                
-                NotificationService().markNotificationAsRead(queryStr: queryStr) {(returnedDict)
-                    in
-                }
-            }
-            
-            GatheringService().eventInfoTask(eventId: Int64(truncating: notificationTypeId)) {(returnedDict) in
-                
-                if (returnedDict.value(forKey: "success") as! Bool) {
-                    let data = returnedDict.value(forKey: "data") as! NSDictionary;
-                    let event = Event().loadEventData(eventDict: data);
-                    event.eventClickedFrom = "Notification";
-                    let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                    let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringPreviewController") as! GatheringPreviewController
-                    newViewController.event = event;
-                    self.navigationController?.pushViewController(newViewController, animated: true)
-
-                } else {
-                    let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                    let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringExpiredViewController") as! GatheringExpiredViewController
-                    self.navigationController?.pushViewController(newViewController, animated: true);
-                }
-                
-            }
-        }
-        
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 75;
+extension NotificationViewController: UITabBarControllerDelegate {
+    // UITabBarControllerDelegate
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if (self.allNotifications.count > 0) {
+            self.notificationTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
         }
     }
+}
+
+    

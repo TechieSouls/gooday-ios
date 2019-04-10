@@ -10,9 +10,6 @@ import Foundation
 import Alamofire
 var imageFacebookURL :String?
 
-// Test Server
-//let apiUrl =  "http://cenes.test2.redblink.net/"
-
 // Live Server
 //let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
 //let apiUrl = "https://deploy.cenesgroup.com/"
@@ -387,8 +384,7 @@ class WebService
     
     
     
-    func setPushToken()
-    {
+    func setPushToken() {
         print("me Time")
         let userid = setting.value(forKey: "userId") as! NSNumber
         let uid = "\(userid)"

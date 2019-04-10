@@ -16,11 +16,16 @@
 		5E2797CC222C02BC0098F295 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2797CB222C02BC0098F295 /* FriendsViewController.swift */; };
 		5E2797D1222C0BB60098F295 /* FriendListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2797CF222C0BB60098F295 /* FriendListItemTableViewCell.swift */; };
 		5E2797D2222C0BB60098F295 /* FriendListItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E2797D0222C0BB60098F295 /* FriendListItemTableViewCell.xib */; };
+		5E2E6339225DD22B006F03CD /* GatheringInvitationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2E6338225DD22B006F03CD /* GatheringInvitationViewController.swift */; };
 		5E40954422523ADD00CA9700 /* HeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E40954222523ADD00CA9700 /* HeaderTableViewCell.swift */; };
 		5E40954522523ADD00CA9700 /* HeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E40954322523ADD00CA9700 /* HeaderTableViewCell.xib */; };
+		5E40954722531CF500CA9700 /* NotificationDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E40954622531CF500CA9700 /* NotificationDto.swift */; };
+		5E40954922531DCE00CA9700 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E40954822531DCE00CA9700 /* NotificationManager.swift */; };
+		5E40954C22533E7900CA9700 /* NotificationViewController+TableViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E40954B22533E7900CA9700 /* NotificationViewController+TableViewExt.swift */; };
 		5E41E95A22337D1200CEECFB /* GatheringExpiredViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41E95922337D1200CEECFB /* GatheringExpiredViewController.swift */; };
 		5E41E95C223533F700CEECFB /* EventDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41E95B223533F700CEECFB /* EventDto.swift */; };
 		5E41E95F223551AD00CEECFB /* HomeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41E95E223551AD00CEECFB /* HomeDto.swift */; };
+		5E47C9F4225B16A800C738D3 /* UITabBarController+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */; };
 		5E57873D224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873B224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift */; };
 		5E57873E224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */; };
 		5E578741224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */; };
@@ -268,7 +273,6 @@
 		FA42F0682140547D00721A7A /* PhonebookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42F0672140547C00721A7A /* PhonebookService.swift */; };
 		FA42F06A2140632500721A7A /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42F0692140632500721A7A /* UserService.swift */; };
 		FA486CBE21FF1A9800E8AF72 /* UIView+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA486CBD21FF1A9800E8AF72 /* UIView+Customs.swift */; };
-		FA52377421FB377000055B8D /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA52377321FB377000055B8D /* DateManager.swift */; };
 		FA52377621FB3A5800055B8D /* UINavigationBar+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA52377521FB3A5800055B8D /* UINavigationBar+Customs.swift */; };
 		FA528FAB214566640006D6F5 /* CenesUtilFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA528FAA214566640006D6F5 /* CenesUtilFunc.swift */; };
 		FA528FAF2148342B0006D6F5 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA528FAE2148342B0006D6F5 /* AboutViewController.swift */; };
@@ -314,11 +318,16 @@
 		5E2797CB222C02BC0098F295 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		5E2797CF222C0BB60098F295 /* FriendListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListItemTableViewCell.swift; sourceTree = "<group>"; };
 		5E2797D0222C0BB60098F295 /* FriendListItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendListItemTableViewCell.xib; sourceTree = "<group>"; };
+		5E2E6338225DD22B006F03CD /* GatheringInvitationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringInvitationViewController.swift; sourceTree = "<group>"; };
 		5E40954222523ADD00CA9700 /* HeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTableViewCell.swift; sourceTree = "<group>"; };
 		5E40954322523ADD00CA9700 /* HeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeaderTableViewCell.xib; sourceTree = "<group>"; };
+		5E40954622531CF500CA9700 /* NotificationDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDto.swift; sourceTree = "<group>"; };
+		5E40954822531DCE00CA9700 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		5E40954B22533E7900CA9700 /* NotificationViewController+TableViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationViewController+TableViewExt.swift"; sourceTree = "<group>"; };
 		5E41E95922337D1200CEECFB /* GatheringExpiredViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringExpiredViewController.swift; sourceTree = "<group>"; };
 		5E41E95B223533F700CEECFB /* EventDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDto.swift; sourceTree = "<group>"; };
 		5E41E95E223551AD00CEECFB /* HomeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDto.swift; sourceTree = "<group>"; };
+		5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+Customs.swift"; sourceTree = "<group>"; };
 		5E57873B224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeTwoLineTitleTableViewCell.swift; sourceTree = "<group>"; };
 		5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeTwoLineTitleTableViewCell.xib; sourceTree = "<group>"; };
 		5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeThreeLineTableViewCell.swift; sourceTree = "<group>"; };
@@ -579,7 +588,6 @@
 		FA42F0672140547C00721A7A /* PhonebookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonebookService.swift; sourceTree = "<group>"; };
 		FA42F0692140632500721A7A /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		FA486CBD21FF1A9800E8AF72 /* UIView+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Customs.swift"; sourceTree = "<group>"; };
-		FA52377321FB377000055B8D /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 		FA52377521FB3A5800055B8D /* UINavigationBar+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Customs.swift"; sourceTree = "<group>"; };
 		FA528FAA214566640006D6F5 /* CenesUtilFunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenesUtilFunc.swift; sourceTree = "<group>"; };
 		FA528FAE2148342B0006D6F5 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
@@ -646,11 +654,28 @@
 			name = SideMenuControllers;
 			sourceTree = "<group>";
 		};
+		5E2E6337225DD207006F03CD /* invitation */ = {
+			isa = PBXGroup;
+			children = (
+				5E2E6338225DD22B006F03CD /* GatheringInvitationViewController.swift */,
+			);
+			name = invitation;
+			sourceTree = "<group>";
+		};
+		5E40954A22533E5E00CA9700 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				5E40954B22533E7900CA9700 /* NotificationViewController+TableViewExt.swift */,
+			);
+			name = extension;
+			sourceTree = "<group>";
+		};
 		5E41E95D2235519300CEECFB /* Dto */ = {
 			isa = PBXGroup;
 			children = (
 				5E41E95E223551AD00CEECFB /* HomeDto.swift */,
 				5E41E95B223533F700CEECFB /* EventDto.swift */,
+				5E40954622531CF500CA9700 /* NotificationDto.swift */,
 			);
 			name = Dto;
 			sourceTree = "<group>";
@@ -803,6 +828,7 @@
 		AE03511C1F5E8D80001A162B /* Gathering */ = {
 			isa = PBXGroup;
 			children = (
+				5E2E6337225DD207006F03CD /* invitation */,
 				5E69990E2222B58100A275B6 /* create */,
 				5E6F5728222035000053C21A /* preview */,
 				FA025A2721F591EA00240E08 /* GatheringDashboard */,
@@ -827,6 +853,7 @@
 		AE2043531F8B60B600C48468 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				5E40954A22533E5E00CA9700 /* extension */,
 				AE2043511F8B588F00C48468 /* NotificationViewController.swift */,
 				5EFFC0AA222ED6030037D2EC /* NotificationGatheringTableViewCell.swift */,
 				5EFFC0AB222ED6030037D2EC /* NotificationGatheringTableViewCell.xib */,
@@ -1114,10 +1141,10 @@
 		F4F4DFD91F0EA75900169990 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				F4B871F91F0DDEF1001A9963 /* Cenes.xcdatamodeld */,
 				F42AC09C1F27858E009FF9FA /* Services.swift */,
 				F45626AE1F32407A00B68761 /* ReminderData.swift */,
 				AE8423E81F8F55CD007DBACB /* CenesUser.swift */,
+				F4B871F91F0DDEF1001A9963 /* Cenes.xcdatamodeld */,
 				AE2F2EBC1F9DCC3200B05A92 /* NotificationData.swift */,
 				FA27BD0B21F1D04000E674D4 /* UserContact.swift */,
 				5ED747B52226BA9000C3458A /* Event.swift */,
@@ -1226,6 +1253,7 @@
 				FA486CBD21FF1A9800E8AF72 /* UIView+Customs.swift */,
 				5EF8408F22375EA50046E68D /* UIButton+Custom.swift */,
 				5EF595EE224899E5005EF500 /* UILabel+Customs.swift */,
+				5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -1251,10 +1279,10 @@
 			isa = PBXGroup;
 			children = (
 				FA9FC42121CE93920066A446 /* AutheticateManager.swift */,
-				FA52377321FB377000055B8D /* DateManager.swift */,
 				FAF895CD21C95BB800AD6C86 /* HomeManager.swift */,
 				5E078D202236A6760082A013 /* GatheringManager.swift */,
 				5EDEE1F92240CC7A00330F47 /* MeTimeManager.swift */,
+				5E40954822531DCE00CA9700 /* NotificationManager.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -1364,6 +1392,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1619,6 +1648,7 @@
 				5EDEE1EF2240A9DB00330F47 /* NewMeTimeViewController.swift in Sources */,
 				AE3B98731F876A2700E24994 /* FriendsViewCell.swift in Sources */,
 				5E6F5733222039AD0053C21A /* GatheringPreviewTitleTableViewCell.swift in Sources */,
+				5E40954922531DCE00CA9700 /* NotificationManager.swift in Sources */,
 				5E69990A2221182600A275B6 /* GatheringPreviewController+UITableView.swift in Sources */,
 				AE8617F91F5982C600F99D75 /* HomeTableViewCellHeader.swift in Sources */,
 				FA025A2A21F592AA00240E08 /* GatheringCardTableViewCell.swift in Sources */,
@@ -1654,10 +1684,10 @@
 				FA110EBC215F43A8007DB7EA /* SignupSetp1ViewController.swift in Sources */,
 				FA110EC2215FDF4D007DB7EA /* CountryCodeService.swift in Sources */,
 				5EEE363F1F508DA20095517C /* CountryPicker.m in Sources */,
-				FA52377421FB377000055B8D /* DateManager.swift in Sources */,
 				944A7B551F980701001491D3 /* AddAlarmViewController.swift in Sources */,
 				B956ADB41FB04E00005B13CA /* LocationsModel+CoreDataProperties.swift in Sources */,
 				B9710C901FA3BA35000A45B3 /* RemindersTableViewCell.swift in Sources */,
+				5E47C9F4225B16A800C738D3 /* UITabBarController+Customs.swift in Sources */,
 				AE8F47151FB9B65500C153F0 /* DiaryViewController.swift in Sources */,
 				5E2797C5222BC2D20098F295 /* GatheringLocTableViewCell.swift in Sources */,
 				FA025A3121F5D9B300240E08 /* UIImageView+Customs.swift in Sources */,
@@ -1712,6 +1742,7 @@
 				5EF84097223765910046E68D /* CountryTableViewCell.swift in Sources */,
 				FA025A2F21F5D13800240E08 /* RoundedCardDesignView.swift in Sources */,
 				B9710C8E1FA3B82B000A45B3 /* RemindersViewController.swift in Sources */,
+				5E2E6339225DD22B006F03CD /* GatheringInvitationViewController.swift in Sources */,
 				FA00904421F720ED0038BF3D /* MemberCollectionViewCell.swift in Sources */,
 				FA39E9832127460300A47B93 /* OnBoardingStep2ViewController.swift in Sources */,
 				FA00904021F702D50038BF3D /* GatheringCardHeaderTableViewCell.swift in Sources */,
@@ -1722,6 +1753,7 @@
 				5E6F573722203ACC0053C21A /* GatheringPreviewDescTableViewCell.swift in Sources */,
 				FA625ED8218B50E800B6B23C /* CalendarService.swift in Sources */,
 				5EDEE1EC2240A56800330F47 /* MeTimeItemTableViewCell.swift in Sources */,
+				5E40954C22533E7900CA9700 /* NotificationViewController+TableViewExt.swift in Sources */,
 				AE03511F1F5E8DC4001A162B /* GatheringLocationTableViewCell.swift in Sources */,
 				F411018A1F16A0CD001A6B7D /* HomeViewController.swift in Sources */,
 				AEDD81491FB0734500F15742 /* ProfileViewController.swift in Sources */,
@@ -1756,6 +1788,7 @@
 				AE0351231F5E8F88001A162B /* GatheringTitleTableViewCell.swift in Sources */,
 				B956ADB21FB04E00005B13CA /* RemindersModel+CoreDataProperties.swift in Sources */,
 				FA8A66F92157CCE4002671D8 /* SignupStep2ViewController.swift in Sources */,
+				5E40954722531CF500CA9700 /* NotificationDto.swift in Sources */,
 				5E40954422523ADD00CA9700 /* HeaderTableViewCell.swift in Sources */,
 				AE0351191F5E82DF001A162B /* GatheringViewController.swift in Sources */,
 				FA110EBE215F7110007DB7EA /* SignupCountryCodeViewController.swift in Sources */,

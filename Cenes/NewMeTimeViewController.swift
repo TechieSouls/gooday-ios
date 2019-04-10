@@ -41,11 +41,16 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     
     override func viewWillAppear(_ animated: Bool) {
         
+       
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
         if Connectivity.isConnectedToInternet {
+            self.meTimeItemsTableView.scrollsToTop = true;
             self.loadMeTimeData();
         }
     }
-
+    
     /*
     // MARK: - Navigation
 

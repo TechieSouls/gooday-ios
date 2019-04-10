@@ -11,6 +11,8 @@ import Alamofire
 
 class UserService {
     
+    let get_friend_list = "api/user/phonefriends/v2";
+    
     var requestArray = NSMutableArray()
 
     func emailSignUp(postSignupData: [String: String],complete: @escaping(NSMutableDictionary)->Void )
@@ -160,45 +162,12 @@ class UserService {
         
     }
     
-    func findUserFriendsByUserId(complete: @escaping(NSMutableDictionary) ->Void ) {
-            let userid = setting.value(forKey: "userId") as! NSNumber
-            let uid = "\(userid)"
-            
-            print( "Inside Friend Invite")
-            // Both calls are equivalent
-            
-            let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
-            
-            let returnedDict = NSMutableDictionary()
-            returnedDict["Error"] = false
-            returnedDict["ErrorMsg"] = ""
-            
-            let req =  Alamofire.request("\(apiUrl)api/user/phonefriends?user_id=\(uid)", method: .get, parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
-                
-                //var json : NSDictionary!
-                switch response.result {
-                case .success:
-                    print( "Friends Events Successful")
-                    
-                    returnedDict["data"] = response.result.value as! NSArray
-
-                case .failure(let error):
-                    print(error)
-                    
-                    let errorX = error as NSError
-                    
-                    if errorX.code == -999 {
-                        returnedDict["data"] = NSArray()
-                    }else{
-                        returnedDict["Error"] = true
-                        returnedDict["ErrorMsg"] = error.localizedDescription
-                    }
-                }
-                print(returnedDict);
-                complete(returnedDict)
-            }
-            
-            self.requestArray.add(req)
+    func findUserFriendsByUserId(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_friend_list)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
     }
     
     /**

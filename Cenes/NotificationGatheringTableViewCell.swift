@@ -10,26 +10,22 @@ import UIKit
 
 class NotificationGatheringTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var notificationBackground: UIView!
     @IBOutlet weak var profileImage: UIImageView!
-    @IBOutlet weak var timeLabel: UILabel!
-    @IBOutlet weak var cellText: UILabel!
-    @IBOutlet weak var readUnReadText: UILabel!
-    @IBOutlet weak var daysAgoText: UILabel!
+    @IBOutlet weak var message: UILabel!
+    @IBOutlet weak var title: UILabel!;
+    @IBOutlet weak var happen: UILabel!;
+    @IBOutlet weak var circleButtonView: UIView!;
+    @IBOutlet weak var circleButtonDot: UIButton!;
+    
+    @IBOutlet weak var rightCornerView: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
         self.profileImage.setRounded();
-        
-        self.notificationBackground.backgroundColor = cenesLabelBlue;
-        self.notificationBackground.layer.cornerRadius = 20.0;
-        self.notificationBackground.layer.masksToBounds = false;
-        self.notificationBackground.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor;
-        self.notificationBackground.layer.shadowOffset = CGSize(width: 0, height: 0);
-        self.notificationBackground.layer.shadowOpacity  = 0.8;
-
+        self.circleButtonDot.layer.cornerRadius = self.circleButtonDot.frame.width/2;
+        self.circleButtonDot.layer.backgroundColor = cenesLabelBlue.cgColor
+        self.happen.textColor = UIColor.gray;
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -20,6 +20,7 @@ class EventMember {
     var status: String!;
     var sourceId: String!;
     var owner: Bool!;
+    var alreadyInvited: Bool!
     var cenesMember: String!;
     var photo: String!;
     var user: User!;
@@ -38,6 +39,7 @@ class EventMember {
         eventMember.userId = eventMemberDict.value(forKey: "userId") as? Int32;
         eventMember.userContactId = eventMemberDict.value(forKey: "userContactId") as? Int32;
         eventMember.owner = eventMemberDict.value(forKey: "owner") as? Bool;
+        eventMember.alreadyInvited = eventMemberDict.value(forKey: "alreadyInvited") as? Bool;
         
         if let user = eventMemberDict.value(forKey: "user") as? NSDictionary {
             eventMember.user = User().loadUserData(userDataDict: user);

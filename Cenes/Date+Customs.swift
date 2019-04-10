@@ -59,4 +59,45 @@ extension Date {
         let seconds = TimeInterval(timezone.secondsFromGMT(for: self))
         return Date(timeInterval: seconds, since: self)
     }
+    
+    func getDateStingInSecMinHourDayMonYear() -> String {
+        
+        let currentMilliSeconds = Date().millisecondsSince1970;
+        
+        let pastDateInMillis = self.millisecondsSince1970;
+        
+        let millisDifference = currentMilliSeconds - pastDateInMillis;
+        
+        let currentDateCal = Calendar.current;
+        let currentYear = currentDateCal.component(.year, from: Date());
+        let pastyear = currentDateCal.component(.year, from: self);
+        let yearDiff = currentYear - pastyear;
+
+        let currentMon = currentDateCal.component(.month, from: Date());
+        let pastMon = currentDateCal.component(.month, from: self);
+        let monthDiff = currentMon - pastMon;
+        
+        let daysDiff = millisDifference/(1000*60*60*24);
+        
+        let hoursDiff = millisDifference/(1000*60*60);
+        
+        let minutesDiff = millisDifference/(1000*60);
+        
+        let secondsDiff = millisDifference/(1000);
+        
+        if (yearDiff > -1 && yearDiff != 0) {
+            return "\(String(yearDiff))y";
+        } else if (monthDiff > -1 && monthDiff != 0 && monthDiff <= 12) {
+            return "\(String(monthDiff))mo";
+        } else if (daysDiff != 0 && daysDiff <= 31) {
+            return "\(String(daysDiff))d";
+        } else if (hoursDiff != 0) {
+            return "\(String(hoursDiff))h";
+        } else if (minutesDiff != 0) {
+            return "\(String(minutesDiff))m";
+        } else if (secondsDiff != 0) {
+            return "\(String(secondsDiff))s";
+        }
+        return String("0s");
+    }
 }

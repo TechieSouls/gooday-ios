@@ -248,7 +248,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                 self.dataObjectArray.removeAll(keepingCapacity: true)
                 self.tableView.reloadData()
                 
-                WebService().resetBadgeCount();
+                //WebService().resetBadgeCount();
                 
                 let webservice = WebService()
              //   self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))
@@ -411,7 +411,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                             self.dataObjectArray.removeAll(keepingCapacity: true)
                             self.tableView.reloadData()
                             
-                            WebService().resetBadgeCount();
+                            //WebService().resetBadgeCount();
                             
                             let webservice = WebService()
                             //   self.startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType(rawValue: 15))

@@ -85,11 +85,13 @@ class NewHomeViewController: UIViewController {
         self.navigationItem.leftBarButtonItems = [barButton, invitieButton]
         
         let calendarButton = UIButton.init(type: .custom)
-        calendarButton.setImage(#imageLiteral(resourceName: "calendarNavBarUnselected"), for: UIControlState.normal)
-        calendarButton.setImage(#imageLiteral(resourceName: "calendarNavBarSelected"), for: UIControlState.selected)
+        calendarButton.setImage(UIImage.init(named: "plus_icon"), for: UIControlState.normal)
+        //calendarButton.setImage(UIImage.init(named: "plus_icon"),, for: UIControlState.selected)
         calendarButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
+        calendarButton.addTarget(self, action:#selector(plusButtonPressed), for: UIControlEvents.touchUpInside)
+
         let calendarBarButton = UIBarButtonItem.init(customView: calendarButton)
-        
+
         self.navigationItem.rightBarButtonItem = calendarBarButton
        
         
@@ -130,13 +132,18 @@ class NewHomeViewController: UIViewController {
     
     @objc func calendarTabPressed() {
         self.tabSelectedHomeDto.tabSelected = "Calendar";
-        self.setUpNavBarImages();
-        self.loadHomeData();
+        //self.setUpNavBarImages();
+        //self.loadHomeData();
     }
     
     @objc func invitationTabPressed() {
         self.tabSelectedHomeDto.tabSelected = "Invitation";
         self.setUpNavBarImages();
         self.loadGatheringDataByStatus(status: "Going");
+    }
+    
+    @objc func plusButtonPressed() {
+        let friendsViewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
+        navigationController?.pushViewController(friendsViewController, animated: true)
     }
 }

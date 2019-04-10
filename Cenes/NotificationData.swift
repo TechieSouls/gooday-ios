@@ -17,27 +17,47 @@ class NotificationData: NSObject {
     var readStatus: String!;
     var notificationImage : UIImage!
     var type : String!
-    var notificationTypeId : NSNumber!
-    var notificationId : NSNumber!
+    var action: String!
+    var notificationTypeId : Int32!
+    var notificationId : Int32!
+    var createdAt : Int64!
     var user: User!
+    var event: Event!
     
     func loadNotificationData(notificationDict: NSDictionary) -> NotificationData {
         
         let notification = NotificationData();
         notification.senderName = notificationDict.value(forKey: "sender") as? String
-        notification.title = notificationDict.value(forKey: "title") as? String
+        notification.title = String(notificationDict.value(forKey: "title") as! String)
         notification.message = notificationDict.value(forKey: "message") as? String
         notification.time = notificationDict.value(forKey: "createdAt") as? Int64
         notification.notificationImageURL = notificationDict.value(forKey: "senderPicture") as? String
-        notification.notificationTypeId = notificationDict.value(forKey: "notificationTypeId") as? NSNumber
-        notification.notificationId = notificationDict.value(forKey: "notificationId") as? NSNumber
+        notification.notificationTypeId = notificationDict.value(forKey: "notificationTypeId") as? Int32
+        notification.notificationId = notificationDict.value(forKey: "notificationId") as? Int32
         notification.type = notificationDict.value(forKey: "type") as? String
         notification.readStatus = notificationDict.value(forKey: "readStatus") as? String
+        notification.createdAt = notificationDict.value(forKey: "createdAt") as? Int64
+        notification.action = notificationDict.value(forKey: "action") as? String
 
         if (notificationDict.value(forKey: "user") != nil) {
             let user = User().loadUserData(userDataDict: (notificationDict.value(forKey: "user") as? NSDictionary)!);
             notification.user = user;
         }
+        
+        if (!(notificationDict.value(forKey: "event") is NSNull) && notificationDict.value(forKey: "event") != nil) {
+            let event = Event().loadEventData(eventDict: notificationDict.value(forKey: "event") as! NSDictionary);
+            notification.event = event;
+        }
         return notification;
+    }
+    
+    func loadNotificationList(notificationArray: NSArray) -> [NotificationData] {
+        var notifications = [NotificationData]();
+        
+        for notificationDict in notificationArray {
+            notifications.append(loadNotificationData(notificationDict: notificationDict as! NSDictionary));
+        }
+        
+        return notifications;
     }
 }

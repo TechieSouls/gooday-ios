@@ -93,7 +93,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Remove before app release.
         gai.logger.logLevel = .verbose;
         
-        WebService().resetBadgeCount();
+        //WebService().resetBadgeCount();
+        
+        
+        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        if (loggedInUser.userId != nil) {
+            let queryStr = "userId=\(String(loggedInUser.userId))";
+            NotificationService().findNotificationBadgeCounts(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
+                
+                if (response.value(forKey: "success") as! Bool != false) {
+                    let notificationDataDict = response.value(forKey: "data") as! NSDictionary
+                    if (notificationDataDict["badgeCount"] as! Int != 0) {
+                        self.cenesTabBar?.setTabBarDotVisible(visible: true);
+                    }
+                }
+            })
+        }
         
         //DispatchQueue.main.async {
             //PhonebookService().phoneNumberWithContryCode();
@@ -114,14 +129,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-        WebService().resetBadgeCount();
+        //WebService().resetBadgeCount();
 
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         application.applicationIconBadgeNumber = 0
-        WebService().resetBadgeCount();
+        //WebService().resetBadgeCount();
         
     }
 
@@ -407,6 +422,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
+        self.cenesTabBar?.setTabBarDotVisible(visible: true);
         print(notification.request.content.userInfo)
         NSLog("%@",notification)
         completionHandler([.alert, .sound])
@@ -427,10 +443,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         if userInfo!["type"] as? String == "Gathering" {
             if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
-                self.cenesTabBar?.selectedIndex = 2
+                self.cenesTabBar?.selectedIndex = 0
                 
                 
-                let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
+                /*let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
                 
                 if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
 //                if SideMenuManager.menuLeftNavigationController.isHidden == true{
@@ -451,7 +467,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     invitationData.eventId = eventId
                 gathering?.invitationData = invitationData
                 //gathering?.setInvitation()
-                }
+                }*/
             }
         }
         

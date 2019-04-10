@@ -12,7 +12,11 @@ protocol CollectionFriendsProtocol {
     func collectionFriendsList(selectedFriendHolder: [EventMember])
 }
 
-class FriendsViewController: UIViewController {
+class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        print(searchController.searchBar.text!)
+    }
+    
 
     @IBOutlet weak var friendTableView: UITableView!;
 
@@ -26,10 +30,13 @@ class FriendsViewController: UIViewController {
     var allEventMembers: [EventMember] = [];
     var userContactIdMapList: [Int: EventMember] = [:];
     var collectionFriendsDelegate: CollectionFriendsProtocol?;
+    var loggedInUser: User!;
     
     var friendTableViewCellsHeight: [String: CGFloat] = [:];
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Invite Guests";
         
         friendTableView.register(UINib(nibName: "FriendInputTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendInputTableViewCell")
         friendTableView.register(UINib(nibName: "FriendCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendCollectionTableViewCell")
@@ -37,11 +44,12 @@ class FriendsViewController: UIViewController {
         
         friendTableViewCellsHeight["textFieldCell"] = 50;
         friendTableViewCellsHeight["friendCollectionViewCell"] = 0;
-            
+        
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
         
         self.getFriendsWithName(nameStartsWith: "")
-            }
+    }
     
 
     /*
@@ -64,17 +72,29 @@ class FriendsViewController: UIViewController {
     func setupNavigationBarItems() {
         
         let closeButton = UIButton(type: .system)
-        closeButton.setImage(UIImage.init(named: "crossIcon.png"), for: UIControlState.normal)
-        closeButton.frame = CGRect(x: 0, y: 0, width: 20, height: 20);
+        closeButton.setTitle("Cancel", for: .normal)
+        closeButton.frame = CGRect(x: 0, y: 0, width: 50, height: 20);
         closeButton.addTarget(self, action: #selector(selectFriendsCancel(_ :)), for: .touchUpInside)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: closeButton);
         
-        let doneButton = UIButton(type: .system);
+        /* let doneButton = UIButton(type: .system);
         doneButton.setTitle("DONE", for: .normal);
         doneButton.setTitleColor(cenesLabelBlue, for: .normal)
         doneButton.addTarget(self, action: #selector(selectFriendsDone(_ :)), for: .touchUpInside)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);*/
+        
+        let searchBarController = UISearchController(searchResultsController: nil);
+        searchBarController.searchBar.delegate = self
+        searchBarController.searchResultsUpdater = self
+        searchBarController.obscuresBackgroundDuringPresentation = false
+        if #available(iOS 11.0, *) {
+            self.navigationItem.searchController = searchBarController
+        } else {
+            // Fallback on earlier versions
+        };
+        definesPresentationContext = true
+
     }
     
     func getFriendsWithName(nameStartsWith:String) {
@@ -85,12 +105,10 @@ class FriendsViewController: UIViewController {
         
         //startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
-        UserService().findUserFriendsByUserId(complete: { (returnedDict) in
-            //self.stopAnimating()
-            if returnedDict.value(forKey: "Error") as? Bool == true {
-                
-                //self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
-                
+        let queryStr = "userId=\(String(self.loggedInUser.userId))"
+        UserService().findUserFriendsByUserId(queryStr: queryStr, token: self.loggedInUser.token, complete: { (returnedDict) in
+            if returnedDict.value(forKey: "success") as? Bool == false {
+                self.showAlert(title: "Error", message: (returnedDict["message"] as? String)!)
             }else{
                 
                 self.eventMembers = EventMember().loadUserContacts(eventMemberArray: returnedDict["data"] as! NSArray);
