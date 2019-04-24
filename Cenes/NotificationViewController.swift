@@ -30,17 +30,40 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
     var pageNumber = 0;
     var totalNotificationCounts = 0;
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-    
+    private let refreshControl = UIRefreshControl()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.notificationTableView.register(UINib(nibName: "NotificationGatheringTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NotificationGatheringTableViewCell")
         self.notificationTableView.register(UINib(nibName: "HeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HeaderTableViewCell")
         
         self.notificationTableView.isHidden = true
-        self.notificationTableView.tableFooterView?.isHidden = false;
+        // Add Refresh Control to Table View
+        if #available(iOS 10.0, *) {
+            self.notificationTableView.refreshControl = refreshControl
+        } else {
+            self.notificationTableView.addSubview(refreshControl)
+        }
+        // Configure Refresh Control
+        self.refreshControl.addTarget(self, action: #selector(refreshNotificationData(_:)), for: .valueChanged)
+
+        
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         self.tabBarController?.delegate = self
+        
+        
+        if Connectivity.isConnectedToInternet {
+            self.initilize();
+        } /*else {
+            
+            self.allNotifications = NotificationPersistanceManager().getAllNotifications();
+            self.notificationPerPage = NotificationPersistanceManager().getAllNotifications();
+            self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+            
+            self.notificationTableView.layer.removeAllAnimations();
+            self.notificationTableView.reloadData();
+        }*/
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,7 +85,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
     
     override func viewDidAppear(_ animated: Bool) {
         if Connectivity.isConnectedToInternet {
-            self.initilize();
+            //self.initilize();
             WebService().resetBadgeCount();
         }
     }
@@ -74,6 +97,10 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
     @objc func homePicPressed() {
         self.navigationController?.popViewController(animated: true)
     }
+    @objc private func refreshNotificationData(_ sender: Any) {
+        // Fetch Weather Data
+        initilize();
+    }
     
     func initilize() {
         self.pageNumber = 0;
@@ -84,6 +111,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         
         let queryStr = "recepientId=\(String(self.loggedInUser.userId))";
         NotificationService().findNotificationCounts(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+            self.refreshControl.endRefreshing()
             if (response["success"] as! Bool == true) {
                 self.totalNotificationCounts = response["data"] as! Int;
                 print("Total Notifications : ",self.totalNotificationCounts);
@@ -106,7 +134,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         let queryStr = "userId=\(String(self.loggedInUser.userId))&pageNumber=\(self.pageNumber)&offset=20";
         NotificationService().getPageableNotifications(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
             
-            self.notificationTableView.tableFooterView = self.spinner
+            self.notificationTableView.tableFooterView = nil
             self.notificationTableView.tableFooterView?.isHidden = true
             
             if (response["success"] as! Bool == true) {
@@ -120,6 +148,12 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
                     for notification in self.notificationPerPage {
                         self.allNotifications.append(notification);
                     }
+                    
+                    //Save Notification Locally.
+                    /*for notification in self.allNotifications {
+                        NotificationPersistanceManager().saveNotification(notificationData: notification);
+                    }*/
+                    
                     self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
                     
                     self.notificationTableView.layer.removeAllAnimations();

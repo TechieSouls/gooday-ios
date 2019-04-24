@@ -18,4 +18,30 @@ extension UIView {
     func viewCircledCorners() -> Void {
         self.layer.cornerRadius = 45;
     }
+    
+    func fadedSeparator() -> Void {
+        let gradient = CAGradientLayer()
+        gradient.frame = self.bounds
+        gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+        
+        gradient.endPoint = CGPoint(x: 0.7, y: 0.5)
+        gradient.colors = [UIColor.init(red: 181/255, green: 181/255, blue: 182/255, alpha: 1.0).cgColor, themeColor.cgColor]
+        
+        self.layer.insertSublayer(gradient, at: 0)
+    }
+    
+    func roundedUIViewWhiteBorderGreyBackground() {
+        self.layer.cornerRadius = (self.frame.width / 2);
+        self.layer.masksToBounds = true;
+        self.backgroundColor = UIColor(red: 0.86, green: 0.87, blue: 0.87, alpha: 1)
+        self.layer.borderColor = UIColor.white.cgColor;
+        self.layer.borderWidth = 2;
+    }
+    
+    func roundedUIViewGreyBackground() {
+        self.layer.cornerRadius = (self.frame.width / 2);
+        self.layer.masksToBounds = true;
+        self.backgroundColor = UIColor(red: 0.86, green: 0.87, blue: 0.87, alpha: 1)
+    }
+    
 }

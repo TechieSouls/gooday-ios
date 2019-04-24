@@ -18,6 +18,13 @@ extension UIImageView {
         self.layer.masksToBounds = true
     }
     
+    func setRoundedWhiteBorder() {
+        self.layer.cornerRadius = (self.frame.width / 2);
+        self.layer.masksToBounds = true
+        self.layer.borderWidth = 2;
+        self.layer.borderColor = UIColor.white.cgColor;
+    }
+    
     func cacheImage(urlString: String){
         let url = URL(string: urlString)
         

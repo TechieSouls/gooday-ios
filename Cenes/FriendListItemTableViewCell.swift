@@ -12,21 +12,30 @@ class FriendListItemTableViewCell: UITableViewCell {
 
     
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var phoneBookName: UILabel!
     
     @IBOutlet weak var profileImageView: UIImageView!
     
-    @IBOutlet weak var inviteUerCheckbox: UIButton!
+    @IBOutlet weak var unselectedProfilePic: UIImageView!
+        
+    @IBOutlet weak var cenesUserSelectedView: UIView!
     
-    @IBOutlet weak var nonCenesUIView: UIView!
+    @IBOutlet weak var cenesUserUnselectedView: UIView!
     
-    @IBOutlet weak var nonCenesNameLabel: UILabel!
+    @IBOutlet weak var separator: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        contentView.backgroundColor = themeColor;
+        
         self.profileImageView.setRounded();
-        self.nonCenesUIView.roundedView();
-        self.nonCenesUIView.backgroundColor = themeColor
+        
+        self.unselectedProfilePic.layer.borderColor = UIColor.white.cgColor;
+        self.unselectedProfilePic.layer.borderWidth = 2;
+        self.unselectedProfilePic.setRounded();
+        
+        separator.fadedSeparator();
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

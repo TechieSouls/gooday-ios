@@ -198,7 +198,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
         */
-        let container = NSPersistentContainer(name: "Cenes")
+        let container = NSPersistentContainer(name: "deploy")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -442,9 +442,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
         if userInfo!["type"] as? String == "Gathering" {
+            
+            
+            
             if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0
                 
+                let notificationViewController = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? NotificationViewController
+                notificationViewController?.initilize();
                 
                 /*let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
                 

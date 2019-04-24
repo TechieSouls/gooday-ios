@@ -35,12 +35,26 @@ extension Date {
         // or use capitalized(with: locale) if you want
     }
     
+    
+    func EMMMd() -> String? { //Sat Jun 16
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E MMMM d"
+        return dateFormatter.string(from: self).capitalized
+        // or use capitalized(with: locale) if you want
+    }
+    
     func hmma() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mma"
         dateFormatter.amSymbol = "AM"
         dateFormatter.pmSymbol = "PM"
         return dateFormatter.string(from: self)
+    }
+    
+    func yyyyMMdd() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
+         return formatter.string(from: self)
     }
     
     var currentTimeZoneDate: String {

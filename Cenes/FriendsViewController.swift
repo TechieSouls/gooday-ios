@@ -13,37 +13,24 @@ protocol CollectionFriendsProtocol {
 }
 
 class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        print(searchController.searchBar.text!)
-    }
-    
 
     @IBOutlet weak var friendTableView: UITableView!;
-
-    @IBOutlet weak var searchTextField: UITextField!
     
-    var friendsViewControllerDelegate: FriendsViewController!;
-    
-    var searchText : String!
-    var selectedFriendHolder: [Int: EventMember] = [:]
-    var eventMembers: [EventMember] = [];
-    var allEventMembers: [EventMember] = [];
     var userContactIdMapList: [Int: EventMember] = [:];
     var collectionFriendsDelegate: CollectionFriendsProtocol?;
     var loggedInUser: User!;
+    var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
     
-    var friendTableViewCellsHeight: [String: CGFloat] = [:];
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Invite Guests";
-        
-        friendTableView.register(UINib(nibName: "FriendInputTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendInputTableViewCell")
+        self.tabBarController?.tabBar.isHidden = true;
+
+        friendTableView.backgroundColor = themeColor;
         friendTableView.register(UINib(nibName: "FriendCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendCollectionTableViewCell")
+        friendTableView.register(UINib(nibName: "AllAndCenesContactsSwitchTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "AllAndCenesContactsSwitchTableViewCell")
         friendTableView.register(UINib(nibName: "FriendsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendsTableViewCell")
-        
-        friendTableViewCellsHeight["textFieldCell"] = 50;
-        friendTableViewCellsHeight["friendCollectionViewCell"] = 0;
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
@@ -51,7 +38,9 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         self.getFriendsWithName(nameStartsWith: "")
     }
     
-
+    override func viewWillAppear(_ animated: Bool) {
+        self.title = "Invite Guests";
+    }
     /*
     // MARK: - Navigation
 
@@ -61,13 +50,6 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         // Pass the selected object to the new view controller.
     }
     */
-    func setupSearchBar() -> Void {
-        let imageView = UIImageView();
-        imageView.image = #imageLiteral(resourceName: "search_icon");
-        self.searchTextField.leftView = imageView;
-        self.searchTextField.leftViewMode = UITextFieldViewMode.always
-        self.searchTextField.leftViewMode = .always
-    }
     
     func setupNavigationBarItems() {
         
@@ -77,15 +59,10 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         closeButton.addTarget(self, action: #selector(selectFriendsCancel(_ :)), for: .touchUpInside)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: closeButton);
         
-        /* let doneButton = UIButton(type: .system);
-        doneButton.setTitle("DONE", for: .normal);
-        doneButton.setTitleColor(cenesLabelBlue, for: .normal)
-        doneButton.addTarget(self, action: #selector(selectFriendsDone(_ :)), for: .touchUpInside)
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);*/
         
         let searchBarController = UISearchController(searchResultsController: nil);
         searchBarController.searchBar.delegate = self
+        searchBarController.searchBar.placeholder = "Search Contacts"
         searchBarController.searchResultsUpdater = self
         searchBarController.obscuresBackgroundDuringPresentation = false
         if #available(iOS 11.0, *) {
@@ -97,13 +74,36 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
 
     }
     
+    func refreshNavigationBarItems() {
+        if (inviteFriendsDto.selectedFriendCollectionViewList.count  > 0) {
+            let doneButton = UIButton(type: .system);
+            doneButton.setTitle("Save", for: .normal);
+            doneButton.addTarget(self, action: #selector(selectFriendsDone(_ :)), for: .touchUpInside)
+            
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+            
+        }
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        let searchText = searchController.searchBar.text!;
+        if (searchText != "") {
+            inviteFriendsDto.isSearchOn = true;
+            self.getfilterArray(str: searchText);
+        } else {
+            inviteFriendsDto.isSearchOn = false;
+            self.getfilterArray(str: "");
+        }
+    }
+    
     func getFriendsWithName(nameStartsWith:String) {
         print("Calling API")
         
         //Call api for friends
         WebService().cancelAll()
-        
-        //startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
         let queryStr = "userId=\(String(self.loggedInUser.userId))"
         UserService().findUserFriendsByUserId(queryStr: queryStr, token: self.loggedInUser.token, complete: { (returnedDict) in
@@ -111,42 +111,74 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
                 self.showAlert(title: "Error", message: (returnedDict["message"] as? String)!)
             }else{
                 
-                self.eventMembers = EventMember().loadUserContacts(eventMemberArray: returnedDict["data"] as! NSArray);
-                self.allEventMembers = EventMember().loadUserContacts(eventMemberArray: returnedDict["data"] as! NSArray);
-                for userContact in self.eventMembers {
+                self.inviteFriendsDto.allEventMembers = EventMember().loadUserContacts(eventMemberArray: returnedDict["data"] as! NSArray);
+                self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
+                
+                for userContact in self.inviteFriendsDto.allEventMembers {
                     self.userContactIdMapList[Int(userContact.userContactId)] = userContact;
                 }
+                
+                var friendListDtos = self.inviteFriendsDto.allContacts;
+                friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.allEventMembers);
+                self.inviteFriendsDto.allContacts = friendListDtos;
+                self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.allEventMembers);
+                
+                for sectionObj in self.inviteFriendsDto.allContacts {
+                    self.inviteFriendsDto.alphabetStrip.append(sectionObj.sectionName);
+                }
             }
-            
             self.friendTableView.reloadData();
-
         });
-        
     }
     
-    func getfilterArray(str:String){
-        self.eventMembers = [];
+    func getfilterArray(str:String) {
+        self.inviteFriendsDto.filteredEventMembers = [];
         
         if (str == "") {
-            self.eventMembers = self.allEventMembers;
+            self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
         } else {
             //let predicate : NSPredicate = NSPredicate(format: "name BEGINSWITH [cd] %@" ,str)
-            self.eventMembers = EventMember().filtered(eventMembers: self.allEventMembers, predicate: str);
+            self.inviteFriendsDto.filteredEventMembers = EventMember().filtered(eventMembers: self.inviteFriendsDto.allEventMembers, predicate: str);
         }
+        
+        self.userContactIdMapList = [Int: EventMember]();
+        for userContact in self.inviteFriendsDto.filteredEventMembers {
+            self.userContactIdMapList[Int(userContact.userContactId)] = userContact;
+        }
+        
+        var friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
+        self.inviteFriendsDto.allContacts = friendListDtos;
+        self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.filteredEventMembers);
+        
+        if (inviteFriendsDto.isSearchOn == false) {
+            self.inviteFriendsDto.alphabetStrip = [];
+            for sectionObj in self.inviteFriendsDto.allContacts {
+                self.inviteFriendsDto.alphabetStrip.append(sectionObj.sectionName);
+            }
+        }
+        self.friendTableView.reloadData();
     }
     
     @objc func selectFriendsDone(_ sender: UIButton) {
         
         var userContacts: [EventMember] = [];
-        for (_, value) in self.selectedFriendHolder {
+        for (_, value) in self.inviteFriendsDto.selectedFriendCollectionViewList {
             userContacts.append(value);
         }
         
         //if self.collectionFriendsProtocol != nil {
         self.collectionFriendsDelegate?.collectionFriendsList(selectedFriendHolder: userContacts);
         //}
-        self.navigationController?.popViewController(animated: true)
         
+        let viewController: CreateGatheringV2ViewController = storyboard?.instantiateViewController(withIdentifier: "CreateGatheringV2ViewController") as! CreateGatheringV2ViewController;
+        
+        var eventMembers = [EventMember]();
+        for (_, eventMem) in inviteFriendsDto.selectedFriendCollectionViewList {
+            eventMembers.append(eventMem);
+        }
+        viewController.event.eventMembers = eventMembers;
+        //self.navigationController?.popViewController(animated: true)
+        self.navigationController?.pushViewController(viewController, animated: true);
     }
     
     @objc func selectFriendsCancel(_ sender: UIButton) {
@@ -165,22 +197,46 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if (friendTableViewCellsHeight["friendCollectionViewCell"] == 0) {
-            return 1;
+        inviteFriendsDto.totalNumberOfRows = 3;
+        
+        if (inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
+            inviteFriendsDto.totalNumberOfRows = inviteFriendsDto.totalNumberOfRows - 1;
         }
-        return 2;
+        if (self.inviteFriendsDto.cenesContacts.count == 0) {
+            inviteFriendsDto.totalNumberOfRows = inviteFriendsDto.totalNumberOfRows - 1;
+        }
+        return inviteFriendsDto.totalNumberOfRows;
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-             if (friendTableViewCellsHeight["friendCollectionViewCell"] == 0) {
-                return (self.view.frame.size.height - (friendTableViewCellsHeight["textFieldCell"]! + friendTableViewCellsHeight["friendCollectionViewCell"]!));
+             if (inviteFriendsDto.totalNumberOfRows == 1) {
+                return (self.view.frame.size.height -  30);
              }
-            print("Colleciton View Height: \(friendTableViewCellsHeight["friendCollectionViewCell"])")
-            return friendTableViewCellsHeight["friendCollectionViewCell"]!;
+             if (inviteFriendsDto.totalNumberOfRows == 2) {
+                if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+                    return inviteFriendsDto.friendCollectionViewCell;
+                }
+                if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                    return inviteFriendsDto.allAndCenesContactsSwitchCell;
+                }
+             }
+             return inviteFriendsDto.friendCollectionViewCell;
         case 1:
-            return (self.view.frame.size.height - (friendTableViewCellsHeight["textFieldCell"]! + friendTableViewCellsHeight["friendCollectionViewCell"]!));
+            if (inviteFriendsDto.totalNumberOfRows == 2) {
+                
+                var finalHeight = self.view.frame.size.height - 30;
+                if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+                    finalHeight = finalHeight - inviteFriendsDto.friendCollectionViewCell;
+                } else if (inviteFriendsDto.cenesContacts.count != 0) {
+                    finalHeight = finalHeight - inviteFriendsDto.allAndCenesContactsSwitchCell;
+                }
+                return finalHeight;
+            }
+            return inviteFriendsDto.allAndCenesContactsSwitchCell;
+        case 2:
+            return (self.view.frame.size.height - (inviteFriendsDto.friendCollectionViewCell + inviteFriendsDto.allAndCenesContactsSwitchCell + 30));
         default:
             return 100;
         }
@@ -188,21 +244,66 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        //If we have no users selected
+        //then we will have 1 row only
         switch indexPath.row {
         case 0:
-            if (friendTableViewCellsHeight["friendCollectionViewCell"] == 0) {
+            if (inviteFriendsDto.totalNumberOfRows == 1) {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
                 cell.friendViewControllerDelegate = self;
                 cell.friendListInnerTable.reloadData()
-
+                
                 return cell
             }
-            
+            if (inviteFriendsDto.totalNumberOfRows == 2) {
+                if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
+                    cell.friendsViewControllerDelegate = self;
+                    cell.friendshorizontalColView.reloadData();
+                    return cell;
+                }
+                
+                if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
+                    
+                    if (self.inviteFriendsDto.isAllContactsView == true) {
+                        cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                    } else {
+                        cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                    }
+                    return cell
+                }
+            }
+
             let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
             cell.friendsViewControllerDelegate = self;
             cell.friendshorizontalColView.reloadData();
             return cell;
+            
         case 1:
+            if (inviteFriendsDto.totalNumberOfRows == 2) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
+                cell.friendViewControllerDelegate = self;
+                cell.friendListInnerTable.reloadData()
+                
+                return cell
+            }
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
+            
+            if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                
+                if (self.inviteFriendsDto.isAllContactsView == true) {
+                    cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                } else {
+                    cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                }
+                return cell
+            }
+            
+            return cell
+            
+        case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
             cell.friendViewControllerDelegate = self;
             cell.friendListInnerTable.reloadData()
@@ -212,24 +313,34 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell();
         }
     }
-}
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (self.inviteFriendsDto.totalNumberOfRows == 2) {
+            if (indexPath.row == 0) {
+                //If user clicked on 1 row
+                // and first row is all cenes contacts switch
+                if (self.inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
+                    if (self.inviteFriendsDto.isAllContactsView == true) {
+                        self.inviteFriendsDto.isAllContactsView = false;
 
-extension FriendsViewController: UITextFieldDelegate {
-    
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+                    } else {
+                        self.inviteFriendsDto.isAllContactsView = true;
+                    }
+                    self.friendTableView.reloadData();
+                }
+            }
+        } else if (self.inviteFriendsDto.totalNumberOfRows == 3) {
+            if (indexPath.row == 1) {
+                    if (self.inviteFriendsDto.isAllContactsView == true) {
+                        self.inviteFriendsDto.isAllContactsView = false;
+                        
+                    } else {
+                        self.inviteFriendsDto.isAllContactsView = true;
+                    }
+                    self.friendTableView.reloadData();
+                
+            }
+        }
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let updatedString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
-        self.searchText = updatedString
-        
-        self.getfilterArray(str: self.searchText.capitalized)
-        
-        self.friendTableView.reloadData();
-        
-        return true
-    }
 }

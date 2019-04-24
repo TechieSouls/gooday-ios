@@ -18,8 +18,10 @@ class FriendCollectionTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        contentView.backgroundColor = themeColor;
+        self.friendshorizontalColView.backgroundColor = themeColor;
         
-        self.friendshorizontalColView.register(UINib(nibName: "FriendsViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "friendCell")
+        self.friendshorizontalColView.register(UINib(nibName: "SelectedFriendCollectionViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "SelectedFriendCollectionViewCell")
         
     }
 
@@ -37,35 +39,34 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if (self.friendsViewControllerDelegate.selectedFriendHolder != nil) {
-            print("print : \(self.friendsViewControllerDelegate.selectedFriendHolder.count)")
-            return self.friendsViewControllerDelegate.selectedFriendHolder.count;
+        if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+            print("print : \(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count)")
+            return self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count;
         }
         return 0;
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "friendCell", for: indexPath) as! FriendsViewCell;
+        let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
         
-        if (self.friendsViewControllerDelegate.selectedFriendHolder != nil) {
-            print("row Number : \(indexPath.row)")
-            let key = Array(self.friendsViewControllerDelegate.selectedFriendHolder.keys)[indexPath.row]
-            let userContact = self.friendsViewControllerDelegate.selectedFriendHolder[key] as! EventMember;
+        if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+            let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
+            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList[key] as! EventMember;
             print("Array : \(userContact)")
             
             if (userContact.cenesMember == "yes") {
                 
-                cell.nonCenesUserView.isHidden = true;
-                cell.profileImage.isHidden = false;
+                cell.nonCenesUiViewLabel.isHidden = true;
+                cell.profilePic.isHidden = false;
                 if (userContact.user != nil && userContact.user.photo != nil) {
-                    cell.profileImage.sd_setImage(with: URL(string: userContact.user.photo), placeholderImage: UIImage(named: "cenes_user_no_image"))
+                    cell.profilePic.sd_setImage(with: URL(string: userContact.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
                 } else{
-                    cell.profileImage.image = #imageLiteral(resourceName: "cenes_user_no_image")
+                    cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
                 }
             } else {
-                cell.nonCenesUserView.isHidden = false;
-                cell.profileImage.isHidden = true;
+                cell.nonCenesUiViewLabel.isHidden = false;
+                cell.profilePic.isHidden = true;
 
                 var nonCenesUserName: String = "";
                 let nameSplitArr = userContact.name.split(separator: " ");
@@ -73,14 +74,27 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 if (nameSplitArr.count > 1) {
                     nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
                 }
-                cell.nonCenesUserName.text = nonCenesUserName;
+                cell.nonCenesUiViewLabel.text = nonCenesUserName;
             }
             
-            cell.nameLabel.text = userContact.name;
+            let firstName = userContact.name.split(separator: " ")[0];
+            cell.name.text = String(firstName);
+            
+            let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
+            cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);
+            removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
+            
             cell.tag = Int(userContact.userContactId);
         }
-        
-        //cell.inviteFriendCtrl = self;
         return cell
     }
+    
+    @objc func removeFriendIconPressed(sender : RemoveFriendIconGesture) {
+        self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: sender.userContactId);
+        self.friendsViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[sender.userContactId] = false;
+        self.friendsViewControllerDelegate.friendTableView.reloadData();
+    }
+}
+class RemoveFriendIconGesture: UITapGestureRecognizer {
+    var userContactId = Int();
 }

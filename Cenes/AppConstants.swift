@@ -25,7 +25,7 @@ let BOTTOM_AFTER_KEYBOARD = 0
 /////// COLORS
 let commonColor = UIColor(red: 240/255, green: 120/255, blue: 81/255, alpha: 1)
 
-let themeColor = UIColor(red: 239/255, green: 239/255, blue: 239/255, alpha: 1)
+let themeColor = UIColor(red: 249/255 , green: 249/255, blue: 249/255, alpha: 1)
 
 let selectedColor = UIColor(red:0.93, green:0.61, blue:0.15, alpha:1)
 

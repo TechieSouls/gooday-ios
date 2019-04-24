@@ -13,17 +13,17 @@ class Event {
     var description: String!;
     var eventPicture: String!;
     var eventId: Int32!;
-    var startTime: Int64 = Date().toMillis();
-    var endTime: Int64 = Date().toMillis();
+    var startTime: Int64 = Date().millisecondsSince1970
+    var endTime: Int64 = Date().millisecondsSince1970
     var location: String!;
     var latitude: String!;
     var longitude: String!;
-    var createdById: Int32!;
-    var source: String!;
+    var createdById: Int32 = User().loadUserDataFromUserDefaults(userDataDict: setting).userId;
+    var source: String = "Cenes";
     var scheduleAs: String? = "Gathering";
     var thumbnail: String!;
     var isPredictiveOn: Bool = false;
-    var isFullDay: Bool!;
+    var isFullDay: Bool = false
     var placeId: String!;
     var predictiveData: String!;
     var predictiveDataArr : NSMutableArray!
@@ -31,6 +31,9 @@ class Event {
     var key: String!;
     var isEditMode: Bool = false;
     var eventClickedFrom: String = "Home";
+    var expired: Bool = false;
+    var imageToUpload: UIImage!;
+
     
     var eventMembers: [EventMember]!;
     
@@ -51,23 +54,23 @@ class Event {
         event.latitude = eventDict.value(forKey: "latitude") as? String;
         event.longitude = eventDict.value(forKey: "longitude") as? String;
         event.scheduleAs = eventDict.value(forKey: "scheduleAs") as? String;
-        event.createdById = eventDict.value(forKey: "createdById") as? Int32;
+        event.createdById = eventDict.value(forKey: "createdById") as! Int32;
         event.thumbnail = eventDict.value(forKey: "thumbnail") as? String;
         event.isPredictiveOn = eventDict.value(forKey: "isPredictiveOn") != nil ? eventDict.value(forKey: "isPredictiveOn") as! Bool : false;
-        event.isFullDay = eventDict.value(forKey: "isFullDay") as? Bool;
+        event.isFullDay = eventDict.value(forKey: "isFullDay") as! Bool;
         event.placeId = eventDict.value(forKey: "placeId") as? String;
         event.predictiveData = eventDict.value(forKey: "predictiveData") as? String;
         event.fullDayStartTime = eventDict.value(forKey: "fullDayStartTime") as? String;
         event.key = eventDict.value(forKey: "key") as? String;
+        event.expired = eventDict.value(forKey: "expired") != nil ? eventDict.value(forKey: "expired") as! Bool : false;
 
+        
         if (eventDict.value(forKey: "eventMembers") != nil) {
              event.eventMembers = EventMember().loadEventMembers(eventMemberArray: eventDict.value(forKey: "eventMembers") as! NSArray)
         }
         if (eventDict.value(forKey: "members") != nil) {
             event.eventMembers = EventMember().loadEventMembers(eventMemberArray: eventDict.value(forKey: "members") as! NSArray)
         }
-       
-        
         return event;
     }
     
@@ -101,6 +104,18 @@ class Event {
             eventJson["eventMembers"] = eveMembers;
         }
         return eventJson;
+    }
+    
+    func getLoggedInUserAsEventMember() -> EventMember {
+        
+        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        
+        let eventMember = EventMember();
+        eventMember.userId = loggedInUser.userId;
+        eventMember.user = loggedInUser;
+        eventMember.status = "Going";
+        
+        return eventMember;
     }
     
 }

@@ -12,10 +12,13 @@ class Location {
     
     var location: String!;
     var latitude: String!;
+    var latitudeDouble: Double!
     var address: String!;
     var longitude: String!;
+    var longitudeDouble: Double!;
     var placeId: String!;
     var photo: String!;
+    var kilometers: String!;
     
     func loadLocationData(locationDict: NSDictionary) -> Location {
         let locationObj = Location();
@@ -26,7 +29,41 @@ class Location {
         locationObj.longitude = locationDict.value(forKey: "longitude") as? String;
         locationObj.placeId = locationDict.value(forKey: "placeId") as? String;
         locationObj.photo = locationDict.value(forKey: "photo") as? String;
+        locationObj.kilometers = locationDict.value(forKey: "kilometers") as? String;
+
+        return locationObj;
+    }
+    
+    func loadLocationDataFromWorldWideApi(locationDict: NSDictionary) -> Location {
+        let locationObj = Location();
+        
+        let structuredFormatting = locationDict.value(forKey: "structured_formatting") as! NSDictionary;
+        locationObj.location = structuredFormatting.value(forKey: "main_text") as? String;
+        locationObj.address = structuredFormatting.value(forKey: "secondary_text") as? String;
+        locationObj.placeId = locationDict.value(forKey: "place_id") as? String;
         
         return locationObj;
+    }
+    
+    func loadLocationDataFromNearByApi(locationDict: NSDictionary) -> Location {
+        
+        let locationObj = Location();
+        
+        locationObj.location = locationDict.value(forKey: "name") as? String;
+        locationObj.address = locationDict.value(forKey: "vicinity") as? String;
+        
+        let geomatry = locationDict.value(forKey: "geometry") as! NSDictionary;
+        
+        let location = geomatry.value(forKey: "location") as! NSDictionary;
+        
+        locationObj.latitudeDouble = location.value(forKey: "lat") as? Double;
+        locationObj.longitudeDouble = location.value(forKey: "lng") as? Double;
+        locationObj.placeId = locationDict.value(forKey: "place_id") as? String;
+        //locationObj.photo = locationDict.value(forKey: "photo") as? String;
+        //locationObj.kilometers = locationDict.value(forKey: "kilometers") as? String;
+        
+        return locationObj;
+        
+        
     }
 }

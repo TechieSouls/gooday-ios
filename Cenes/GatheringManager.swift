@@ -65,6 +65,70 @@ class GatheringManager {
         return dataObjectArray;
     }
     
+    func parseFriendsListResults(friendList: [EventMember]) -> [FriendListDto] {
+        
+        var dataObjectArray = [FriendListDto]();
+        var friendListMapDto = [String: FriendListDto]();
+        for eventMember in friendList {
+            
+            var nameInitial = "";
+            if (eventMember.user != nil) {
+                nameInitial = eventMember.user.name.substring(toIndex: 1).uppercased();
+                print(nameInitial)
+            } else if (eventMember.userContact != nil) {
+                nameInitial = eventMember.userContact.name.substring(toIndex: 1).uppercased();
+                print(nameInitial)
+            } else if (eventMember.name != nil) {
+                nameInitial = eventMember.name.substring(toIndex: 1).uppercased();
+                print(nameInitial)
+            }
+            var friendListDtoTemp = FriendListDto();
+            
+            if (friendListMapDto.index(forKey: nameInitial) != nil) {
+                friendListDtoTemp = friendListMapDto[nameInitial]!;
+            }
+            
+            friendListDtoTemp.sectionName = nameInitial;
+            var members = friendListDtoTemp.sectionObjects;
+            members.append(eventMember);
+            friendListDtoTemp.sectionObjects = members;
+            
+            friendListMapDto[nameInitial] = friendListDtoTemp;
+        }
+        
+        for (k,value) in Array(friendListMapDto).sorted(by: {$0.0 < $1.0}) {
+            dataObjectArray.append(value);
+        }
+        
+        return dataObjectArray;
+    }
+    
+    func getCenesContacts(friendList: [EventMember]) -> [EventMember] {
+        
+        var cenesMembers = [EventMember]();
+        for eventMember in friendList {
+            
+            if (eventMember.user != nil) {
+                cenesMembers.append(eventMember);
+
+            }
+        }
+        return cenesMembers;
+    }
+    
+    func allFieldsFilled(createGathDto: CreateGathDto) -> Bool {
+        
+        var allFiledFilled: Bool = true;
+        for (_, value) in createGathDto.trackGatheringDataFilled {
+            if (value == false) {
+                allFiledFilled = false;
+                break;
+            }
+        }
+        return allFiledFilled;
+    }
+    
+    
     func gethhmmAATimeStr(timeStamp:String) -> String{
         let timeinterval : TimeInterval = Double(timeStamp)! / 1000 // convert it in to NSTimeInteral
         let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
@@ -153,4 +217,8 @@ class GatheringManager {
         }
         return host!;
     }
+}
+
+class cellHeight{
+    
 }

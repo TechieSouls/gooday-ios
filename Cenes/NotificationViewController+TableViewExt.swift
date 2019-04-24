@@ -82,48 +82,26 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
             let queryStr = "notificationId=\(String(notificationId))";
             NotificationService().markNotificationReadByNotificationId(queryStr: queryStr, token: self.loggedInUser.token, complete: {(returnedDict)
                 in
+                for notification in self.allNotifications {
+                    if (notification.notificationId == notificationId) {
+                        notification.readStatus = "Read";
+                    }
+                }
+                self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+                self.notificationTableView.reloadData();
             });
         }
-        if (notification.event == nil) {
+        if (notification.event != nil) {
+            let event = notification.event;
+            event!.eventClickedFrom = "Notification";
             /*let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringExpiredViewController") as! GatheringExpiredViewController
             self.navigationController?.pushViewController(newViewController, animated: true);*/
             let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newViewController = storyboard!.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController
-            //newViewController.event = event;
-            self.navigationController?.present(newViewController, animated: true, completion: nil)
-        } else {
-            let event = notification.event;
-            event!.eventClickedFrom = "Notification";
-            /*let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringPreviewController") as! GatheringPreviewController
             newViewController.event = event;
-            self.navigationController?.pushViewController(newViewController, animated: true)*/
-            let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-
-            let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController
-            //newViewController.event = event;
             self.navigationController?.present(newViewController, animated: true, completion: nil)
-            
         }
-        
-        /* GatheringService().eventInfoTask(eventId: Int64(truncating: notificationTypeId)) {(returnedDict) in
-            
-            if (returnedDict.value(forKey: "success") as! Bool) {
-                let data = returnedDict.value(forKey: "data") as! NSDictionary;
-                let event = Event().loadEventData(eventDict: data);
-                event.eventClickedFrom = "Notification";
-                let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringPreviewController") as! GatheringPreviewController
-                newViewController.event = event;
-                self.navigationController?.pushViewController(newViewController, animated: true)
-                
-            } else {
-                let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringExpiredViewController") as! GatheringExpiredViewController
-                self.navigationController?.pushViewController(newViewController, animated: true);
-            }
-        } */
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

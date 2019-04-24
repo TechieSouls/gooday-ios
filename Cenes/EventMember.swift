@@ -24,6 +24,7 @@ class EventMember {
     var cenesMember: String!;
     var photo: String!;
     var user: User!;
+    var userContact: UserContact!;
     
     func loadEventMemberData(eventMemberDict: NSDictionary) -> EventMember {
         let eventMember = EventMember();
@@ -45,6 +46,9 @@ class EventMember {
             eventMember.user = User().loadUserData(userDataDict: user);
         }
         
+        if let userContact = eventMemberDict.value(forKey: "userContact") as? NSDictionary {
+            eventMember.userContact = UserContact().loadUserContact(userContactDic: userContact);
+        }
         
         return eventMember;
     }
@@ -68,6 +72,9 @@ class EventMember {
             eventMember.user = User().loadUserData(userDataDict: user);
         }
         
+        if let userContact = eventMemberDict.value(forKey: "userContact") as? NSDictionary {
+            eventMember.userContact = UserContact().loadUserContact(userContactDic: userContact);
+        }
         
         return eventMember;
     }

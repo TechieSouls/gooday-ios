@@ -21,10 +21,10 @@ class UserContact {
     func loadUserContact(userContactDic: NSDictionary) -> UserContact {
         let userContact = UserContact();
         
-        userContact.userContactId = userContactDic.value(forKey: "userContactId") as! Int;
-        userContact.name = userContactDic.value(forKey: "name") as! String;
-        userContact.cenesMember = userContactDic.value(forKey: "cenesMember") as! String;
-        userContact.phone = userContactDic.value(forKey: "phone") as! String;
+        userContact.userContactId = userContactDic.value(forKey: "userContactId") as? Int;
+        userContact.name = userContactDic.value(forKey: "name") as? String;
+        userContact.cenesMember = userContactDic.value(forKey: "cenesMember") as? String;
+        userContact.phone = userContactDic.value(forKey: "phone") as? String;
         
         if let user = userContactDic.value(forKey: "user") as? NSDictionary {
             

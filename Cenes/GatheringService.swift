@@ -16,7 +16,6 @@ class GatheringService {
     let get_delete_event_api: String = "/api/event/delete";//event_id
     let get_update_invitation_api: String = "/api/event/memberStatusUpdate";
 
-
     
     var requestArray = NSMutableArray()
     
@@ -209,28 +208,12 @@ class GatheringService {
         self.requestArray.add(req)
     }
     
-    func updateGatheringStatus(queryStr: String, complete: @escaping(NSMutableDictionary)->Void) {
-        let returnedDict = NSMutableDictionary()
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        
-        let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
-        
-        let url = "\(apiUrl)\(get_delete_event_api)?\(queryStr)";
+    func updateGatheringStatus(queryStr: String,token: String, complete: @escaping(NSDictionary)->Void) {
+        let url = "\(apiUrl)\(get_update_invitation_api)?\(queryStr)";
         print("API Url : \(url)")
-        let req = Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers:Auth_header).validate(statusCode: 200..<300).responseJSON{
-            (response ) in
-            
-            print(response);
-            let json = response.result.value as! NSDictionary
-            
-            //returnedDict["data"] = json.value(forKey: "data")
-            returnedDict["success"] = json.value(forKey: "success")
-            
-            complete(returnedDict)
-            
-        }
-        self.requestArray.add(req)
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response);
+        });
     }
     
 }

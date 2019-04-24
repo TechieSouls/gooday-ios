@@ -13,19 +13,20 @@ class FriendsTableViewCell: UITableViewCell {
     @IBOutlet weak var friendListInnerTable: UITableView!
 
     var friendViewControllerDelegate: FriendsViewController!;
-
-    
-    var checkboxStateHolder: [Int: Bool] = [:];
-    
-    //var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        //self.friendListInnerTable.dataSource = self;
-        //self.friendListInnerTable.delegate = self;
         
-        self.friendListInnerTable.register(UINib(nibName: "FriendListItemTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendListItemTableViewCell")
+        contentView.backgroundColor = themeColor;
+        
+        self.friendListInnerTable.backgroundColor = themeColor;
+        
+        self.friendListInnerTable.register(UINib(nibName: "FriendListItemTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendListItemTableViewCell");
+        
+        self.friendListInnerTable.register(UINib(nibName: "FriendAllContactsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendAllContactsTableViewCell");
+        
+         self.friendListInnerTable.register(UINib(nibName: "InnerTableHeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InnerTableHeaderTableViewCell");
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -34,92 +35,213 @@ class FriendsTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    @objc func checkboxClicked(_ sender: UIButton) {
-        
-        print("\(sender.tag) isSelected : \(!sender.isSelected)")
-        self.checkboxStateHolder[sender.tag] = !sender.isSelected;
-        print("\(self.checkboxStateHolder) summary");
-        if (!sender.isSelected == true) {
-            print(sender.tag)
-            self.friendViewControllerDelegate.selectedFriendHolder[sender.tag] = self.friendViewControllerDelegate.userContactIdMapList[sender.tag];
-        } else {
-            self.friendViewControllerDelegate.selectedFriendHolder.removeValue(forKey: sender.tag);
-        }
-        sender.isSelected = !sender.isSelected
-        
-        if (self.friendViewControllerDelegate.selectedFriendHolder.count > 0) {
-            self.friendViewControllerDelegate.friendTableViewCellsHeight["friendCollectionViewCell"] = 100;
-        } else {
-            self.friendViewControllerDelegate.friendTableViewCellsHeight["friendCollectionViewCell"] = 0;
-        }
-        
-        self.friendViewControllerDelegate.searchText = "";
-        self.friendViewControllerDelegate.getfilterArray(str: "");
-        self.friendViewControllerDelegate.friendTableView.reloadData();
-        self.friendListInnerTable.reloadData();
-        
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.backgroundColor = themeColor;
     }
+   
 }
 
 extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1;
+        if (self.friendViewControllerDelegate != nil) {
+            if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
+                return 1;
+            } else {
+                return friendViewControllerDelegate.inviteFriendsDto.allContacts.count;
+            }
+        }
+        return 0;
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (self.friendViewControllerDelegate != nil) {
-            return self.friendViewControllerDelegate.eventMembers.count;
+            if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
+                return self.friendViewControllerDelegate.inviteFriendsDto.cenesContacts.count;
+            } else {
+                return self.friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionObjects.count;
+            }
         }
         return 0;
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80;
+        return 65;
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let identifier = "FriendListItemTableViewCell"
         let cell: FriendListItemTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? FriendListItemTableViewCell)!
         
-        let eventMember = self.friendViewControllerDelegate.eventMembers[indexPath.row] ;
-        cell.nameLabel.text = eventMember.name;
-        
-        if (eventMember.cenesMember == "yes") {
+        //This is the case when user is at the wehere he can see only cenes contacts
+        if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
             
-            cell.nonCenesUIView.isHidden = true;
+            let eventMember = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[indexPath.row];
+            if (eventMember.user != nil) {
+                cell.nameLabel.text = eventMember.user.name;
+            } else {
+                cell.nameLabel.text = eventMember.name;
+            }
+            
+            cell.phoneBookName.text = eventMember.name;
             
             if eventMember.user != nil && eventMember.user.photo != nil {
-                cell.profileImageView.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "cenes_user_no_image"))
+                cell.profileImageView.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+                cell.unselectedProfilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+            }
+            
+            let userContactId: Int = Int(eventMember.userContactId);
+            
+            let keyExists = friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] != nil
+            if (keyExists && friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
+                if (eventMember.cenesMember == "yes") {
+                    cell.cenesUserSelectedView.isHidden = false;
+                    cell.cenesUserUnselectedView.isHidden = true;
+                } else {
+                    cell.cenesUserSelectedView.isHidden = true;
+                    cell.cenesUserUnselectedView.isHidden = true;
+                }
             } else {
-                cell.profileImageView.image = UIImage(named: "cenes_user_no_image");
+                cell.cenesUserSelectedView.isHidden = true;
+                cell.cenesUserUnselectedView.isHidden = false;
+                if (eventMember.cenesMember == "yes") {
+                    cell.cenesUserSelectedView.isHidden = true;
+                    cell.cenesUserUnselectedView.isHidden = false;
+                } else {
+                    cell.cenesUserSelectedView.isHidden = true;
+                    cell.cenesUserUnselectedView.isHidden = true;
+                }
             }
+            return cell;
         } else {
-            cell.nonCenesUIView.isHidden = false;
-            var nonCenesUserName: String = "";
-            let nameSplitArr = eventMember.name.split(separator: " ");
-            nonCenesUserName = String(nameSplitArr[0])[0..<1].capitalized
-            if (nameSplitArr.count > 1) {
-                nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
+            //This is the case where user views all the contacts in its contact list.
+            let eventMember = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
+            
+            let cell: FriendAllContactsTableViewCell = (tableView.dequeueReusableCell(withIdentifier: "FriendAllContactsTableViewCell") as? FriendAllContactsTableViewCell)!
+            
+            //If user is not nil then we will show cenes user name.
+            if (eventMember.user != nil) {
+                cell.name.text = eventMember.user.name;
+            } else {
+                cell.name.text = eventMember.name;
             }
-            cell.nonCenesNameLabel.text = nonCenesUserName;
-        }
-        
-        
-        let userContactId: Int = Int(eventMember.userContactId);
-        
-        let keyExists = self.checkboxStateHolder[userContactId] != nil
-        if (keyExists && self.checkboxStateHolder[userContactId] == true) {
-            cell.inviteUerCheckbox.isSelected = true;
-            cell.inviteUerCheckbox.setImage(UIImage.init(named: "circle_selected"), for: UIControlState.normal)
-        } else {
-            cell.inviteUerCheckbox.isSelected = false;
-            cell.inviteUerCheckbox.setImage(UIImage.init(named: "circle_unselected"), for: UIControlState.normal)
-        }
-        if let btnChk = cell.inviteUerCheckbox {
-            btnChk.tag = Int(userContactId);
-            btnChk.addTarget(self, action: #selector(checkboxClicked(_ :)), for: .touchUpInside)
+            
+            //Here we will check. If user is cenes member and has image then we will set it.
+            //If user is not a cenes member yet, then we will show first two letters
+            //of name as its label.
+            if (eventMember.cenesMember == "yes") {
+                cell.nonCenesUserView.isHidden = true;
+                if eventMember.user != nil && eventMember.user.photo != nil {
+                    cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+                }
+            } else {
+                cell.nonCenesUserView.isHidden = false;
+                var nonCenesUserName: String = "";
+                let nameSplitArr = eventMember.name.split(separator: " ");
+                nonCenesUserName = String(nameSplitArr[0])[0..<1].capitalized
+                if (nameSplitArr.count > 1) {
+                    nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
+                }
+                cell.nonCenesUserNameLabel.text = nonCenesUserName;
+            }
+            
+            
+            let userContactId: Int = Int(eventMember.userContactId);
+            let keyExists = friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] != nil
+            if (keyExists && friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
+                cell.hostGradientImage.isHidden = false;
+                if (eventMember.cenesMember == "yes") {
+                    cell.profilePic.isHidden = false;
+                    cell.nonCenesUserView.isHidden = true;
+                } else {
+                    cell.nonCenesUserView.roundedUIViewGreyBackground();
+                    cell.profilePic.isHidden = true;
+                    cell.nonCenesUserView.isHidden = false;
+                }
+            } else {
+                cell.hostGradientImage.isHidden = true;
+                
+                if (eventMember.cenesMember == "yes") {
+                    cell.profilePic.isHidden = false;
+                    cell.nonCenesUserView.isHidden = true;
+                } else {
+                    cell.nonCenesUserView.roundedUIViewGreyBackground();
+                    cell.profilePic.isHidden = true;
+                    cell.nonCenesUserView.isHidden = false;
+                }
+                
+            }
+            return cell;
         }
         return cell;
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        var friendObj = EventMember();
+        
+        //Fetch User Contact based on the type of the screen user at.
+        //If he is at all contacts screen then we will fetch all the contacts.
+        if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
+            friendObj = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[indexPath.row];
+        } else {
+            friendObj = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
+        }
+        
+        let userContactId = Int(friendObj.userContactId);
+        
+        //We will check if contact is never selected then we will add it in holder and mark it selected.
+        if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] != nil ) {
+        
+            if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
+                friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] = false;
+            } else {
+                 friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] = true;
+            }
+        } else {
+            friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] = true;
+        }
+        
+        
+        //After checking whether user is selected or not we will remove and add it in collection view cell.
+        if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
+            self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList[userContactId] = self.friendViewControllerDelegate.userContactIdMapList[userContactId];
+        } else {
+            self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: userContactId);
+        }
+        
+        friendViewControllerDelegate.refreshNavigationBarItems();
+        
+        self.friendViewControllerDelegate.friendTableView.reloadData();
+        self.friendListInnerTable.reloadData();
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if (friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
+            return friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionName;
+        }
+        return "";
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 25;
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        let sectionTitle = friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionName;
+        
+        let identifier = "InnerTableHeaderTableViewCell"
+        let cell: InnerTableHeaderTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? InnerTableHeaderTableViewCell
+        
+        cell.header.text = sectionTitle
+        
+        return cell
+    }
+    
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return friendViewControllerDelegate.inviteFriendsDto.alphabetStrip;
+    }
 }
+

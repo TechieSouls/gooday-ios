@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class NotificationData: NSObject {
     var title:String!
@@ -60,4 +61,5 @@ class NotificationData: NSObject {
         
         return notifications;
     }
+    
 }

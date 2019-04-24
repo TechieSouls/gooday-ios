@@ -336,7 +336,7 @@ class GatheringPreviewController: UIViewController,NVActivityIndicatorViewable, 
         
         self.startAnimating(loadinIndicatorSize, message: "Updating...", type: NVActivityIndicatorType.lineScaleParty)
         
-        GatheringService().updateGatheringStatus(queryStr: queryStr){(returnedDict) in
+        GatheringService().updateGatheringStatus(queryStr: queryStr, token: self.loggedInUser.token){(returnedDict) in
             self.stopAnimating();
             self.navigationController?.popToRootViewController(animated: true)
         }
