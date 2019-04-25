@@ -51,6 +51,7 @@ class Event {
         event.startTime = eventDict.value(forKey: "startTime") as! Int64;
         event.endTime = eventDict.value(forKey: "endTime") as! Int64;
         event.location = eventDict.value(forKey: "location") as? String;
+        event.source = eventDict.value(forKey: "source") as! String;
         event.latitude = eventDict.value(forKey: "latitude") as? String;
         event.longitude = eventDict.value(forKey: "longitude") as? String;
         event.scheduleAs = eventDict.value(forKey: "scheduleAs") as? String;
@@ -86,9 +87,10 @@ class Event {
         eventJson["endTime"] = event.endTime;
         eventJson["location"] = event.location;
         eventJson["scheduleAs"] = event.scheduleAs;
-        eventJson["longitude"] = event.longitude;
+        eventJson["latitude"] = event.latitude;
         eventJson["longitude"] = event.longitude;
         eventJson["createdById"] = event.createdById;
+        eventJson["source"] = event.source;
         eventJson["thumbnail"] = event.thumbnail;
         eventJson["isPredictiveOn"] = event.isPredictiveOn;
         eventJson["isFullDay"] = event.isFullDay;

@@ -54,6 +54,11 @@ class NewHomeViewController: UIViewController {
     func setUpNavBarImages() {
         self.navigationController?.navigationBar.shouldRemoveShadow(true)
         self.navigationController?.isNavigationBarHidden = false;
+        self.navigationController?.navigationBar.isHidden = false;
+        self.tabBarController?.tabBar.isHidden = false;
+        
+        
+        
         let homeButton = UIButton.init(type: .custom)
         homeButton.setTitle("Calendar", for: .normal)
         homeButton.titleLabel?.font = .systemFont(ofSize: 10)

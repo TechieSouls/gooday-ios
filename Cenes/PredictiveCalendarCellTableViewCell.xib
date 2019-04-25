@@ -31,6 +31,9 @@
                                 <rect key="frame" x="241" y="5" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="onTintColor" red="0.30980392159999998" green="0.77647058820000003" blue="0.46666666670000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="predictiveSwitchChanged:" destination="KGk-i7-Jjw" eventType="valueChanged" id="BL0-9D-7Mx"/>
+                                </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="TimeMatch" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GhE-tf-riw">
                                 <rect key="frame" x="73" y="5" width="142" height="31"/>
@@ -61,6 +64,7 @@
             <connections>
                 <outlet property="predictiveCalendar" destination="cIk-XA-Lp8" id="sat-Si-5ml"/>
                 <outlet property="predictiveInfoIcon" destination="XDM-e2-u0I" id="oA7-BA-C9d"/>
+                <outlet property="predictiveSwitch" destination="Rer-uQ-yOd" id="RVA-aX-N6F"/>
             </connections>
             <point key="canvasLocation" x="194.20289855072465" y="158.70535714285714"/>
         </tableViewCell>

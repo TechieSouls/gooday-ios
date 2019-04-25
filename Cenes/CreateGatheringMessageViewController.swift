@@ -27,6 +27,8 @@ class CreateGatheringMessageViewController: UIViewController, UITextViewDelegate
         view.backgroundColor = themeColor;
         
         // Do any additional setup after loading the view.
+        eventDescription.text = descriptionMsg;
+        
         eventDescription.becomeFirstResponder();
     }
     

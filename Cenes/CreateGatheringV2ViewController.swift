@@ -61,8 +61,15 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         self.setupNavigationBar();
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        //self.setupNavigationBar();
+        self.navigationController?.navigationBar.isHidden = false
+
+    }
+    
     func setupNavigationBar() {
 
+        
         let backButton = UIButton();
         backButton.frame = CGRect(0, 0, 40, 40);
         backButton.setImage(UIImage.init(named: "abondan_event_icon"), for: .normal);
@@ -191,7 +198,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         let viewController: GatheringInvitationViewController = storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
         viewController.event = self.event;
-        self.present(viewController, animated: true, completion: nil);
+        self.navigationController?.pushViewController(viewController, animated: true);
     }
     
     @objc func backButtonPressed() {
@@ -215,6 +222,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "createGathMessageSeague") {
             let destinationVC = segue.destination as! CreateGatheringMessageViewController;
+            if (event.description != nil) {
+                destinationVC.descriptionMsg = event.description;
+            }
             destinationVC.messageProtocolDelete = gatheringInfoTableViewCellDelegate;
         } else if (segue.identifier == "createGatheringLocationSeague") {
             let destinationVC = segue.destination as! CreateGatheringLocationViewController;

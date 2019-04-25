@@ -69,7 +69,7 @@ class GatheringInvitationViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        
+        navigationController?.navigationBar.isHidden = true;
         
         let guestListViewTapGesture = UITapGestureRecognizer(target: self, action: Selector("guestListViewPressed"));
         guestListView.addGestureRecognizer(guestListViewTapGesture);
@@ -92,7 +92,7 @@ class GatheringInvitationViewController: UIViewController {
         }
         
         if (event.eventId == nil) {
-            shareView.isHidden = true;
+            shareView.isUserInteractionEnabled = false;
         }
         
         if (eventOwner == nil) {
@@ -129,10 +129,10 @@ class GatheringInvitationViewController: UIViewController {
         
         eventTime.text = "\(dateOfEvent), \(timeOfEvent)";
         
-        if (isLoggedInUserAsOwner == true) {
+        /*if (isLoggedInUserAsOwner == true) {
             acceptedImageView.isHidden = true;
             rejectedImageiew.isHidden = true;
-        }
+        }*/
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -176,14 +176,19 @@ class GatheringInvitationViewController: UIViewController {
                     imageCard.center = CGPoint(x: imageCard.center.x - 200, y: imageCard.center.y);
                     imageCard.alpha = 0
                     
+                    //Decline invitation
                     if (self.isLoggedInUserAsOwner == false) {
                         let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=NotGoing";
                         GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
                             
                         });
+                        self.dismiss(animated: true, completion: nil)
+
+                    } else {
+                        self.navigationController?.popViewController(animated: false);
+
                     }
                     
-                    self.dismiss(animated: true, completion: nil)
                 });
                 return;
             } else if (imageCard.center.x > (view.frame.width - 75)) {
@@ -193,13 +198,43 @@ class GatheringInvitationViewController: UIViewController {
                     imageCard.center = CGPoint(x: imageCard.center.x + 200, y: imageCard.center.y);
                     imageCard.alpha = 0;
                     
+                    //For other users accept gathering
                     if (self.isLoggedInUserAsOwner == false) {
                         let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=Going";
                         GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
                             
                         });
+                        self.dismiss(animated: true, completion: nil)
+                        //self.navigationController?.popToRootViewController(animated: true);
+
+                    } else {
+                        //For owner, if its a new event, create new event
+                        
+                        DispatchQueue.global(qos: .background).async {
+                            let imageToUpload = self.event.imageToUpload;
+                            GatheringService().createGathering(uploadDict: self.event.toDictionary(event: self.event), complete: {(response) in
+                                print("Saved Successfully...")
+                                let error = response.value(forKey: "Error") as! Bool;
+                                if (error == false) {
+                                    let dataDict = response.value(forKey: "data") as! NSDictionary;
+                                    let eventId = dataDict.value(forKey: "eventId") as! Int32
+                                    GatheringService().uploadEventImageV2(image: imageToUpload, eventId: eventId, loggedInUser: self.loggedInUser, complete: {(resp) in
+                                        print("Saved Uploaded...")
+
+                                    });
+                                }
+                                //self.navigationController?.popToRootViewController(animated: true);
+                                //self.dismiss(animated: true, completion: nil)
+                                
+                            });
+                            
+                            DispatchQueue.main.async {
+                                // Go back to the main thread to update the UI.
+                                self.navigationController?.popToRootViewController(animated: false);
+                            }
+                        }
+                        //self.dismiss(animated: true, completion: nil)
                     }
-                    self.dismiss(animated: true, completion: nil)
                 });
                 return;
             } else {

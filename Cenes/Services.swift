@@ -12,8 +12,8 @@ var imageFacebookURL :String?
 
 // Live Server
 //let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
-let apiUrl = "https://deploy.cenesgroup.com/"
-//let apiUrl = "http://localhost:8181/"
+//let apiUrl = "https://deploy.cenesgroup.com/"
+let apiUrl = "http://localhost:8181/"
 
 
 
@@ -654,61 +654,6 @@ class WebService
 //            request = self.requestArray.object(at: i) as? Alamofire.Request as! DataRequest
 //            request?.cancel()
 //        }
-    }
-
-    func getPredictiveData(startTime :String, endTime:String ,friends:String,complete: @escaping(NSMutableDictionary)->Void )
-    {
-        
-        print( "Inside Getting Predictive data")
-        // Both calls are equivalent
-        
-        let returnedDict = NSMutableDictionary()
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        //let searchSTr = nameString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
-        
-        let userid = setting.value(forKey: "userId") as! NSNumber
-        let uid = "\(userid)"
-        
-        let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
-        
-        var urlString = ""
-        
-        if friends != "" {
-             urlString = "\(apiUrl)api/predictive/calendar?userId=\(uid)&start_time=\(startTime)&end_time=\(endTime)&friends=\(friends)"
-        }else{
-          urlString =   "\(apiUrl)api/predictive/calendar?userId=\(uid)&start_time=\(startTime)&end_time=\(endTime)"
-        }
-        
-        
-        let req =  Alamofire.request(urlString, method: .get, parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
-            
-            var json : NSArray!
-            switch response.result {
-            case .success:
-                print( "Location Successful")
-                
-                returnedDict["data"] = response.result.value as! NSArray
-                
-                print(response.result.value)
-                
-            case .failure(let error):
-                print(error)
-                
-                let errorX = error as NSError
-                
-                if errorX.code == -999 {
-                    returnedDict["data"] = NSArray()
-                }else{
-                    returnedDict["Error"] = true
-                    returnedDict["ErrorMsg"] = error.localizedDescription
-                }
-            }
-            
-            complete(returnedDict)
-        }
-        
-        self.requestArray.add(req)
     }
     
     func getGatheringEvents(type: String,complete: @escaping(NSMutableDictionary)->Void){

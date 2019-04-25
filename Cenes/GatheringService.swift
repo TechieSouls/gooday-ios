@@ -15,7 +15,7 @@ class GatheringService {
     let get_gathering_data: String = "api/event/"; //eventId
     let get_delete_event_api: String = "/api/event/delete";//event_id
     let get_update_invitation_api: String = "/api/event/memberStatusUpdate";
-
+    let get_predictive_api: String = "api/predictive/calendar/v2";
     
     var requestArray = NSMutableArray()
     
@@ -162,6 +162,51 @@ class GatheringService {
         }
     }
     
+    
+    //Function to upload Gathering event image
+    func uploadEventImageV2(image : UIImage?, eventId: Int32, loggedInUser: User , complete: @escaping(NSMutableDictionary)->Void)
+    {
+        guard image != nil else { return }
+        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let Auth_header    = ["token" : loggedInUser.token]
+        
+        
+        let returnedDict = NSMutableDictionary()
+        returnedDict["Error"] = false
+        returnedDict["ErrorMsg"] = ""
+        
+        Alamofire.upload(multipartFormData: { (MultipartFormData) in
+            MultipartFormData.append(imgData, withName: "uploadfile", fileName: "file.jpg", mimeType: "image/jpg")
+            MultipartFormData.append( "\(String(eventId))".data(using: .utf8)!, withName: "eventId")
+            
+        }, usingThreshold: UInt64.init(), to: "\(apiUrl)api/event/upload", method: .post, headers:Auth_header as! HTTPHeaders) { (result) in
+            switch result {
+            case .success(let upload,_,_):
+                
+                upload.uploadProgress(closure: { (progress) in
+                    print("Upload Progress: \(progress.fractionCompleted)")
+                })
+                
+                upload.responseJSON { response in
+                    
+                    print("Suceess:\(String(describing: response.result.value ))")
+                    let json = response.result.value as! NSDictionary
+                    
+                    returnedDict["data"] = json
+                    complete(returnedDict)
+                    
+                }
+            case .failure(let encodingError):
+                print(encodingError)
+                returnedDict["Error"] = true
+                returnedDict["ErrorMsg"] = encodingError.localizedDescription
+                complete(returnedDict)
+                
+            }
+            
+        }
+    }
+    
     func eventInfoTask(eventId: Int64, complete: @escaping(NSMutableDictionary)->Void) {
         let returnedDict = NSMutableDictionary()
         returnedDict["Error"] = false
@@ -216,4 +261,12 @@ class GatheringService {
         });
     }
     
+    func getPredictiveData(queryStr: String, token: String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(get_predictive_api)?\(queryStr)";
+        print("API Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
 }

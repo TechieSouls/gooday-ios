@@ -68,8 +68,12 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         
         //Setting Location Data.
         createGatheringDelegate.event.location = location.location;
-        createGatheringDelegate.event.latitude = String(location.latitudeDouble);
-        createGatheringDelegate.event.longitude = String(location.longitudeDouble);
+        if (location.latitudeDouble != nil) {
+            createGatheringDelegate.event.latitude = String(location.latitudeDouble);
+        }
+        if (location.longitudeDouble != nil) {
+            createGatheringDelegate.event.longitude = String(location.longitudeDouble);
+        }
         createGatheringDelegate.event.placeId = location.placeId;
         
         //Code to show hide Event Preview Button.

@@ -19,6 +19,8 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
     
     @IBOutlet weak var predictiveInfoIcon: UIImageView!
     
+    @IBOutlet weak var predictiveSwitch: UISwitch!
+    
     var createGatheringDelegate: CreateGatheringV2ViewController!
     
     var dateClickedProtocolDelegate: DateClickedProtocol!;
@@ -44,6 +46,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
 
         // Configure the view for the selected state
     }
+    
     
     @objc func predictiveInfoIconPressed() {
         
@@ -95,5 +98,35 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print(date, monthPosition)
         dateClickedProtocolDelegate.predictiveCalendarDatePressed(date: date);
+    }
+    
+    
+    @IBAction func predictiveSwitchChanged(_ sender: UISwitch) {
+        
+        print(predictiveSwitch.isOn)
+        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        
+        if (predictiveSwitch.isOn == true) {
+            
+            var queryStr = "userId=\(String(createGatheringDelegate.event.createdById))&startTime=\(String(createGatheringDelegate.event.startTime))&endTime=\(String(createGatheringDelegate.event.endTime))";
+            
+            
+            var friendIds = "";
+            for eventMem in createGatheringDelegate.event.eventMembers {
+                
+                if (eventMem.userId != nil) {
+                    friendIds = friendIds + "\(String(eventMem.userId)),";
+                }
+            }
+            if (friendIds != "") {
+                queryStr = queryStr + "&friends=\(friendIds.substring(toIndex: friendIds.count - 1))";
+            }
+            
+            GatheringService().getPredictiveData(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
+                
+            })
+        } else {
+            
+        }
     }
 }

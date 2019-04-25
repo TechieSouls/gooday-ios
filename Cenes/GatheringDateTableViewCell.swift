@@ -388,7 +388,7 @@ class GatheringDateTableViewCell: UITableViewCell,CreateGatheringViewControllerD
         let startTime = "\((firstDate?.millisecondsSince1970)!)"
         let endTime = "\((secondDate?.millisecondsSince1970)!)"
         
-        WebService().getPredictiveData(startTime: startTime, endTime: endTime, friends: friendsStr) { (returnedDict) in
+        /*WebService().getPredictiveData(startTime: startTime, endTime: endTime, friends: friendsStr) { (returnedDict) in
             print("Called data executed")
             
             self.gatheringView.stopAnimating()
@@ -411,7 +411,7 @@ class GatheringDateTableViewCell: UITableViewCell,CreateGatheringViewControllerD
                 }
             }
 
-        }
+        }*/
         
         
     }
