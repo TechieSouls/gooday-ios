@@ -26,6 +26,8 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
     var createGatheringDelegate: CreateGatheringV2ViewController!;
     
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -55,6 +57,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             startBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             createGatheringDelegate.timePickerView.isHidden = true;
 
+            if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
+                
+                createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                
+                createGatheringDelegate.createGathTableView.reloadData();
+            }
+            
         } else {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] = true
             startBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
@@ -62,6 +71,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             
             if (createGatheringDelegate.event.startTime != 0) {
                 createGatheringDelegate.timePicker.date = Date(milliseconds: Int(createGatheringDelegate.event.startTime));
+            }
+            
+            if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
+                
+                createGatheringDelegate.addBlurBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                createGatheringDelegate.createGathTableView.reloadData();
+
             }
         }
        
@@ -79,6 +95,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] = false
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             createGatheringDelegate.timePickerView.isHidden = true;
+            
+            if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
+                
+                createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                
+                createGatheringDelegate.createGathTableView.reloadData();
+            }
 
         } else {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] = true
@@ -90,7 +113,12 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 createGatheringDelegate.timePicker.date = Date(milliseconds: Int(createGatheringDelegate.event.endTime));
             }
             
-
+            if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
+                
+                createGatheringDelegate.addBlurBackgroundView(viewToBlur:   createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                
+                createGatheringDelegate.createGathTableView.reloadData();
+            }
         }
         
         //If user presses end bar when start bar is opened.
@@ -102,17 +130,34 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
     @objc func dateBarPressed() {
         
-        if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] == true) {
+        if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == false && createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == false) {
+
             
-            dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
-            createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = false
-            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
-        } else {
-            createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
-            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
-            dateBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
+            if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] == true) {
+                
+                dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
+                createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = false
+                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
+                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true;
+                
+                
+                createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:    createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                
+                
+                
+            } else {
+                createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
+                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
+                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = false;
+                dateBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
+                
+                if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true || createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
+                    
+                    createGatheringDelegate.addBlurBackgroundView(viewToBlur:   createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                }
+            }
+            createGatheringDelegate.createGathTableView.reloadData();
         }
-        createGatheringDelegate.createGathTableView.reloadData();
     }
     
     func timePickerDoneButtonPressed(timeInMillis: Int) {
@@ -126,16 +171,27 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //Setting start time in event
             createGatheringDelegate.event.startTime = Int64(timeInMillis);
             
-            //Incrementing End Date to next hour from current hour
-            let calendar = Calendar.current;
-            var components = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: timeInMillis));
-            components.hour = components.hour! + 1;
-            let endDate = calendar.date(from: components);
-            endTimeLabel.isHidden = false;
-            endTimeLabel.text = endDate!.hmma();
-            
-            //Setting end time in event
-            createGatheringDelegate.event.endTime = endDate!.millisecondsSince1970;
+            //If user has not set end time then we will set default time to 1 hour next to start time
+            if (createGatheringDelegate.event.endTime == 0) {
+                //Incrementing End Date to next hour from current hour
+                let calendar = Calendar.current;
+                var components = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: timeInMillis));
+                components.hour = components.hour! + 1;
+                let endDate = calendar.date(from: components);
+                endTimeLabel.isHidden = false;
+                endTimeLabel.text = endDate!.hmma();
+                
+                //Setting end time in event
+                createGatheringDelegate.event.endTime = endDate!.millisecondsSince1970;
+            } else {
+                if (createGatheringDelegate.event.endTime < createGatheringDelegate.event.startTime) {
+                    var dateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.endTime)));
+                    dateComponents.day = dateComponents.day! + 1;
+                    
+                    print(Calendar.current.date(from: dateComponents)!.millisecondsSince1970)
+                    createGatheringDelegate.event.endTime = Calendar.current.date(from: dateComponents)!.millisecondsSince1970;
+                }
+            }
             
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
@@ -143,14 +199,39 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             createGatheringDelegate.showHidePreviewGatheringButton();
         }
         
+        //If EndTime Bar was opened.
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
             endTimeLabel.isHidden = false;
             endTimeLabel.text = Date(milliseconds: timeInMillis).hmma();
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             
+            
+            var datePickerDateComponets = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: timeInMillis))
+            
+            var startTimeDateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.startTime)));
+            
+            //It means if start time hour is greater that selected time in date piccker.
+            //Like start time is 5pm and timepicker time is 1pm
+            //Then we will make end time the next day
+            let startTimeHour: Int = startTimeDateComponents.hour!;
+            let timePickerHour: Int = datePickerDateComponets.hour!;
+            
+            if (startTimeHour > timePickerHour) {
+                datePickerDateComponets.day = datePickerDateComponets.day! + 1;
+                
+                createGatheringDelegate.event.endTime = Calendar.current.date(from: datePickerDateComponets)!.millisecondsSince1970;
+            }
+            
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
             createGatheringDelegate.showHidePreviewGatheringButton();
+        }
+        
+        if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
+            
+            createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+            
+            createGatheringDelegate.createGathTableView.reloadData();
         }
     
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] =  false
@@ -165,6 +246,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
         }
         
+        if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
+            
+            createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+            
+            createGatheringDelegate.createGathTableView.reloadData();
+        }
+        
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] =  false
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] =  false
     }
@@ -173,6 +261,8 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         dateLabel.isHidden = false
         dateLabel.text = String(date.EMMMd()!);
         createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
+        
+        createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true
         
         dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = false

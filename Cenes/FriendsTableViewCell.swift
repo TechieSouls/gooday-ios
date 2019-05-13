@@ -141,7 +141,24 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
                 let nameSplitArr = eventMember.name.split(separator: " ");
                 nonCenesUserName = String(nameSplitArr[0])[0..<1].capitalized
                 if (nameSplitArr.count > 1) {
-                    nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
+                    
+                    let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+                    //If string contains valid characters, then goes in if loop
+                    if String(nameSplitArr[1])[0..<1].rangeOfCharacter(from: characterset.inverted) == nil {
+                        nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
+                    } else {
+                        //If string containts speacial character, then we will check if there is anymore strnig
+                        //available, If yes then we will chekc for third string.
+                        if (nameSplitArr.count > 2) {
+                            if String(nameSplitArr[2])[0..<1].rangeOfCharacter(from: characterset.inverted) == nil {
+                                nonCenesUserName.append(String(nameSplitArr[2])[0..<1].capitalized);
+                            } else {
+                                nonCenesUserName.append(String(nameSplitArr[2])[1..<2].capitalized);
+                            }
+                        } else {
+                            nonCenesUserName.append(String(nameSplitArr[1])[1..<2].capitalized);
+                        }
+                    }
                 }
                 cell.nonCenesUserNameLabel.text = nonCenesUserName;
             }
@@ -206,9 +223,17 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
         
         //After checking whether user is selected or not we will remove and add it in collection view cell.
         if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
-            self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList[userContactId] = self.friendViewControllerDelegate.userContactIdMapList[userContactId];
+            friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.append(self.friendViewControllerDelegate.inviteFriendsDto.userContactIdMapList[userContactId]!);
         } else {
-            self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: userContactId);
+            //self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: userContactId);
+            var count = 0;
+            for selectedFriend in friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList {
+                if (selectedFriend.userContactId == friendObj.userContactId) {
+                    friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.remove(at: count);
+                    break;
+                }
+                count = count + 1;
+            }
         }
         
         friendViewControllerDelegate.refreshNavigationBarItems();
@@ -235,7 +260,11 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
         let identifier = "InnerTableHeaderTableViewCell"
         let cell: InnerTableHeaderTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? InnerTableHeaderTableViewCell
         
-        cell.header.text = sectionTitle
+        if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
+            cell.header.text = sectionTitle
+        } else {
+            cell.header.text = "";
+        }
         
         return cell
     }

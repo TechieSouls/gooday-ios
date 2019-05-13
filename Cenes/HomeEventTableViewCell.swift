@@ -24,6 +24,7 @@ class HomeEventTableViewCell: UITableViewCell {
         
         self.time.textColor = unselectedColor;
         self.location.textColor = unselectedColor;
+        self.profileImage.setRounded();
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

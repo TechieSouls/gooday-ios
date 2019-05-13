@@ -10,10 +10,13 @@ import Foundation
 
 class HomeManager {
     
-    var dataObjectArray = [HomeDto]()
+    var dataObjectArray = [HomeData]()
 
-    func parseResults(resultArray: NSArray) -> [HomeDto]{
+    func parseResults(resultArray: NSArray) -> [HomeData]{
         
+        var months: [String] = [String]();
+        var dataObjectArray = [HomeData]()
+
         let dict = NSMutableDictionary()
         
         for i : Int in (0..<resultArray.count) {
@@ -24,7 +27,18 @@ class HomeManager {
             if dataType == "Event" {
                 let event = Event().loadEventData(eventDict: outerDict)
                 
-                let key = Util.getddMMMEEEE(timeStamp: event.startTime)
+                var key = Util.getddMMMEEEE(timeStamp: event.startTime)
+                let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+                let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
+                if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
+                    key = "Today";
+                }else if(Int(componentStart.day!+1) == components.day && components.month == componentStart.month && components.year == componentStart.year){
+                    key = "Tomorrow " + key;
+                }
+                
+                let newMonth = Date(milliseconds: Int(event.startTime)).MMMMsyyyy();
+                
+                //let currentMonth
                 
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
@@ -37,12 +51,12 @@ class HomeManager {
                             cenesEvent.sectionObjects = array
                         }
                     }
-                }else{
+                } else {
                     var array = [Event]()
                     array.append(event)
                     dict.setValue(array, forKey: key)
                     
-                    let cenesEvent: HomeDto = HomeDto();
+                    let cenesEvent: HomeData = HomeData();
                     cenesEvent.sectionName = key;
                     cenesEvent.sectionObjects = array;
                     dataObjectArray.append(cenesEvent)
@@ -51,12 +65,63 @@ class HomeManager {
             }
         }
         
+        for homedata in dataObjectArray {
+            
+            homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
+        }
+        
+        return dataObjectArray;
+    }
+    
+    
+    func parseInvitationResults(resultArray: NSArray) -> [HomeData]{
+        
+        let dict = NSMutableDictionary()
+        
+        for i : Int in (0..<resultArray.count) {
+            
+            let outerDict = resultArray[i] as! NSDictionary
+            
+            
+            let event = Event().loadEventData(eventDict: outerDict)
+            var key: String = Date(milliseconds: Int(event.startTime)).EMMMd()!;
+            let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+            let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
+            if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
+                key = "Today";
+            }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
+                key = "Tomorrow " + key;
+            }
+                if dict.value(forKey: key) != nil {
+                    //var array = dict.value(forKey: key) as! [CenesCalendarData]!
+                    var array = dict.value(forKey: key) as! [Event]
+                    array.append(event)
+                    dict.setValue(array, forKey: key)
+                    
+                    for cenesEvent in dataObjectArray {
+                        if (cenesEvent.sectionName == key) {
+                            cenesEvent.sectionObjects = array
+                        }
+                    }
+                } else {
+                    var array = [Event]()
+                    array.append(event)
+                    dict.setValue(array, forKey: key)
+                    
+                    let cenesEvent: HomeData = HomeData();
+                    cenesEvent.sectionName = key;
+                    cenesEvent.sectionObjects = array;
+                    dataObjectArray.append(cenesEvent)
+                    
+                }
+        }
+        
         return dataObjectArray;
     }
     
     func getHost(event: Event) -> EventMember {
         var host: EventMember? = EventMember();
-        if (event != nil && event.eventId != nil && event.eventMembers != nil) {
+        if (event.eventId != nil && event.eventMembers != nil) {
             for eventMem in (event.eventMembers)! {
                 if (eventMem.userId != nil && eventMem.userId == event.createdById) {
                     host = eventMem;
@@ -74,4 +139,20 @@ class HomeManager {
         }
         return host!;
     }
+    
+    func mergeCurrentAndFutureList(currentList: [HomeData], futureList: [HomeData]) -> [HomeData] {
+        
+        var currentListTemp = currentList;
+        
+        for futObj in futureList {
+            currentListTemp.append(futObj);
+        }
+        
+        for homedata in currentListTemp {
+            
+            homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
+        }
+        return currentListTemp;
+    }
+    
 }

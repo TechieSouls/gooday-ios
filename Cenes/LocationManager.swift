@@ -11,7 +11,7 @@ import CoreLocation
 
 class LocationManager {
     
-    func getDistanceInKilometres(currentLatitude: CLLocationDegrees, currentLongitude: CLLocationDegrees, destLatitude: CLLocationDegrees, destLongitude: CLLocationDegrees) -> Int{
+    func getDistanceInKilometres(currentLatitude: CLLocationDegrees, currentLongitude: CLLocationDegrees, destLatitude: CLLocationDegrees, destLongitude: CLLocationDegrees) -> String{
         //My location
         let myLocation = CLLocation(latitude: currentLatitude, longitude: currentLongitude)
         
@@ -20,9 +20,9 @@ class LocationManager {
         let myBuddysLocation = CLLocation(latitude: destLatitude, longitude: destLongitude)
         
         //Measuring my distance to my buddy's (in km)
-        let distance = myLocation.distance(from: myBuddysLocation) / 1000
+        let distance = String(format:"%.1f", Double(myLocation.distance(from: myBuddysLocation) / 1000))
         print("Distance", distance)
-        return Int(distance);
+        return distance;
     }
     
     func parseNearByLocationResults(nearByResults: NSArray) -> [Location] {

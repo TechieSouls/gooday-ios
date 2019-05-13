@@ -23,7 +23,7 @@ extension UITabBarController {
             return
         }
         
-        let roundDotView : UIView = UIView(frame: CGRect(self.view.frame.width - ((self.view.frame.width/3)/2), 5, 10, 10))
+        let roundDotView : UIView = UIView(frame: CGRect(self.view.frame.width - ((self.view.frame.width/4) + ((self.view.frame.width/4)/2)), 5, 10, 10))
         roundDotView.layer.cornerRadius = roundDotView.bounds.size.height/2
         roundDotView.backgroundColor = UIColor.red
         roundDotView.tag = 1001

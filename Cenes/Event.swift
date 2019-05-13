@@ -51,7 +51,7 @@ class Event {
         event.startTime = eventDict.value(forKey: "startTime") as! Int64;
         event.endTime = eventDict.value(forKey: "endTime") as! Int64;
         event.location = eventDict.value(forKey: "location") as? String;
-        event.source = eventDict.value(forKey: "source") as! String;
+        event.source = eventDict.value(forKey: "source") as? String ?? "Cenes";
         event.latitude = eventDict.value(forKey: "latitude") as? String;
         event.longitude = eventDict.value(forKey: "longitude") as? String;
         event.scheduleAs = eventDict.value(forKey: "scheduleAs") as? String;
@@ -119,5 +119,54 @@ class Event {
         
         return eventMember;
     }
+    
+    func getEventHostFromMembers() -> EventMember {
+        
+        var host: EventMember = EventMember();
+        for eventMem in self.eventMembers {
+            
+            if (eventMem.userId != nil && eventMem.userId == self.createdById) {
+                host = eventMem;
+                return host;
+            }
+        }
+        return host;
+    }
+    
+    func getEventMembersWithoutHost() -> [EventMember] {
+        
+        var eventMembersWithoutHost: [EventMember] = [EventMember]();
+        for eventMem in self.eventMembers {
+            
+            if (eventMem.userId != nil && eventMem.userId != self.createdById) {
+                eventMembersWithoutHost.append(eventMem);
+            }
+        }
+        return eventMembersWithoutHost;
+    }
+    
+    func getAcceptedEventMembersWithoutHost(loggedInUserId: Int32) -> [EventMember] {
+        
+        var acceptedMembers = [EventMember]();
+        
+        //Addding all event members without logged in user
+        for eventMem in self.eventMembers {
+            if (eventMem.userId != nil && eventMem.userId != self.createdById && eventMem.userId != loggedInUserId && eventMem.status == "Going") {
+                acceptedMembers.append(eventMem);
+            }
+        }
+        
+        //Adding Logged in event member at last
+        for eventMem in self.eventMembers {
+            if (eventMem.userId != nil && eventMem.userId != self.createdById && eventMem.userId == loggedInUserId && eventMem.status == "Going") {
+                acceptedMembers.append(eventMem);
+            }
+        }
+        
+        
+        
+        return acceptedMembers;
+    }
+    
     
 }

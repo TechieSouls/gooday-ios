@@ -12,19 +12,29 @@ class SelectedFriendsCollectionTableViewCell: UITableViewCell {
 
     @IBOutlet weak var selectedFriendsColView: UICollectionView!
     
+    @IBOutlet weak var addMoreFriendsView: UIView!
+    
     var createGatheringDelegate: CreateGatheringV2ViewController!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
+        var viewTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(addMoreFriendsPressed));
+        addMoreFriendsView.addGestureRecognizer(viewTapGesture);
+        
         selectedFriendsColView.register(UINib(nibName: "FriendCollectionViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "FriendCollectionViewCell")
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    @objc func addMoreFriendsPressed() {
+        createGatheringDelegate.openGuestListViewController();
     }
 }
 

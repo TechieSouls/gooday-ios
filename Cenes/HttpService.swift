@@ -12,9 +12,9 @@ import Alamofire
 class HttpService {
     
     func getMethod(url: String, token: String,complete: @escaping(NSDictionary)->Void) {
-        
+    
         let Auth_header = [ "token" : token ]
-
+        
         Alamofire.request("\(url)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
             
             var returnDict = NSDictionary();
@@ -54,6 +54,47 @@ class HttpService {
             complete(returnDict)
         }
     }
+    
+    func postMethodWithoutToken(url: String, postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        
+        Alamofire.request("\(url)", method: .post , parameters: postData, encoding: JSONEncoding.default).validate(statusCode: 200..<300).responseJSON { (response ) in
+            
+            var returnDict = NSDictionary();
+            
+            switch response.result {
+            case .success:
+                returnDict = response.result.value as! NSDictionary;
+            case .failure(let error):
+                print(error.localizedDescription)
+                var responseDict: [String: Any] = [:]
+                responseDict["success"] = false;
+                responseDict["message"] = error.localizedDescription;
+                returnDict = responseDict as NSDictionary;
+            }
+            complete(returnDict)
+        }
+    }
+    
+    func getMethodWithoutToken(url: String,complete: @escaping(NSDictionary)->Void) {
+                
+        Alamofire.request("\(url)", method: .get , parameters: nil, encoding: JSONEncoding.default).validate(statusCode: 200..<300).responseJSON { (response ) in
+            
+            var returnDict = NSDictionary();
+            
+            switch response.result {
+            case .success:
+                returnDict = response.result.value as! NSDictionary;
+            case .failure(let error):
+                print(error.localizedDescription)
+                var responseDict: [String: Any] = [:]
+                responseDict["success"] = false;
+                responseDict["message"] = error.localizedDescription;
+                returnDict = responseDict as NSDictionary;
+            }
+            complete(returnDict)
+        }
+    }
+    
     
     func postMultipartImage(url: String, image: UIImage, recurringEventId: Int32, token: String, complete: @escaping(NSDictionary)->Void) {
         

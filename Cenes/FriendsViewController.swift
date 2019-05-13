@@ -11,15 +11,18 @@ import UIKit
 protocol CollectionFriendsProtocol {
     func collectionFriendsList(selectedFriendHolder: [EventMember])
 }
-
+protocol CreateGatheringProtocol {
+    func friendsDonePressed(eventMembers: [EventMember]);
+}
 class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
 
     @IBOutlet weak var friendTableView: UITableView!;
     
-    var userContactIdMapList: [Int: EventMember] = [:];
     var collectionFriendsDelegate: CollectionFriendsProtocol?;
     var loggedInUser: User!;
     var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
+    var isFirstTime: Bool = true;
+    var createGatheringProtocolDelegate: CreateGatheringProtocol!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +38,12 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
         
-        self.getFriendsWithName(nameStartsWith: "")
+        if (self.inviteFriendsDto.allEventMembers.count == 0) {
+            self.getFriendsWithName(nameStartsWith: "")
+        } else {
+            self.friendTableView.reloadData()
+            isFirstTime = false
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,13 +123,22 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
                 self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
                 
                 for userContact in self.inviteFriendsDto.allEventMembers {
-                    self.userContactIdMapList[Int(userContact.userContactId)] = userContact;
+                    self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
                 }
                 
+                //Setting list to All Contacts, whether they are cenes or not.
                 var friendListDtos = self.inviteFriendsDto.allContacts;
                 friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.allEventMembers);
                 self.inviteFriendsDto.allContacts = friendListDtos;
+                
+                //Setting list to cenes contacts, that is, those are cenes members.a
                 self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.allEventMembers);
+                
+                //Let check, if user has cenes contacts then we will show cenes contacts first,
+                //Otherwise all contacts.
+                if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                    self.inviteFriendsDto.isAllContactsView = false;
+                }
                 
                 for sectionObj in self.inviteFriendsDto.allContacts {
                     self.inviteFriendsDto.alphabetStrip.append(sectionObj.sectionName);
@@ -141,9 +158,9 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
             self.inviteFriendsDto.filteredEventMembers = EventMember().filtered(eventMembers: self.inviteFriendsDto.allEventMembers, predicate: str);
         }
         
-        self.userContactIdMapList = [Int: EventMember]();
+        self.inviteFriendsDto.userContactIdMapList = [Int: EventMember]();
         for userContact in self.inviteFriendsDto.filteredEventMembers {
-            self.userContactIdMapList[Int(userContact.userContactId)] = userContact;
+            self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
         }
         
         var friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
@@ -162,23 +179,35 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
     @objc func selectFriendsDone(_ sender: UIButton) {
         
         var userContacts: [EventMember] = [];
-        for (_, value) in self.inviteFriendsDto.selectedFriendCollectionViewList {
-            userContacts.append(value);
+        for selectedFriend in self.inviteFriendsDto.selectedFriendCollectionViewList {
+            userContacts.append(selectedFriend);
         }
         
         //if self.collectionFriendsProtocol != nil {
         self.collectionFriendsDelegate?.collectionFriendsList(selectedFriendHolder: userContacts);
         //}
         
-        let viewController: CreateGatheringV2ViewController = storyboard?.instantiateViewController(withIdentifier: "CreateGatheringV2ViewController") as! CreateGatheringV2ViewController;
-        
-        var eventMembers = [EventMember]();
-        for (_, eventMem) in inviteFriendsDto.selectedFriendCollectionViewList {
-            eventMembers.append(eventMem);
+        if (isFirstTime == true) {
+            let viewController: CreateGatheringV2ViewController = storyboard?.instantiateViewController(withIdentifier: "CreateGatheringV2ViewController") as! CreateGatheringV2ViewController;
+            
+            var eventMembers = [EventMember]();
+            for eventMem in self.inviteFriendsDto.selectedFriendCollectionViewList {
+                eventMembers.append(eventMem);
+            }
+            viewController.event.eventMembers = eventMembers;
+            viewController.inviteFriendsDto = self.inviteFriendsDto;
+            //self.navigationController?.popViewController(animated: true)
+            self.navigationController?.pushViewController(viewController, animated: true);
+        } else {
+            var eventMembers = [EventMember]();
+            for eventMem in self.inviteFriendsDto.selectedFriendCollectionViewList {
+                eventMembers.append(eventMem);
+            }
+            createGatheringProtocolDelegate.friendsDonePressed(eventMembers: eventMembers);
+            
+            self.navigationController?.popViewController(animated: false);
         }
-        viewController.event.eventMembers = eventMembers;
-        //self.navigationController?.popViewController(animated: true)
-        self.navigationController?.pushViewController(viewController, animated: true);
+        
     }
     
     @objc func selectFriendsCancel(_ sender: UIButton) {

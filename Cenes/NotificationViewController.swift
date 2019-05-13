@@ -71,6 +71,8 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
 
         self.setUpNavBar();
         self.navigationController?.navigationBar.shouldRemoveShadow(true)
+        tabBarController?.tabBar.isHidden = false;
+
         /*if self.loggedInUser.photo != nil {
             let webServ = WebService()
             webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in
@@ -122,9 +124,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
                     self.notNotificationLabel.isHidden = false;
                 }
             } else {
-                let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true)
+                self.errorAlert(message: response["message"] as! String)
             }
         })
     }
@@ -161,9 +161,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
                     
                 }
             } else {
-                let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true)
+                self.errorAlert(message: response["message"] as! String)
             }
             
         });

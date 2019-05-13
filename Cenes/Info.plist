@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Deploy 1.8.0</string>
+	<string>Deploy 2.0.0</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.8.0</string>
+	<string>2.0.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -73,12 +73,12 @@
 	<string>Cenes request to use camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Cenes would like to acess your contacts</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Cenes would need access the location for accurate results</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Cenes would need access the location to notify on selected regions</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Cenes would need access the location to notify on selected regions</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Cenes would need access the location for accurate results</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app will use microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>

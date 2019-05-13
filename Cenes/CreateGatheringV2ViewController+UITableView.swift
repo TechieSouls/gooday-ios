@@ -39,6 +39,7 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
             if (createGathDto.createGatheringRowsVisibility[CreateGatheringRows.friendsCollectionRow] == true) {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SelectedFriendsCollectionTableViewCell", for: indexPath) as! SelectedFriendsCollectionTableViewCell;
                 cell.createGatheringDelegate = self;
+                cell.selectedFriendsColView.reloadData();
                 return cell;
             }
             case 1:
@@ -62,6 +63,7 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
             
                     cell.createGatheringDelegate = self;
                     cell.dateClickedProtocolDelegate = datePanelTableViewCellDelegate;
+                    predictiveCalendarViewTableViewCellDelegate = cell;
                     return cell;
                 }
             case 4:

@@ -119,7 +119,7 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
          self.searchBar.resignFirstResponder()
         startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
         
-        webservice.getLocationLatLong(id: location.placeId) { [weak self] (jsonDict) in
+        /*webservice.getLocationLatLong(id: location.placeId) { [weak self] (jsonDict) in
             self?.stopAnimating()
             
             if jsonDict["Error"] as? Bool == true {
@@ -153,7 +153,7 @@ class LocationTableViewController: UITableViewController ,NVActivityIndicatorVie
                     self?.navigationController?.popViewController(animated: true)
                 }
             }
-        }
+        }*/
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {

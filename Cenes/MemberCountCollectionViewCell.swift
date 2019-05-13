@@ -16,17 +16,18 @@ class MemberCountCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
         
-        let gradient = CAGradientLayer()
-        gradient.frame = self.memberCountsLabel.bounds
-        gradient.colors = [UIColor(red: 238/255, green: 155/255, blue: 38/255, alpha: 1).cgColor,UIColor(red: 232/255, green: 125/255, blue: 122/255, alpha: 1).cgColor]
-        gradient.startPoint = CGPoint(x: 0, y: self.membersCountView.bounds.height)
-        gradient.startPoint = CGPoint(x: self.membersCountView.bounds.width, y: self.membersCountView.bounds.height)
+        self.membersCountView.roundedView()
+        let layer = UIView(frame: CGRect(x: membersCountView.bounds.origin.x, y: membersCountView.bounds.origin.y, width: 45, height: 45))
+        let gradient = CAGradientLayer();
+        gradient.frame = CGRect(x: 0, y: 0, width: 45, height: 45);
+        gradient.colors = [UIColor(red:0.93, green:0.61, blue:0.15, alpha:1).cgColor, UIColor(red:0.91, green:0.49, blue:0.48, alpha:1).cgColor]
+        gradient.locations = [0, 1]
+        gradient.startPoint = CGPoint(x: 0.5, y: 0)
+        gradient.endPoint = CGPoint(x: 0.5, y: 1)
+        layer.layer.addSublayer(gradient)
+        self.membersCountView.addSubview(layer)
+        self.membersCountView.addSubview(memberCountsLabel)
 
-        //gradient.locations = [0.0,1.0]
-        //gradient.startPoint = CGPoint(x: 0, y: 0.5)
-        //gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-        self.membersCountView.layer.addSublayer(gradient)
-        self.membersCountView.roundedView();
     }
 
 }

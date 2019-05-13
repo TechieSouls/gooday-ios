@@ -16,14 +16,26 @@ import FacebookLogin
 class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate  {
 
     
+    @IBOutlet weak var topRoundedView: UIView!
     @IBOutlet weak var textFieldName: UITextField!
     
     @IBOutlet weak var textFieldEmail: UITextField!
     
     @IBOutlet weak var textFieldPassword: UITextField!
     
-    @IBOutlet weak var chooseProfilePhoto: UIImageView!
+    @IBOutlet weak var textFieldConfirmPassword: UITextField!
     
+    
+    @IBOutlet weak var loginButton: UIButton!
+    
+    
+    @IBOutlet weak var chooseProfilePhoto: UIImageView!
+    @IBOutlet weak var backButton: UIImageView!
+
+    @IBOutlet weak var signupButton: UIButton!
+    
+    
+    var user = User();
     var phoneNumber = "";
     let picController = UIImagePickerController()
     let userService = UserService();
@@ -39,20 +51,41 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         
         let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
 
-        chooseProfilePhoto.isUserInteractionEnabled = true;
-        chooseProfilePhoto.addGestureRecognizer(imageTapGesture);
+        //chooseProfilePhoto.isUserInteractionEnabled = true;
+        //chooseProfilePhoto.addGestureRecognizer(imageTapGesture);
         // Do any additional setup after loading the view.
         
         /*fbLoginBtn.readPermissions = ["public_profile", "email", "user_friends","user_events", "user_mobile_phone"];
         fbLoginBtn.delegate = self*/
+        topRoundedView.roundedView();
         
-        textFieldName.delegate = self;
-        textFieldEmail.delegate = self;
-        textFieldPassword.delegate = self;
+        let emailGradient = CAGradientLayer()
+        emailGradient.frame = CGRect.init(0, textFieldEmail.frame.height-1, textFieldEmail.frame.width, 1)
+        emailGradient.colors = [UIColor.white.cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
+        emailGradient.startPoint = CGPoint(x: 0, y: 1);
+        emailGradient.endPoint = CGPoint(x: 1, y: 1);
         
-        textFieldName.setBottomBorder();
-        textFieldEmail.setBottomBorder();
-        textFieldPassword.setBottomBorder();
+        textFieldEmail.layer.insertSublayer(emailGradient, at: 0);
+        
+        let passwordGradient = CAGradientLayer()
+        passwordGradient.frame = CGRect.init(0, textFieldPassword.frame.height-1, textFieldPassword.frame.width, 1)
+        passwordGradient.colors = [UIColor.white.cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
+        passwordGradient.startPoint = CGPoint(x: 0, y: 1);
+        passwordGradient.endPoint = CGPoint(x: 1, y: 1);
+        
+        textFieldPassword.layer.insertSublayer(passwordGradient, at: 0);
+        
+        
+        let confirmGradient = CAGradientLayer()
+        confirmGradient.frame = CGRect.init(0, textFieldConfirmPassword.frame.height-1, textFieldConfirmPassword.frame.width, 1)
+        confirmGradient.colors = [UIColor.white.cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
+        confirmGradient.startPoint = CGPoint(x: 0, y: 1);
+        confirmGradient.endPoint = CGPoint(x: 1, y: 1);
+        
+        textFieldConfirmPassword.layer.insertSublayer(confirmGradient, at: 0);
+        
+        let backTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed));
+        backButton.addGestureRecognizer(backTapGesture);
     }
 
     override func didReceiveMemoryWarning() {
@@ -71,6 +104,28 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     }
     */
 
+    
+    
+    @IBAction func signupButtonPressed(_ sender: Any) {
+        
+        if (user.email != nil) {
+            var postData = [String: Any]();
+            postData["email"] = user.email!;
+            postData["password"] = user.password!
+            
+            /*UserService().emailSignupRequest(postData: postData, complete: {(response) in
+             print(response);
+             });*/
+            
+            let viewController = storyboard?.instantiateViewController(withIdentifier: "SignupSuccessStep2ViewController") as! SignupSuccessStep2ViewController;
+            self.navigationController?.pushViewController(viewController, animated: true);
+        }
+    }
+    @IBAction func loginButtinPressed(_ sender: Any) {
+        let sininViewController = storyboard?.instantiateViewController(withIdentifier: "SignInViewController") as! SignInViewController
+        self.navigationController?.pushViewController(sininViewController, animated: true)
+        
+    }
     @IBAction func onClickNextStepButton(_ sender: Any) {
         if (isFormValid()) {
             signupUser();
@@ -124,6 +179,10 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             }
         }
         
+    }
+    
+    @objc func backButtonPressed() {
+        self.navigationController?.popViewController(animated: true);
     }
 
     @objc func imageTapped() {
@@ -283,31 +342,62 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        
-        textField.backgroundColor = UIColor.clear
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        textField.resignFirstResponder()
-    }
-    
-}
+        if (textField == textFieldEmail) {
+            
+            if (textFieldEmail.text != "") {
+                
+                user.email = textFieldEmail.text!;
+                
+                let queryStr = "email=\(textFieldEmail.text!)";
+                UserService().findUserByEmail(queryStr: queryStr, token: "", complete: {(response) in
+                    
+                    let success = response.value(forKey: "success") as! Bool;
+                    if (success == false) {
+                        //self.showAlert(title: "Already Exists", message: "");
+                        
+                        let escapedString = self.textFieldEmail.text!.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
 
-extension UITextField {
-    func setBottomBorder() {
-        self.borderStyle = .none
-        self.layer.backgroundColor = UIColor.white.cgColor
-        
-        self.layer.masksToBounds = false
-        self.layer.shadowColor = UIColor.gray.cgColor
-        self.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        self.layer.shadowOpacity = 1.0
-        self.layer.shadowRadius = 0.0
+                        var message = "We found an account for";
+                        message = message + "\n\(escapedString!). Would you";
+                        message = message + "\nlike to login instead?";
+                        
+                        let alertController = UIAlertController(title: "This Account Already Exists", message: message, preferredStyle: UIAlertControllerStyle.alert);
+                        
+                        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (UIAlertAction) in
+                            print ("Cancel")
+                        }
+                        let loginAction = UIAlertAction(title: "Login", style: .default) { (UIAlertAction) in
+                            print ("Login")
+                        }
+                        alertController.addAction(cancelAction)
+                        alertController.addAction(loginAction)
+                        self.present(alertController, animated: true, completion: nil)
+                        
+                        
+                    } else {
+                        self.textFieldPassword.becomeFirstResponder();
+                    }
+                    
+                });
+            } else {
+                textFieldPassword.becomeFirstResponder();
+            }
+            
+        } else if (textField == textFieldPassword) {
+            textFieldConfirmPassword.becomeFirstResponder();
+        } else if (textField == textFieldConfirmPassword) {
+            
+            if (textFieldPassword.text == "") {
+                showAlert(title: "Password Empty", message: "");
+            } else if (textFieldPassword.text != textFieldConfirmPassword.text) {
+                showAlert(title: "Password Don't Match", message: "");
+            } else {
+                
+                user.password = textFieldPassword.text!;
+                textFieldConfirmPassword.resignFirstResponder()
+            }
+        }
+        return true;
     }
+    
 }

@@ -217,8 +217,38 @@ class GatheringManager {
         }
         return host!;
     }
-}
-
-class cellHeight{
     
+    func getCurrentMonthDatesWithColor(selectedDate: Date) -> [String: UIColor] {
+    
+        var currentMonthDates:[String: UIColor] = [String: UIColor]();
+    
+        let dateFormatter = DateFormatter();
+        dateFormatter.dateFormat = "yyyy/MM/dd";
+        
+        let components = Calendar.current.dateComponents([.year, .month], from: selectedDate);
+        let startDateOfMonth = Calendar.current.date(from: components);
+        
+        var endDateComponents = DateComponents();
+        endDateComponents.month = 1;
+        endDateComponents.day = -1;
+        let endDateOfMonth = Calendar.current.date(byAdding: endDateComponents, to: startDateOfMonth!);
+        
+        var startIndex: Int = Calendar.current.dateComponents(in: TimeZone.current, from: startDateOfMonth!).day!
+        
+        var endIndex: Int = Calendar.current.dateComponents(in: TimeZone.current, from: endDateOfMonth!).day!
+
+        
+        var variabkeDate = startDateOfMonth;
+        while startIndex <= endIndex {
+            
+            currentMonthDates[dateFormatter.string(from: variabkeDate!)] = CreateGatheringPredictiveColors.GRAYCOLOR
+
+            var endDateComponents = DateComponents();
+            endDateComponents.day = 1;
+            variabkeDate = Calendar.current.date(byAdding: endDateComponents, to: variabkeDate!);
+            startIndex = startIndex+1
+        }
+        
+        return currentMonthDates;
+    }
 }

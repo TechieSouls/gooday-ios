@@ -527,7 +527,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         let cell: GatheringCardTableViewCell! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringCardTableViewCell
         
         cell.title.text = event.title
-        cell.startTime.text = Util.hhmma(timeStamp: event.startTime);
+        //cell.startTime.text = Util.hhmma(timeStamp: event.startTime);
         let eventMembers: [EventMember] = event.eventMembers;
         var memebrId : NSNumber;
         

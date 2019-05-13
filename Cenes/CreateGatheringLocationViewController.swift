@@ -18,6 +18,9 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     
     @IBOutlet weak var locationTableView: UITableView!
     
+    @IBOutlet weak var customLocationButton: UIButton!
+    
+    
     var selectedLocationProtocolDelegate: SelectedLocationProtocol!;
     
     var locationManager: CLLocationManager!
@@ -28,10 +31,27 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     var locationDtos = [LocationDto]();
     var nearByLocations = [Location]();
     var worldWideLocations = [Location]();
+    var typedText: String = "";
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = themeColor;
+        locationTableView.backgroundColor = themeColor;
+        
+        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, view.frame.height - 60, 220, 33);
+
+        customLocationButton.layer.cornerRadius = 15
+        customLocationButton.backgroundColor = UIColor.white
+        customLocationButton.layer.borderWidth = 1.5
+        customLocationButton.layer.borderColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:1).cgColor
+        customLocationButton.layer.shadowOffset = CGSize(width: 2, height: 2)
+        customLocationButton.layer.shadowColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:0.5).cgColor
+        customLocationButton.layer.shadowOpacity = 1
+        customLocationButton.layer.shadowRadius = 2
+        //customLocationButton.addSubview(layer)
+        
+        locationTableView.isHidden = true;
         locationTableView.register(UINib(nibName: "LocationItemTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "LocationItemTableViewCell")
         
         locationTableView.register(UINib(nibName: "LocationItemsHeaderViewCell", bundle: Bundle.main), forCellReuseIdentifier: "LocationItemsHeaderViewCell")
@@ -51,11 +71,36 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                 currentLongitude = (locationManager.location?.coordinate.longitude)!;
             }
         }
-        
-        
         setupNaigationBar();
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+    }
+
+    @objc func keyboardWillAppear(notification: NSNotification){
+        // Do something here
+        print("Opened");
+        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, customLocationButton.frame.origin.y - 210, customLocationButton.frame.width, customLocationButton.frame.height);
+        
+        //customLocationButton.titleLabel?.text = "Create Custom Location [CL]"
+    }
+    
+    @objc func keyboardWillDisappear(notification: NSNotification){
+        // Do something here
+        print("Closed");
+        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, customLocationButton.frame.origin.y + 210, customLocationButton.frame.width, customLocationButton.frame.height);
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         userLocation = locations.last! as CLLocation
         print(userLocation.coordinate.latitude, userLocation.coordinate.longitude)
@@ -111,6 +156,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         let searchBar = UISearchBar()
         searchBar.sizeToFit()
         searchBar.delegate = self;
+        searchBar.placeholder = "Search Location"
+        searchBar.layer.borderWidth = 0
         // the UIViewController comes with a navigationItem property
         // this will automatically be initialized for you if when the
         // view controller is added to a navigation controller's stack
@@ -119,13 +166,15 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         
         
         
-        /*let backButton = UIButton();
+        let backButton = UIButton();
+        backButton.frame = CGRect(0, 0, 40, 40);
         backButton.setImage(UIImage.init(named: "abondan_event_icon"), for: .normal);
-        backButton.addTarget(self, action:#selector(backButtonPressed), for: UIControlEvents.touchUpInside)
+        backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControlEvents.touchUpInside)
         
         let backButtonBarButton = UIBarButtonItem.init(customView: backButton)
         
-        navigationItem.leftBarButtonItem = backButtonBarButton;*/
+        navigationItem.leftBarButtonItem = backButtonBarButton;
+        
 
     }
 
@@ -145,7 +194,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                     self.locationTableView.reloadData();
                     
                     var count = 0;
-                    var finalwwlocList = [Location]();
+                    /*var finalwwlocList = [Location]();
                     for wwloc in self.worldWideLocations {
                         finalwwlocList.append(wwloc);
                         if (count == 9) {
@@ -158,7 +207,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         locationDto.sectionName = "All";
                         locationDto.sectionObjects = finalwwlocList;
                         self.locationDtos.append(locationDto);
-                    }
+                    }*/
                     
                     for nbloc in self.nearByLocations {
                         nbloc.kilometers = "\(String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: nbloc.latitudeDouble, destLongitude: nbloc.longitudeDouble)))";
@@ -170,13 +219,13 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                     for nbloc in self.nearByLocations {
                         
                         finalnbList.append(nbloc);
-                        if (count == 9) {
+                        /*if (count == 9) {
                             break;
                         }
-                        count = count + 1;
+                        count = count + 1;*/
                     }
                     
-                    if (finalnbList.count > 1) {
+                    if (finalnbList.count > 0) {
                         
                         for i in 0..<(finalnbList.count - 1) {
                             
@@ -185,8 +234,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                                 let currentLoc = finalnbList[i];
                                 let nextLoc = finalnbList[i+1];
                                 
-                                let currentKil: Int = Int(currentLoc.kilometers)!;
-                                let nextKil: Int = Int(nextLoc.kilometers)!;
+                                let currentKil: Double = Double(currentLoc.kilometers!) as! Double;
+                                let nextKil: Double = Double(nextLoc.kilometers!) as! Double;
                                 
                                 if (currentKil > nextKil) {
                                     finalnbList[i] = nextLoc;
@@ -210,7 +259,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     }
     
     func loadWorldWideLocations(searchText: String) -> Void {
-        let url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&input=\(searchText)";
+        /*let url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&input=\(searchText)";
         
         print(url);
         HttpService().getMethod(url: url, token: "", complete: {(response) in
@@ -220,10 +269,10 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                     let locationsNSArray = response.value(forKey: "predictions") as! NSArray;
                     self.worldWideLocations = LocationManager().parseWorldWideLocationResults(worldwideResults: locationsNSArray);
                 }
-            }
+            }*/
             self.loadNearbyLocations(searchText: searchText);
 
-        });
+        //});
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -240,15 +289,28 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print(searchText);
+        typedText = searchText;
         locationDtos = [LocationDto]();
         if (searchText == "") {
-            self.locationTableView.reloadData();
+            locationTableView.isHidden = true
         } else {
+            locationTableView.isHidden = false
             loadWorldWideLocations(searchText: searchText);
         }
     }
     
     @objc func backButtonPressed() {
-        self.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: false)
+        
     }
+    
+    @IBAction func customLocationPressed(_ sender: Any) {
+        
+        let nearByLocObje = Location();
+        nearByLocObje.location = typedText;
+        self.selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
+        self.navigationController?.popViewController(animated: true);
+        
+    }
+    
 }

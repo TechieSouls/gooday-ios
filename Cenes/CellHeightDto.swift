@@ -14,7 +14,7 @@ class InviteFriendsCellHeight {
 }
 
 class CreateGatheringCellHeight {
-    static let friendCollectionViewHeight : CGFloat = 90;
+    static let friendCollectionViewHeight : CGFloat = 91;
     static let datePanelHeight : CGFloat = 128;
     static let gathInfoHeight : CGFloat = 128;
     static let calendarPanelHeight: CGFloat = 470;

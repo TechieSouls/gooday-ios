@@ -11,7 +11,7 @@ import Alamofire
 
 class GatheringService {
     
-    let get_gatherings_by_status: String = "api/user/gatherings/"; //user_id, status
+    let get_gatherings_by_status: String = "api/user/gatherings/v2"; //user_id, status
     let get_gathering_data: String = "api/event/"; //eventId
     let get_delete_event_api: String = "/api/event/delete";//event_id
     let get_update_invitation_api: String = "/api/event/memberStatusUpdate";
@@ -20,41 +20,13 @@ class GatheringService {
     var requestArray = NSMutableArray()
     
     //Function to get User Gatherings
-    func getGatheringEventsByStatus(queryStr: String, token: String, complete: @escaping(NSMutableDictionary)->Void){
-        print( "Inside Getting Gathering data")
-        // Both calls are equivalent
+    func getGatheringEventsByStatus(queryStr: String, token: String, complete: @escaping(NSDictionary)->Void){
+        let url : String = "\(apiUrl)\(get_gatherings_by_status)?\(queryStr)";
+        print(url);
         
-        let returnedDict = NSMutableDictionary()
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        
-        
-        let Auth_header    = [ "token" : token ]
-        
-        Alamofire.request("\(apiUrl)api/user/gatherings?\(queryStr)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
-            
-            var json : NSDictionary!
-            switch response.result {
-            case .success:
-                print( "get gathering Successful")
-                
-                json = response.result.value as! NSDictionary
-                
-                let json = response.result.value as! NSDictionary
-                if json["errorCode"] as? Int == 0 {
-                    returnedDict["data"] = json["data"]
-               }else {
-                    returnedDict["Error"] = true
-                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
-                }
-                print(json)
-            case .failure(let error):
-                print(error)
-                returnedDict["Error"] = true
-                returnedDict["ErrorMsg"] = error.localizedDescription
-            }
-            complete(returnedDict)
-        }
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response);
+        })
     }
     
     

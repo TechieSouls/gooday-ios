@@ -100,7 +100,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
             let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newViewController = storyboard!.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController
             newViewController.event = event;
-            self.navigationController?.present(newViewController, animated: true, completion: nil)
+            self.navigationController?.pushViewController(newViewController, animated: true)
         }
     }
     

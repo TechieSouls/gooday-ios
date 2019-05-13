@@ -12,4 +12,15 @@ extension UIButton {
     func btnCircledCorners() -> Void {
         self.layer.cornerRadius = 20;
     }
+    
+    func selectedBottomBorderBtn() -> Void {
+        var lineView = UIView(frame: CGRect(0, self.frame.size.height-2, self.frame.size.width, 2))
+        lineView.backgroundColor = UIColor.orange;
+        self.addSubview(lineView)
+    }
+    func unselectedBottomBorderBtn() -> Void {
+        var lineView = UIView(frame: CGRect(0, self.frame.size.height-2, self.frame.size.width, 2))
+        lineView.backgroundColor = themeColor;
+        self.addSubview(lineView)
+    }
 }

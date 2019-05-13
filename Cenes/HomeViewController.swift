@@ -31,7 +31,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
     var userImagesInProgress = [String:String]()
     var holidaysData = NSMutableDictionary()
     var objectArray = [CalendarObjects]()
-    var dataObjectArray = [HomeDto]()
+    var dataObjectArray = [HomeData]()
     var calendarDataArray = [CalendarData]()
     var sectionArray:[Int]?
     var rowsInSecionArray:[Int]?
@@ -265,7 +265,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                         self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                         
                     }else{
-                        self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                       // self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
                         self.tableView.reloadData()
                         if self.dataObjectArray.count > 0 {
                             self.tableView.isHidden = false
@@ -428,7 +428,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                                     self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                                     
                                 }else{
-                                    self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                                   // self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
                                     
                                     self.tableView.reloadData()
                                     if self.dataObjectArray.count > 0 {

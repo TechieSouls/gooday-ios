@@ -12,6 +12,15 @@ import Alamofire
 class UserService {
     
     let get_friend_list = "api/user/phonefriends/v2";
+    let get_user_stats = "api/user/userStatsByUserId";
+    let get_user_properties = "api/user/userProperties";
+    let get_user_by_email = "auth/user/findByEmail";
+    
+    let post_signup_user_step1 = "api/users/signupstep1";
+    let post_signup_user_step2 = "api/users/signupstep2";
+
+    let post_userdetails = "api/user/updateDetails";
+    let post_validate_password = "api/user/validatePassword";
     
     var requestArray = NSMutableArray()
 
@@ -100,8 +109,15 @@ class UserService {
         returnedDict["Error"] = false
         returnedDict["ErrorMsg"] = ""
         // Both calls are equivalent
+        
+        /*let url = "\(apiUrl)/api/users/327";
+        let token = "1553765623714eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcmVlZC5jaG9uZzE1NTM2NzkyMjM3MTQifQ.-PUIm8M07l15nRg6YWkjOCI0oKff5oJGXp87i8acMdAquWXvY9mBZqtd-Z1dPtIumS3xzEuBoUCoeqPShXmV8Q";
+        let Auth_header = [ "token" : token ]
+        
+        Alamofire.request("\(url)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+        */
         Alamofire.request("\(apiUrl)auth/user/authenticate/", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate(statusCode: 200..<300).responseJSON
-            { (response ) in
+        { (response ) in
                 switch response.result {
                 case .success:
                     
@@ -115,11 +131,15 @@ class UserService {
                         let userId = json.object(forKey: "userId")
                         let token = json.object(forKey: "token")
                         let email = json.object(forKey: "email")
-                        let name = json.object(forKey: "name")
+                        let  name = json.object(forKey: "name")
+                        let phone = json.object(forKey: "phone")
+                        let password = json.object(forKey: "password")
+
+                        if (json.object(forKey:"birthDayStr") as? String) != nil {
+                            setting.setValue(json.object(forKey:"birthDayStr") as! String, forKey: "birthDayStr")
+                        }
                         
-                        var userPhoto = "";
                         if let photo = json.object(forKey:"photo") as? String {
-                            userPhoto = photo;
                             setting.setValue(photo, forKey: "photo")
                         }
                         if let genderUser = json.object(forKey:"gender") as? String {
@@ -130,10 +150,11 @@ class UserService {
                         setting.setValue(name!, forKey: "name")
                         setting.setValue(email!, forKey: "email")
                         setting.setValue(token!, forKey: "token")
-                        setting.setValue(token!, forKey: "birthDay")
+                        setting.setValue(phone!, forKey: "phone")
+                        setting.setValue(password!, forKey: "password")
                         setting.setValue(2, forKey: "onboarding")
 
-                        if (userPhoto != "") {
+                        /*if (userPhoto != "") {
                             let webServ = WebService()
                             webServ.profilePicFromFacebook(url: userPhoto, completion: { image in
                                 DispatchQueue.main.async {
@@ -141,7 +162,7 @@ class UserService {
                                     appDelegate?.profileImageSet(image: image!)
                                 }
                             })
-                        }
+                        }*/
                         
                     }else if json["errorCode"] as? Int == 100 {
                         returnedDict["Error"] = true
@@ -246,5 +267,65 @@ class UserService {
             
         }
         self.requestArray.add(req)
+    }
+    
+    
+    func emailSignupRequest(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        let url = "\(apiUrl)\(post_signup_user_step1)";
+        
+        HttpService().postMethodWithoutToken(url: url, postData: postData, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func emailSignupRequestStep2(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        let url = "\(apiUrl)\(post_signup_user_step2)";
+        
+        HttpService().postMethodWithoutToken(url: url, postData: postData, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func postUserDetails(postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void) {
+       
+        let url = "\(apiUrl)\(post_userdetails)";
+       
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func postValidatePassword(postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_validate_password)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func findUserStatsByUserId(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_user_stats)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
+    func findUserPropertiesByUserId(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_user_properties)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
+    func findUserByEmail(queryStr: String, token: String,  complete: @escaping(NSDictionary) ->Void ) {
+        
+        let url = "\(apiUrl)\(get_user_by_email)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethodWithoutToken(url: url, complete: {(response) in
+            complete(response);
+        });
     }
 }

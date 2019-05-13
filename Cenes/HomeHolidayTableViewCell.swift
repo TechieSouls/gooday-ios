@@ -10,6 +10,7 @@ import UIKit
 
 class HomeHolidayTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var holidayDate: UILabel!
     @IBOutlet weak var holidayLabel: UILabel!;
     
     override func awakeFromNib() {

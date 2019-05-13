@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 import MobileCoreServices
+import VisualEffectView
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -17,7 +18,8 @@ protocol TimePickerDoneProtocol : class {
 protocol GatheringInfoCellProtocol {
     func imageSelected()
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol {
+    
 
     @IBOutlet weak var createGathTableView: UITableView!
     
@@ -39,15 +41,24 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     var gatheringInfoTableViewCellDelegate: GatheringInfoTableViewCell!
     
+    var predictiveCalendarViewTableViewCellDelegate: PredictiveCalendarCellTableViewCell!
+
+    var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
+    
     var event = Event();
-        
+    
+    var textfield = UITextField();
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
        
         self.tabBarController?.tabBar.isHidden = true;
-
+        timePickerView.backgroundColor = themeColor;
+        timePicker.backgroundColor = UIColor.white;
+        
         createGathTableView.register(UINib(nibName: "DatePanelTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "DatePanelTableViewCell")
 
         createGathTableView.register(UINib(nibName: "GatheringInfoTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringInfoTableViewCell")
@@ -58,12 +69,14 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         createGathTableView.register(UINib(nibName: "SelectedFriendsCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "SelectedFriendsCollectionTableViewCell")
         
+        event.endTime = 0;
         self.setupNavigationBar();
     }
     
     override func viewWillAppear(_ animated: Bool) {
         //self.setupNavigationBar();
         self.navigationController?.navigationBar.isHidden = false
+        self.createGathTableView.reloadData();
 
     }
     
@@ -79,10 +92,11 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         navigationItem.leftBarButtonItem = backButtonBarButton;
         
-        let textfield = UITextField(frame: CGRect(80, 0, self.navigationController!.navigationBar.frame.size.width, 21.0));
+        textfield = UITextField(frame: CGRect(80, 0, self.navigationController!.navigationBar.frame.size.width, 21.0));
         textfield.delegate = self;
-        textfield.placeholder = "Title"
+        textfield.placeholder = "Event Name"
         navigationItem.titleView = textfield;
+        self.addDoneButtonOnKeyboard();
     }
     /*
     // MARK: - Navigation
@@ -183,6 +197,56 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         }
     }
     
+    func openGuestListViewController() {
+        let viewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController;
+        viewController.inviteFriendsDto = self.inviteFriendsDto;
+        viewController.createGatheringProtocolDelegate = self;
+        self.navigationController?.pushViewController(viewController, animated: true);
+    }
+    
+    func friendsDonePressed(eventMembers: [EventMember]) {
+        self.event.eventMembers = eventMembers;
+        self.createGathTableView.reloadData();
+    }
+    
+    func removeBlurredBackgroundView(viewToBlur: UIView) {
+        
+        for subview in viewToBlur.subviews {
+            if subview.isKind(of: VisualEffectView.self) {
+                subview.removeFromSuperview()
+            }
+        }
+    }
+    
+    func addBlurBackgroundView(viewToBlur: UIView) -> Void {
+        let bcColor = UIColor.init(red: 181/256, green: 181/256, blue: 182/256, alpha: 1)
+        let visualEffectView = VisualEffectView(frame: CGRect(x: 0, y: 0, width: viewToBlur.frame.width, height: viewToBlur.frame.height))
+        
+        // Configure the view with tint color, blur radius, etc
+        visualEffectView.colorTint = bcColor
+        visualEffectView.colorTintAlpha = 0.5
+        visualEffectView.blurRadius = 5
+        visualEffectView.scale = 1
+        
+        viewToBlur.addSubview(visualEffectView)
+    }
+    
+    func addDoneButtonOnKeyboard(){
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
+        
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+        
+        textfield.inputAccessoryView = doneToolbar
+    }
+    
+
+    
     @IBAction func timePickerCancelPressed(_ sender: Any) {
         timePickerView.isHidden = true;
         timePickerDoneDelegate.timePickerCancelButtonPressed();
@@ -203,21 +267,21 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     @objc func backButtonPressed() {
         
-        UILabel.appearance(whenContainedInInstancesOf:
-            [UIAlertController.self]).numberOfLines = 2
-        
-        UILabel.appearance(whenContainedInInstancesOf:
-            [UIAlertController.self]).lineBreakMode = .byWordWrapping
-        let alert = UIAlertController(title: "Abondaon Event?", message: "If you decicde to leave this page, all progress will be lost.", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "Abondaon Event?", message: "If you decicde to leave this page, all \nprogress will be lost.", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Leave", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
-            self.navigationController?.popViewController(animated: true);
-            self.navigationController?.popViewController(animated: true);
+            self.navigationController?.popToRootViewController(animated: false);
         }))
         alert.addAction(UIAlertAction(title: "Stay", style: UIAlertActionStyle.default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
+        // number of lines
+        UILabel.appearance(whenContainedInInstancesOf: [UIAlertController.self]).numberOfLines = 0
+        // for font
+        UILabel.appearance(whenContainedInInstancesOf: [UIAlertController.self]).font = UIFont.systemFont(ofSize: 10.0)
     }
-    
+    @objc func doneButtonAction(){
+        textfield.resignFirstResponder()
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "createGathMessageSeague") {

@@ -52,8 +52,19 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nearByLocObje = locationDtos[indexPath.section].sectionObjects[indexPath.row];
-        selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
-        self.navigationController?.popViewController(animated: true);
+        
+        LocationService().getLocationLatLong(id: nearByLocObje.placeId, complete: {(response) in
+            
+            let data = response["data"] as! [String: Any];
+            if let locationPoints = data["geometry"] as? [String: Any] {
+                let latLong = locationPoints["location"] as? [String: Any]
+                nearByLocObje.latitudeDouble = latLong!["lat"] as! Double
+                nearByLocObje.longitudeDouble = latLong!["lng"] as! Double
+            }
+            
+            self.selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
+            self.navigationController?.popViewController(animated: true);
+        }); 
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

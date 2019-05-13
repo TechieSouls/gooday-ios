@@ -16,6 +16,17 @@ class ChoiceViewController: UIViewController {
     
     @IBOutlet weak var secondViewContainer: UIView!
     
+    
+    @IBOutlet weak var threeButtonsView: UIView!
+    
+    @IBOutlet weak var facebookViewBtn: UIView!
+    
+    @IBOutlet weak var googleViewBtn: UIView!
+    
+    @IBOutlet weak var emailViewBtn: UIView!
+    
+    @IBOutlet weak var termsAndConditionsText: UILabel!
+    
     class func MainViewController() -> UINavigationController{
         
         return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "nav") as! UINavigationController
@@ -25,13 +36,36 @@ class ChoiceViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.firstViewContainer.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height/2)
-        self.secondViewContainer.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height/2)
+        //self.firstViewContainer.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height/2)
+        //self.secondViewContainer.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height/2)
         
         // Do any additional setup after loading the view.
-        self.signupMobileBtn.layer.borderColor = UIColor.orange.cgColor
+        /*self.signupMobileBtn.layer.borderColor = UIColor.orange.cgColor
         self.signupMobileBtn.layer.borderWidth = 1
-        self.signupMobileBtn.layer.cornerRadius = 20
+        self.signupMobileBtn.layer.cornerRadius = 20*/
+        
+        facebookViewBtn.roundedView();
+        googleViewBtn.roundedView();
+        emailViewBtn.roundedView();
+        
+        let threeButtonsViewGradient = CAGradientLayer()
+        threeButtonsViewGradient.frame = CGRect.init(0, 0, threeButtonsView.frame.width, 1)
+        threeButtonsViewGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor(red:0.91, green:0.49, blue:0.48, alpha:0.75).cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
+        threeButtonsViewGradient.startPoint = CGPoint(x: 0, y: 1);
+        threeButtonsViewGradient.endPoint = CGPoint(x: 1, y: 1);
+        
+        threeButtonsView.layer.insertSublayer(threeButtonsViewGradient, at: 0);
+        
+        
+        let facebookTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(facebookViewPressed));
+        facebookViewBtn.addGestureRecognizer(facebookTapGesture);
+        
+        let googleTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(googleViewPressed));
+        googleViewBtn.addGestureRecognizer(googleTapGesture);
+        
+        let emailTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(emailViewPressed));
+        emailViewBtn.addGestureRecognizer(emailTapGesture);
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -41,7 +75,10 @@ class ChoiceViewController: UIViewController {
         
         PhonebookService.getPermissionForContacts();
         
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        //navigationController?.setNavigationBarHidden(true, animated: true)
+        self.view.backgroundColor = themeColor;
+        self.navigationController?.navigationBar.isHidden = true;
+
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
@@ -75,5 +112,19 @@ class ChoiceViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    @objc func facebookViewPressed() {
+        
+    }
+    
+    @objc func googleViewPressed() {
+        
+    }
+    
+    @objc func emailViewPressed() {
+        
+        let viewController = storyboard?.instantiateViewController(withIdentifier: "SignupSuccessViewController") as! SignupSuccessViewController;
+        self.navigationController?.pushViewController(viewController, animated: true);
+    }
 
 }

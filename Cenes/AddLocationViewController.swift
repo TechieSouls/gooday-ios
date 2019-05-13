@@ -270,7 +270,7 @@ extension AddLocationViewController : UITableViewDelegate,UITableViewDataSource{
         
         startAnimating(loadinIndicatorSize, message: "Loading...", type: NVActivityIndicatorType.lineScaleParty)
         
-        webservice.getLocationLatLong(id: location.placeId) { [weak self] (jsonDict) in
+        /*webservice.getLocationLatLong(id: location.placeId) { [weak self] (jsonDict) in
             self?.stopAnimating()
             
             if jsonDict["Error"] as? Bool == true {
@@ -292,7 +292,7 @@ extension AddLocationViewController : UITableViewDelegate,UITableViewDataSource{
                 }
                 
             }
-        }
+        }*/
         
         
     }

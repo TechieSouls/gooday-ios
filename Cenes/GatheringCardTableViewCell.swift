@@ -13,7 +13,7 @@ class GatheringCardTableViewCell: UITableViewCell {
     
     @IBOutlet weak var profilePic: UIImageView!
     
-    @IBOutlet weak var startTime: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
     
     @IBOutlet weak var membersCollectionView: UICollectionView!
     
@@ -25,15 +25,18 @@ class GatheringCardTableViewCell: UITableViewCell {
     
     @IBOutlet weak var locationView: UIView!
     
-    @IBOutlet weak var backgroundCardView: UIView!
-    
     var bubbleNumbers: Int = 0
     
     var members: [EventMember] = [];
     
+    var newHomeViewControllerDelegate: NewHomeViewController!
+    
+    var acceptedMembers: [EventMember] = [];
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
         self.membersCollectionView.register(UINib(nibName: "MemberCollectionViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "MemberCollectionViewCell")
         self.membersCollectionView.register(UINib(nibName: "MemberCountCollectionViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "MemberCountCollectionViewCell")
         
@@ -50,15 +53,9 @@ class GatheringCardTableViewCell: UITableViewCell {
     
     func updateUI() {
         
-        self.contentView.backgroundColor = themeColor;
-        
-        self.backgroundCardView.backgroundColor = UIColor.white;
-        self.backgroundCardView.layer.cornerRadius = 30.0;
-        self.backgroundCardView.layer.masksToBounds = false;
-        self.backgroundCardView.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor;
-        self.backgroundCardView.layer.shadowOffset = CGSize(width: 0, height: 0);
-        self.backgroundCardView.layer.shadowOpacity  = 0.8;
-        
+        self.contentView.backgroundColor = UIColor.white;
+        self.membersCollectionView.backgroundColor = UIColor.white;
+        profilePic.setRounded();
     }
     
     func reloadFriends(){
@@ -69,7 +66,36 @@ class GatheringCardTableViewCell: UITableViewCell {
 
 extension GatheringCardTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return members.count;
+        
+        /*if (members.count > 3) {
+            return 4
+        } else {
+            return members.count;
+        }*/
+        //Check if there are members who have accepted the event
+        //Then we will show only those who have accpedted the event
+        if (acceptedMembers.count != 0) {
+            if (acceptedMembers.count > 3) {//If there are more than 3 persons
+                                            //who has accepetd the event, then we will show
+                                            //3 photos + counts
+                return 4 //4
+            } else {
+                if (acceptedMembers.count == members.count) { //If Total accpedted members are not greater than 3
+                                                            //Then we will check if they are equal to total members
+                                                            //If yes then we will show all accepted members
+                    return acceptedMembers.count;
+                } else {
+                    return (acceptedMembers.count + 1); // 2,3 //If total members are more than those who has
+                                                        //accpepted the event, then we will show accpted + counts
+                }
+            }
+        } else if (members.count != 0) {//Else we will only show the counts of people who are accepting the event
+            return 1;
+
+        } else { //We will not show anything in the colleciton view.
+            return 0;
+        }
+        return 0;
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -77,25 +103,89 @@ extension GatheringCardTableViewCell: UICollectionViewDelegate, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.row < 3{
+        
+        
+        /*if indexPath.row < 3 {
             
             let  cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemberCollectionViewCell", for: indexPath) as! MemberCollectionViewCell
             
             let eventMember = members[indexPath.row]
             
-            cell.profilePic.roundedView();
-            if eventMember.user != nil && eventMember.user.photo != nil {
-                cell.profilePic.sd_setImage(with: URL(string: (eventMember.user.photo)!), placeholderImage: UIImage(named: "cenes_user_no_image"));
-            } else {
-                    cell.profilePic.image = #imageLiteral(resourceName: "profile icon");
+            if eventMember.user != nil {
+                
+                if (eventMember.user.photo != nil) {
+                    cell.profilePic.sd_setImage(with: URL(string: (eventMember.user.photo)!), placeholderImage: UIImage(named: "profile_pic_no_image"));
+                } else {
+                    
+                    cell.profilePic.image = UIImage(named: "profile_pic_no_image");
+                }
+                
+                if (newHomeViewControllerDelegate.loggedInUser.userId != eventMember.userId) {
+                    cell.name.text = String(eventMember.name.split(separator: " ")[0]);
+                } else {
+                    cell.name.text = "Me";
+                }
             }
+            
+            if (indexPath.row == 0) {
+                cell.guestLabel.isHidden = false;
+            } else {
+                cell.guestLabel.isHidden = true;
+            }
+            
+            
             return cell;
-        }else {
+        } else {
             let  cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemberCountCollectionViewCell", for: indexPath) as! MemberCountCollectionViewCell
+                cell.membersCountView.isHidden = false
+                cell.memberCountsLabel.text = "+\(String(members.count - 3))"
             
-                cell.memberCountsLabel.text = "+\(bubbleNumbers)"
+            return cell;
+        }*/
+        if (acceptedMembers.count > 0 && indexPath.row < acceptedMembers.count && indexPath.row < 3) {
+            let  cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemberCollectionViewCell", for: indexPath) as! MemberCollectionViewCell
             
+            let eventMember = acceptedMembers[indexPath.row]
+            
+            if eventMember.user != nil {
+                
+                if (eventMember.user.photo != nil) {
+                    cell.profilePic.sd_setImage(with: URL(string: (eventMember.user.photo)!), placeholderImage: UIImage(named: "profile_pic_no_image"));
+                } else {
+                    
+                    cell.profilePic.image = UIImage(named: "profile_pic_no_image");
+                }
+                
+                if (newHomeViewControllerDelegate.loggedInUser.userId != eventMember.userId) {
+                    cell.name.text = String(eventMember.user.name.split(separator: " ")[0]);
+                } else {
+                    cell.name.text = "Me";
+                }
+            }
+            
+            if (indexPath.row == 0) {
+                cell.guestLabel.isHidden = false;
+            } else {
+                cell.guestLabel.isHidden = true;
+            }
+            
+            
+            return cell;
+        } else {
+            let  cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemberCountCollectionViewCell", for: indexPath) as! MemberCountCollectionViewCell
+            cell.membersCountView.isHidden = false
+            
+            var counts: Int = members.count;
+            if (acceptedMembers.count > 0) {
+                if (acceptedMembers.count > 3) {
+                    counts = members.count - 3
+                } else {
+                    counts = members.count - acceptedMembers.count;
+                }
+            }
+            cell.memberCountsLabel.text = "+\(String(counts))";
             return cell;
         }
+        return UICollectionViewCell();
     }
 }

@@ -51,8 +51,8 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
         let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
         
         if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
-            let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
-            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList[key] as! EventMember;
+            //let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
+            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! EventMember;
             print("Array : \(userContact)")
             
             if (userContact.cenesMember == "yes") {
@@ -90,8 +90,19 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
     }
     
     @objc func removeFriendIconPressed(sender : RemoveFriendIconGesture) {
-        self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: sender.userContactId);
+       // self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: sender.userContactId);
+        
+        var count = 0;
+        for selectedFriend in self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList {
+            if (selectedFriend.userContactId == sender.userContactId) {
+                self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.remove(at: count);
+                break;
+            }
+            count = count + 1;
+        }
+        
         self.friendsViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[sender.userContactId] = false;
+        self.friendsViewControllerDelegate.refreshNavigationBarItems();
         self.friendsViewControllerDelegate.friendTableView.reloadData();
     }
 }

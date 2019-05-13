@@ -64,7 +64,12 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
     
     func locationSelected(location: Location) {
         locationLabel.isHidden = false;
-        locationLabel.text = location.location;
+        
+        if (location.placeId == nil) {
+            locationLabel.text = "\(String(location.location)) [CL]";
+        } else {
+            locationLabel.text = location.location;
+        }
         
         //Setting Location Data.
         createGatheringDelegate.event.location = location.location;
@@ -74,7 +79,9 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         if (location.longitudeDouble != nil) {
             createGatheringDelegate.event.longitude = String(location.longitudeDouble);
         }
-        createGatheringDelegate.event.placeId = location.placeId;
+        if (location.placeId != nil) {
+            createGatheringDelegate.event.placeId = location.placeId;
+        }
         
         //Code to show hide Event Preview Button.
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.locationField] = true;

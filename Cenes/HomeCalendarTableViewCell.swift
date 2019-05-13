@@ -19,6 +19,9 @@ class HomeCalendarTableViewCell: UITableViewCell {
     
     @IBOutlet weak var roundView: UIView!
     
+    @IBOutlet weak var roundedViewLabel: UILabel!
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

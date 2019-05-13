@@ -11,17 +11,17 @@ import Foundation
 extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.homeDtoList.count;
+        return 1;
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.homeDtoList[section].sectionObjects.count;
+        return homescreenDto.homeRowsVisibility.count;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-        let event = self.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
+        /*let event = self.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
         
         if (event.scheduleAs == "Event") {
             let identifier = "HomeCalendarTableViewCell"
@@ -44,13 +44,57 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
             cell.calendarTitle.text = event.title!
             //cell.calendarTitle.text = event.title
             return cell;
+        }*/
+        switch indexPath.row {
+        case 0:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.TopDateRow] == true) {
+                let cell: DateDropDownTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "DateDropDownTableViewCell") as! DateDropDownTableViewCell
+                cell.newHomeViewControllerDelegate = self;
+                cell.topDate.text = String(Date(milliseconds: Int(self.homescreenDto.timeStamp)).EMMMd()!);
+                let textWidth = cell.topDate.intrinsicContentSize.width;
+                print("textWidth", textWidth);
+                cell.topDate.frame = CGRect(0, 40/2, textWidth, 40);
+                cell.clanedarToggleArrowVioew.frame = CGRect(textWidth+10, cell.frame.height/2, 26, 32);
+
+                if (cell.newHomeViewControllerDelegate.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
+                    cell.calendarArrow.image = UIImage.init(named: "open_calendar");
+                } else {
+                    cell.calendarArrow.image = UIImage.init(named: "close_calendar");
+                }
+                return cell;
+            }
+        case 1:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] == true) {
+                let cell: InvitationTabsTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "InvitationTabsTableViewCell") as! InvitationTabsTableViewCell
+                cell.newHomeViewControllerDelegate = self;
+                cell.activeSelectedTabTab();
+                
+                return cell;
+            }
+        case 2:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
+                let cell: HomeFSCalendarTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "HomeFSCalendarTableViewCell") as! HomeFSCalendarTableViewCell
+                cell.newHomeViewProtocolDelegate = self;
+                cell.newHomeViewControllerDelegate = self;
+                cell.fsCalendar.setCurrentPage(Date(milliseconds: self.homescreenDto.timeStamp), animated: false);
+                return cell;
+            }
+        case 3:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.TableRow] == true) {
+                    let cell: DataTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "DataTableViewCell") as! DataTableViewCell
+                    cell.newHomeViewControllerDelegate = self;
+                    self.dataTableViewCellProtocolDelegate = cell;
+                    cell.dataTableView.reloadData();
+                    return cell;
+            }
+        default:
+            return UITableViewCell()
         }
-        
         
         return UITableViewCell();
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    /*func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let sectionTitle = self.homeDtoList[section].sectionName as! String
         
@@ -66,11 +110,51 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30.0;
-    }
+    }*/
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        return 80.0;
+        switch indexPath.row {
+        case 0:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.TopDateRow] == true) {
+                return HomeRowsHeight.TopDateRowHeight;
+            }
+            return 0;
+        case 1:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] == true) {
+                return HomeRowsHeight.ThreeTabsRowHeight;
+            }
+            return 0;
+        case 2:
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
+                return HomeRowsHeight.CalendarRowHeight;
+            }
+            return 0;
+        case 3:
+            var finalDataTableViewHeight = self.view.bounds.height - ((self.tabBarController?.tabBar.bounds.height)! + (self.navigationController?.navigationBar.bounds.height)! + 40);
+            
+                if (self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
+                    finalDataTableViewHeight = finalDataTableViewHeight - HomeRowsHeight.CalendarRowHeight;
+                }
+                if (self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] == true) {
+                    finalDataTableViewHeight = finalDataTableViewHeight - HomeRowsHeight.ThreeTabsRowHeight;
+                }
+            return finalDataTableViewHeight;
+        default:
+            return 0
+        }
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if (indexPath.row == 0) {
+            if (self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
+                self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] = false;
+            } else {
+                self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] = true;
+            }
+            
+            self.homeTableView.reloadData();
+        }
+    }
 }

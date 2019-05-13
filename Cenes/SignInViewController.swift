@@ -16,33 +16,79 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     
     @IBOutlet weak var passwordTextField: UITextField!
     
+    
+    @IBOutlet weak var backButton: UIImageView!
+    
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        emailTxtField.delegate = self
-        passwordTextField.delegate = self
-        
-        let whiteColor : UIColor = UIColor.white
-        self.emailTxtField.layer.borderColor = UIColor.black.cgColor
-        self.emailTxtField.layer.borderWidth = 1.0
-        self.emailTxtField.leftView = UIView(frame: CGRect(x: 0, y: 0, width:15, height: self.emailTxtField.frame.height))
-        self.emailTxtField.leftViewMode = .always
-    
-    
-        self.passwordTextField.layer.borderColor = UIColor.black.cgColor
-        self.passwordTextField.layer.borderWidth = 1.0
-        self.passwordTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width:15, height: self.passwordTextField.frame.height))
-        self.passwordTextField.leftViewMode = .always
+        let emailGradient = CAGradientLayer()
+        emailGradient.frame = CGRect.init(0, emailTxtField.frame.height-1, emailTxtField.frame.width, 1)
+        emailGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
+        emailGradient.startPoint = CGPoint(x: 0, y: 1);
+        emailGradient.endPoint = CGPoint(x: 1, y: 1);
 
-    
+        emailTxtField.layer.insertSublayer(emailGradient, at: 0);
+        
+        let passwordGradient = CAGradientLayer()
+        passwordGradient.frame = CGRect.init(0, passwordTextField.frame.height-1, passwordTextField.frame.width, 1)
+        passwordGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
+        passwordGradient.startPoint = CGPoint(x: 0, y: 1);
+        passwordGradient.endPoint = CGPoint(x: 1, y: 1);
+        
+        passwordTextField.layer.insertSublayer(passwordGradient, at: 0);
+        
+        let backTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed));
+        backButton.addGestureRecognizer(backTapGesture);
+        
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.view.backgroundColor = themeColor;
+        self.navigationController?.navigationBar.shouldRemoveShadow(true);
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @objc func backButtonPressed() {
+        self.navigationController?.popViewController(animated: true);
+    }
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if (textField == emailTxtField) {
+            passwordTextField.becomeFirstResponder();
+        } else if (textField == passwordTextField) {
+            
+            if (emailTxtField.text == "") {
+                showAlert(title: "Email is empty", message: "");
+                return false;
+            }
+            
+            if (passwordTextField.text == "") {
+                showAlert(title: "Password is empty", message: "");
+                return false;
+            }
+            
+            UserService().emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in
+                
+                if returnedDict.value(forKey: "Error") as? Bool == true {
+                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                    
+                } else {
+                    WebService().setPushToken();
+                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                }
+            })
+        }
+        
+        return false;
     }
     
     @IBAction func onLoginClicked(_ sender: Any) {

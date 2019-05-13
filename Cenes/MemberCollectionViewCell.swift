@@ -13,9 +13,15 @@ class MemberCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var profilePic: UIImageView!
     
+    @IBOutlet weak var guestLabel: UILabel!
+    
+    @IBOutlet weak var name: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        profilePic.setRounded();
     }
 
 }
