@@ -12,8 +12,9 @@ import Alamofire
 class HomeService {
     
     let get_home_events: String = "api/getEvents/v2";
-    let get_home_calendar_events: String = "/api/homeCalendarEvents/v2";
-
+    let get_home_calendar_events: String = "api/homeCalendarEvents/v2";
+    let get_delete_event: String = "api/event/delete";
+    
     var requestArray = NSMutableArray()
     
     func refreshGoogleEvents(complete: @escaping(NSMutableDictionary)->Void ) {
@@ -77,4 +78,14 @@ class HomeService {
             complete(response)
         });
     }
+    
+    func removeEventFromList(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
+       
+        let url = "\(apiUrl)\(get_delete_event)?\(queryStr)";
+        
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
 }

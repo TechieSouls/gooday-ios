@@ -12,7 +12,7 @@ protocol DataTableViewCellProtocol {
     func reloadTableToTop();
 }
 
-class NewHomeViewController: UIViewController, SlidingCellDelegate,  NewHomeViewProtocol {
+class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
     
     @IBOutlet weak var homeTableView: UITableView!
 
@@ -51,9 +51,7 @@ class NewHomeViewController: UIViewController, SlidingCellDelegate,  NewHomeView
     
     override func viewDidAppear(_ animated: Bool) {
         
-        self.initilizeCalendarData();
-        self.loadCalendarEventsData();
-        initilizeInvitationTabsData();
+        refreshHomeScreenData();
     }
     
     /*
@@ -65,7 +63,11 @@ class NewHomeViewController: UIViewController, SlidingCellDelegate,  NewHomeView
         // Pass the selected object to the new view controller.
     }
     */
-
+    func refreshHomeScreenData() {
+        self.initilizeCalendarData();
+        self.loadCalendarEventsData();
+        initilizeInvitationTabsData();
+    }
     
     func setUpNavBarImages() {
         self.navigationController?.navigationBar.shouldRemoveShadow(true)
@@ -145,10 +147,12 @@ class NewHomeViewController: UIViewController, SlidingCellDelegate,  NewHomeView
 
                 self.homescreenDto.calendarData = HomeManager().mergeCurrentAndFutureList(currentList: self.homescreenDto.calendarData, futureList: calendarData)
                 
-                self.homeDtoList = self.homescreenDto.calendarData;
-                self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
-                
-                self.homeTableView.reloadData();
+                if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                    self.homeDtoList = self.homescreenDto.calendarData;
+                    self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
+                    self.homeTableView.reloadData();
+                }
+
             } else {
                 //Show Empty Screen
             }

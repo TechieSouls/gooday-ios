@@ -609,7 +609,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         
             startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
             
-            WebService().removeEventFromList(EVEntID: "\(obj.eventId)") { (returnedDict) in
+            /*WebService().removeEventFromList(EVEntID: "\(obj.eventId)") { (returnedDict) in
                 if returnedDict["Error"] as? Bool == true {
                     self.stopAnimating()
                     self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
@@ -619,7 +619,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
                     
                     //                self.remindersTableView.deleteRows(at: [indexpath], with: )
                 }
-            }
+            }*/
         
         
         

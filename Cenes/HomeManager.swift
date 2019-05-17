@@ -32,7 +32,7 @@ class HomeManager {
                 let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
                 if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
                     key = "Today";
-                }else if(Int(componentStart.day!+1) == components.day && components.month == componentStart.month && components.year == componentStart.year){
+                }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
                     key = "Tomorrow " + key;
                 }
                 

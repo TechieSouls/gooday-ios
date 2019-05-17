@@ -15,7 +15,6 @@ import UserNotifications
 import GoogleSignIn
 import Google
 import SideMenu
-import Instabug
  
 let setting = UserDefaults.standard
 
@@ -45,9 +44,6 @@ let setting = UserDefaults.standard
         print("My App Launched on Termination**************************************");
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-
-        Instabug.start(withToken:instabugToken, invocationEvents: [.none]);
-
         
         // Override point for customization after application launch.
         let onboarding = setting.integer(forKey: "onboarding")

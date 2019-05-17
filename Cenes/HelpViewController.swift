@@ -8,7 +8,6 @@
 
 import UIKit
 import NVActivityIndicatorView
-import Instabug
 import SideMenu
 
 class HelpViewController: UIViewController,NVActivityIndicatorViewable {
@@ -52,8 +51,7 @@ class HelpViewController: UIViewController,NVActivityIndicatorViewable {
     }
     
     @IBAction func reportButtonPressed(_ sender: Any) {
-        BugReporting.promptOptions = [IBGPromptOption.bug, IBGPromptOption.feedback];
-        BugReporting.invoke();
+       
     }
     
     @objc func ImageTapped() {

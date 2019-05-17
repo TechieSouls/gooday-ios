@@ -12,8 +12,8 @@ var imageFacebookURL :String?
 
 // Live Server
 //let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
-//let apiUrl = "https://deploy.cenesgroup.com/"
-let apiUrl = "http://192.168.1.102:8181/"
+let apiUrl = "https://deploy.cenesgroup.com/"
+//let apiUrl = "http://192.168.1.102:8181/"
 //let apiUrl = "http://localhost:8181/"
 
 
@@ -1187,37 +1187,6 @@ class WebService
         let Auth_header = [ "token" : setting.value(forKey: "token") as! String ]
 
         Alamofire.request("\(apiUrl)api/reminder/delete?reminderId=\(reminderID)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
-            
-            switch response.result {
-            case .success:
-                print("Deleting reminder Successful")
-                
-                let json = response.result.value as! [String: Any]
-                
-                if json["errorCode"] as? Int == 0 {
-                    returnedDict["data"] = json["data"]
-                }else {
-                    returnedDict["Error"] = true
-                    returnedDict["ErrorMsg"] = json["errorDetail"] as? String
-                }
-                print(json)
-            case .failure(let error):
-                print(error)
-                returnedDict["Error"] = true
-                returnedDict["ErrorMsg"] = error.localizedDescription
-            }
-            complete(returnedDict)
-        }
-    }
-    func removeEventFromList(EVEntID: String, complete: @escaping([String: Any])-> Void) {
-        var returnedDict: [String: Any] = [:]
-        
-        returnedDict["Error"] = false
-        returnedDict["ErrorMsg"] = ""
-        
-        let Auth_header = [ "token" : setting.value(forKey: "token") as! String ]
-        
-        Alamofire.request("\(apiUrl)api/event/delete?event_id=\(EVEntID)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
             
             switch response.result {
             case .success:

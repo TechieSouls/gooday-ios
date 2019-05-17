@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwipeCellKit
 
 class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     
@@ -262,7 +263,8 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             var gatheringsCount: Int = 0;
             for homeData in self.newHomeViewControllerDelegate.homeDtoList {
                 gatheringsCount = gatheringsCount + homeData.sectionObjects.count;
-            }
+            };
+            print("Gatheinrg COunt : ", gatheringsCount, "total Page COunts", self.newHomeViewControllerDelegate.totalPageCounts)
             if (gatheringsCount < self.newHomeViewControllerDelegate.totalPageCounts) {
                 //self.spinner.startAnimating()
                 //self.spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
@@ -303,4 +305,101 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             }
         }
     }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        
+        if (newHomeViewControllerDelegate.homeDtoList.count != 0) {
+            
+            let event = newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
+            
+            if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                
+                if (event.scheduleAs == "Gathering") {
+                    
+                    if (newHomeViewControllerDelegate.loggedInUser.userId == event.createdById) {
+                        let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { (action, indexPath) in
+                            
+                            let eventId = event.eventId;
+                            
+                            var sectionEvents = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects;
+                            sectionEvents.remove(at: indexPath.row);
+                            if (sectionEvents.count == 0) {
+                                self.newHomeViewControllerDelegate.homeDtoList.remove(at: indexPath.section);
+                            } else {
+                                self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects = sectionEvents;
+                            }
+                            self.newHomeViewControllerDelegate.homeTableView.reloadData();
+                            
+                            let queryStr = "event_id=\(eventId!)";
+                            HomeService().removeEventFromList(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
+                                
+                                self.newHomeViewControllerDelegate.refreshHomeScreenData();
+                            })
+                            
+                            tableView.dataSource?.tableView!(tableView, commit: .delete, forRowAt: indexPath)
+                            return
+                        }
+                        deleteButton.backgroundColor = UIColor.red
+                        return [deleteButton]
+                    } else {
+                        let declineButton = UITableViewRowAction(style: .default, title: "Decline") { (action, indexPath) in
+                            
+                            let queryStr = "eventId=\(String(event.eventId))&userId=\(String(self.newHomeViewControllerDelegate.loggedInUser.userId))&status=NotGoing";
+                            GatheringService().updateGatheringStatus(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
+                                self.newHomeViewControllerDelegate.refreshHomeScreenData()                            })
+                            var sectionEvents = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects;
+                            sectionEvents.remove(at: indexPath.row);
+                            if (sectionEvents.count == 0) {
+                                self.newHomeViewControllerDelegate.homeDtoList.remove(at: indexPath.section);
+                            } else {
+                                self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects = sectionEvents;
+                            }
+                            self.newHomeViewControllerDelegate.homeTableView.reloadData();
+                            
+                            tableView.dataSource?.tableView!(tableView, commit: .delete, forRowAt: indexPath)
+                            return
+                        }
+                        declineButton.backgroundColor = UIColor.red
+                        return [declineButton]
+                    }
+                    
+                    
+                } else if (event.scheduleAs == "Event") {
+                    
+                    let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { (action, indexPath) in
+                        
+                        let queryStr = "event_id=\(String(event.eventId))";
+                        HomeService().removeEventFromList(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
+                            
+                            self.newHomeViewControllerDelegate.refreshHomeScreenData();
+                        })
+                        var sectionEvents = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects;
+                        sectionEvents.remove(at: indexPath.row);
+                        if (sectionEvents.count == 0) {
+                            self.newHomeViewControllerDelegate.homeDtoList.remove(at: indexPath.section);
+                        } else {
+                            self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects = sectionEvents;
+                        }
+                        self.newHomeViewControllerDelegate.homeTableView.reloadData();
+                        tableView.dataSource?.tableView!(tableView, commit: .delete, forRowAt: indexPath)
+                        return
+                    }
+                    deleteButton.backgroundColor = UIColor.red
+                    return [deleteButton]
+                    
+                }
+            }
+        }
+        
+        return [UITableViewRowAction]();
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if (editingStyle == .delete) {
+
+        }
+    }
+
 }
