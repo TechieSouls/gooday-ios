@@ -28,22 +28,49 @@ extension SelectedCalendarViewController: UITableViewDelegate, UITableViewDataSo
             return cell;
         } else {
             let cell: ThirdPartyCalendarTableViewCell = tableView.dequeueReusableCell(withIdentifier: "ThirdPartyCalendarTableViewCell") as! ThirdPartyCalendarTableViewCell;
-            
+            cell.selectedCalendarDelegate = self;
+            thirdPartyCalendarProtocolDelegate = cell;
             
             if (calendarSelected == SelectedCalendar.GoogleCalendar) {
                 
-                if (cenesProperty != nil && cenesProperty.cenesPropertyValue.value == "true") {
-                    
+                cell.descriptiontext.text = "Only one Google account can be synced at a time. Add a different account by deleting the current one.";
+                
+                if (calendarSyncToken != nil && calendarSyncToken.accountType == SelectedCalendar.GoogleCalendar && calendarSyncToken.emailId != nil) {
+                    cell.accountInfoLabel.text = "Account: \(String(calendarSyncToken.emailId))";
+                    cell.deleteSyncButton.setTitle("Delete", for: .normal);
+                    isSynced = true;
                 } else {
                     cell.accountInfoLabel.text = "Not Synced to Google Calendar";
-                    cell.deleteSyncButton.titleLabel?.text = "Sync";
+                    cell.deleteSyncButton.setTitle("Sync", for: .normal);
+                    isSynced = false;
                 }
             } else if (calendarSelected == SelectedCalendar.OutlookCalendar) {
-                cell.accountInfoLabel.text = "Not Synced to Outlook Calendar";
-                cell.deleteSyncButton.titleLabel?.text = "Sync";
+                
+                cell.descriptiontext.text = "Only one Outlook account can be synced at a time. Add a different account by deleting the current one.";
+                
+                if (calendarSyncToken != nil && calendarSyncToken.accountType == SelectedCalendar.OutlookCalendar && calendarSyncToken.emailId != nil) {
+                    cell.accountInfoLabel.text = "Account: \(String(calendarSyncToken.emailId))";
+                    cell.deleteSyncButton.setTitle("Delete", for: .normal);
+                    isSynced = true;
+                } else {
+                    cell.accountInfoLabel.text = "Not Synced to Outlook Calendar";
+                    cell.deleteSyncButton.setTitle("Sync", for: .normal);
+                    isSynced = false;
+                }
+                
             } else if (calendarSelected == SelectedCalendar.AppleCalendar) {
-                cell.accountInfoLabel.text = "Not Synced to Apple Calendar";
-                cell.deleteSyncButton.titleLabel?.text = "Sync";
+                
+                cell.descriptiontext.text = "";
+                
+                if (calendarSyncToken != nil && calendarSyncToken.accountType == SelectedCalendar.AppleCalendar) {
+                    cell.accountInfoLabel.text = "Account: \(String(calendarSyncToken.emailId))";
+                    cell.deleteSyncButton.setTitle("Delete", for: .normal);
+                    isSynced = true;
+                } else {
+                    cell.accountInfoLabel.text = "Not Synced to Apple Calendar";
+                    cell.deleteSyncButton.setTitle("Sync", for: .normal);
+                    isSynced = false;
+                }
             }
             
             return cell;

@@ -10,6 +10,7 @@ import UIKit
 import Photos
 import MobileCoreServices
 import VisualEffectView
+import NVActivityIndicatorView
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -18,7 +19,7 @@ protocol TimePickerDoneProtocol : class {
 protocol GatheringInfoCellProtocol {
     func imageSelected()
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable {
     
 
     @IBOutlet weak var createGathTableView: UITableView!
@@ -49,7 +50,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     var textfield = UITextField();
     
-    
+    var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, padding: 0.0);
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -245,7 +247,12 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         textfield.inputAccessoryView = doneToolbar
     }
     
-
+    func showLoading() {
+        self.startAnimating()
+    }
+    func hideLoading() {
+        self.stopAnimating()
+    }
     
     @IBAction func timePickerCancelPressed(_ sender: Any) {
         timePickerView.isHidden = true;

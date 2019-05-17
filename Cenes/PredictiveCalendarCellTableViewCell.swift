@@ -32,7 +32,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
 
     var selectedDates = [String: UIColor]();
     var unselectedDates = [String: UIColor]();
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -223,12 +223,14 @@ func showPredictions() {
     }
     let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
     
-    self.createGatheringDelegate.addBlurBackgroundView(viewToBlur: predictiveCalendarView);
-    
+    //self.createGatheringDelegate.addBlurBackgroundView(viewToBlur: predictiveCalendarView);
+    self.createGatheringDelegate.showLoading();
+
     GatheringService().getPredictiveData(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
         
-        self.createGatheringDelegate.removeBlurredBackgroundView(viewToBlur: self.predictiveCalendarView);
-        
+        //self.createGatheringDelegate.removeBlurredBackgroundView(viewToBlur: self.predictiveCalendarView);
+        self.createGatheringDelegate.hideLoading();
+
         let success = response.value(forKey: "success") as! Bool;
         if (success == true) {
             let predictiveArr = response.value(forKey: "data") as! NSArray;

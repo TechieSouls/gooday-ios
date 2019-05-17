@@ -27,7 +27,7 @@ class HomeManager {
             if dataType == "Event" {
                 let event = Event().loadEventData(eventDict: outerDict)
                 
-                var key = Util.getddMMMEEEE(timeStamp: event.startTime)
+                var key = Date(milliseconds: Int(event.startTime)).EMMMd()!;
                 let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
                 let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
                 if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){

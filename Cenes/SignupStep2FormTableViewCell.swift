@@ -19,12 +19,10 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
     @IBOutlet weak var birthday: UIButton!
     
     var signupSuccessStep2ViewControllerDelegate: SignupSuccessStep2ViewController!;
-    var user = User();
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        user = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         profilePic.setRounded();
         
@@ -39,6 +37,9 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
         let cgBirthdayColors = [UIColor.white.cgColor, UIColor(red:0.71, green:0.71, blue:0.71, alpha:0.75).cgColor, UIColor.white.cgColor]
         birthday.layer.insertSublayer(getButtonBottomBorderGradient(uiButton: birthday, cgColors: cgBirthdayColors), at: 0);
         
+        
+        let profilePicTap = UITapGestureRecognizer.init(target: self, action: #selector(profilePicPressed));
+        profilePic.addGestureRecognizer(profilePicTap);
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -79,24 +80,47 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
         // present an actionSheet...
         signupSuccessStep2ViewControllerDelegate.present(actionSheetController, animated: true, completion: nil)
     }
-    
 
     @IBAction func birthdayPressed(_ sender: Any) {
         signupSuccessStep2ViewControllerDelegate.datePickerView.isHidden = false;
     }
     
+    @objc func profilePicPressed() {
+        signupSuccessStep2ViewControllerDelegate.photoIconClicked();
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if (usernameField.text != "") {
-            user.name = usernameField.text!;
+            signupSuccessStep2ViewControllerDelegate.loggedInUser.name = usernameField.text!;
             
             let cgColors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
 
             usernameField.layer.addSublayer(getTextFieldBottomBorderGradient(textField: usernameField, cgColors: cgColors));
             
             usernameField.resignFirstResponder();
+            
+            signupSuccessStep2ViewControllerDelegate.highLightCompleteButton();
+            
+            
+            var postData: [String: Any] = [String: Any]();
+            postData["name"] = usernameField.text!;
+            postData["userId"] = signupSuccessStep2ViewControllerDelegate.loggedInUser.userId;
+            User().updateUserValuesInUserDefaults(user: signupSuccessStep2ViewControllerDelegate.loggedInUser);
+            
+            DispatchQueue.global(qos: .background).async {
+                UserService().postUserDetails(postData: postData, token: self.signupSuccessStep2ViewControllerDelegate.loggedInUser.token, complete: {(response) in
+                    print("Name Updated")
+                });
+            }
         }
         return true;
     }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        print("Print");
+    }
+
+    
     
     func getTextFieldBottomBorderGradient(textField: UITextField, cgColors: [CGColor]) -> CAGradientLayer {
         let gradient = CAGradientLayer()
@@ -123,17 +147,19 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
         gender.setTitleColor(UIColor.black, for: .normal);
         gender.setTitle(genderSelectionValue, for: .normal)        
         
-        var pgenderostData: [String: Any] = [String: Any]();
-        pgenderostData["gender"] = genderSelectionValue;
-        pgenderostData["userId"] = user.userId;
-        user.gender = genderSelectionValue;
-        User().updateUserValuesInUserDefaults(user: self.user);
+        var postData: [String: Any] = [String: Any]();
+        postData["gender"] = genderSelectionValue;
+        postData["userId"] = signupSuccessStep2ViewControllerDelegate.loggedInUser.userId;
+        signupSuccessStep2ViewControllerDelegate.loggedInUser.gender = genderSelectionValue;
+        User().updateUserValuesInUserDefaults(user: signupSuccessStep2ViewControllerDelegate.loggedInUser);
         
-        /*DispatchQueue.global(qos: .background).async {
-            UserService().postUserDetails(postData: postData, token: self.user.token, complete: {(response) in
-                //User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+        DispatchQueue.global(qos: .background).async {
+            UserService().postUserDetails(postData: postData, token: self.signupSuccessStep2ViewControllerDelegate.loggedInUser.token, complete: {(response) in
+                print("Gender Updated")
             });
-        }*/
+        }
+        
+        signupSuccessStep2ViewControllerDelegate.highLightCompleteButton();
         
     }
     
@@ -145,15 +171,20 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
         
         var postData: [String: Any] = [String: Any]();
         postData["birthDayStr"] = date.EMMMMdyyyy();
-        postData["userId"] = user.userId;
-        user.birthDayStr = date.EMMMMdyyyy();
-        User().updateUserValuesInUserDefaults(user: self.user);
+        postData["userId"] = self.signupSuccessStep2ViewControllerDelegate.loggedInUser.userId;
+        self.signupSuccessStep2ViewControllerDelegate.loggedInUser.birthDayStr = date.EMMMMdyyyy();
+        User().updateUserValuesInUserDefaults(user: signupSuccessStep2ViewControllerDelegate.loggedInUser);
         
-        /*DispatchQueue.global(qos: .background).async {
-            UserService().postUserDetails(postData: postData, token: self.user.token, complete: {(response) in
-                //User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+        DispatchQueue.global(qos: .background).async {
+            UserService().postUserDetails(postData: postData, token: self.signupSuccessStep2ViewControllerDelegate.loggedInUser.token, complete: {(response) in
+                print("BirthDay Updated")
             });
-        }*/
+        }
         
+        signupSuccessStep2ViewControllerDelegate.highLightCompleteButton();
+    }
+    
+    func updateProfilePic(profilePicImage: UIImage) {
+        profilePic.image = profilePicImage;
     }
 }

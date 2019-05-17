@@ -259,7 +259,15 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
     func predictiveCalendarDatePressed(date: Date) {
         dateLabel.isHidden = false
-        dateLabel.text = String(date.EMMMd()!);
+        
+        let currentYearComponent = Calendar.current.component(.year, from: Date());
+        
+        let startDateYearComponent = Calendar.current.component(.year, from: date);
+
+        if (currentYearComponent > startDateYearComponent || currentYearComponent < startDateYearComponent) {        dateLabel.text = String(date.EMMMMdyyyy()!);
+        } else {
+            dateLabel.text = String(date.EMMMd()!);
+        }
         createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
         
         createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true

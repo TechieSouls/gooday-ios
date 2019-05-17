@@ -67,6 +67,7 @@ class EventMember {
         eventMember.userId = eventMemberDict.value(forKey: "friendId") as? Int32;
         eventMember.userContactId = eventMemberDict.value(forKey: "userContactId") as? Int32;
         eventMember.owner = eventMemberDict.value(forKey: "owner") as? Bool;
+        eventMember.phone = eventMemberDict.value(forKey: "phone") as? String;
         
         if let user = eventMemberDict.value(forKey: "user") as? NSDictionary {
             eventMember.user = User().loadUserData(userDataDict: user);

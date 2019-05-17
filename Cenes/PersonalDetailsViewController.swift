@@ -69,7 +69,10 @@ class PersonalDetailsViewController: UIViewController {
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         name.text = loggedInUser.name!;
         email.text = loggedInUser.email!
-        phone.text = loggedInUser.phone!;
+        
+        if (loggedInUser.phone != nil) {
+            phone.text = loggedInUser.phone!;
+        }
         if (loggedInUser.password == nil) {
             password.text = "Set a Password";
         }

@@ -16,8 +16,9 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     
     @IBOutlet weak var passwordTextField: UITextField!
     
-    
     @IBOutlet weak var backButton: UIImageView!
+    
+    var existingEmail = "";
     
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
@@ -43,6 +44,10 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         
         let backTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed));
         backButton.addGestureRecognizer(backTapGesture);
+        
+        if (existingEmail != "") {
+            emailTxtField.text = existingEmail;
+        }
         
     }
 
@@ -124,12 +129,12 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             if returnedDict.value(forKey: "Error") as? Bool == true {
                 self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
                 
-            }else{
-                
-                WebService().setPushToken();
-                
-                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-
+            } else {
+                setting.setValue(2, forKey: "onboarding")
+                DispatchQueue.main.async {
+                    WebService().setPushToken()
+                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                }
             }
         })
     }

@@ -8,7 +8,8 @@
 
 import UIKit
 
-class SignupStep2CalendarsTableViewCell: UITableViewCell {
+class SignupStep2CalendarsTableViewCell: UITableViewCell, SignupStep2CalendarsTableViewProtocol {
+
 
     @IBOutlet weak var leftSeparator: UIView!
     
@@ -33,9 +34,7 @@ class SignupStep2CalendarsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var appleIcon: UIImageView!
     
-    
-    @IBOutlet weak var completeButton: UIButton!
-    
+    var signupSuccessStep2ViewControllerDelegate: SignupSuccessStep2ViewController!;
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -147,35 +146,37 @@ class SignupStep2CalendarsTableViewCell: UITableViewCell {
         return gradient;
     }
     
-    
-    @objc func googleBubbleViewPressed() {
-        if (googleBubbleView.isHidden == true) {
-            googleBubbleView.isHidden = false;
-            googleGradientBubbleView.isHidden = true;
-        } else {
+    func highlightCalendarCircles(calendar: String) {
+        if (calendar == "Google") {
             googleBubbleView.isHidden = true;
             googleGradientBubbleView.isHidden = false;
+        } else if (calendar == "Outlook"){
+            outlookBubbleView.isHidden = true;
+            outlookGradientBubbleView.isHidden = false;
+        } else if (calendar == "Apple") {
+            appleBubbleView.isHidden = true;
+            appleGradientBubbleView.isHidden = false;
         }
     }
     
+    
+    @objc func googleBubbleViewPressed() {
+        signupSuccessStep2ViewControllerDelegate.googleSyncBegins();
+    }
+    
     @objc func outlookBubbleViewPressed() {
-        if (outlookBubbleView.isHidden == true) {
+       /* if (outlookBubbleView.isHidden == true) {
             outlookBubbleView.isHidden = false;
             outlookGradientBubbleView.isHidden = true;
         } else {
             outlookBubbleView.isHidden = true;
             outlookGradientBubbleView.isHidden = false;
-        }
+        }*/
+        signupSuccessStep2ViewControllerDelegate.outlookSyncBegins();
 
     }
     
     @objc func appleBubbleViewPressed() {
-        if (appleBubbleView.isHidden == true) {
-            appleBubbleView.isHidden = false;
-            appleGradientBubbleView.isHidden = true;
-        } else {
-            appleBubbleView.isHidden = true;
-            appleGradientBubbleView.isHidden = false;
-        }
+        signupSuccessStep2ViewControllerDelegate.appleSyncBegins();
     }
 }

@@ -86,6 +86,9 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         
         let backTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed));
         backButton.addGestureRecognizer(backTapGesture);
+        
+        textFieldPassword.isEnabled = false;
+        textFieldConfirmPassword.isEnabled = false;
     }
 
     override func didReceiveMemoryWarning() {
@@ -108,19 +111,45 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     
     @IBAction func signupButtonPressed(_ sender: Any) {
         
-        if (user.email != nil) {
+        
+        if (textFieldEmail.text != nil && isValidEmail(testStr: textFieldEmail.text!)) {
             var postData = [String: Any]();
-            postData["email"] = user.email!;
-            postData["password"] = user.password!
+            postData["email"] = textFieldEmail.text!;
+            postData["password"] = textFieldPassword.text!
             
-            /*UserService().emailSignupRequest(postData: postData, complete: {(response) in
-             print(response);
-             });*/
-            
-            let viewController = storyboard?.instantiateViewController(withIdentifier: "SignupSuccessStep2ViewController") as! SignupSuccessStep2ViewController;
-            self.navigationController?.pushViewController(viewController, animated: true);
+            UserService().emailSignupRequest(postData: postData, complete: {(response) in
+                print(response);
+                
+                let success = response.value(forKey: "success") as! Bool;
+                
+                if (success == false) {
+                    self.showAlert(title: "Error", message: response.value(forKey: "message") as! String);
+                } else {
+                    
+                    let data = response.value(forKey: "data") as! NSDictionary;
+                    
+                    setting.setValue(data.object(forKey: "userId"), forKey: "userId")
+                    setting.setValue(data.object(forKey: "token"), forKey: "token")
+                    setting.setValue(data.object(forKey: "email"), forKey: "email")
+                    setting.setValue(data.object(forKey: "password"), forKey: "password")
+
+                    
+                    //Registering Device Token
+                    DispatchQueue.global(qos: .background).async {
+                        WebService().setPushToken();
+                    }
+                    
+                    let viewController = self.storyboard?.instantiateViewController(withIdentifier: "SignupSuccessStep2ViewController") as! SignupSuccessStep2ViewController;
+                    self.navigationController?.pushViewController(viewController, animated: true);
+                }
+            });
+        } else {
+            if (textFieldEmail.text != nil && !isValidEmail(testStr: textFieldEmail.text!)) {
+                self.showAlert(title: "Error", message: "Invalid Email Format")
+            }
         }
     }
+    
     @IBAction func loginButtinPressed(_ sender: Any) {
         let sininViewController = storyboard?.instantiateViewController(withIdentifier: "SignInViewController") as! SignInViewController
         self.navigationController?.pushViewController(sininViewController, animated: true)
@@ -287,6 +316,14 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         });
     }
     
+    func isValidEmail(testStr:String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluate(with: testStr)
+    }
+
+    
     func syncDeviceContacts() {
         self.startAnimating(loadinIndicatorSize, message: "Syncing Contacts...", type: self.nactvityIndicatorView.type)
         
@@ -367,7 +404,10 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
                             print ("Cancel")
                         }
                         let loginAction = UIAlertAction(title: "Login", style: .default) { (UIAlertAction) in
-                            print ("Login")
+                            print ("Login");
+                            let sininViewController = self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController") as! SignInViewController
+                            sininViewController.existingEmail = self.textFieldEmail.text!;
+                            self.navigationController?.pushViewController(sininViewController, animated: true)
                         }
                         alertController.addAction(cancelAction)
                         alertController.addAction(loginAction)
@@ -375,15 +415,16 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
                         
                         
                     } else {
+                        self.textFieldPassword.isEnabled = true;
                         self.textFieldPassword.becomeFirstResponder();
                     }
-                    
                 });
             } else {
                 textFieldPassword.becomeFirstResponder();
             }
             
         } else if (textField == textFieldPassword) {
+            self.textFieldConfirmPassword.isEnabled = true;
             textFieldConfirmPassword.becomeFirstResponder();
         } else if (textField == textFieldConfirmPassword) {
             

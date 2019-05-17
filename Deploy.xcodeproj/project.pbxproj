@@ -140,6 +140,10 @@
 		5EDEE1F62240BEE100330F47 /* HttpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F52240BEE100330F47 /* HttpService.swift */; };
 		5EDEE1F82240C75A00330F47 /* MetimeRecurringEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F72240C75A00330F47 /* MetimeRecurringEvent.swift */; };
 		5EDEE1FA2240CC7A00330F47 /* MeTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1F92240CC7A00330F47 /* MeTimeManager.swift */; };
+		5EECD1D4228D2B3D00F9ADAF /* ProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EECD1D3228D2B3D00F9ADAF /* ProfileManager.swift */; };
+		5EECD1D7228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EECD1D5228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.swift */; };
+		5EECD1D8228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EECD1D6228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib */; };
+		5EED1A8F228B282200346C33 /* CalendarSyncToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EED1A8E228B282200346C33 /* CalendarSyncToken.swift */; };
 		5EEE363E1F508DA20095517C /* CountryPicker.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5EEE363B1F508DA20095517C /* CountryPicker.bundle */; };
 		5EEE363F1F508DA20095517C /* CountryPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5EEE363D1F508DA20095517C /* CountryPicker.m */; };
 		5EEE36431F50D78E0095517C /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EEE36421F50D78E0095517C /* BaseViewController.swift */; };
@@ -522,6 +526,10 @@
 		5EDEE1F52240BEE100330F47 /* HttpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpService.swift; sourceTree = "<group>"; };
 		5EDEE1F72240C75A00330F47 /* MetimeRecurringEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetimeRecurringEvent.swift; sourceTree = "<group>"; };
 		5EDEE1F92240CC7A00330F47 /* MeTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeManager.swift; sourceTree = "<group>"; };
+		5EECD1D3228D2B3D00F9ADAF /* ProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManager.swift; sourceTree = "<group>"; };
+		5EECD1D5228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowHideHolidayTableViewCell.swift; sourceTree = "<group>"; };
+		5EECD1D6228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShowHideHolidayTableViewCell.xib; sourceTree = "<group>"; };
+		5EED1A8E228B282200346C33 /* CalendarSyncToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSyncToken.swift; sourceTree = "<group>"; };
 		5EEE363A1F508DA10095517C /* Cenes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cenes-Bridging-Header.h"; sourceTree = "<group>"; };
 		5EEE363B1F508DA20095517C /* CountryPicker.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CountryPicker.bundle; sourceTree = "<group>"; };
 		5EEE363C1F508DA20095517C /* CountryPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryPicker.h; sourceTree = "<group>"; };
@@ -970,6 +978,8 @@
 		5EC7A168227DBBF40010E804 /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				5EF84095223765910046E68D /* CountryTableViewCell.swift */,
+				5EF84096223765910046E68D /* CountryTableViewCell.xib */,
 				5EC7A169227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift */,
 				5EC7A16A227DBC4B0010E804 /* PeronalDetailsTableViewCell.xib */,
 				5EC7A178228036E80010E804 /* UsernameTableViewCell.swift */,
@@ -980,6 +990,8 @@
 				5E6DA42922854862006D86D9 /* ThirdPartyCalendarTableViewCell.xib */,
 				5E6DA42E22855839006D86D9 /* HolidayCalendarTableViewCell.swift */,
 				5E6DA42F22855839006D86D9 /* HolidayCalendarTableViewCell.xib */,
+				5EECD1D5228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.swift */,
+				5EECD1D6228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -1003,6 +1015,7 @@
 				5EC7A176228035F30010E804 /* EditPersonalDetailsViewController.swift */,
 				5E6DA424228544AA006D86D9 /* CalendarsViewController.swift */,
 				5E6DA426228547B2006D86D9 /* SelectedCalendarViewController.swift */,
+				5EF840922237646B0046E68D /* HolidayCalendarListViewController.swift */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -1045,7 +1058,6 @@
 			children = (
 				5EF84094223765610046E68D /* CalendarListViewCells */,
 				5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */,
-				5EF840922237646B0046E68D /* HolidayCalendarListViewController.swift */,
 			);
 			name = HolidayCalendar;
 			sourceTree = "<group>";
@@ -1053,8 +1065,6 @@
 		5EF84094223765610046E68D /* CalendarListViewCells */ = {
 			isa = PBXGroup;
 			children = (
-				5EF84095223765910046E68D /* CountryTableViewCell.swift */,
-				5EF84096223765910046E68D /* CountryTableViewCell.xib */,
 			);
 			name = CalendarListViewCells;
 			sourceTree = "<group>";
@@ -1445,6 +1455,7 @@
 				5EDEE1F72240C75A00330F47 /* MetimeRecurringEvent.swift */,
 				5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */,
 				5EC64E8C2285C594001FB7A7 /* CenesProperty.swift */,
+				5EED1A8E228B282200346C33 /* CalendarSyncToken.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1587,6 +1598,7 @@
 				5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */,
 				5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */,
 				5E20A49B226DC81300F1DBC6 /* LocationManager.swift */,
+				5EECD1D3228D2B3D00F9ADAF /* ProfileManager.swift */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -1777,6 +1789,7 @@
 				FA3429FC21FB687D00205876 /* HomeCalendarTableViewCell.xib in Resources */,
 				AE4647831F6FE03E00B5CB67 /* flag_ac.png in Resources */,
 				5EDEE1E92240A42300330F47 /* MeTimeDescTableViewCell.xib in Resources */,
+				5EECD1D8228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib in Resources */,
 				AE8617FA1F5982C600F99D75 /* HomeTableViewCellHeader.xib in Resources */,
 				AE4647A41F6FE03E00B5CB67 /* flag_sg.png in Resources */,
 				F4D2C1251F37C6E6005638D8 /* HomeTableViewCellTwo.xib in Resources */,
@@ -2051,6 +2064,7 @@
 				5EAF0CB8228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.swift in Sources */,
 				5ED747BC2226CF3C00C3458A /* Location.swift in Sources */,
 				F4B871F51F0DDEF1001A9963 /* LoginViewController.swift in Sources */,
+				5EECD1D4228D2B3D00F9ADAF /* ProfileManager.swift in Sources */,
 				5E20A495226A1D8400F1DBC6 /* FriendCollectionViewCell.swift in Sources */,
 				5EFFC0A8222D1F320037D2EC /* FriendsTableViewCell.swift in Sources */,
 				5E67566722843367005C83B6 /* UIViewController+Customs.swift in Sources */,
@@ -2065,6 +2079,7 @@
 				5ED6FECF224B687B00E940DE /* Connectivity.swift in Sources */,
 				5EC7A167227DAC5A0010E804 /* BottomCurveDesignableView.swift in Sources */,
 				5E41E95F223551AD00CEECFB /* HomeDto.swift in Sources */,
+				5EECD1D7228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.swift in Sources */,
 				AE4E83EA1F612A190022ED7E /* AlarmViewController.swift in Sources */,
 				AE92F0261F947F490051CCF6 /* DeleteCell.swift in Sources */,
 				AE0351271F5E912E001A162B /* GatheringPeopleTableViewCell.swift in Sources */,
@@ -2123,6 +2138,7 @@
 				5E51FD912265D19100A86994 /* CellHeightDto.swift in Sources */,
 				B99D55CC1FC169FB0020AC50 /* AddAlarmViewController+Extensions.swift in Sources */,
 				AE8F3A761FC40FCD00ED13CC /* OutlookService.swift in Sources */,
+				5EED1A8F228B282200346C33 /* CalendarSyncToken.swift in Sources */,
 				F40A89A11F1FD74B002BBC17 /* UtilMethod.swift in Sources */,
 				B94B39921FA7BAF400A806FE /* RemindersEmptyTableViewCell.swift in Sources */,
 				FA42F06A2140632500721A7A /* UserService.swift in Sources */,

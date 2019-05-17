@@ -58,7 +58,10 @@ class User {
     }
     
     func updateUserValuesInUserDefaults(user: User) {
-        setting.setValue(user.name, forKeyPath: "name")
+        
+        if (user.name != nil) {
+            setting.setValue(user.name, forKeyPath: "name")
+        }
         
         if (user.gender != nil) {
             setting.setValue(user.gender, forKeyPath: "gender")
@@ -70,6 +73,10 @@ class User {
         
         if (user.password != nil) {
             setting.setValue(user.password, forKeyPath: "password")
+        }
+        
+        if (user.photo != nil) {
+            setting.setValue(user.photo, forKeyPath: "photo")
         }
     }
     

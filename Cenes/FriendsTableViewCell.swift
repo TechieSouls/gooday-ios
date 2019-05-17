@@ -126,6 +126,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             } else {
                 cell.name.text = eventMember.name;
             }
+            cell.phone.text = eventMember.phone;
             
             //Here we will check. If user is cenes member and has image then we will set it.
             //If user is not a cenes member yet, then we will show first two letters

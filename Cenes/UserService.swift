@@ -13,14 +13,20 @@ class UserService {
     
     let get_friend_list = "api/user/phonefriends/v2";
     let get_user_stats = "api/user/userStatsByUserId";
-    let get_user_properties = "api/user/userProperties";
+    let get_user_sync_details = "api/user/syncDetails";
     let get_user_by_email = "auth/user/findByEmail";
     
     let post_signup_user_step1 = "api/users/signupstep1";
     let post_signup_user_step2 = "api/users/signupstep2";
-
     let post_userdetails = "api/user/updateDetails";
     let post_validate_password = "api/user/validatePassword";
+    let post_sync_google_events = "api/google/events/v2";
+    let post_sync_device_events = "api/user/syncdevicecalendar";
+    let post_sync_outlook_events = "api/outlook/events/v2";
+    let post_upload_profile_pic = "api/user/profile/upload/v2";
+    let post_sync_holiday_calendar = "api/holiday/calendar/events/v2";
+    
+    let delete_sync_token = "api/user/deleteSyncBySyncId"
     
     var requestArray = NSMutableArray()
 
@@ -312,8 +318,8 @@ class UserService {
         });
     }
     
-    func findUserPropertiesByUserId(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
-        let url = "\(apiUrl)\(get_user_properties)?\(queryStr)";
+    func findUserSyncTokens(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_user_sync_details)?\(queryStr)";
         print("Url : \(url)")
         HttpService().getMethod(url: url, token: token, complete: {(response) in
             complete(response)
@@ -325,6 +331,62 @@ class UserService {
         let url = "\(apiUrl)\(get_user_by_email)?\(queryStr)";
         print("Url : \(url)")
         HttpService().getMethodWithoutToken(url: url, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func syncGoogleEvent(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_sync_google_events)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+        
+    }
+    
+    func syncDeviceEvents(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_sync_device_events)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+        
+    }
+    
+    func syncOutlookEvents(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_sync_outlook_events)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func syncHolidayCalendar(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_sync_holiday_calendar)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func uploadUserProfilePic(postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_upload_profile_pic)";
+        
+        HttpService().postMultipartImageProfilePic(url: url, image: postData["uploadImage"] as! UIImage, userId: postData["userId"] as! Int32, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func deleteSyncTokenByTokenId(queryStr: String, token: String,  complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(delete_sync_token)?\(queryStr)";
+        
+        HttpService().deleteMethod(url: url, token: token, complete: {(response) in
             complete(response);
         });
     }

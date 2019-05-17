@@ -18,15 +18,17 @@ class CalendarsViewController: UIViewController {
     
     @IBOutlet weak var appleCalendarBar: UIView!
     
+    @IBOutlet weak var holidayCalendarLabel: UILabel!
+    
     var loggedInUser: User!;
-    var cenesProperties: [CenesProperty]!
+    var calendarSyncTokens: [CalendarSyncToken]!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         self.view.backgroundColor = themeColor;
-        
+        self.title = "My Calendars";
         let tapHolidayGesture = UITapGestureRecognizer.init(target: self, action: #selector(holidayCalendarBarPressed));
         holidayCalendarBar.addGestureRecognizer(tapHolidayGesture);
         
@@ -45,6 +47,7 @@ class CalendarsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false;
+        self.tabBarController?.tabBar.isHidden = true;
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -61,9 +64,17 @@ class CalendarsViewController: UIViewController {
     */
 
     @objc func holidayCalendarBarPressed() {
-        let uiViewController = storyboard?.instantiateViewController(withIdentifier: "SelectedCalendarViewController") as! SelectedCalendarViewController;
-        uiViewController.calendarSelected = SelectedCalendar.HolidayCalendar;
-
+        let uiViewController = storyboard?.instantiateViewController(withIdentifier: "HolidayCalendarListViewController") as! HolidayCalendarListViewController;
+        
+        
+        if (calendarSyncTokens != nil && calendarSyncTokens.count > 0) {
+            for calendarSyncToken in calendarSyncTokens {
+                if (calendarSyncToken.accountType == SelectedCalendar.HolidayCalendar) {
+                    uiViewController.calendarSyncToken = calendarSyncToken;
+                    break;
+                }
+            }
+        }
         self.navigationController?.pushViewController(uiViewController, animated: true);
     }
     
@@ -71,12 +82,27 @@ class CalendarsViewController: UIViewController {
         
         let uiViewController = storyboard?.instantiateViewController(withIdentifier: "SelectedCalendarViewController") as! SelectedCalendarViewController;
         uiViewController.calendarSelected = SelectedCalendar.GoogleCalendar;
+        if (calendarSyncTokens != nil && calendarSyncTokens.count > 0) {
+            for calendarSyncToken in calendarSyncTokens {
+                if (calendarSyncToken.accountType == SelectedCalendar.GoogleCalendar) {
+                    uiViewController.calendarSyncToken = calendarSyncToken;
+                }
+            }
+        }
+
         self.navigationController?.pushViewController(uiViewController, animated: true);
     }
     
     @objc func outlookCalendarBarPressed() {
         let uiViewController = storyboard?.instantiateViewController(withIdentifier: "SelectedCalendarViewController") as! SelectedCalendarViewController;
         uiViewController.calendarSelected = SelectedCalendar.OutlookCalendar;
+        if (calendarSyncTokens != nil && calendarSyncTokens.count > 0) {
+            for calendarSyncToken in calendarSyncTokens {
+                if (calendarSyncToken.accountType == SelectedCalendar.OutlookCalendar) {
+                    uiViewController.calendarSyncToken = calendarSyncToken;
+                }
+            }
+        }
 
         self.navigationController?.pushViewController(uiViewController, animated: true);
     }
@@ -84,6 +110,13 @@ class CalendarsViewController: UIViewController {
     @objc func appleCalendarBarPressed() {
         let uiViewController = storyboard?.instantiateViewController(withIdentifier: "SelectedCalendarViewController") as! SelectedCalendarViewController;
         uiViewController.calendarSelected = SelectedCalendar.AppleCalendar;
+        if (calendarSyncTokens != nil && calendarSyncTokens.count > 0) {
+            for calendarSyncToken in calendarSyncTokens {
+                if (calendarSyncToken.accountType == SelectedCalendar.AppleCalendar) {
+                    uiViewController.calendarSyncToken = calendarSyncToken;
+                }
+            }
+        }
 
         self.navigationController?.pushViewController(uiViewController, animated: true);
     }
@@ -91,15 +124,21 @@ class CalendarsViewController: UIViewController {
     func loadUserProperties() {
         
         let queryStr = "userId=\(String(loggedInUser.userId!))";
-        UserService().findUserPropertiesByUserId(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
+        UserService().findUserSyncTokens(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
             
             let success = response.value(forKey: "success") as! Bool;
             if (success == true) {
                 
-                let cenesPropertiesArray = response.value(forKey: "data") as! NSArray;
-                if (cenesPropertiesArray.count > 0) {
-                    self.cenesProperties = CenesProperty().loadCenesProperties(cenesPropertiesArray: cenesPropertiesArray);
+                let calendarSyncTokenArray = response.value(forKey: "data") as! NSArray;
+                self.calendarSyncTokens = CalendarSyncToken().loadCalendarSyncTokens(calendarSyncTokenArray: calendarSyncTokenArray);
+                
+                for calendarSyncToken in self.calendarSyncTokens {
+                    if (calendarSyncToken.accountType == SelectedCalendar.HolidayCalendar) {
+                        self.holidayCalendarLabel.text = "Holiday: \(calendarSyncToken.emailId!)";
+                        break;
+                    }
                 }
+                
             } else {
                 self.showAlert(title: "Error", message: response.value(forKey: "message") as! String);
             }

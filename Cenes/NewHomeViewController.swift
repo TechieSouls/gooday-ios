@@ -12,7 +12,7 @@ protocol DataTableViewCellProtocol {
     func reloadTableToTop();
 }
 
-class NewHomeViewController: UIViewController, NewHomeViewProtocol {
+class NewHomeViewController: UIViewController, SlidingCellDelegate,  NewHomeViewProtocol {
     
     @IBOutlet weak var homeTableView: UITableView!
 
@@ -35,6 +35,7 @@ class NewHomeViewController: UIViewController, NewHomeViewProtocol {
         dateComponets.second = 0;
         dateComponets.nanosecond = 0;
         homescreenDto.timeStamp = Int(Calendar.current.date(from: dateComponets)!.millisecondsSince1970);
+        print("Home Screen Date : \(homescreenDto.timeStamp)")
         tabBarController?.delegate = self
         
         //Calling Funcitons
@@ -134,7 +135,7 @@ class NewHomeViewController: UIViewController, NewHomeViewProtocol {
         let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(homescreenDto.timeStamp))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
         
         HomeService().getHomeEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
-            print(returnedDict)
+            //print(returnedDict)
             
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {

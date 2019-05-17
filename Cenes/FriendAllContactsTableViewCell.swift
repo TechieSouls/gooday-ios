@@ -18,6 +18,8 @@ class FriendAllContactsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var name: UILabel!
     
+    @IBOutlet weak var phone: UILabel!
+    
     @IBOutlet weak var separator: UIView!
     
     @IBOutlet weak var profilePic: UIImageView!

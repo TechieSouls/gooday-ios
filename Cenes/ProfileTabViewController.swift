@@ -112,7 +112,11 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
 
         var profilePicTapGesture = UITapGestureRecognizer.init(target: self, action: Selector("profilePicTapped"));
         profilePic.addGestureRecognizer(profilePicTapGesture);
-        profilePic.sd_setImage(with: URL(string: loggedInUser.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+        
+        if (loggedInUser.photo != nil) {
+            profilePic.sd_setImage(with: URL(string: loggedInUser.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+        }
+        
         
         profileName.text = loggedInUser.name;
         
