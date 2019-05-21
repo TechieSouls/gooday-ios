@@ -368,12 +368,22 @@ extension SignupSuccessStep2ViewController: UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
         switch indexPath.row {
         case 0:
             let cell: SignupStep2FormTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SignupStep2FormTableViewCell") as! SignupStep2FormTableViewCell;
             cell.signupSuccessStep2ViewControllerDelegate = self;
             
+            if (loggedInUser.photo != nil) {
+                cell.profilePic.sd_setImage(with: URL(string: loggedInUser.photo), placeholderImage: UIImage.init(named: "profile_pic_no_miage"))
+            }
+            
+            if (loggedInUser.gender != nil) {
+                cell.gender.setTitle(loggedInUser.gender!, for: .normal);
+            }
+            
+            if (loggedInUser.name != nil) {
+                cell.usernameField.text = loggedInUser.name!;
+            }
             self.signupStep2FormTableViewCellProtocolDelegate = cell;
             return cell;
 

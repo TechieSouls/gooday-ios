@@ -46,6 +46,11 @@ extension ProfileTabViewController: UITableViewDelegate, UITableViewDataSource {
             let viewController = storyboard?.instantiateViewController(withIdentifier: "CalendarsViewController") as! CalendarsViewController
             navigationController?.pushViewController(viewController, animated: true);
             break;
+        case 2:
+            let navViewController = storyboard?.instantiateViewController(withIdentifier: "AppSettingsViewController") as! AppSettingsViewController;
+            navigationController?.pushViewController(navViewController, animated: true);
+            break;
+            
         case 3:
             // create an actionSheet
             let actionSheetController: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)

@@ -173,6 +173,10 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         
                         let event = event as EKEvent
                         
+                        
+                        if (event.isAllDay == true) {
+                            continue;
+                        }
                         let title = event.title
                         
                         let location = event.location

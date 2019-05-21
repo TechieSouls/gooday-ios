@@ -367,7 +367,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     
                 } else if (event.scheduleAs == "Event") {
                     
-                    let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { (action, indexPath) in
+                    let deleteButton = UITableViewRowAction(style: .default, title: "Hide") { (action, indexPath) in
                         
                         let queryStr = "event_id=\(String(event.eventId))";
                         HomeService().removeEventFromList(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in

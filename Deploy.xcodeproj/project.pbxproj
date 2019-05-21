@@ -73,6 +73,15 @@
 		5E57873E224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */; };
 		5E578741224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */; };
 		5E578742224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E578740224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib */; };
+		5E64C0F5228ECDE9000F2629 /* CountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */; };
+		5E64C0FB228F153E000F2629 /* CountryItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */; };
+		5E64C0FC228F153E000F2629 /* CountryItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */; };
+		5E64C0FE228F1B79000F2629 /* CountryDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0FD228F1B79000F2629 /* CountryDto.swift */; };
+		5E64C100228F31AD000F2629 /* AppSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0FF228F31AD000F2629 /* AppSettingsViewController.swift */; };
+		5E64C10222905F28000F2629 /* AppSettingsEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C10122905F28000F2629 /* AppSettingsEditViewController.swift */; };
+		5E64C10522905F9D000F2629 /* DeleteAccountTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C10322905F9D000F2629 /* DeleteAccountTableViewCell.swift */; };
+		5E64C10622905F9D000F2629 /* DeleteAccountTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E64C10422905F9D000F2629 /* DeleteAccountTableViewCell.xib */; };
+		5E64C10922927CE1000F2629 /* ChoiceViewController+Facebook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C10822927CE1000F2629 /* ChoiceViewController+Facebook.swift */; };
 		5E67566722843367005C83B6 /* UIViewController+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E67566622843367005C83B6 /* UIViewController+Customs.swift */; };
 		5E67566922846C44005C83B6 /* UIDevice+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E67566822846C44005C83B6 /* UIDevice+Custom.swift */; };
 		5E6999082221098100A275B6 /* GatheringPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6999072221098100A275B6 /* GatheringPreviewController.swift */; };
@@ -459,6 +468,15 @@
 		5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeTwoLineTitleTableViewCell.xib; sourceTree = "<group>"; };
 		5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeThreeLineTableViewCell.swift; sourceTree = "<group>"; };
 		5E578740224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeThreeLineTableViewCell.xib; sourceTree = "<group>"; };
+		5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountriesViewController.swift; sourceTree = "<group>"; };
+		5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryItemTableViewCell.swift; sourceTree = "<group>"; };
+		5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryItemTableViewCell.xib; sourceTree = "<group>"; };
+		5E64C0FD228F1B79000F2629 /* CountryDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDto.swift; sourceTree = "<group>"; };
+		5E64C0FF228F31AD000F2629 /* AppSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsViewController.swift; sourceTree = "<group>"; };
+		5E64C10122905F28000F2629 /* AppSettingsEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsEditViewController.swift; sourceTree = "<group>"; };
+		5E64C10322905F9D000F2629 /* DeleteAccountTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountTableViewCell.swift; sourceTree = "<group>"; };
+		5E64C10422905F9D000F2629 /* DeleteAccountTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeleteAccountTableViewCell.xib; sourceTree = "<group>"; };
+		5E64C10822927CE1000F2629 /* ChoiceViewController+Facebook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChoiceViewController+Facebook.swift"; sourceTree = "<group>"; };
 		5E67566622843367005C83B6 /* UIViewController+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Customs.swift"; sourceTree = "<group>"; };
 		5E67566822846C44005C83B6 /* UIDevice+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Custom.swift"; sourceTree = "<group>"; };
 		5E6999072221098100A275B6 /* GatheringPreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringPreviewController.swift; sourceTree = "<group>"; };
@@ -873,6 +891,7 @@
 				5E51FDA72268E4C300A86994 /* CreateGathDto.swift */,
 				5E20A4A7226F0EF000F1DBC6 /* LocationDto.swift */,
 				5EC7A1802281513C0010E804 /* ProfileDto.swift */,
+				5E64C0FD228F1B79000F2629 /* CountryDto.swift */,
 			);
 			name = Dto;
 			sourceTree = "<group>";
@@ -911,6 +930,36 @@
 				5E20A494226A1D8400F1DBC6 /* FriendCollectionViewCell.xib */,
 			);
 			name = cells;
+			sourceTree = "<group>";
+		};
+		5E64C0F3228ECD66000F2629 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				FA39E9882127507F00A47B93 /* OnboardingStep5ViewController.swift */,
+				FA39E9862127506A00A47B93 /* OnboardingStep4ViewController.swift */,
+				FA39E98421274FB900A47B93 /* OnboardingStep3ViewController.swift */,
+				FA39E9822127460300A47B93 /* OnBoardingStep2ViewController.swift */,
+				FA2BDD4F212710E600CF25C6 /* OnBoardingStep1ViewController.swift */,
+			);
+			name = Onboarding;
+			sourceTree = "<group>";
+		};
+		5E64C0F8228F14BC000F2629 /* Country */ = {
+			isa = PBXGroup;
+			children = (
+				5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */,
+				5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */,
+				5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */,
+			);
+			name = Country;
+			sourceTree = "<group>";
+		};
+		5E64C10722927CC8000F2629 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				5E64C10822927CE1000F2629 /* ChoiceViewController+Facebook.swift */,
+			);
+			name = extension;
 			sourceTree = "<group>";
 		};
 		5E69990E2222B58100A275B6 /* create */ = {
@@ -992,6 +1041,8 @@
 				5E6DA42F22855839006D86D9 /* HolidayCalendarTableViewCell.xib */,
 				5EECD1D5228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.swift */,
 				5EECD1D6228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib */,
+				5E64C10322905F9D000F2629 /* DeleteAccountTableViewCell.swift */,
+				5E64C10422905F9D000F2629 /* DeleteAccountTableViewCell.xib */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -1016,6 +1067,8 @@
 				5E6DA424228544AA006D86D9 /* CalendarsViewController.swift */,
 				5E6DA426228547B2006D86D9 /* SelectedCalendarViewController.swift */,
 				5EF840922237646B0046E68D /* HolidayCalendarListViewController.swift */,
+				5E64C0FF228F31AD000F2629 /* AppSettingsViewController.swift */,
+				5E64C10122905F28000F2629 /* AppSettingsEditViewController.swift */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -1463,15 +1516,12 @@
 		F4F4DFDA1F0EA94900169990 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5E64C0F8228F14BC000F2629 /* Country */,
+				5E64C0F3228ECD66000F2629 /* Onboarding */,
 				5ED6FED1224B841300E940DE /* Profile */,
 				5E078D1B2236465C0082A013 /* SideMenuControllers */,
 				5ED747BD2227701900C3458A /* Location */,
 				FA20493E214C35A3004F1A13 /* Authenticate */,
-				FA39E9882127507F00A47B93 /* OnboardingStep5ViewController.swift */,
-				FA39E9862127506A00A47B93 /* OnboardingStep4ViewController.swift */,
-				FA39E98421274FB900A47B93 /* OnboardingStep3ViewController.swift */,
-				FA39E9822127460300A47B93 /* OnBoardingStep2ViewController.swift */,
-				FA2BDD4F212710E600CF25C6 /* OnBoardingStep1ViewController.swift */,
 				AE8F47131FB9B61B00C153F0 /* Diary */,
 				B9710C8C1FA3B800000A45B3 /* Reminders */,
 				AE8184DA1F95BF3700D885A2 /* Home */,
@@ -1488,13 +1538,13 @@
 				F40A899E1F1FD70A002BBC17 /* MailLogInViewController.swift */,
 				F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */,
 				F48F48091F39FC790003B586 /* PCameraViewController.swift */,
-				5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */,
+				AE4D06C2200E18A500225D97 /* ForgotPasswordController.swift */,
 				5EEE36421F50D78E0095517C /* BaseViewController.swift */,
 				AE8F3A751FC40FCD00ED13CC /* OutlookService.swift */,
 				944A7B511F98044F001491D3 /* Alarm */,
 				AE4A817C1FAB1D90008AB844 /* CenesTabController.swift */,
 				AEDD81481FB0734500F15742 /* ProfileViewController.swift */,
-				AE4D06C2200E18A500225D97 /* ForgotPasswordController.swift */,
+				5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1517,6 +1567,7 @@
 		FA20493E214C35A3004F1A13 /* Authenticate */ = {
 			isa = PBXGroup;
 			children = (
+				5E64C10722927CC8000F2629 /* extension */,
 				5EAF0CAD22893BDE00AE2264 /* cells */,
 				FA20493F214C35ED004F1A13 /* ChoiceViewController.swift */,
 				FA8A66F82157CCE4002671D8 /* SignupStep2ViewController.swift */,
@@ -1773,11 +1824,13 @@
 				5EC7A16C227DBC4B0010E804 /* PeronalDetailsTableViewCell.xib in Resources */,
 				FA00904121F702D50038BF3D /* GatheringCardHeaderTableViewCell.xib in Resources */,
 				AE4647911F6FE03E00B5CB67 /* flag_hk.png in Resources */,
+				5E64C0FC228F153E000F2629 /* CountryItemTableViewCell.xib in Resources */,
 				F4B872001F0DDEF1001A9963 /* LaunchScreen.storyboard in Resources */,
 				5E51FD9D2268673B00A86994 /* DatePanelTableViewCell.xib in Resources */,
 				AE0351201F5E8DC4001A162B /* GatheringLocationTableViewCell.xib in Resources */,
 				5EBC9CAB2279F7A5005946C4 /* NoGatheringTableViewCell.xib in Resources */,
 				5E51FD882265979000A86994 /* FriendAllContactsTableViewCell.xib in Resources */,
+				5E64C10622905F9D000F2629 /* DeleteAccountTableViewCell.xib in Resources */,
 				AE4647A21F6FE03E00B5CB67 /* flag_ru.png in Resources */,
 				FA00904521F720ED0038BF3D /* MemberCollectionViewCell.xib in Resources */,
 				5E41ED1A2274218300E972E1 /* DataTableViewCell.xib in Resources */,
@@ -1992,6 +2045,7 @@
 				5E40954922531DCE00CA9700 /* NotificationManager.swift in Sources */,
 				5E69990A2221182600A275B6 /* GatheringPreviewController+UITableView.swift in Sources */,
 				5E51FD9F2268736E00A86994 /* CreateGatheringV2ViewController.swift in Sources */,
+				5E64C10922927CE1000F2629 /* ChoiceViewController+Facebook.swift in Sources */,
 				5E20A4AB226F21B800F1DBC6 /* LocationItemsHeaderViewCell.swift in Sources */,
 				5EC7A16B227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift in Sources */,
 				AE8617F91F5982C600F99D75 /* HomeTableViewCellHeader.swift in Sources */,
@@ -2021,6 +2075,8 @@
 				AE5BA7D01FAB283A00EBF76B /* SideMenuViewController.swift in Sources */,
 				FA3429F721FB663800205876 /* HomeHolidayTableViewCell.swift in Sources */,
 				B956ADB31FB04E00005B13CA /* LocationsModel+CoreDataClass.swift in Sources */,
+				5E64C10522905F9D000F2629 /* DeleteAccountTableViewCell.swift in Sources */,
+				5E64C0FB228F153E000F2629 /* CountryItemTableViewCell.swift in Sources */,
 				AE4A817D1FAB1D90008AB844 /* CenesTabController.swift in Sources */,
 				B956ADB51FB04E00005B13CA /* FriendsModel+CoreDataClass.swift in Sources */,
 				AE03511B1F5E87D7001A162B /* CreateGatheringViewController.swift in Sources */,
@@ -2065,7 +2121,9 @@
 				5EECD1D4228D2B3D00F9ADAF /* ProfileManager.swift in Sources */,
 				5E20A495226A1D8400F1DBC6 /* FriendCollectionViewCell.swift in Sources */,
 				5EFFC0A8222D1F320037D2EC /* FriendsTableViewCell.swift in Sources */,
+				5E64C10222905F28000F2629 /* AppSettingsEditViewController.swift in Sources */,
 				5E67566722843367005C83B6 /* UIViewController+Customs.swift in Sources */,
+				5E64C0F5228ECDE9000F2629 /* CountriesViewController.swift in Sources */,
 				F4E9C22D1F15F554002BE9B8 /* OnBoardingController.swift in Sources */,
 				FAC5314821CBE5F100E033BB /* Date+Customs.swift in Sources */,
 				5E2797C9222BCBA90098F295 /* GatheringGuestTableViewCell.swift in Sources */,
@@ -2091,6 +2149,7 @@
 				AE8969F11FC7FBFD00EE2A3A /* FriendsAddCell.swift in Sources */,
 				5E6DA427228547B2006D86D9 /* SelectedCalendarViewController.swift in Sources */,
 				FA42F0682140547D00721A7A /* PhonebookService.swift in Sources */,
+				5E64C0FE228F1B79000F2629 /* CountryDto.swift in Sources */,
 				AE4D06C3200E18A600225D97 /* ForgotPasswordController.swift in Sources */,
 				FA3429FB21FB687D00205876 /* HomeCalendarTableViewCell.swift in Sources */,
 				944A7B531F980494001491D3 /* AlarmTableViewCell.swift in Sources */,
@@ -2182,6 +2241,7 @@
 				5E6DA425228544AA006D86D9 /* CalendarsViewController.swift in Sources */,
 				5EC64E8D2285C594001FB7A7 /* CenesProperty.swift in Sources */,
 				942C76D31F9937F100817FD6 /* AlarmInfoTableViewCell.swift in Sources */,
+				5E64C100228F31AD000F2629 /* AppSettingsViewController.swift in Sources */,
 				AE8184E51F960EC300D885A2 /* HomeUserCellLast.swift in Sources */,
 				F4B871F31F0DDEF1001A9963 /* AppDelegate.swift in Sources */,
 				B956ADB61FB04E00005B13CA /* FriendsModel+CoreDataProperties.swift in Sources */,

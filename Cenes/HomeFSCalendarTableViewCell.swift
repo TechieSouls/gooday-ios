@@ -67,8 +67,12 @@ class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalend
         if (dotsCount == 1) {
              return [UIColor.orange];
         } else if (dotsCount == 2) {
-            return [UIColor.orange, UIColor.blue];
+            return [UIColor.orange, UIColor(red:0.29, green:0.56, blue:0.89, alpha:1)];
         }
        return [UIColor.clear]
+    }
+    
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
+        return UIColor.orange;
     }
 }

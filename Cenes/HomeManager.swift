@@ -27,6 +27,16 @@ class HomeManager {
             if dataType == "Event" {
                 let event = Event().loadEventData(eventDict: outerDict)
                 
+                let isLastDateOfMonth: Bool = false;
+                
+                let startTimeMonth = Calendar.current.component(.month, from: Date( milliseconds: Int(event.startTime)));
+                
+                var nextDayDateComponents = DateComponents();
+                nextDayDateComponents.day = 1;
+                let nextDayDate = Calendar.current.date(byAdding: nextDayDateComponents, to: Date( milliseconds: Int(event.startTime)));
+                
+                print(startTimeMonth, Calendar.current.component(.day, from: Date( milliseconds: Int(event.startTime))),  Calendar.current.component(.day, from: nextDayDate!), Calendar.current.component(.month, from: nextDayDate!))
+                
                 var key = Date(milliseconds: Int(event.startTime)).EMMMd()!;
                 let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
                 let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
@@ -62,6 +72,20 @@ class HomeManager {
                     dataObjectArray.append(cenesEvent)
                     
                 }
+                
+                //Addding Month Divider
+                /*for cenesEvent in dataObjectArray {
+                    if (cenesEvent.sectionName == key) {
+                        var events: [Event] = cenesEvent.sectionObjects;
+                        
+                        var monthDividerEvent = Event();
+                        monthDividerEvent.title = Date(milliseconds: Int(event.startTime)).MMMMsyyyy();
+                        monthDividerEvent.scheduleAs = "MonthDivider";
+                        events.append(monthDividerEvent);
+                        cenesEvent.sectionObjects = events;
+                    }
+                }*/
+                
             }
         }
         

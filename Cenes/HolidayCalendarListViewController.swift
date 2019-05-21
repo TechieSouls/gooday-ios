@@ -28,7 +28,7 @@ class HolidayCalendarListViewController: UIViewController {
         
         countryDataArray = ProfileManager().getWorldHolidayData();
         
-        alphabeticStrip = ProfileManager().getHolidayCalendarAlphabeticStrip();
+        alphabeticStrip = ProfileManager().getAlphabeticStrip();
     }
     /*
     // MARK: - Navigation
