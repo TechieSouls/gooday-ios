@@ -20,6 +20,7 @@ pod 'SwiftyJSONModel'
 pod 'SDWebImage', '~> 4.0'
 pod 'VisualEffectView'
 pod 'SwipeCellKit'
+pod 'UIImageCropper'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

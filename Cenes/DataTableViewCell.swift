@@ -264,7 +264,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             for homeData in self.newHomeViewControllerDelegate.homeDtoList {
                 gatheringsCount = gatheringsCount + homeData.sectionObjects.count;
             };
-            print("Gatheinrg COunt : ", gatheringsCount, "total Page COunts", self.newHomeViewControllerDelegate.totalPageCounts)
+            print("Gatheinrg Count : ", gatheringsCount, "total Page Counts", self.newHomeViewControllerDelegate.totalPageCounts)
             if (gatheringsCount < self.newHomeViewControllerDelegate.totalPageCounts) {
                 //self.spinner.startAnimating()
                 //self.spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))

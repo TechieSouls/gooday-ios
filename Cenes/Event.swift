@@ -49,7 +49,7 @@ class Event {
             event.eventId = eventDict.value(forKey: "id") as? Int32;
         }
         event.startTime = eventDict.value(forKey: "startTime") as! Int64;
-        event.endTime = eventDict.value(forKey: "endTime") as! Int64;
+        event.endTime = eventDict.value(forKey: "endTime") as? Int64 ?? event.startTime;
         event.location = eventDict.value(forKey: "location") as? String;
         event.source = eventDict.value(forKey: "source") as? String ?? "Cenes";
         event.latitude = eventDict.value(forKey: "latitude") as? String;

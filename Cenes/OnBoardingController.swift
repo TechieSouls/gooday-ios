@@ -115,7 +115,8 @@ class OnBoardingController: UIViewController ,UIPageViewControllerDataSource ,UI
     @IBAction func skipButtonPressed(_ sender: Any) {
         setting.setValue(1, forKey: "onboarding")
         //UIApplication.shared.keyWindow?.rootViewController = LoginViewController.MainViewController()
-        UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
+        //UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
+        UIApplication.shared.keyWindow?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
     }
     
     

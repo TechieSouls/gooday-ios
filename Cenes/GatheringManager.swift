@@ -72,7 +72,7 @@ class GatheringManager {
         for eventMember in friendList {
             
             var nameInitial = "";
-            if (eventMember.user != nil) {
+            if (eventMember.user != nil && eventMember.user.name != nil) {
                 nameInitial = eventMember.user.name.substring(toIndex: 1).uppercased();
                 print(nameInitial)
             } else if (eventMember.userContact != nil) {

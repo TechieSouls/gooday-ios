@@ -25,7 +25,7 @@ class HomeManager {
             
             let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
             if dataType == "Event" {
-                let event = Event().loadEventData(eventDict: outerDict)
+                let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
                 
                 let isLastDateOfMonth: Bool = false;
                 

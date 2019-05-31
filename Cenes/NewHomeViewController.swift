@@ -41,6 +41,10 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         //Calling Funcitons
         //Load Home Screen Data on user load
         self.registerTableCells()
+        
+        DispatchQueue.global(qos: .background).async {
+            self.syncDeviceContacts();
+        }
     }
     
 
@@ -63,6 +67,11 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         // Pass the selected object to the new view controller.
     }
     */
+    func syncDeviceContacts() {
+        UserService().syncDevicePhoneNumbers(complete: {(response)  in
+            
+        });
+    }
     func refreshHomeScreenData() {
         self.initilizeCalendarData();
         self.loadCalendarEventsData();

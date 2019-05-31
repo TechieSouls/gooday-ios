@@ -302,7 +302,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     
     @IBAction func completeButtonPressed(_ sender: Any) {
         
-        setting.setValue(2, forKey: "onboarding")
+        setting.setValue(4, forKey: "onboarding")
         DispatchQueue.main.async {
             WebService().setPushToken()
             UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()

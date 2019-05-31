@@ -9,18 +9,16 @@
 import UIKit
 import NVActivityIndicatorView
 
-class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, UITextFieldDelegate, SelectedCountryProtocol  {
+class PhoneVerificationSetp1ViewController: UIViewController, NVActivityIndicatorViewable, UITextFieldDelegate, SelectedCountryProtocol  {
 
     
     @IBOutlet weak var textPhoneNumber: UITextField!
+   
+    @IBOutlet weak var phoneNumberCode: UILabel!
+
+    @IBOutlet weak var btnCountryDropdown: UIView!
     
-    @IBOutlet weak var btnCountryDropdown: UIButton!
-    
-    @IBOutlet weak var btnContinue: UIButton!
-    
-    @IBOutlet weak var firstViewContainer: UIView!
-    
-    @IBOutlet weak var secondViewContainer: UIView!
+    @IBOutlet weak var btnGetAccess: UIButton!
     
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
@@ -50,17 +48,6 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
         
         print("my code :\(countryCode)");
         
-        self.firstViewContainer.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.bounds.height/2)
-        self.secondViewContainer.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.bounds.height/2)
-        
-        // Do any additional setup after loading the view.
-        self.btnContinue.layer.borderColor = UIColor.orange.cgColor
-        self.btnContinue.layer.borderWidth = 1
-        self.btnContinue.layer.cornerRadius = 20
-        
-        // Do any additional setup after loading the view.
-        self.btnCountryDropdown.backgroundColor = Util.colorWithHexString(hexString: "2C80D8");
-        self.btnCountryDropdown.setTitle(countryCode, for: .normal)
     }
 
     override func didReceiveMemoryWarning() {
@@ -136,6 +123,24 @@ class SignupSetp1ViewController: UIViewController, NVActivityIndicatorViewable, 
             return false;
         }
         return true;
+    }
+    
+    func addDoneButtonOnKeyboard(){
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
+        
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+        
+        txtMobileNumber.inputAccessoryView = doneToolbar
+    }
+    
+    @objc func doneButtonAction(){
+        txtMobileNumber.resignFirstResponder()
     }
     /*
     // MARK: - Navigation

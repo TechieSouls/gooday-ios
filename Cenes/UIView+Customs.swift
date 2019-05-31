@@ -22,10 +22,10 @@ extension UIView {
     func fadedSeparator() -> Void {
         let gradient = CAGradientLayer()
         gradient.frame = self.bounds
-        gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradient.startPoint = CGPoint(x: 0, y: 0)
         
-        gradient.endPoint = CGPoint(x: 0.7, y: 0.5)
-        gradient.colors = [UIColor.init(red: 181/255, green: 181/255, blue: 182/255, alpha: 1.0).cgColor, themeColor.cgColor]
+        gradient.endPoint = CGPoint(x: 0.4, y: 0.4)
+        gradient.colors = [UIColor.init(red: 181/255, green: 181/255, blue: 182/255, alpha: 1).cgColor, UIColor.clear]
         
         self.layer.insertSublayer(gradient, at: 0)
     }

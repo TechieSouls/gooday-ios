@@ -47,14 +47,16 @@ let setting = UserDefaults.standard
         
         // Override point for customization after application launch.
         let onboarding = setting.integer(forKey: "onboarding")
-        if onboarding == 2{
+        if onboarding == 4 {
             window?.rootViewController = HomeViewController.MainViewController()
-        }
-        else if onboarding == 1{
+        }  else if onboarding == 3 {
             //window?.rootViewController = LoginViewController.MainViewController()
             window?.rootViewController = ChoiceViewController.MainViewController()
-           
-        }else{
+        } else if onboarding == 2 {
+            //window?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
+            window?.rootViewController = ChoiceViewController.MainViewController()
+
+        } else {
              window?.rootViewController = OnBoardingController.onboardingViewController()
         }
         
@@ -422,7 +424,20 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         self.cenesTabBar?.setTabBarDotVisible(visible: true);
         print(notification.request.content.userInfo)
         NSLog("%@",notification)
-        completionHandler([.alert, .sound])
+        
+        let userInfo = notification.request.content.userInfo["aps"]! as? NSDictionary
+        let alertDict = userInfo!["alert"] as! NSDictionary
+            
+        if alertDict["type"] as? String == "HomeRefresh" {
+                if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+                    self.cenesTabBar?.selectedIndex = 0
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refreshHomeScreenData();
+                }
+            } else {
+                completionHandler([.alert, .sound])
+            }
         
     }
     
@@ -438,7 +453,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
-        if userInfo!["type"] as? String == "Gathering" {
+        if userInfo!["type"] as? String == "HomeRefresh" {
+
+            if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+                self.cenesTabBar?.selectedIndex = 0
+                
+                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                homeViewController?.refreshHomeScreenData();
+            }
+        } else if userInfo!["type"] as? String == "Gathering" {
             
             
             

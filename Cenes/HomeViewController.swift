@@ -18,7 +18,7 @@ import SideMenu
 import CoreData
 
 
-class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
+class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{ 
     
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     

@@ -18,6 +18,8 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     
     @IBOutlet weak var backButton: UIImageView!
     
+    @IBOutlet weak var forgotPasswordButton: UIButton!
+    
     var existingEmail = "";
     
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
@@ -80,63 +82,26 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
                 showAlert(title: "Password is empty", message: "");
                 return false;
             }
-            
+                        
             UserService().emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in
                 
                 if returnedDict.value(forKey: "Error") as? Bool == true {
                     self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                     
                 } else {
-                    WebService().setPushToken();
+                    
+                    DispatchQueue.global(qos: .background).async {
+                        self.syncDeviceContacts();
+                        WebService().setPushToken();
+                    }
+                    setting.setValue(4, forKey: "onboarding")
+                    
                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
                 }
             })
         }
         
         return false;
-    }
-    
-    @IBAction func onLoginClicked(_ sender: Any) {
-        
-        self.emailTxtField.resignFirstResponder()
-        self.passwordTextField.resignFirstResponder()
-        
-        if Util.isValidEmail(testStr: emailTxtField.text!) == false {
-            
-            emailTxtField.backgroundColor =  commonColor
-            
-            alertMessage(message: "Email is empty")
-            
-            return
-        }
-        
-        guard Util.isPwdLenth(password: passwordTextField.text!)else{
-            
-            passwordTextField.backgroundColor =  commonColor
-            alertMessage(message: "password should be greater than 5")
-            
-            return
-        }
-        
-        let userService = UserService()
-        self.startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
-        // new hud
-        
-        userService.emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in
-            
-            
-            self.stopAnimating()
-            if returnedDict.value(forKey: "Error") as? Bool == true {
-                self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
-                
-            } else {
-                setting.setValue(2, forKey: "onboarding")
-                DispatchQueue.main.async {
-                    WebService().setPushToken()
-                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                }
-            }
-        })
     }
     
     func alertMessage (message :String)
@@ -150,6 +115,12 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         self.present(alertController, animated: true, completion: nil)
     }
     
+    func syncDeviceContacts() {
+        // your code here
+        UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
+            
+        });
+    }
     /*
     // MARK: - Navigation
 
@@ -160,4 +131,9 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     }
     */
 
+    
+    @IBAction func forgotPasswordButtonPressed(_ sender: Any) {
+        let viewController = storyboard?.instantiateViewController(withIdentifier: "ForgotPasswordController") as! ForgotPasswordController;
+        self.navigationController?.pushViewController(viewController, animated: true);
+    }
 }

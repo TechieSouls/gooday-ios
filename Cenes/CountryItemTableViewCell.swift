@@ -12,9 +12,14 @@ class CountryItemTableViewCell: UITableViewCell {
 
     @IBOutlet weak var countryCode: UILabel!
     @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var countryItemSeparator: UIView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        contentView.backgroundColor = themeColor;
+        countryItemSeparator.backgroundColor = themeColor;
+        countryItemSeparator.fadedSeparator();
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

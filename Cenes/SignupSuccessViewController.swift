@@ -116,7 +116,10 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             var postData = [String: Any]();
             postData["email"] = textFieldEmail.text!;
             postData["password"] = textFieldPassword.text!
-            
+            postData["authType"] = "email";
+            if let phone = setting.value(forKey: "verifiedPhone") {
+                postData["phone"] = phone;
+            }
             UserService().emailSignupRequest(postData: postData, complete: {(response) in
                 print(response);
                 
@@ -136,9 +139,11 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
                     
                     //Registering Device Token
                     DispatchQueue.global(qos: .background).async {
+                        self.syncDeviceContacts();
                         WebService().setPushToken();
                     }
-                    
+                    setting.setValue(4, forKey: "onboarding")
+
                     let viewController = self.storyboard?.instantiateViewController(withIdentifier: "SignupSuccessStep2ViewController") as! SignupSuccessStep2ViewController;
                     self.navigationController?.pushViewController(viewController, animated: true);
                 }
@@ -325,14 +330,8 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
 
     
     func syncDeviceContacts() {
-        self.startAnimating(loadinIndicatorSize, message: "Syncing Contacts...", type: self.nactvityIndicatorView.type)
-        
         UserService().syncDevicePhoneNumbers( complete: { (returnedDict) in
             
-            self.stopAnimating()
-            setting.setValue(2, forKey: "onboarding")
-            let camera = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "onbooardingNavigation") as? UINavigationController
-            UIApplication.shared.keyWindow?.rootViewController = camera
         });
     }
     

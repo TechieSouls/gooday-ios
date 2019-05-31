@@ -85,7 +85,13 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     @objc func keyboardWillAppear(notification: NSNotification){
         // Do something here
         print("Opened");
-        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, customLocationButton.frame.origin.y - 210, customLocationButton.frame.width, customLocationButton.frame.height);
+        var keyboardHeight: CGFloat = 210;
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            keyboardHeight = CGFloat(keyboardSize.height) + 70
+            print(keyboardHeight)
+        }
+        
+        customLocationButton.frame = CGRect.init(customLocationButton.frame.origin.x, (self.view.frame.height - keyboardHeight), customLocationButton.frame.width, customLocationButton.frame.height);
         
         //customLocationButton.titleLabel?.text = "Create Custom Location [CL]"
     }
@@ -93,7 +99,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     @objc func keyboardWillDisappear(notification: NSNotification){
         // Do something here
         print("Closed");
-        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, customLocationButton.frame.origin.y + 210, customLocationButton.frame.width, customLocationButton.frame.height);
+        print(customLocationButton.frame.origin.y)
+        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, (self.view.frame.height - 70), customLocationButton.frame.width, customLocationButton.frame.height);
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -179,13 +186,13 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     }
 
     func loadNearbyLocations(searchText: String) -> Void {
-        let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=\(currentLatitude),\(currentLongitude)&radius=50000&name=\(searchText)";
+        let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=\(currentLatitude),\(currentLongitude)&radius=50000&name=\(searchText.replacingOccurrences(of: " ", with: "+"))";
         
         print(url);
         HttpService().getMethod(url: url, token: "", complete: {(response) in
             
             self.locationDtos = [LocationDto]();
-
+            self.nearByLocations = [Location]();
             if let statusStr = response.value(forKey: "status") as? String {
                 if (statusStr == "OK" || statusStr == "ZERO_RESULTS") {
                     
@@ -251,6 +258,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         locationDto.sectionName = "Suggested Locations";
                         locationDto.sectionObjects = finalnbList;
                         self.locationDtos.append(locationDto);
+                        self.nearByLocations = finalnbList;
                     }
                     self.locationTableView.reloadData();
                 }

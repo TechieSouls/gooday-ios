@@ -93,13 +93,13 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
 
-        
-        PhonebookService.getPermissionForContacts();
-        
         //navigationController?.setNavigationBarHidden(true, animated: true)
         self.view.backgroundColor = themeColor;
         self.navigationController?.navigationBar.isHidden = true;
-
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        PhonebookService.getPermissionForContacts();
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
@@ -178,7 +178,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     var postData = [String: Any]();
                     postData["authType"] = "facebook";
                     postData["facebookId"] = facebookId;
-                    postData["facebookAccessToken"] = facebookId;
+                    postData["facebookAuthToken"] = facebookId;
 
                     let resultDic = result as! NSDictionary
                     
@@ -203,7 +203,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         let pictureUrlString  = data.value(forKey: "url") as! String
                         postData["photo"] = pictureUrlString;
                     }
-                    
+                    if let phone = setting.value(forKey: "verifiedPhone") {
+                        postData["phone"] = phone;
+                    }
                     self.loginSocialRequest(postData: postData);
                 }
             })
@@ -227,7 +229,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
             var postData = [String: Any]();
             postData["authType"] = "google";
             postData["googleId"] = user.userID;
-            postData["googleAccessToken"] = user.authentication.idToken;
+            postData["googleAuthToken"] = user.authentication.idToken;
             
             if (user.profile.name != nil) {
                 postData["name"] = user.profile.name;
@@ -243,12 +245,15 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 let url = pic?.absoluteString;
                 postData["photo"] = url;
             }
-            
+            if let phone = setting.value(forKey: "verifiedPhone") {
+                postData["phone"] = phone;
+            }
             loginSocialRequest(postData: postData);
         }
     }
     
     func loginSocialRequest(postData: [String: Any]) {
+        
         UserService().emailSignupRequest(postData: postData, complete: {(response) in
             
             let success = response.value(forKey: "success") as! Bool;
@@ -277,7 +282,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     WebService().setPushToken();
                 }
                 
-                setting.setValue(2, forKey: "onboarding")
+                setting.setValue(4, forKey: "onboarding")
 
                 let isNew = loggedInUserDict.value(forKey: "isNew") as! Bool;
                 if (isNew == false) {

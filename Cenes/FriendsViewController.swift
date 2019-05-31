@@ -44,6 +44,10 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
             self.friendTableView.reloadData()
             isFirstTime = false
         }
+        
+        DispatchQueue.global(qos: .background).async {
+            self.syncDeviceContacts();
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,6 +111,11 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         }
     }
     
+    func syncDeviceContacts() {
+        UserService().syncDevicePhoneNumbers(complete: {(response)  in
+            
+        });
+    }
     func getFriendsWithName(nameStartsWith:String) {
         print("Calling API")
         

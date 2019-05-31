@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DeleteAccountTableViewCell: UITableViewCell {
+class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
 
     @IBOutlet weak var countryBar: UIView!
     
@@ -28,6 +28,7 @@ class DeleteAccountTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
+        countryLabel.textColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
         let countryBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryBarPressed));
         countryBar.addGestureRecognizer(countryBarTap);
         
@@ -41,9 +42,45 @@ class DeleteAccountTableViewCell: UITableViewCell {
     
     
     @IBAction func deleteAccountButtonPressed(_ sender: Any) {
+        
+        if (phoneNumber.text == "") {
+            
+            appSettingsEditViewControllerDelegate.showAlert(title: "Alert", message: "Phone number cannot be empty.")
+        } else if (password.text == "") {
+            appSettingsEditViewControllerDelegate.showAlert(title: "Alert", message: "Password cannot be empty.")
+        } else {
+            
+            var postData = [String: Any]();
+            postData["phone"] = "\(String(countryCode.text!))\(phoneNumber.text!)";
+            postData["password"] = "\(String(password.text!))";
+            appSettingsEditViewControllerDelegate.deleteUserRequest(postData: postData);
+        }
     }
     
     @objc func countryBarPressed() {
         appSettingsEditViewControllerDelegate.navigateToCountryList();
     }
+    
+    func highlightDeleteButton() {
+        
+        if (password.text != "" && phoneNumber.text != "") {
+            deleteAccountButton.isEnabled = true;
+            deleteAccountButton.backgroundColor =  UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if (textField == phoneNumber) {
+            
+            password.becomeFirstResponder();
+        
+        } else if (textField == password) {
+            highlightDeleteButton();
+            password.resignFirstResponder();
+        }
+        
+        return true;
+    }
+    
 }

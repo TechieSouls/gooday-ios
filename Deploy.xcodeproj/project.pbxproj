@@ -9,6 +9,15 @@
 /* Begin PBXBuildFile section */
 		5E078D1F2236A5150082A013 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E078D1E2236A5150082A013 /* NotificationService.swift */; };
 		5E078D212236A6760082A013 /* GatheringManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E078D202236A6760082A013 /* GatheringManager.swift */; };
+		5E1217BC229668EC0075961A /* PhoneVerificationStep1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217BB229668EC0075961A /* PhoneVerificationStep1ViewController.swift */; };
+		5E1217BE229670010075961A /* PhoneVerificationStep2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217BD229670010075961A /* PhoneVerificationStep2ViewController.swift */; };
+		5E1217C1229807F00075961A /* InvitationCardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217BF229807F00075961A /* InvitationCardTableViewCell.swift */; };
+		5E1217C2229807F00075961A /* InvitationCardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E1217C0229807F00075961A /* InvitationCardTableViewCell.xib */; };
+		5E1217C522981C260075961A /* NextCardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217C322981C260075961A /* NextCardTableViewCell.swift */; };
+		5E1217C622981C260075961A /* NextCardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E1217C422981C260075961A /* NextCardTableViewCell.xib */; };
+		5E1217C92299A7640075961A /* VerticalCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217C82299A7640075961A /* VerticalCropView.swift */; };
+		5E1217CB2299B1840075961A /* GatheringImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */; };
+		5E1217CD229A64F00075961A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217CC229A64F00075961A /* UIImage+Custom.swift */; };
 		5E20A491226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E20A48F226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.swift */; };
 		5E20A492226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E20A490226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib */; };
 		5E20A495226A1D8400F1DBC6 /* FriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E20A493226A1D8400F1DBC6 /* FriendCollectionViewCell.swift */; };
@@ -345,7 +354,6 @@
 		FA025A2F21F5D13800240E08 /* RoundedCardDesignView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA025A2E21F5D13800240E08 /* RoundedCardDesignView.swift */; };
 		FA025A3121F5D9B300240E08 /* UIImageView+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA025A3021F5D9B300240E08 /* UIImageView+Customs.swift */; };
 		FA025A3321F5FD9000240E08 /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA025A3221F5FD9000240E08 /* NSMutableAttributedString.swift */; };
-		FA110EBC215F43A8007DB7EA /* SignupSetp1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA110EBB215F43A8007DB7EA /* SignupSetp1ViewController.swift */; };
 		FA110EBE215F7110007DB7EA /* SignupCountryCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA110EBD215F7110007DB7EA /* SignupCountryCodeViewController.swift */; };
 		FA110EC0215F8AD8007DB7EA /* CountryCodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA110EBF215F8AD8007DB7EA /* CountryCodeTableViewCell.swift */; };
 		FA110EC2215FDF4D007DB7EA /* CountryCodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA110EC1215FDF4D007DB7EA /* CountryCodeService.swift */; };
@@ -404,6 +412,15 @@
 		105C6ED5E6B4297DE396BFF3 /* Pods_Deploy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Deploy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E078D1E2236A5150082A013 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5E078D202236A6760082A013 /* GatheringManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringManager.swift; sourceTree = "<group>"; };
+		5E1217BB229668EC0075961A /* PhoneVerificationStep1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneVerificationStep1ViewController.swift; sourceTree = "<group>"; };
+		5E1217BD229670010075961A /* PhoneVerificationStep2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneVerificationStep2ViewController.swift; sourceTree = "<group>"; };
+		5E1217BF229807F00075961A /* InvitationCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationCardTableViewCell.swift; sourceTree = "<group>"; };
+		5E1217C0229807F00075961A /* InvitationCardTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InvitationCardTableViewCell.xib; sourceTree = "<group>"; };
+		5E1217C322981C260075961A /* NextCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextCardTableViewCell.swift; sourceTree = "<group>"; };
+		5E1217C422981C260075961A /* NextCardTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NextCardTableViewCell.xib; sourceTree = "<group>"; };
+		5E1217C82299A7640075961A /* VerticalCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalCropView.swift; sourceTree = "<group>"; };
+		5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringImagePickerViewController.swift; sourceTree = "<group>"; };
+		5E1217CC229A64F00075961A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
 		5E20A48F226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendsCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		5E20A490226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedFriendsCollectionTableViewCell.xib; sourceTree = "<group>"; };
 		5E20A493226A1D8400F1DBC6 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -753,7 +770,6 @@
 		FA025A2E21F5D13800240E08 /* RoundedCardDesignView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCardDesignView.swift; sourceTree = "<group>"; };
 		FA025A3021F5D9B300240E08 /* UIImageView+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Customs.swift"; sourceTree = "<group>"; };
 		FA025A3221F5FD9000240E08 /* NSMutableAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedString.swift; sourceTree = "<group>"; };
-		FA110EBB215F43A8007DB7EA /* SignupSetp1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSetp1ViewController.swift; sourceTree = "<group>"; };
 		FA110EBD215F7110007DB7EA /* SignupCountryCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupCountryCodeViewController.swift; sourceTree = "<group>"; };
 		FA110EBF215F8AD8007DB7EA /* CountryCodeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeTableViewCell.swift; sourceTree = "<group>"; };
 		FA110EC1215FDF4D007DB7EA /* CountryCodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeService.swift; sourceTree = "<group>"; };
@@ -867,6 +883,10 @@
 				5EEF2937225F4671000DC690 /* GuestListViewController.swift */,
 				5EEF2939225F4905000DC690 /* GuestListTableViewCell.swift */,
 				5EEF293A225F4905000DC690 /* GuestListTableViewCell.xib */,
+				5E1217BF229807F00075961A /* InvitationCardTableViewCell.swift */,
+				5E1217C0229807F00075961A /* InvitationCardTableViewCell.xib */,
+				5E1217C322981C260075961A /* NextCardTableViewCell.swift */,
+				5E1217C422981C260075961A /* NextCardTableViewCell.xib */,
 			);
 			name = invitation;
 			sourceTree = "<group>";
@@ -1193,6 +1213,8 @@
 				AEA1F9D81F9E034500B32681 /* InvitationViewCell.xib */,
 				AEEF8A781FA885360032D7B4 /* InvitationAcceptView.swift */,
 				5E41E95922337D1200CEECFB /* GatheringExpiredViewController.swift */,
+				5E1217C82299A7640075961A /* VerticalCropView.swift */,
+				5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */,
 			);
 			name = Gathering;
 			sourceTree = "<group>";
@@ -1538,7 +1560,6 @@
 				F40A899E1F1FD70A002BBC17 /* MailLogInViewController.swift */,
 				F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */,
 				F48F48091F39FC790003B586 /* PCameraViewController.swift */,
-				AE4D06C2200E18A500225D97 /* ForgotPasswordController.swift */,
 				5EEE36421F50D78E0095517C /* BaseViewController.swift */,
 				AE8F3A751FC40FCD00ED13CC /* OutlookService.swift */,
 				944A7B511F98044F001491D3 /* Alarm */,
@@ -1571,12 +1592,14 @@
 				5EAF0CAD22893BDE00AE2264 /* cells */,
 				FA20493F214C35ED004F1A13 /* ChoiceViewController.swift */,
 				FA8A66F82157CCE4002671D8 /* SignupStep2ViewController.swift */,
-				FA110EBB215F43A8007DB7EA /* SignupSetp1ViewController.swift */,
 				FA110EBD215F7110007DB7EA /* SignupCountryCodeViewController.swift */,
 				FA110EBF215F8AD8007DB7EA /* CountryCodeTableViewCell.swift */,
 				FA110EC421614B92007DB7EA /* SignupSuccessViewController.swift */,
 				FAA8C9FA2172303600560A88 /* SignInViewController.swift */,
 				5EAF0CAB22893B4A00AE2264 /* SignupSuccessStep2ViewController.swift */,
+				AE4D06C2200E18A500225D97 /* ForgotPasswordController.swift */,
+				5E1217BB229668EC0075961A /* PhoneVerificationStep1ViewController.swift */,
+				5E1217BD229670010075961A /* PhoneVerificationStep2ViewController.swift */,
 			);
 			name = Authenticate;
 			sourceTree = "<group>";
@@ -1615,6 +1638,7 @@
 				5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */,
 				5E67566622843367005C83B6 /* UIViewController+Customs.swift */,
 				5E67566822846C44005C83B6 /* UIDevice+Custom.swift */,
+				5E1217CC229A64F00075961A /* UIImage+Custom.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -1798,6 +1822,7 @@
 				AE0351281F5E912E001A162B /* GatheringPeopleTableViewCell.xib in Resources */,
 				AE4647A81F6FE03E00B5CB67 /* flag_vn.png in Resources */,
 				AE4647A31F6FE03E00B5CB67 /* flag_se.png in Resources */,
+				5E1217C2229807F00075961A /* InvitationCardTableViewCell.xib in Resources */,
 				AE8184E61F960EC300D885A2 /* HomeUserCellLast.xib in Resources */,
 				5EEF293C225F4905000DC690 /* GuestListTableViewCell.xib in Resources */,
 				AE4647851F6FE03E00B5CB67 /* flag_au.png in Resources */,
@@ -1815,6 +1840,7 @@
 				5E51FD992268277400A86994 /* InnerTableHeaderTableViewCell.xib in Resources */,
 				AE0351241F5E8F88001A162B /* GatheringTitleTableViewCell.xib in Resources */,
 				AE4647A01F6FE03E00B5CB67 /* flag_pl.png in Resources */,
+				5E1217C622981C260075961A /* NextCardTableViewCell.xib in Resources */,
 				AE7D84A51F90C214005ABB81 /* GoogleService-Info.plist in Resources */,
 				AE46478B1F6FE03E00B5CB67 /* flag_dk.png in Resources */,
 				5E20A492226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib in Resources */,
@@ -1987,6 +2013,7 @@
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSONModel/SwiftyJSONModel.framework",
 				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
+				"${BUILT_PRODUCTS_DIR}/UIImageCropper/UIImageCropper.framework",
 				"${BUILT_PRODUCTS_DIR}/VisualEffectView/VisualEffectView.framework",
 				"${BUILT_PRODUCTS_DIR}/p2.OAuth2/p2_OAuth2.framework",
 			);
@@ -2009,6 +2036,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSONModel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIImageCropper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VisualEffectView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/p2_OAuth2.framework",
 			);
@@ -2048,9 +2076,11 @@
 				5E64C10922927CE1000F2629 /* ChoiceViewController+Facebook.swift in Sources */,
 				5E20A4AB226F21B800F1DBC6 /* LocationItemsHeaderViewCell.swift in Sources */,
 				5EC7A16B227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift in Sources */,
+				5E1217CB2299B1840075961A /* GatheringImagePickerViewController.swift in Sources */,
 				AE8617F91F5982C600F99D75 /* HomeTableViewCellHeader.swift in Sources */,
 				FA025A2A21F592AA00240E08 /* GatheringCardTableViewCell.swift in Sources */,
 				AE8184DD1F95CB0200D885A2 /* HomeTableViewCell.swift in Sources */,
+				5E1217CD229A64F00075961A /* UIImage+Custom.swift in Sources */,
 				AEEF8A791FA885360032D7B4 /* InvitationAcceptView.swift in Sources */,
 				5EDEE1F22240AAA600330F47 /* NewMeTimeViewController+TableView.swift in Sources */,
 				5E6999082221098100A275B6 /* GatheringPreviewController.swift in Sources */,
@@ -2086,7 +2116,6 @@
 				B9FB16A21FBAA31F00FB0FD0 /* CreateDiaryViewController.swift in Sources */,
 				AE8423ED1F8F5D78007DBACB /* IconDownloader.swift in Sources */,
 				5E6DA43022855839006D86D9 /* HolidayCalendarTableViewCell.swift in Sources */,
-				FA110EBC215F43A8007DB7EA /* SignupSetp1ViewController.swift in Sources */,
 				FA110EC2215FDF4D007DB7EA /* CountryCodeService.swift in Sources */,
 				5EEE363F1F508DA20095517C /* CountryPicker.m in Sources */,
 				944A7B551F980701001491D3 /* AddAlarmViewController.swift in Sources */,
@@ -2143,6 +2172,7 @@
 				AE2043521F8B588F00C48468 /* NotificationViewController.swift in Sources */,
 				5EF840932237646B0046E68D /* HolidayCalendarListViewController.swift in Sources */,
 				5E20A498226B797A00F1DBC6 /* CreateGatheringMessageViewController.swift in Sources */,
+				5E1217C92299A7640075961A /* VerticalCropView.swift in Sources */,
 				B956ADB11FB04E00005B13CA /* RemindersModel+CoreDataClass.swift in Sources */,
 				5EDEE1F62240BEE100330F47 /* HttpService.swift in Sources */,
 				944A7B571F980AA0001491D3 /* AlarmDetailTableViewCell.swift in Sources */,
@@ -2165,6 +2195,7 @@
 				5EBC9CAA2279F7A5005946C4 /* NoGatheringTableViewCell.swift in Sources */,
 				FA39E98521274FB900A47B93 /* OnboardingStep3ViewController.swift in Sources */,
 				FA528FAF2148342B0006D6F5 /* AboutViewController.swift in Sources */,
+				5E1217BE229670010075961A /* PhoneVerificationStep2ViewController.swift in Sources */,
 				FA528FAB214566640006D6F5 /* CenesUtilFunc.swift in Sources */,
 				5E51FD872265979000A86994 /* FriendAllContactsTableViewCell.swift in Sources */,
 				5EF84097223765910046E68D /* CountryTableViewCell.swift in Sources */,
@@ -2183,6 +2214,7 @@
 				5EC7A16F227DBDC80010E804 /* ProfileTabViewController+TableView.swift in Sources */,
 				5E6F573722203ACC0053C21A /* GatheringPreviewDescTableViewCell.swift in Sources */,
 				FA625ED8218B50E800B6B23C /* CalendarService.swift in Sources */,
+				5E1217BC229668EC0075961A /* PhoneVerificationStep1ViewController.swift in Sources */,
 				5EDEE1EC2240A56800330F47 /* MeTimeItemTableViewCell.swift in Sources */,
 				5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */,
 				5E40954C22533E7900CA9700 /* NotificationViewController+TableViewExt.swift in Sources */,
@@ -2231,6 +2263,7 @@
 				B956ADB21FB04E00005B13CA /* RemindersModel+CoreDataProperties.swift in Sources */,
 				FA8A66F92157CCE4002671D8 /* SignupStep2ViewController.swift in Sources */,
 				5E40954722531CF500CA9700 /* NotificationDto.swift in Sources */,
+				5E1217C1229807F00075961A /* InvitationCardTableViewCell.swift in Sources */,
 				5EAF0CAC22893B4A00AE2264 /* SignupSuccessStep2ViewController.swift in Sources */,
 				5E40954422523ADD00CA9700 /* HeaderTableViewCell.swift in Sources */,
 				AE0351191F5E82DF001A162B /* GatheringViewController.swift in Sources */,
@@ -2239,6 +2272,7 @@
 				5E6DA42A22854862006D86D9 /* ThirdPartyCalendarTableViewCell.swift in Sources */,
 				5E078D1F2236A5150082A013 /* NotificationService.swift in Sources */,
 				5E6DA425228544AA006D86D9 /* CalendarsViewController.swift in Sources */,
+				5E1217C522981C260075961A /* NextCardTableViewCell.swift in Sources */,
 				5EC64E8D2285C594001FB7A7 /* CenesProperty.swift in Sources */,
 				942C76D31F9937F100817FD6 /* AlarmInfoTableViewCell.swift in Sources */,
 				5E64C100228F31AD000F2629 /* AppSettingsViewController.swift in Sources */,

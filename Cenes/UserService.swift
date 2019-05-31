@@ -15,6 +15,9 @@ class UserService {
     let get_user_stats = "api/user/userStatsByUserId";
     let get_user_sync_details = "api/user/syncDetails";
     let get_user_by_email = "auth/user/findByEmail";
+    let get_forget_password_email = "auth/forgetPassword/v2";
+    let get_forget_password_send_email = "auth/forgetPassword/v2/sendEmail";
+    let get_country_by_ip_address = "auth/getCountryByIpAddress";
     
     let post_signup_user_step1 = "api/users/signupstep1";
     let post_signup_user_step2 = "api/users/signupstep2";
@@ -25,6 +28,11 @@ class UserService {
     let post_sync_outlook_events = "api/outlook/events/v2";
     let post_upload_profile_pic = "api/user/profile/upload/v2";
     let post_sync_holiday_calendar = "api/holiday/calendar/events/v2";
+    let post_update_password = "auth/updatePassword";
+    let post_delete_user_by_phone_password = "api/deleteUserByPhonePassword";
+    let post_verification_code = "api/guest/sendVerificationCode";
+    let post_check_verification_code = "api/guest/checkVerificationCode";
+
     
     let delete_sync_token = "api/user/deleteSyncBySyncId"
     
@@ -201,11 +209,12 @@ class UserService {
      * This function will sync all the user device contacts and save in Database on server
      */
     func syncDevicePhoneNumbers(complete: @escaping(NSMutableDictionary)->Void) {
+        
+        let phoneNumbersDict = PhonebookService.phoneNumberWithContryCode();
+
         let Auth_header    = [ "token" : setting.value(forKey: "token") as! String ]
         let userid = setting.value(forKey: "userId") as! NSNumber
         let uid = "\(userid)"
-        
-        let phoneNumbersDict = PhonebookService.phoneNumberWithContryCode();
         
         let returnedDict = NSMutableDictionary()
         if (phoneNumbersDict.count > 0) {
@@ -276,6 +285,7 @@ class UserService {
     }
     
     
+    /********************** POST REQUESTS  **************************/
     func emailSignupRequest(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
         let url = "\(apiUrl)\(post_signup_user_step1)";
         
@@ -318,23 +328,6 @@ class UserService {
         });
     }
     
-    func findUserSyncTokens(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
-        let url = "\(apiUrl)\(get_user_sync_details)?\(queryStr)";
-        print("Url : \(url)")
-        HttpService().getMethod(url: url, token: token, complete: {(response) in
-            complete(response)
-        });
-    }
-    
-    func findUserByEmail(queryStr: String, token: String,  complete: @escaping(NSDictionary) ->Void ) {
-        
-        let url = "\(apiUrl)\(get_user_by_email)?\(queryStr)";
-        print("Url : \(url)")
-        HttpService().getMethodWithoutToken(url: url, complete: {(response) in
-            complete(response);
-        });
-    }
-    
     func syncGoogleEvent(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(post_sync_google_events)";
@@ -344,7 +337,6 @@ class UserService {
         });
         
     }
-    
     func syncDeviceEvents(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(post_sync_device_events)";
@@ -382,11 +374,98 @@ class UserService {
         });
     }
     
+    
+    func updatePasswordWithoutToken(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        let url = "\(apiUrl)\(post_update_password)";
+        
+        HttpService().postMethodWithoutToken(url: url, postData: postData, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func deleteUserByPhoneAndPassword(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_delete_user_by_phone_password)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func postVerificationCodeWithoutToken(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_verification_code)";
+        
+        HttpService().postMethodWithoutToken(url: url, postData: postData, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func postCheckVerificationCodeWithoutToken(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_check_verification_code)";
+        
+        HttpService().postMethodWithoutToken(url: url, postData: postData, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    
+    
+    /******************************   GET REQUESTS   ***********************************/
+    func findUserSyncTokens(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_user_sync_details)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
+    func findUserByEmail(queryStr: String, token: String,  complete: @escaping(NSDictionary) ->Void ) {
+        
+        let url = "\(apiUrl)\(get_user_by_email)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethodWithoutToken(url: url, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    
+    
+    
     func deleteSyncTokenByTokenId(queryStr: String, token: String,  complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(delete_sync_token)?\(queryStr)";
         
         HttpService().deleteMethod(url: url, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func getForgetPasswordEmail(queryStr: String,  complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(get_forget_password_email)?\(queryStr)";
+        
+        HttpService().getMethodWithoutToken(url: url, complete: {(response) in
+            complete(response);
+        })
+    }
+    
+    func sendForgetPasswordEmail(queryStr: String,  complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(get_forget_password_send_email)?\(queryStr)";
+        
+        HttpService().getMethodWithoutToken(url: url, complete: {(response) in
+            complete(response);
+        })
+    }
+
+    
+    func getCountryByIpAddressWithoutToken(queryStr: String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(get_country_by_ip_address)?\(queryStr)";
+        
+        HttpService().getMethodWithoutToken(url: url, complete: {(response) in
             complete(response);
         });
     }

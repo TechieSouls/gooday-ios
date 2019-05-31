@@ -8,17 +8,32 @@
 
 import UIKit
 
+protocol AppSettingsProtocol {
+    func selectedCountry(countryCodeService: CountryCodeService);
+}
+
 class CountriesViewController: UIViewController {
 
     @IBOutlet weak var countryTableView: UITableView!
+    
+    @IBOutlet weak var backButton: UIImageView!
+    
     var countriesDict: [String: [CountryCodeService]] = ["": []];
     var countryStrip: [String]!;
+    var appSettingsProtocolDelegate: AppSettingsProtocol!;
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = themeColor;
+        self.countryTableView.backgroundColor = themeColor;
+        
         countryTableView.register(UINib.init(nibName: "CountryItemTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "CountryItemTableViewCell");
+        
+        let backButtonTap = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed))
+        backButton.addGestureRecognizer(backButtonTap);
         
         countryStrip = ProfileManager().getAlphabeticStrip();
         self.loadCountriesData();
@@ -26,6 +41,7 @@ class CountriesViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true;
+        self.navigationController?.navigationBar.isHidden = true;
     }
     
     func loadCountriesData() {
@@ -64,6 +80,9 @@ class CountriesViewController: UIViewController {
     }
     */
 
+    @objc func backButtonPressed() {
+        self.navigationController?.popViewController(animated: true);
+    }
 }
 
 extension CountriesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -115,4 +134,10 @@ extension CountriesViewController: UITableViewDelegate, UITableViewDataSource {
         return countryStrip;
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let countryObject = countriesDict[countryStrip[indexPath.section]]![indexPath.row];
+        appSettingsProtocolDelegate.selectedCountry(countryCodeService: countryObject);
+        self.navigationController?.popViewController(animated: false);
+    }
 }

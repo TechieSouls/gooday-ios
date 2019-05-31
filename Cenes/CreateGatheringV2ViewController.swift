@@ -11,6 +11,7 @@ import Photos
 import MobileCoreServices
 import VisualEffectView
 import NVActivityIndicatorView
+import UIImageCropper;
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -19,9 +20,8 @@ protocol TimePickerDoneProtocol : class {
 protocol GatheringInfoCellProtocol {
     func imageSelected()
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, UIImageCropperProtocol {
     
-
     @IBOutlet weak var createGathTableView: UITableView!
     
     @IBOutlet weak var timePickerView: UIView!
@@ -49,6 +49,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     var event = Event();
     
     var textfield = UITextField();
+    
+    var imageSelectedOption = "";
     
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, padding: 0.0);
 
@@ -130,9 +132,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     }
     
     func takePicture() {
+        imageSelectedOption = "Camera";
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
             picController.sourceType = UIImagePickerControllerSourceType.camera
-            picController.allowsEditing = true
+            //picController.allowsEditing = true
             picController.delegate = self
             picController.mediaTypes = [kUTTypeImage as String]
             self.present(picController, animated: true, completion: nil)
@@ -141,26 +144,37 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     func selectPicture() {
         //self.checkPermission();
-        
+        imageSelectedOption = "Gallery";
+
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
             picController.delegate = self
             picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
-            picController.allowsEditing = true
+            //picController.allowsEditing = true
             picController.mediaTypes = [kUTTypeImage as String]
             self.present(picController, animated: true, completion: nil)
         }
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
            
-            gatheringInfoCellDelegate.imageSelected();
+            /*gatheringInfoCellDelegate.imageSelected();
             event.imageToUpload = image;
-            let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 720, newSizeHeight: 720, compressionQuality: 1.0)
+            let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
+             */
+            picker.dismiss(animated: true, completion: nil);
+
+            let cropper = UIImageCropper(cropRatio: 2/3)
+            cropper.delegate = self
+            cropper.picker = nil
+            cropper.image = image
+            cropper.cropButtonText = "Choose";
+            cropper.cancelButtonText = "Cancel"
+            self.present(cropper, animated: true, completion: nil)
+
         }
         
-        picker.dismiss(animated: true, completion: nil);
     }
     
     func openShareSheetForCoverImage() {
@@ -301,5 +315,23 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             let destinationVC = segue.destination as! CreateGatheringLocationViewController;
             destinationVC.selectedLocationProtocolDelegate = gatheringInfoTableViewCellDelegate;
         }
+    }
+    
+    func didCropImage(originalImage: UIImage?, croppedImage: UIImage?) {
+        gatheringInfoCellDelegate.imageSelected();
+        if (imageSelectedOption == "Gallery") {
+            event.imageToUpload = croppedImage!.fixedOrientation();
+
+        } else if (imageSelectedOption == "Camera") {
+            event.imageToUpload = croppedImage!.fixedOrientation().imageRotatedByDegrees(degrees: 90);
+        }
+         let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
+        
+    }
+    
+    //optional
+    func didCancel() {
+        self.dismiss(animated: true, completion: nil)
+        print("did cancel")
     }
 }
