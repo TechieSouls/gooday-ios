@@ -14,12 +14,12 @@ extension UIButton {
     }
     
     func selectedBottomBorderBtn() -> Void {
-        var lineView = UIView(frame: CGRect(0, self.frame.size.height-2, self.frame.size.width, 2))
+        var lineView = UIView(frame: CGRect(x: 0, y: self.frame.size.height-2, width: self.frame.size.width, height: 2))
         lineView.backgroundColor = UIColor.orange;
         self.addSubview(lineView)
     }
     func unselectedBottomBorderBtn() -> Void {
-        var lineView = UIView(frame: CGRect(0, self.frame.size.height-2, self.frame.size.width, 2))
+        var lineView = UIView(frame: CGRect(x: 0, y: self.frame.size.height-2, width: self.frame.size.width, height: 2))
         lineView.backgroundColor = themeColor;
         self.addSubview(lineView)
     }

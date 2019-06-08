@@ -48,6 +48,27 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                     cell.createGatheringDelegate = self;
                     timePickerDoneDelegate = cell;
                     datePanelTableViewCellDelegate = cell;
+                
+                    if (event.eventId != nil) {
+                        cell.startTimeLabel.isHidden = false;
+                        cell.startTimeLabel.text = Date(milliseconds: Int(event.startTime)).hmma();
+                        
+                        
+                        cell.endTimeLabel.isHidden = false;
+                        cell.endTimeLabel.text = Date(milliseconds: Int(event.endTime)).hmma();
+                        
+                        let currentYearComponent = Calendar.current.component(.year, from: Date());
+                        
+                        let startDateYearComponent = Calendar.current.component(.year, from: Date(milliseconds: Int(event.startTime)));
+                        cell.dateLabel.isHidden = false;
+                        if (currentYearComponent > startDateYearComponent || currentYearComponent < startDateYearComponent) {
+                            cell.dateLabel.text = String(Date(milliseconds: Int(event.startTime)).EMMMMdyyyy()!);
+                        } else {
+                            cell.dateLabel.text = String(Date(milliseconds: Int(event.startTime)).EMMMd()!);
+                        }
+                        
+                    }
+
                     return cell;
                 }
             case 2:
@@ -72,6 +93,18 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                     cell.createGatheringDelegate = self;
                     gatheringInfoCellDelegate = cell
                     gatheringInfoTableViewCellDelegate = cell;
+                    
+                    if (event.eventId != nil) {
+                        
+                        cell.locationLabel.isHidden = false;
+                        cell.locationLabel.text = event.location;
+                        
+                        cell.messageLabel.isHidden = false;
+                        cell.messageLabel.text = "Saved";
+                        
+                        cell.imageLabel.isHidden = false;
+                        cell.imageLabel.text = "Uploaded";
+                    }
                     return cell;
                 }
             
@@ -79,30 +112,6 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                 return UITableViewCell();
         }
         
-        /*if (createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] == true) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "DatePanelTableViewCell", for: indexPath) as! DatePanelTableViewCell;
-            cell.createGatheringDelegate = self;
-            timePickerDoneDelegate = cell;
-            return cell;
-        }
-        
-        if (createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] == true) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "GatheringInfoTableViewCell", for: indexPath) as! GatheringInfoTableViewCell;
-            
-            return cell;
-        }
-        
-        if (createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveInfoRow] == true) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PredictiveInfoTableViewCell", for: indexPath) as! PredictiveInfoTableViewCell;
-            
-            return cell;
-        }
-        
-        if (createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PredictiveCalendarCellTableViewCell", for: indexPath) as! PredictiveCalendarCellTableViewCell;
-            
-            return cell;
-        }*/
         return UITableViewCell();
     }
     

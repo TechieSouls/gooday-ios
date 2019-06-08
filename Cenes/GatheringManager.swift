@@ -129,6 +129,14 @@ class GatheringManager {
     }
     
     
+    func makeAllFieldsFilled(createGathDto: CreateGathDto) -> Void {
+        
+        var allFiledFilled: Bool = true;
+        for (key, value) in createGathDto.trackGatheringDataFilled {
+            createGathDto.trackGatheringDataFilled[key] = true;
+        }
+    }
+    
     func gethhmmAATimeStr(timeStamp:String) -> String{
         let timeinterval : TimeInterval = Double(timeStamp)! / 1000 // convert it in to NSTimeInteral
         let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here

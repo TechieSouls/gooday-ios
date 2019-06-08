@@ -60,7 +60,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         topRoundedView.roundedView();
         
         let emailGradient = CAGradientLayer()
-        emailGradient.frame = CGRect.init(0, textFieldEmail.frame.height-1, textFieldEmail.frame.width, 1)
+        emailGradient.frame = CGRect.init(x: 0, y: textFieldEmail.frame.height-1, width: textFieldEmail.frame.width, height: 1)
         emailGradient.colors = [UIColor.white.cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
         emailGradient.startPoint = CGPoint(x: 0, y: 1);
         emailGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -68,7 +68,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         textFieldEmail.layer.insertSublayer(emailGradient, at: 0);
         
         let passwordGradient = CAGradientLayer()
-        passwordGradient.frame = CGRect.init(0, textFieldPassword.frame.height-1, textFieldPassword.frame.width, 1)
+        passwordGradient.frame = CGRect.init(x: 0, y: textFieldPassword.frame.height-1, width: textFieldPassword.frame.width, height: 1)
         passwordGradient.colors = [UIColor.white.cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
         passwordGradient.startPoint = CGPoint(x: 0, y: 1);
         passwordGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -77,7 +77,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         
         
         let confirmGradient = CAGradientLayer()
-        confirmGradient.frame = CGRect.init(0, textFieldConfirmPassword.frame.height-1, textFieldConfirmPassword.frame.width, 1)
+        confirmGradient.frame = CGRect.init(x: 0, y: textFieldConfirmPassword.frame.height-1, width: textFieldConfirmPassword.frame.width, height: 1)
         confirmGradient.colors = [UIColor.white.cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
         confirmGradient.startPoint = CGPoint(x: 0, y: 1);
         confirmGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -87,8 +87,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         let backTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed));
         backButton.addGestureRecognizer(backTapGesture);
         
-        textFieldPassword.isEnabled = false;
-        textFieldConfirmPassword.isEnabled = false;
+        self.hideKeyboardWhenTappedAround();
     }
 
     override func didReceiveMemoryWarning() {
@@ -111,8 +110,9 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     
     @IBAction func signupButtonPressed(_ sender: Any) {
         
+        let isFormValidFlag = isFormValid();
         
-        if (textFieldEmail.text != nil && isValidEmail(testStr: textFieldEmail.text!)) {
+        if (isFormValidFlag == true && textFieldEmail.text != nil && isValidEmail(testStr: textFieldEmail.text!)) {
             var postData = [String: Any]();
             postData["email"] = textFieldEmail.text!;
             postData["password"] = textFieldPassword.text!
@@ -336,30 +336,16 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     }
     
     func isFormValid() -> Bool {
-        guard Util.isnameLenth(name: textFieldName.text!)else{
-            
-            textFieldName.backgroundColor =  commonColor
-            
-            alertMessage(title: "Validation",message: "Name is empty")
-            
+        if (textFieldEmail.text == "") {
+            self.showAlert(title: "Email Empty", message: "");
             return false;
         }
-        
-        guard Util.isValidEmail(testStr: textFieldEmail.text!)else{
-            
-            textFieldEmail.backgroundColor =  commonColor
-            
-            alertMessage(title: "Validation",message: "Email is not valid")
-            
+        if (textFieldPassword.text == "") {
+            showAlert(title: "Password Empty", message: "");
             return false;
         }
-        
-        guard Util.isPwdLenth(password: textFieldPassword.text!)else{
-            
-            textFieldPassword.backgroundColor =  commonColor
-            
-            alertMessage(title: "Validation",message: "Password should be greater than 3")
-            
+        if (textFieldPassword.text != textFieldConfirmPassword.text) {
+            showAlert(title: "Password Don't Match", message: "");
             return false;
         }
         return true;
@@ -414,7 +400,6 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
                         
                         
                     } else {
-                        self.textFieldPassword.isEnabled = true;
                         self.textFieldPassword.becomeFirstResponder();
                     }
                 });
@@ -423,8 +408,9 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             }
             
         } else if (textField == textFieldPassword) {
-            self.textFieldConfirmPassword.isEnabled = true;
+
             textFieldConfirmPassword.becomeFirstResponder();
+            
         } else if (textField == textFieldConfirmPassword) {
             
             if (textFieldPassword.text == "") {

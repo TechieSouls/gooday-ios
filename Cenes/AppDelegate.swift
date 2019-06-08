@@ -46,18 +46,24 @@ let setting = UserDefaults.standard
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
         // Override point for customization after application launch.
-        let onboarding = setting.integer(forKey: "onboarding")
-        if onboarding == 4 {
-            window?.rootViewController = HomeViewController.MainViewController()
-        }  else if onboarding == 3 {
+        let footprints = setting.string(forKey: "footprints")
+        if footprints == UserSteps.Authentication { //if Authentication Done Then go to home screen
+            
+            let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+            if (loggedInUser.name == nil) {
+                window?.rootViewController = SignupSuccessStep2ViewController.MainViewController();
+            } else {
+                window?.rootViewController = HomeViewController.MainViewController()
+            }
+        }  else if footprints == UserSteps.PhoneVerification {//If Phone Verificaiton Done Then move to CHoice Screen
             //window?.rootViewController = LoginViewController.MainViewController()
             window?.rootViewController = ChoiceViewController.MainViewController()
-        } else if onboarding == 2 {
+        } else if footprints == UserSteps.OnBoardingScreens {
             //window?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
-            window?.rootViewController = ChoiceViewController.MainViewController()
+            window?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
 
         } else {
-             window?.rootViewController = OnBoardingController.onboardingViewController()
+             window?.rootViewController = OnboardingPageViewController.MainViewController()
         }
         
         //User Notification

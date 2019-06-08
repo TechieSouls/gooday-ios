@@ -23,6 +23,7 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
     @IBOutlet weak var deleteAccountButton: UIButton!
     
     var appSettingsEditViewControllerDelegate: AppSettingsEditViewController!
+    var passwordAvailable = true;
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -32,6 +33,9 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
         let countryBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryBarPressed));
         countryBar.addGestureRecognizer(countryBarTap);
         
+        if (passwordAvailable == false) {
+            deleteAccountButton.isEnabled = true;
+        }
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -43,16 +47,20 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     @IBAction func deleteAccountButtonPressed(_ sender: Any) {
         
+        deleteAccountButton.backgroundColor =  UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
+
         if (phoneNumber.text == "") {
             
             appSettingsEditViewControllerDelegate.showAlert(title: "Alert", message: "Phone number cannot be empty.")
-        } else if (password.text == "") {
+        } else if (passwordAvailable == true && password.text == "") {
             appSettingsEditViewControllerDelegate.showAlert(title: "Alert", message: "Password cannot be empty.")
         } else {
             
             var postData = [String: Any]();
             postData["phone"] = "\(String(countryCode.text!))\(phoneNumber.text!)";
-            postData["password"] = "\(String(password.text!))";
+            if (passwordAvailable == true) {
+                postData["password"] = "\(String(password.text!))";
+            }
             appSettingsEditViewControllerDelegate.deleteUserRequest(postData: postData);
         }
     }
@@ -63,7 +71,10 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     func highlightDeleteButton() {
         
-        if (password.text != "" && phoneNumber.text != "") {
+        if (phoneNumber.text != "" && passwordAvailable == false) {
+            deleteAccountButton.isEnabled = true;
+            deleteAccountButton.backgroundColor =  UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
+        } else  if (password.text != "" && phoneNumber.text != "") {
             deleteAccountButton.isEnabled = true;
             deleteAccountButton.backgroundColor =  UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
         }
@@ -72,8 +83,12 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         if (textField == phoneNumber) {
-            
-            password.becomeFirstResponder();
+            if (passwordAvailable == true) {
+                password.becomeFirstResponder();
+            } else {
+                highlightDeleteButton();
+                phoneNumber.resignFirstResponder();
+            }
         
         } else if (textField == password) {
             highlightDeleteButton();

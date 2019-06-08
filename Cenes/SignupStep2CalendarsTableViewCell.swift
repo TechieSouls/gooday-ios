@@ -139,7 +139,7 @@ class SignupStep2CalendarsTableViewCell: UITableViewCell, SignupStep2CalendarsTa
     
     func getViewBottomBorderGradient(uiView: UIView, cgColors: [CGColor]) -> CAGradientLayer {
         let gradient = CAGradientLayer()
-        gradient.frame = CGRect.init(0, uiView.frame.height-1, uiView.frame.width, 1)
+        gradient.frame = CGRect.init(x: 0, y: uiView.frame.height-1, width: uiView.frame.width, height: 1)
         gradient.colors = cgColors
         gradient.startPoint = CGPoint(x: 0, y: 1);
         gradient.endPoint = CGPoint(x: 1, y: 1);

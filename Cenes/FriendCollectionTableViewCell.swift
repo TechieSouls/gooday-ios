@@ -55,7 +55,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
             let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! EventMember;
             print("Array : \(userContact)")
             
-            if (userContact.cenesMember == "yes") {
+            if (userContact.user != nil || userContact.cenesMember == "yes") {
                 
                 cell.nonCenesUiViewLabel.isHidden = true;
                 cell.profilePic.isHidden = false;
@@ -82,9 +82,10 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
             
             let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
             cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);
-            removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
-            
-            cell.tag = Int(userContact.userContactId);
+            if (userContact.userContactId != nil) {
+                removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
+                cell.tag = Int(userContact.userContactId);
+            }
         }
         return cell
     }

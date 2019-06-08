@@ -28,7 +28,7 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
         backButtton.addGestureRecognizer(backButtonTap);
         
         let emailGradient = CAGradientLayer()
-        emailGradient.frame = CGRect.init(0, emailTF.frame.height-1, emailTF.frame.width, 1)
+        emailGradient.frame = CGRect.init(x: 0, y: emailTF.frame.height-1, width: emailTF.frame.width, height: 1)
         emailGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
         emailGradient.startPoint = CGPoint(x: 0, y: 1);
         emailGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -39,7 +39,7 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
         
         
         let passwordGradient = CAGradientLayer()
-        passwordGradient.frame = CGRect.init(0, newPasswordField.frame.height-1, newPasswordField.frame.width, 1)
+        passwordGradient.frame = CGRect.init(x: 0, y: newPasswordField.frame.height-1, width: newPasswordField.frame.width, height: 1)
         passwordGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
         passwordGradient.startPoint = CGPoint(x: 0, y: 1);
         passwordGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -47,11 +47,13 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
         
         
         let confimrPasswordGradient = CAGradientLayer()
-        confimrPasswordGradient.frame = CGRect.init(0, confirmPasswordField.frame.height-1, confirmPasswordField.frame.width, 1)
+        confimrPasswordGradient.frame = CGRect.init(x: 0, y: confirmPasswordField.frame.height-1, width: confirmPasswordField.frame.width, height: 1)
         confimrPasswordGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
         confimrPasswordGradient.startPoint = CGPoint(x: 0, y: 1);
         confimrPasswordGradient.endPoint = CGPoint(x: 1, y: 1);
         confirmPasswordField.layer.insertSublayer(confimrPasswordGradient, at: 0);
+        
+        self.hideKeyboardWhenTappedAround();
     }
 
     override func didReceiveMemoryWarning() {

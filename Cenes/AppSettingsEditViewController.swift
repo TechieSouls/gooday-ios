@@ -25,6 +25,8 @@ class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVAc
         self.view.backgroundColor = themeColor;
         self.tabBarController?.tabBar.isHidden = true;
         self.title = "Delete Account";
+        self.hideKeyboardWhenTappedAround();
+        
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         appSettingsEditTableView.register(UINib.init(nibName: "DeleteAccountTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "DeleteAccountTableViewCell");
@@ -153,6 +155,11 @@ extension AppSettingsEditViewController: UITableViewDataSource, UITableViewDeleg
         
         let cell: DeleteAccountTableViewCell = tableView.dequeueReusableCell(withIdentifier: "DeleteAccountTableViewCell") as! DeleteAccountTableViewCell;
         cell.appSettingsEditViewControllerDelegate = self;
+        if (loggedInUser.password == nil) {
+            cell.password.isHidden = true;
+            cell.passwordAvailable = false;
+        }
+        
         if (countryCodeService != nil) {
             cell.countryLabel.text = countryCodeService.getName();
             cell.countryCode.text = countryCodeService.getPhoneCode();

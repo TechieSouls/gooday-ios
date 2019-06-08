@@ -53,6 +53,8 @@ class EditPersonalDetailsViewController: UIViewController, UITextFieldDelegate{
         //passwordViewFrame = CGRect.init(0, headerHeight, view.frame.width, passwordView.frame.height);
         
         self.title = seagueafor;
+        
+        self.hideKeyboardWhenTappedAround();
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -196,9 +198,9 @@ extension EditPersonalDetailsViewController: UITableViewDataSource, UITableViewD
                 cell.currentPasswordField.isHidden = true;
                 cell.newPasswordField.placeholder = "Choose a Password";
 
-                cell.newPasswordField.frame = CGRect.init(0, 0, cell.frame.width, cell.newPasswordField.frame.height)
-                cell.confirmPasswordField.frame = CGRect.init(0, 60, cell.frame.width, cell.confirmPasswordField.frame.height)
-                cell.passwordDescriptionText.frame = CGRect.init(20, 140, cell.frame.width - 40, cell.passwordDescriptionText.frame.height)
+                cell.newPasswordField.frame = CGRect.init(x: 0, y: 0, width: cell.frame.width, height: cell.newPasswordField.frame.height)
+                cell.confirmPasswordField.frame = CGRect.init(x: 0, y: 60, width: cell.frame.width, height: cell.confirmPasswordField.frame.height)
+                cell.passwordDescriptionText.frame = CGRect.init(x: 20, y: 140, width: cell.frame.width - 40, height: cell.passwordDescriptionText.frame.height)
                 cell.newPasswordField.becomeFirstResponder();
             }
             return cell;

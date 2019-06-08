@@ -145,7 +145,7 @@ class InvitationCardTableViewCell: UITableViewCell {
                 //160 is the destance from bottom
                 //40 is the total padding from uilabel(20 top , 20 bottom)
                 //so y will be total height of screen - bottom space(160) - height of uilabel(height) - total padding(top + bottom)
-                self.descriptionUILabelHolder.frame =  CGRect(self.descriptionUILabelHolder.frame.origin.x, gatheringInvitaionViewControllerDelegate.view.frame.height - (160 + height + 40) , self.descriptionUILabelHolder.frame.width, height + 40);
+                self.descriptionUILabelHolder.frame =  CGRect(x: self.descriptionUILabelHolder.frame.origin.x, y: gatheringInvitaionViewControllerDelegate.view.frame.height - (160 + height + 40) , width: self.descriptionUILabelHolder.frame.width, height: height + 40);
                 
                 self.chatProfilePic.isHidden = false;
                 
@@ -202,10 +202,12 @@ class InvitationCardTableViewCell: UITableViewCell {
         self.descriptionUILabelHolder.isHidden = true;
         self.chatProfilePic.isHidden = true;
         self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
+        
+        gatheringInvitaionViewControllerDelegate.resetScreenToDefaultPosition();
     }
     
     func heightForView(text:String, font:UIFont, width:CGFloat) -> CGFloat{
-        let label:UILabel = UILabel(frame: CGRect(0, 0, self.descriptionUILabel.frame.width, CGFloat.greatestFiniteMagnitude))
+        let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.descriptionUILabel.frame.width, height: CGFloat.greatestFiniteMagnitude))
         label.numberOfLines = 0
         label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.font = font
@@ -269,6 +271,8 @@ class InvitationCardTableViewCell: UITableViewCell {
         if (gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
             if (gatheringInvitaionViewControllerDelegate.event.eventPicture != nil) {
                 eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.eventPicture));
+            } else if (gatheringInvitaionViewControllerDelegate.event.imageToUpload != nil) {
+                eventPicture.image = gatheringInvitaionViewControllerDelegate.event.imageToUpload;
             }
         } else {
             if (gatheringInvitaionViewControllerDelegate.event.imageToUpload != nil) {
@@ -287,5 +291,17 @@ class InvitationCardTableViewCell: UITableViewCell {
         /*if (imageCard != nil) {
             imageCard.setNeedsDisplay();
         }*/
+        
+        
+        if (gatheringInvitaionViewControllerDelegate.isLoggedInUserAsOwner == true) {
+            gatheringInvitaionViewControllerDelegate.editImageView.isHidden = false;
+            gatheringInvitaionViewControllerDelegate.deleteImageView.isHidden = false;
+            gatheringInvitaionViewControllerDelegate.rejectedImageiew.isHidden = true;
+        } else {
+            gatheringInvitaionViewControllerDelegate.editImageView.isHidden = true;
+            gatheringInvitaionViewControllerDelegate.deleteImageView.isHidden = true;
+            gatheringInvitaionViewControllerDelegate.rejectedImageiew.isHidden = false;
+
+        }
     }
 }

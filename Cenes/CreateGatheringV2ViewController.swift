@@ -11,7 +11,7 @@ import Photos
 import MobileCoreServices
 import VisualEffectView
 import NVActivityIndicatorView
-import UIImageCropper;
+import Mantis
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -20,7 +20,9 @@ protocol TimePickerDoneProtocol : class {
 protocol GatheringInfoCellProtocol {
     func imageSelected()
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, UIImageCropperProtocol {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerProtocal {
+
+    
     
     @IBOutlet weak var createGathTableView: UITableView!
     
@@ -48,9 +50,13 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     var event = Event();
     
+    var eventHost: EventMember!;
+    
     var textfield = UITextField();
     
     var imageSelectedOption = "";
+    
+    var loggedInUser: User!;
     
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, padding: 0.0);
 
@@ -62,6 +68,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         self.tabBarController?.tabBar.isHidden = true;
         timePickerView.backgroundColor = themeColor;
         timePicker.backgroundColor = UIColor.white;
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         createGathTableView.register(UINib(nibName: "DatePanelTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "DatePanelTableViewCell")
 
@@ -73,7 +80,21 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         createGathTableView.register(UINib(nibName: "SelectedFriendsCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "SelectedFriendsCollectionTableViewCell")
         
-        event.endTime = 0;
+        if (event.eventId == nil) {
+            event.endTime = 0;
+        } else {
+            var eventMembers: [EventMember] = [EventMember]();
+            for eventMem in event.eventMembers {
+                if (eventMem.userId != self.loggedInUser.userId) {
+                    eventMembers.append(eventMem);
+                } else {
+                    eventHost = eventMem;
+                }
+            }
+            
+            inviteFriendsDto.selectedFriendCollectionViewList = eventMembers;
+            showAllFields();
+        }
         self.setupNavigationBar();
     }
     
@@ -88,7 +109,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
 
         
         let backButton = UIButton();
-        backButton.frame = CGRect(0, 0, 40, 40);
+        backButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40);
         backButton.setImage(UIImage.init(named: "abondan_event_icon"), for: .normal);
         backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControlEvents.touchUpInside)
         
@@ -96,9 +117,13 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         navigationItem.leftBarButtonItem = backButtonBarButton;
         
-        textfield = UITextField(frame: CGRect(80, 0, self.navigationController!.navigationBar.frame.size.width, 21.0));
+        textfield = UITextField(frame: CGRect(x: 80, y: 0, width: self.navigationController!.navigationBar.frame.size.width, height: 21.0));
         textfield.delegate = self;
-        textfield.placeholder = "Event Name"
+        if (event.eventId != nil) {
+            textfield.text = event.title!
+        } else {
+            textfield.placeholder = "Event Name"
+        }
         navigationItem.titleView = textfield;
         self.addDoneButtonOnKeyboard();
     }
@@ -165,14 +190,27 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
              */
             picker.dismiss(animated: true, completion: nil);
 
-            let cropper = UIImageCropper(cropRatio: 2/3)
+            /*let cropper = UIImageCropper(cropRatio: 2/3)
             cropper.delegate = self
             cropper.picker = nil
             cropper.image = image
             cropper.cropButtonText = "Choose";
             cropper.cancelButtonText = "Cancel"
-            self.present(cropper, animated: true, completion: nil)
-
+            self.present(cropper, animated: true, completion: nil)*/
+            
+            /*let imageCropper = self.storyboard?.instantiateViewController(withIdentifier: "GatheringImagePickerViewController") as! GatheringImagePickerViewController
+            imageCropper.imageToCrop = image;
+            imageCropper.createGatherigV2ProtocolDelegate = self;
+            self.present(imageCropper, animated: true, completion: nil)*/
+            
+            /*let imageCropper = self.storyboard?.instantiateViewController(withIdentifier: "MyImageCropperViewController") as! MyImageCropperViewController
+            imageCropper.imageToCrop = image;
+            imageCropper.createGatherigV2ProtocolDelegate = self;
+            self.present(imageCropper, animated: true, completion: nil)*/
+            
+            let cropViewController = Mantis.cropViewController(image: image)
+            cropViewController.delegate = self
+            self.present(cropViewController, animated: true)
         }
         
     }
@@ -213,9 +251,16 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         }
     }
     
+    func showAllFields() {
+        GatheringManager().makeAllFieldsFilled(createGathDto: createGathDto);
+        previewGatheirngButton.isHidden = false;
+    }
+    
     func openGuestListViewController() {
         let viewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController;
         viewController.inviteFriendsDto = self.inviteFriendsDto;
+        viewController.isFirstTime = false;
+        viewController.eventId = event.eventId
         viewController.createGatheringProtocolDelegate = self;
         self.navigationController?.pushViewController(viewController, animated: true);
     }
@@ -267,10 +312,11 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func hideLoading() {
         self.stopAnimating()
     }
-    
+
     @IBAction func timePickerCancelPressed(_ sender: Any) {
         timePickerView.isHidden = true;
         timePickerDoneDelegate.timePickerCancelButtonPressed();
+
     }
     
     @IBAction func timePickerDonePressed(_ sender: Any) {
@@ -281,8 +327,25 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     @IBAction func previewGatheringButtonPressed(_ sender: Any) {
         
+        if (self.event.eventId != nil) {
+            
+            var hostExists = false;
+            for eve in self.event.eventMembers {
+                if (eve.eventMemberId == eventHost.eventMemberId) {
+                    hostExists = true;
+                }
+            }
+            if (hostExists == false) {
+                self.event.eventMembers.append(eventHost);
+            }
+        }
+        
+        
         let viewController: GatheringInvitationViewController = storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
         viewController.event = self.event;
+        if (viewController.event.eventId != nil) {
+            viewController.event.requestType = EventRequestType.EditEvent;
+        }
         self.navigationController?.pushViewController(viewController, animated: true);
     }
     
@@ -325,7 +388,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         } else if (imageSelectedOption == "Camera") {
             event.imageToUpload = croppedImage!.fixedOrientation().imageRotatedByDegrees(degrees: 90);
         }
-         let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
+         //let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
         
     }
     
@@ -333,5 +396,15 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func didCancel() {
         self.dismiss(animated: true, completion: nil)
         print("did cancel")
+    }
+    
+    func imageAfterCrop(cropperdImage: UIImage) {
+        gatheringInfoCellDelegate.imageSelected();
+        event.imageToUpload = cropperdImage.fixedOrientation().imageRotatedByDegrees(degrees: 90);
+    }
+    
+    func didGetCroppedImage(image: UIImage) {
+        gatheringInfoCellDelegate.imageSelected();
+        event.imageToUpload = image;
     }
 }

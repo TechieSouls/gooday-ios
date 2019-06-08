@@ -239,13 +239,17 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             viewController.pendingEventIndex = 0;
             self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
         } else {
-            let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
-            if (event.scheduleAs == "Gathering") {
-                let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-                viewController.event = event;
+            
+            if (self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
+                let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
+                if (event.scheduleAs == "Gathering") {
+                    let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                    viewController.event = event;
                     
                     self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+                }
             }
+            
             
         }
         

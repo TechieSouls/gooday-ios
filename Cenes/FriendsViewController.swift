@@ -23,7 +23,7 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
     var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
     var isFirstTime: Bool = true;
     var createGatheringProtocolDelegate: CreateGatheringProtocol!;
-    
+    var eventId: Int32!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,7 +38,7 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
         
-        if (self.inviteFriendsDto.allEventMembers.count == 0) {
+        if (isFirstTime == true || eventId != nil) {
             self.getFriendsWithName(nameStartsWith: "")
         } else {
             self.friendTableView.reloadData()

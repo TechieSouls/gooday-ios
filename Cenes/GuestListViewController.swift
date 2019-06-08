@@ -29,13 +29,35 @@ class GuestListViewController: UIViewController {
     
     @IBOutlet weak var declinedUIViewUILabel: UILabel!
     
+    @IBOutlet weak var noGuestsLabel: UILabel!
+    
+    @IBOutlet weak var invitedViewFooterLabel: UILabel!
+    
+    @IBOutlet weak var acceptedViewFooterLabel: UILabel!
+    
+    @IBOutlet weak var declinedViewFooterLabel: UILabel!
+    
+    
     var eventMembers: [EventMember]!;
+    
+    var filteredEventMembers: [EventMember] = [EventMember]();
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let closeImageTapGesture = UITapGestureRecognizer(target: self, action: Selector("closeIconPressed"));
         closeIcon.addGestureRecognizer(closeImageTapGesture);
+        
+        let invitedViewTapGesture = UITapGestureRecognizer(target: self, action: Selector("invitedUiViewPressed"));
+        invitedUiView.addGestureRecognizer(invitedViewTapGesture);
+        
+        
+        let acceptedViewTapGesture = UITapGestureRecognizer(target: self, action: Selector("acceptedUIViewPressed"));
+        acceptedUIView.addGestureRecognizer(acceptedViewTapGesture);
+        
+        
+        let declinedViewTapGesture = UITapGestureRecognizer(target: self, action: Selector("declinedUIViewPressed"));
+        declinedUIView.addGestureRecognizer(declinedViewTapGesture);
         
         
         // Do any additional setup after loading the view.
@@ -72,6 +94,7 @@ class GuestListViewController: UIViewController {
         }
         acceptedUIViewUILabel.text = String(acceptedCount);
         declinedUIViewUILabel.text = String(declinedCount);
+        self.filteredEventMembers = self.eventMembers;
     }
     
 
@@ -85,10 +108,150 @@ class GuestListViewController: UIViewController {
     }
     */
     
-    
     @objc func closeIconPressed() {
         print("Close Clicked")
         self.dismiss(animated: true, completion: nil);
+    }
+    
+    @objc func invitedUiViewPressed() {
+        
+        self.activeInvitedView();
+        self.deactivateDeclinedView();
+        self.deactivateAcceptedView();
+        
+        
+        self.filteredEventMembers = [EventMember]();
+        self.filteredEventMembers = self.eventMembers;
+        self.guestListTableView.isHidden = false;
+        self.noGuestsLabel.isHidden = true
+        self.guestListTableView.reloadData();
+    }
+    
+    @objc func acceptedUIViewPressed() {
+        
+        self.activeAcceptedView();
+        self.deactivateInvitedView();
+        self.deactivateDeclinedView();
+        
+        self.filteredEventMembers = [EventMember]();
+
+        for eventMem in eventMembers {
+            if (eventMem.status == "Going") {
+                filteredEventMembers.append(eventMem);
+            }
+        }
+        
+        if (self.filteredEventMembers.count == 0) {
+            noGuestsLabel.isHidden = false;
+            self.guestListTableView.isHidden = true;
+
+        } else {
+            noGuestsLabel.isHidden = true;
+            self.guestListTableView.isHidden = false;
+            self.guestListTableView.reloadData();
+        }
+    }
+    
+    @objc func declinedUIViewPressed() {
+        
+        self.activeDeclinedView();
+        self.deactivateInvitedView();
+        self.deactivateAcceptedView();
+        
+        self.filteredEventMembers = [EventMember]();
+
+        for eventMem in eventMembers {
+            if (eventMem.status == "NotGoing") {
+                filteredEventMembers.append(eventMem);
+            }
+        }
+        
+        if (self.filteredEventMembers.count == 0) {
+            noGuestsLabel.isHidden = false;
+            self.guestListTableView.isHidden = true;
+        } else {
+            noGuestsLabel.isHidden = true;
+            self.guestListTableView.isHidden = false;
+            self.guestListTableView.reloadData();
+        }
+    }
+    
+    func activeAcceptedView() {
+        acceptedUIView.layer.borderColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor;
+        acceptedUIView.backgroundColor = UIColor.white
+        acceptedUIView.layer.borderWidth = 5;
+        acceptedUIView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        acceptedUIView.layer.shadowColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:0.5).cgColor
+        acceptedUIView.layer.shadowOpacity = 1
+        acceptedUIView.layer.shadowRadius = 2
+        
+        acceptedUIViewUILabel.textColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
+        acceptedViewFooterLabel.textColor = UIColor.black
+
+    }
+    func deactivateAcceptedView() {
+        acceptedUIView.layer.borderColor = UIColor.white.cgColor;
+        acceptedUIView.backgroundColor = UIColor.init(red: 239/255, green: 239/255, blue: 239/255, alpha: 1);
+        acceptedUIView.layer.borderWidth = 5;
+        acceptedUIView.layer.shadowColor = nil
+        acceptedUIView.layer.shadowOpacity = 0
+        acceptedUIView.layer.shadowRadius = 0
+        
+        acceptedUIViewUILabel.textColor = UIColor.white;
+        acceptedViewFooterLabel.textColor = UIColor.lightGray
+    }
+    
+    func activeInvitedView() {
+        invitedUiView.layer.borderColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor;
+        invitedUiView.backgroundColor = UIColor.white
+        invitedUiView.layer.borderWidth = 5;
+        invitedUiView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        invitedUiView.layer.shadowColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:0.5).cgColor
+        invitedUiView.layer.shadowOpacity = 1
+        invitedUiView.layer.shadowRadius = 2
+        
+        invitedUIViewUILabel.textColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
+        invitedViewFooterLabel.textColor = UIColor.black
+
+    }
+    func deactivateInvitedView() {
+        invitedUiView.layer.borderColor = UIColor.white.cgColor;
+        invitedUiView.backgroundColor = UIColor.init(red: 239/255, green: 239/255, blue: 239/255, alpha: 1);
+        invitedUiView.layer.borderWidth = 5;
+        invitedUiView.layer.shadowColor = nil
+        invitedUiView.layer.shadowOpacity = 0
+        invitedUiView.layer.shadowRadius = 0
+        
+        invitedUIViewUILabel.textColor = UIColor.white;
+        invitedViewFooterLabel.textColor = UIColor.lightGray
+
+
+    }
+    
+    func activeDeclinedView() {
+        declinedUIView.layer.borderColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor;
+        declinedUIView.backgroundColor = UIColor.white
+        declinedUIView.layer.borderWidth = 5;
+        declinedUIView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        declinedUIView.layer.shadowColor = UIColor(red:0.71, green:0.71, blue:0.71, alpha:0.5).cgColor
+        declinedUIView.layer.shadowOpacity = 1
+        declinedUIView.layer.shadowRadius = 2
+        
+        declinedUIViewUILabel.textColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75);
+        declinedViewFooterLabel.textColor = UIColor.black
+
+    }
+    func deactivateDeclinedView() {
+        declinedUIView.layer.borderColor = UIColor.white.cgColor;
+        declinedUIView.backgroundColor = UIColor.init(red: 239/255, green: 239/255, blue: 239/255, alpha: 1);
+        declinedUIView.layer.borderWidth = 5;
+        declinedUIView.layer.shadowColor = nil
+        declinedUIView.layer.shadowOpacity = 0
+        declinedUIView.layer.shadowRadius = 0
+        
+        declinedUIViewUILabel.textColor = UIColor.white;
+        declinedViewFooterLabel.textColor = UIColor.lightGray
+
     }
 }
 
@@ -99,12 +262,12 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return eventMembers.count;
+        return filteredEventMembers.count;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let eventMember = self.eventMembers[indexPath.row];
+        let eventMember = self.filteredEventMembers[indexPath.row];
         
         let cell: GuestListTableViewCell =  tableView.dequeueReusableCell(withIdentifier: "GuestListTableViewCell", for: indexPath) as! GuestListTableViewCell;
         

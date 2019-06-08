@@ -39,7 +39,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         view.backgroundColor = themeColor;
         locationTableView.backgroundColor = themeColor;
         
-        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, view.frame.height - 60, 220, 33);
+        customLocationButton.frame = CGRect(x: customLocationButton.frame.origin.x, y: view.frame.height - 60, width: 220, height: 33);
 
         customLocationButton.layer.cornerRadius = 15
         customLocationButton.backgroundColor = UIColor.white
@@ -91,7 +91,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
             print(keyboardHeight)
         }
         
-        customLocationButton.frame = CGRect.init(customLocationButton.frame.origin.x, (self.view.frame.height - keyboardHeight), customLocationButton.frame.width, customLocationButton.frame.height);
+        customLocationButton.frame = CGRect.init(x: customLocationButton.frame.origin.x, y: (self.view.frame.height - keyboardHeight), width: customLocationButton.frame.width, height: customLocationButton.frame.height);
         
         //customLocationButton.titleLabel?.text = "Create Custom Location [CL]"
     }
@@ -100,7 +100,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         // Do something here
         print("Closed");
         print(customLocationButton.frame.origin.y)
-        customLocationButton.frame = CGRect(customLocationButton.frame.origin.x, (self.view.frame.height - 70), customLocationButton.frame.width, customLocationButton.frame.height);
+        customLocationButton.frame = CGRect(x: customLocationButton.frame.origin.x, y: (self.view.frame.height - 70), width: customLocationButton.frame.width, height: customLocationButton.frame.height);
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -174,7 +174,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         
         
         let backButton = UIButton();
-        backButton.frame = CGRect(0, 0, 40, 40);
+        backButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40);
         backButton.setImage(UIImage.init(named: "abondan_event_icon"), for: .normal);
         backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControlEvents.touchUpInside)
         
@@ -232,7 +232,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         count = count + 1;*/
                     }
                     
-                    if (finalnbList.count > 0) {
+                    //Sorting by Near Distance.
+                    /*if (finalnbList.count > 0) {
                         
                         for i in 0..<(finalnbList.count - 1) {
                             
@@ -250,7 +251,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                                 }
                             }
                         }
-                    }
+                    }*/
                     
                     
                     if (finalnbList.count > 0) {

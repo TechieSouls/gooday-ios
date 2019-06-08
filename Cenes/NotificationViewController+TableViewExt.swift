@@ -135,7 +135,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
 
             let topBorder = UIView();
             topBorder.backgroundColor = themeColor
-            topBorder.frame = CGRect(0, 0, returnedView.frame.size.width, 1);
+            topBorder.frame = CGRect(x: 0, y: 0, width: returnedView.frame.size.width, height: 1);
             returnedView.addSubview(topBorder);
         }
         returnedView.addSubview(cell.headerLabel)

@@ -126,6 +126,7 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
     
     @IBAction func getAccessButtonPressed(_ sender: Any) {
         
+        
         var postData = [String: Any]();
         postData["countryCode"] = "\(self.countryCodeService.getPhoneCode())";
         postData["phone"] = "\(self.phoneNumberTextField.text!)";
@@ -145,8 +146,5 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
                 self.showAlert(title: "Alert", message: message)
             }
         });
-        
-        
-        
     }
 }

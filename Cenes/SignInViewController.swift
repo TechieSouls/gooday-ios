@@ -29,7 +29,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         
         // Do any additional setup after loading the view.
         let emailGradient = CAGradientLayer()
-        emailGradient.frame = CGRect.init(0, emailTxtField.frame.height-1, emailTxtField.frame.width, 1)
+        emailGradient.frame = CGRect.init(x: 0, y: emailTxtField.frame.height-1, width: emailTxtField.frame.width, height: 1)
         emailGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
         emailGradient.startPoint = CGPoint(x: 0, y: 1);
         emailGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -37,7 +37,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         emailTxtField.layer.insertSublayer(emailGradient, at: 0);
         
         let passwordGradient = CAGradientLayer()
-        passwordGradient.frame = CGRect.init(0, passwordTextField.frame.height-1, passwordTextField.frame.width, 1)
+        passwordGradient.frame = CGRect.init(x: 0, y: passwordTextField.frame.height-1, width: passwordTextField.frame.width, height: 1)
         passwordGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
         passwordGradient.startPoint = CGPoint(x: 0, y: 1);
         passwordGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -46,6 +46,8 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         
         let backTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backButtonPressed));
         backButton.addGestureRecognizer(backTapGesture);
+        
+        self.hideKeyboardWhenTappedAround();
         
         if (existingEmail != "") {
             emailTxtField.text = existingEmail;
@@ -94,8 +96,8 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
                         self.syncDeviceContacts();
                         WebService().setPushToken();
                     }
-                    setting.setValue(4, forKey: "onboarding")
-                    
+                    setting.setValue(UserSteps.Authentication, forKey: "footprints")
+
                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
                 }
             })

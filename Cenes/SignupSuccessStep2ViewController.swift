@@ -48,6 +48,12 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     var outlookService = OutlookService.shared();
     let picController = UIImagePickerController();
 
+    
+    class func MainViewController() -> UINavigationController{
+        
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SignupStep2NavController") as! UINavigationController
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -65,7 +71,6 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().serverClientID = "212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com";
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]
-        
     }
     /*
     // MARK: - Navigation
@@ -76,7 +81,10 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         // Pass the selected object to the new view controller.
     }
     */
-    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true;
+    }
+
     func photoIconClicked() {
         // create an actionSheet
         let actionSheetController: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -127,7 +135,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             
-            let imageToUpload = image;
+            let imageToUpload = image.fixedOrientation();
             imageToUpload.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0)
             
             signupStep2FormTableViewCellProtocolDelegate.updateProfilePic(profilePicImage: imageToUpload);
@@ -302,10 +310,14 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     
     @IBAction func completeButtonPressed(_ sender: Any) {
         
-        setting.setValue(4, forKey: "onboarding")
-        DispatchQueue.main.async {
-            WebService().setPushToken()
-            UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+        if (loggedInUser.name == nil) {
+            self.showAlert(title: "Name cannot be left empty", message: "");
+        } else {
+            setting.setValue(UserSteps.Authentication, forKey: "footprints")
+            DispatchQueue.main.async {
+                WebService().setPushToken()
+                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+            }
         }
         
     }

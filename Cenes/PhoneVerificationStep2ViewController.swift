@@ -17,8 +17,8 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
     
     @IBOutlet weak var codeField1: UITextField!
     
-    @IBOutlet weak var codeField2: UITextField!
-    @IBOutlet weak var codeField3: UITextField!
+    @IBOutlet weak var resendCodeText: UILabel!
+    
     @IBOutlet weak var resendCodeTimer: UILabel!
     
     var timer = Timer();
@@ -35,7 +35,12 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         if (phoneNumberStr != "") {
             phoneNumber.text = "\(countryCode)\(phoneNumberStr)";
         }
+        
+        codeField1.addTarget(self, action: #selector(userPressedKey(textField:)), for: UIControlEvents.editingChanged);
+        
         codeField1.becomeFirstResponder();
+        
+        self.hideKeyboardWhenTappedAround();
     }
     override func viewDidAppear(_ animated: Bool) {
         runTimer();
@@ -67,59 +72,17 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         self.navigationItem.leftBarButtonItem = backBarButton
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    
+    @objc func userPressedKey(textField: UITextField) {
         
-        
-        if let char = string.cString(using: String.Encoding.utf8) {
-            let isBackSpace = strcmp(char, "\\b")
-            if (isBackSpace == -92) {
-                print("Backspace was pressed")
-                if (self.verificationCodeTypedIn.count > 0) {
-                    self.verificationCodeTypedIn = self.verificationCodeTypedIn.substring(toIndex: self.verificationCodeTypedIn.count - 1);
-                }
-            }
-        }
-
-        if let text = textField.text as NSString? {
-            self.verificationCodeTypedIn = text.replacingCharacters(in: range, with: string)
-            //self.verificationCodeTypedIn = self.verificationCodeTypedIn + string;
-        }
-        
-        let attributedText = NSMutableAttributedString(string: self.verificationCodeTypedIn)
-        attributedText.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: NSRange(location: 0, length: attributedText.length))
-        
-        var greyText = "";
-        if (verificationCodeTypedIn.count == 1) {
-            greyText = "000";
-        } else if (verificationCodeTypedIn.count == 2) {
-            greyText = "00";
-        } else if (verificationCodeTypedIn.count == 3) {
-            greyText = "0";
-        } else if (verificationCodeTypedIn.count == 4) {
-            greyText = "";
-        }
-        
-        
-        let attributedGreyText = NSMutableAttributedString(string: greyText)
-        attributedGreyText.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.gray, range: NSRange(location: 0, length: attributedGreyText.length))
-        
-        let mutableAttributedString = NSMutableAttributedString()
-        mutableAttributedString.append(attributedText);
-        mutableAttributedString.append(attributedGreyText);
-        
-        //codeField1.text = self.verificationCodeTypedIn;
-        //codeField1.attributedText = NSAttributedString.init(string: "");
-        //codeField1.attributedText = mutableAttributedString;
-        if (self.verificationCodeTypedIn.count < 4) {
-            return true;
-        } else  if (self.verificationCodeTypedIn.count == 4) {
-            codeField1.resignFirstResponder();
+        if (textField.text?.count == 4) {
+            textField.resignFirstResponder();
             
             var postData = [String: Any]();
             postData["countryCode"] = self.countryCode;
-            postData["code"] = self.verificationCodeTypedIn;
+            postData["code"] = textField.text!;
             postData["phone"] = self.phoneNumberStr;
-
+            
             
             UserService().postCheckVerificationCodeWithoutToken(postData: postData, complete: {(response) in
                 
@@ -133,13 +96,12 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
                     self.timer.invalidate();
                     
                     setting.setValue("\(self.countryCode)\(self.phoneNumberStr)", forKey: "verifiedPhone")
-                    setting.setValue(3, forKey: "onboarding")
+                    setting.setValue(UserSteps.PhoneVerification, forKey: "footprints")
                     UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
                 }
             });
-            return true;
         }
-        return false;
+        
     }
     
     func runTimer() {
@@ -156,20 +118,25 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         
         if (seconds == 0) {
             timer.invalidate();
-            var postData = [String: Any]();
-            postData["countryCode"] = "\(countryCode)";
-            postData["phone"] = "\(phoneNumberStr)";
+            resendCodeText.textColor = UIColor(red: 245/255, green: 166/255, blue: 36/255, alpha: 1)
             
-            DispatchQueue.global(qos: .background).async {
-                UserService().postVerificationCodeWithoutToken(postData: postData, complete: {(response) in
-                    
-                });
-            }
-            
+            var tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(resendTextPressed))
+            resendCodeText.addGestureRecognizer(tapGesture);
         }
     }
     @objc func backButtonPressed() {
         self.navigationController?.popViewController(animated: true);
     }
     
+    @objc func resendTextPressed() {
+        var postData = [String: Any]();
+        postData["countryCode"] = "\(countryCode)";
+        postData["phone"] = "\(phoneNumberStr)";
+        
+        DispatchQueue.global(qos: .background).async {
+            UserService().postVerificationCodeWithoutToken(postData: postData, complete: {(response) in
+                
+            });
+        }
+    }
 }

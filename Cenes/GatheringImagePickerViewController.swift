@@ -12,12 +12,13 @@ class GatheringImagePickerViewController: UIViewController,UIImagePickerControll
     
     let picker = UIImagePickerController()
     var circlePath = UIBezierPath()
+    var createGatherigV2ProtocolDelegate: CreateGatherigV2Protocol!;
 
     @IBOutlet weak var crop: VerticalCropView!
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var scroll: UIScrollView!
-
-        {
+    var imageToCrop = UIImage();
+    
+    @IBOutlet weak var scroll: UIScrollView! {
         didSet{
             scroll.delegate = self
             scroll.minimumZoomScale = 1.0
@@ -37,6 +38,7 @@ class GatheringImagePickerViewController: UIViewController,UIImagePickerControll
         picker.delegate = self
         let size : CGFloat = 200
         layer(x: (self.view.frame.size.width / 2) - (size/2), y: (self.view.frame.size.height / 2) - (size / 2), width: size,height: size,cornerRadius: 0)
+        imageView.image = imageToCrop;
     }
     
     //MARK: -SubLayer
@@ -77,14 +79,15 @@ class GatheringImagePickerViewController: UIViewController,UIImagePickerControll
     
     //MARK: -Cropping
     
-    @IBAction func cropping(_ sender: UIButton)
-    {
+    @IBAction func cropping(_ sender: UIButton) {
         let croppedCGImage = imageView.image?.cgImage?.cropping(to: cropArea)
         let croppedImage = UIImage(cgImage: croppedCGImage!)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        //let controller = storyboard.instantiateViewController(withIdentifier: "view") as! ViewController1
-        //self.present(controller, animated: true, completion: nil)
-        //controller.photo.image = croppedImage
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func cancelCropping(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil);
     }
     
     var cropArea:CGRect
@@ -97,7 +100,8 @@ class GatheringImagePickerViewController: UIViewController,UIImagePickerControll
             let y = (scroll.contentOffset.y + circlePath.bounds.origin.y - imageFrame.origin.y) * scale * factor
             let width =  circlePath.bounds.width  * scale * factor
             let height = circlePath.bounds.height  * scale * factor
-            return CGRect(x: x, y: y, width: width, height: height)
+            
+            return CGRect(x: 0, y: 0, width: self.view.frame.width, height: height)
         }
         
     }

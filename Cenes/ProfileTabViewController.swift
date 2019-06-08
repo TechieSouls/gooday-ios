@@ -8,8 +8,10 @@
 
 import UIKit
 import MessageUI
+import MobileCoreServices
+import Photos
 
-class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDelegate {
+class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     
     @IBOutlet weak var topView: UIView!
@@ -30,6 +32,9 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
     
     var profileDtos = [ProfileDto]();
     var loggedInUser: User = User();
+    let picController = UIImagePickerController();
+    var imageSelectedOption = "";
+    var uploadImage: UIImage!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,14 +157,15 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         // create an action
         let removePhotoAction: UIAlertAction = UIAlertAction(title: "Remove Current Photo", style: .destructive) { action -> Void in
             //self.selectPicture();
+            self.removeProfilePic();
         }
         let takePhotoAction: UIAlertAction = UIAlertAction(title: "Take Photo", style: .default) { action -> Void in
-            //self.takePicture();
+            self.takePicture();
         }
         takePhotoAction.setValue(cenesLabelBlue, forKey: "titleTextColor")
         
         let uploadPhotoAction: UIAlertAction = UIAlertAction(title: "Choose from Library", style: .default) { action -> Void in
-            //self.takePicture();
+            self.selectPicture();
         }
         uploadPhotoAction.setValue(cenesLabelBlue, forKey: "titleTextColor")
         
@@ -175,5 +181,85 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         // present an actionSheet...
         present(actionSheetController, animated: true, completion: nil)
     }
+    
+    func takePicture() {
+        
+        imageSelectedOption = "Camera";
 
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
+            self.picController.sourceType = UIImagePickerControllerSourceType.camera
+            self.picController.allowsEditing = true
+            self.picController.delegate = self
+            self.picController.mediaTypes = [kUTTypeImage as String]
+            present(picController, animated: true, completion: nil)
+        }
+    }
+    
+    func selectPicture() {
+        //self.checkPermission();
+        imageSelectedOption = "Gallery";
+
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+            self.picController.delegate = self
+            self.picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
+            self.picController.allowsEditing = true
+            self.picController.mediaTypes = [kUTTypeImage as String]
+            self.present(picController, animated: true, completion: nil)
+        }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            
+            let imageToUploadTemp = image.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0)
+            
+            self.uploadImage = imageToUploadTemp.fixedOrientation();
+            DispatchQueue.main.async {
+                self.profilePic.image = image;
+                self.profilePic.setNeedsDisplay()
+
+            }
+
+            DispatchQueue.global(qos: .background).async {
+
+                var postData = [String: Any]();
+                postData["uploadImage"] = self.uploadImage;
+                postData["userId"] = self.loggedInUser.userId!;
+                UserService().uploadUserProfilePic(postData: postData, token: self.loggedInUser.token, complete: {(resp) in
+                    let success = resp.value(forKey: "success") as! Bool;
+                    if (success == false) {
+                        self.showAlert(title: "Error", message: resp.value(forKey: "message") as! String);
+                    } else {
+                        self.loggedInUser.photo = resp.value(forKey: "data") as! String;
+                        User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+                    }
+                })
+            }
+        }
+        
+        picker.dismiss(animated: true, completion: nil);
+    }
+
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        self.dismiss(animated: true, completion: nil);
+    }
+    
+    func removeProfilePic() {
+        var postData: [String: Any] = [String: Any]();
+        postData["profilePic"] = "";
+        postData["userId"] = loggedInUser.userId;
+        self.loggedInUser.photo = "";
+        User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+        DispatchQueue.main.async {
+            self.profilePic.image = UIImage.init(named: "profile_pic_no_image");
+            self.profilePic.setNeedsDisplay()
+            
+        }
+
+        DispatchQueue.global(qos: .background).async {
+            UserService().postUserDetails(postData: postData, token: self.loggedInUser.token, complete: {(response) in
+                //User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+            });
+        }
+    }
 }

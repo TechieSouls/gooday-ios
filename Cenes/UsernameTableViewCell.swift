@@ -20,7 +20,7 @@ class UsernameTableViewCell: UITableViewCell, UITextFieldDelegate {
         
         nameTextField.backgroundColor = UIColor.white;
 
-        let nameLeftView = UIView(frame: CGRect.init(0, 0, 20, nameTextField.frame.height))
+        let nameLeftView = UIView(frame: CGRect.init(x: 0, y: 0, width: 20, height: nameTextField.frame.height))
         nameTextField.leftView = nameLeftView;
         nameTextField.leftViewMode = .always
     

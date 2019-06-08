@@ -33,7 +33,7 @@ class Event {
     var eventClickedFrom: String = "Home";
     var expired: Bool = false;
     var imageToUpload: UIImage!;
-
+    var requestType = EventRequestType.NewEvent;
     
     var eventMembers: [EventMember]!;
     
@@ -169,4 +169,10 @@ class Event {
     }
     
     
+}
+
+class EventRequestType {
+    static let NewEvent = "NEW";
+    static let EditEvent = "EDIT";
+    static let ViewEvent = "VIEW";
 }

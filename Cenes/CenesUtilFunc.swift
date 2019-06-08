@@ -33,3 +33,9 @@ class CenesUtilFunc: UIViewController, NVActivityIndicatorViewable {
         
     }
 }
+
+class UserSteps {
+    static let OnBoardingScreens = "OnBoardingScreens";
+    static let PhoneVerification = "PhoneVerification";
+    static let Authentication = "Authentication";
+}

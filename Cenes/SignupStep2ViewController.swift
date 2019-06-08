@@ -29,14 +29,14 @@ class SignupStep2ViewController: UIViewController, NVActivityIndicatorViewable {
     var phoneNumber: String = "";
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
        // self.view.addSubview(keyPadView);
         //self.setupAutoLayout();
+        self.hideKeyboardWhenTappedAround();
+        
         self.intializeComponents();
         
         self.userService = UserService();
@@ -62,51 +62,6 @@ class SignupStep2ViewController: UIViewController, NVActivityIndicatorViewable {
         self.lblBox4.textColor = UIColor.white;
     }
     
-    
-    @IBAction func keypadButton1Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "1");
-    }
-    
-    @IBAction func keypadButton2Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "2");
-    }
-    
-    @IBAction func keypadButton3Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "3");
-    }
-    @IBAction func keypadButton4Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "4");
-    }
-    
-    @IBAction func keypadButton5Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "5");
-    }
-
-    @IBAction func keypadButton6Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "6");
-    }
-    
-    @IBAction func keypadButton7Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "7");
-    }
-    
-    @IBAction func keypadButton8Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "8");
-    }
-    
-    @IBAction func keypadButton9Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "9");
-    }
-    
-    @IBAction func keypadButton0Pressed(_ sender: Any) {
-        self.verificationCodePress(number: "0");
-    }
-    
-    @IBAction func keypadButtonDelPressed(_ sender: Any) {
-        self.verificationCodePress(number: "-");
-        
-    }
-    
     /*
     // MARK: - Navigation
 
@@ -116,77 +71,6 @@ class SignupStep2ViewController: UIViewController, NVActivityIndicatorViewable {
         // Pass the selected object to the new view controller.
     }
     */
-    func verificationCodePress(number: String){
-
-        if(self.verificationCode.count > 0 && number ==  "-"){
-            let index = self.verificationCode.index(self.verificationCode.startIndex, offsetBy: self.verificationCode.count - 1)
-            self.verificationCode = String(self.verificationCode.prefix(upTo: index));
-            if (self.verificationCode.count == 0) {
-                self.lblBox1.text = "";
-                self.lblBox2.text = "";
-                self.lblBox3.text = "";
-                self.lblBox4.text = "";
-            } else if (self.verificationCode.count == 1) {
-                self.lblBox2.text = "";
-                self.lblBox3.text = "";
-                self.lblBox4.text = "";
-            } else if (self.verificationCode.count == 2) {
-                self.lblBox3.text = "";
-                self.lblBox4.text = "";
-               
-            }else if (self.verificationCode.count == 3) {
-                self.lblBox4.text = "";
-               
-            }
-        
-        }else {
-            self.verificationCode += number;
-        }
-        
-        if (self.verificationCode.count == 1) {
-            self.lblBox1.text = self.verificationCode;
-        } else if (self.verificationCode.count == 2) {
-           
-            self.lblBox2.text = self.verificationCode.substring(fromIndex: 1)
-        }else if (self.verificationCode.count == 3) {
-            
-            self.lblBox3.text = self.verificationCode.substring(fromIndex: 2)
-        }else if (self.verificationCode.count == 4) {
-            self.lblBox4.text = self.verificationCode.substring(fromIndex: 3)
-        }
-        
-        //Send Verification Code on Boxes filled with code
-        if (self.verificationCode.count == 4) {
-            
-            self.startAnimating(loadinIndicatorSize, message: "Verifying Code...", type: self.nactvityIndicatorView.type)
-            
-            self.userService.checkVerificationCode(countryCode: self.countryCode, phoneNumber: self.phoneNumber, code: self.verificationCode) { (returnedDict) in
-                
-                self.stopAnimating()
-
-                if (returnedDict.value(forKey: "success") as! Bool == false) {
-                    self.alertMessage(message: (returnedDict.value(forKey: "message") as? String)!);
-
-                } else {
-                    let signupSuccessViewController = self.storyboard?.instantiateViewController(withIdentifier: "SignupSuccessViewController") as! SignupSuccessViewController
-               
-                    signupSuccessViewController.phoneNumber = self.countryCode + self.phoneNumber
-                    self.navigationController?.pushViewController(signupSuccessViewController, animated: true)
-                }
-            };
-        }
-    }
-    
-    func alertMessage (message :String)
-    {
-        let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: UIAlertControllerStyle.alert)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
-            print ("Ok")
-        }
-        alertController.addAction(okAction)
-        self.present(alertController, animated: true, completion: nil)
-    }
 }
 
 extension String {

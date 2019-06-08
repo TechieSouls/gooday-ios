@@ -63,7 +63,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         emailViewBtn.roundedView();
         
         let threeButtonsViewGradient = CAGradientLayer()
-        threeButtonsViewGradient.frame = CGRect.init(0, 0, threeButtonsView.frame.width, 1)
+        threeButtonsViewGradient.frame = CGRect.init(x: 0, y: 0, width: threeButtonsView.frame.width, height: 1)
         threeButtonsViewGradient.colors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor(red:0.91, green:0.49, blue:0.48, alpha:0.75).cgColor, UIColor(red:0.78, green:0.42, blue:0.74, alpha:0.75).cgColor, UIColor.white.cgColor]
         threeButtonsViewGradient.startPoint = CGPoint(x: 0, y: 1);
         threeButtonsViewGradient.endPoint = CGPoint(x: 1, y: 1);
@@ -275,6 +275,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 if loggedInUserDict.value(forKey: "gender") as? String != nil {
                     setting.setValue(loggedInUserDict.value(forKey: "gender"), forKey: "gender");
                 }
+                
+                if loggedInUserDict.value(forKey: "phone") as? String != nil {
+                    setting.setValue(loggedInUserDict.value(forKey: "phone"), forKey: "phone");
+                }
                 setting.setValue(loggedInUserDict.value(forKey: "token"), forKey: "token");
                 
                 //Registering Device Token
@@ -282,7 +286,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     WebService().setPushToken();
                 }
                 
-                setting.setValue(4, forKey: "onboarding")
+                setting.setValue(UserSteps.Authentication, forKey: "footprints")
 
                 let isNew = loggedInUserDict.value(forKey: "isNew") as! Bool;
                 if (isNew == false) {

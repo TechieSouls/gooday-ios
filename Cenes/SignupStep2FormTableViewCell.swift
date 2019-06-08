@@ -124,7 +124,7 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
     
     func getTextFieldBottomBorderGradient(textField: UITextField, cgColors: [CGColor]) -> CAGradientLayer {
         let gradient = CAGradientLayer()
-        gradient.frame = CGRect.init(0, textField.frame.height-1, textField.frame.width, 1)
+        gradient.frame = CGRect.init(x: 0, y: textField.frame.height-1, width: textField.frame.width, height: 1)
         gradient.colors = cgColors
         gradient.startPoint = CGPoint(x: 0, y: 1);
         gradient.endPoint = CGPoint(x: 1, y: 1);
@@ -133,7 +133,7 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
     
     func getButtonBottomBorderGradient(uiButton: UIButton, cgColors: [CGColor]) -> CAGradientLayer {
         let gradient = CAGradientLayer()
-        gradient.frame = CGRect.init(0, uiButton.frame.height-1, uiButton.frame.width, 1)
+        gradient.frame = CGRect.init(x: 0, y: uiButton.frame.height-1, width: uiButton.frame.width, height: 1)
         gradient.colors = cgColors
         gradient.startPoint = CGPoint(x: 0, y: 1);
         gradient.endPoint = CGPoint(x: 1, y: 1);

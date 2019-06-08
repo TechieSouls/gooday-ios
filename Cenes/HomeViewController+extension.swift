@@ -53,8 +53,8 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
                 cell.topDate.text = String(Date(milliseconds: Int(self.homescreenDto.timeStamp)).EMMMd()!);
                 let textWidth = cell.topDate.intrinsicContentSize.width;
                 print("textWidth", textWidth);
-                cell.topDate.frame = CGRect(0, 40/2, textWidth, 40);
-                cell.clanedarToggleArrowVioew.frame = CGRect(textWidth+10, cell.frame.height/2, 26, 32);
+                cell.topDate.frame = CGRect(x: 0, y: 40/2, width: textWidth, height: 40);
+                cell.clanedarToggleArrowVioew.frame = CGRect(x: textWidth+10, y: cell.frame.height/2, width: 26, height: 32);
 
                 if (cell.newHomeViewControllerDelegate.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
                     cell.calendarArrow.image = UIImage.init(named: "open_calendar");

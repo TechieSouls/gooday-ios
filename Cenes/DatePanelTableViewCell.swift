@@ -63,7 +63,12 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 
                 createGatheringDelegate.createGathTableView.reloadData();
             }
-            
+       
+            //If StartBar Closed
+            if (createGatheringDelegate.event.eventId != nil) {
+                createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
+                createGatheringDelegate.showHidePreviewGatheringButton();
+            }
         } else {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] = true
             startBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
@@ -77,8 +82,15 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 
                 createGatheringDelegate.addBlurBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
                 createGatheringDelegate.createGathTableView.reloadData();
-
             }
+            createGatheringDelegate.showHidePreviewGatheringButton();
+            
+            //If StartBar Closed
+            if (createGatheringDelegate.event.eventId != nil) {
+                createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = false;
+                createGatheringDelegate.showHidePreviewGatheringButton();
+            }
+
         }
        
         //If user presses star when end bar is opened.
@@ -103,6 +115,11 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 createGatheringDelegate.createGathTableView.reloadData();
             }
 
+            //If EndBar Closed
+            if (createGatheringDelegate.event.eventId != nil) {
+                createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
+                createGatheringDelegate.showHidePreviewGatheringButton();
+            }
         } else {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] = true
             endBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
@@ -119,8 +136,14 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 
                 createGatheringDelegate.createGathTableView.reloadData();
             }
+            
+            //If EndBar Opened
+            if (createGatheringDelegate.event.eventId != nil) {
+                createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = false;
+                createGatheringDelegate.showHidePreviewGatheringButton();
+            }
         }
-        
+
         //If user presses end bar when start bar is opened.
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true) {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] = false
@@ -144,7 +167,11 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:    createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
                 
                 
-                
+                //If EndBar Opened
+                if (createGatheringDelegate.event.eventId != nil) {
+                    createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
+                    createGatheringDelegate.showHidePreviewGatheringButton();
+                }
             } else {
                 createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
@@ -154,6 +181,12 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true || createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
                     
                     createGatheringDelegate.addBlurBackgroundView(viewToBlur:   createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
+                }
+                
+                //If EndBar Opened
+                if (createGatheringDelegate.event.eventId != nil) {
+                    createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = false;
+                    createGatheringDelegate.showHidePreviewGatheringButton();
                 }
             }
             createGatheringDelegate.createGathTableView.reloadData();
@@ -241,9 +274,21 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     func timePickerCancelButtonPressed() {
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true) {
             startBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
+            
+            //If StartBar Closed
+            if (createGatheringDelegate.event.eventId != nil) {
+                createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
+                createGatheringDelegate.showHidePreviewGatheringButton();
+            }
         }
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
-            endBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
+            endBarArrow.image = UIImage.init(named: "date_panel_right_arrow");
+            
+            //If StartBar Closed
+            if (createGatheringDelegate.event.eventId != nil) {
+                createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
+                createGatheringDelegate.showHidePreviewGatheringButton();
+            }
         }
         
         if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
@@ -299,5 +344,12 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         createGatheringDelegate.showHidePreviewGatheringButton();
         
         createGatheringDelegate.createGathTableView.reloadData();
+        
+        
+        //If StartBar Closed
+        if (createGatheringDelegate.event.eventId != nil) {
+            createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
+            createGatheringDelegate.showHidePreviewGatheringButton();
+        }
     }
 }

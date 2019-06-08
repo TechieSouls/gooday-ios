@@ -30,17 +30,18 @@ class PasswordTableViewCell: UITableViewCell, UITextFieldDelegate {
         newPasswordField.backgroundColor = UIColor.white;
         confirmPasswordField.backgroundColor = UIColor.white;
 
-        let currentPasswordLeftView = UIView(frame: CGRect.init(0, 0, 20, currentPasswordField.frame.height))
+        let currentPasswordLeftView = UIView(frame: CGRect.init(x: 0, y: 0, width: 20, height: currentPasswordField.frame.height))
         currentPasswordField.leftView = currentPasswordLeftView;
         currentPasswordField.leftViewMode = .always
         
-        let leftView = UIView(frame: CGRect.init(0, 0, 20, newPasswordField.frame.height))
+        let leftView = UIView(frame: CGRect.init(x: 0, y: 0, width: 20, height: newPasswordField.frame.height))
         newPasswordField.leftView = leftView;
         newPasswordField.leftViewMode = .always
         
-        let leftConfirmPasswordView = UIView(frame: CGRect.init(0, 0, 20, confirmPasswordField.frame.height))
+        let leftConfirmPasswordView = UIView(frame: CGRect.init(x: 0, y: 0, width: 20, height: confirmPasswordField.frame.height))
         confirmPasswordField.leftView = leftConfirmPasswordView;
         confirmPasswordField.leftViewMode = .always;
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

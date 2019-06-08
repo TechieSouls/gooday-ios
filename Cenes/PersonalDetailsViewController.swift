@@ -10,16 +10,21 @@ import UIKit
 
 class PersonalDetailsViewController: UIViewController {
 
+    @IBOutlet weak var nameView: UIView!
+    
     @IBOutlet weak var name: UILabel!
     
+    @IBOutlet weak var passwordView: UIView!
     @IBOutlet weak var password: UILabel!
     
     @IBOutlet weak var email: UILabel!
     
     @IBOutlet weak var phone: UILabel!
     
+    @IBOutlet weak var dobView: UIView!
     @IBOutlet weak var dateOfBirth: UILabel!
     
+    @IBOutlet weak var genderView: UIView!
     @IBOutlet weak var gender: UILabel!
     
     @IBOutlet weak var datePickerView: UIView!
@@ -43,16 +48,16 @@ class PersonalDetailsViewController: UIViewController {
         self.navigationController?.navigationBar.isHidden = false;
         
         let nameTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(namePressed));
-        name.addGestureRecognizer(nameTapGesture);
+        nameView.addGestureRecognizer(nameTapGesture);
         
         let passwordTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(passwordPressed));
-        password.addGestureRecognizer(passwordTapGesture);
+        passwordView.addGestureRecognizer(passwordTapGesture);
         
         let dobTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(dateOfBirthPressed));
-        dateOfBirth.addGestureRecognizer(dobTapGesture);
+        dobView.addGestureRecognizer(dobTapGesture);
         
         let genderTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(genderPressed));
-        gender.addGestureRecognizer(genderTapGesture);
+        genderView.addGestureRecognizer(genderTapGesture);
     }
     
 
