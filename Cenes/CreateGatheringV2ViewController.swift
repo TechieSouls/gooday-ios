@@ -30,6 +30,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     @IBOutlet weak var timePicker: UIDatePicker!
     
+    @IBOutlet weak var previewGatheringBtnView: UIView!
+    
     @IBOutlet weak var previewGatheirngButton: UIButton!
     
     let picController = UIImagePickerController();
@@ -122,7 +124,13 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         if (event.eventId != nil) {
             textfield.text = event.title!
         } else {
-            textfield.placeholder = "Event Name"
+            
+            let attributes = [
+                NSAttributedStringKey.foregroundColor: UIColor.lightGray,
+                NSAttributedStringKey.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
+            ]
+            textfield.attributedPlaceholder = NSAttributedString(string: "Event Name", attributes:attributes)
+
         }
         navigationItem.titleView = textfield;
         self.addDoneButtonOnKeyboard();
@@ -245,15 +253,15 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func showHidePreviewGatheringButton() {
         let isFormFilled = GatheringManager().allFieldsFilled(createGathDto: createGathDto);
         if (isFormFilled == true) {
-            previewGatheirngButton.isHidden = false;
+            previewGatheringBtnView.isHidden = false;
         } else {
-            previewGatheirngButton.isHidden = true;
+            previewGatheringBtnView.isHidden = true;
         }
     }
     
     func showAllFields() {
         GatheringManager().makeAllFieldsFilled(createGathDto: createGathDto);
-        previewGatheirngButton.isHidden = false;
+        previewGatheringBtnView.isHidden = false;
     }
     
     func openGuestListViewController() {
@@ -405,6 +413,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     func didGetCroppedImage(image: UIImage) {
         gatheringInfoCellDelegate.imageSelected();
-        event.imageToUpload = image;
+        //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
+        event.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue))
     }
 }

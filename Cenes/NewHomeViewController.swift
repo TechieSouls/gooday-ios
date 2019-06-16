@@ -10,9 +10,11 @@ import UIKit
 
 protocol DataTableViewCellProtocol {
     func reloadTableToTop();
+    func reloadTableToDesiredSection(rowsToAdd: Int, sectionIndex: Int);
+    func scrollTableToDesiredIndex(sectionIndex: Int);
 }
 
-class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
+class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHomeViewProtocol {
     
     @IBOutlet weak var homeTableView: UITableView!
 
@@ -27,7 +29,7 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         //self.calendarView.backgroundColor = themeColor;
         // Do any additional setup after loading the view.
         
-        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);        
         
         var dateComponets = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
         dateComponets.hour = 0;
@@ -37,6 +39,7 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         homescreenDto.timeStamp = Int(Calendar.current.date(from: dateComponets)!.millisecondsSince1970);
         print("Home Screen Date : \(homescreenDto.timeStamp)")
         tabBarController?.delegate = self
+        
         
         //Calling Funcitons
         //Load Home Screen Data on user load
@@ -73,8 +76,14 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         });
     }
     func refreshHomeScreenData() {
+        
+        //This method will load the events under calendar Tab
         self.initilizeCalendarData();
+        
+        //This method will load the dots in the calendar
         self.loadCalendarEventsData();
+        
+        //This method is to load the invitation tabs data.
         initilizeInvitationTabsData();
     }
     
@@ -83,8 +92,6 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         self.navigationController?.isNavigationBarHidden = false;
         self.navigationController?.navigationBar.isHidden = false;
         self.tabBarController?.tabBar.isHidden = false;
-        
-        
         
         let homeButton = UIButton.init(type: .custom)
         homeButton.setTitle("Calendar", for: .normal)
@@ -141,6 +148,70 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         
     }
     
+    
+    func loadPastEvents() -> Void {
+        
+        let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(homescreenDto.timeStamp))&pageNumber=\(String(0))&offSet=\(String(20))";
+        
+        HomeService().getHomeEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
+            //print(returnedDict)
+            
+            //No Error then populate the table
+            if (returnedDict["success"] as? Bool == true) {
+                var calendarData = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                
+                self.homescreenDto.pageable.totalCalendarCounts = returnedDict["totalCounts"]  as! Int;
+                
+                self.homescreenDto.calendarData = HomeManager().mergeCurrentAndFutureList(currentList: self.homescreenDto.calendarData, futureList: calendarData)
+                
+                if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                    self.homeDtoList = self.homescreenDto.calendarData;
+                    self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
+                    self.homeTableView.reloadData();
+                    
+                    let previousDate = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
+                    
+                    let queryStr = "userId=\(String(self.loggedInUser.userId))&startTime=\(String(describing: previousDate.millisecondsSince1970))&endTime=\(String(describing: self.homescreenDto.timeStamp))";
+                    
+                    HomeService().getHomePastEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
+                        //print(returnedDict)
+                        
+                        //No Error then populate the table
+                        if (returnedDict["success"] as? Bool == true) {
+                            var calendarData = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                            if (calendarData.count > 0) {
+                                self.homescreenDto.scrollToSectionIndex = calendarData.count;
+                                
+                                self.homescreenDto.calendarData = HomeManager().mergePreviousDataAtTop(currentList: self.homescreenDto.calendarData, previous: calendarData);
+                                
+                                self.homeDtoList = self.homescreenDto.calendarData;
+                                self.totalPageCounts =  self.totalPageCounts + calendarData.count;
+                                
+                                
+                                // Better than reload the whole tableview
+                                /*let lastOffset = self.homeTableView.contentOffset
+                                 
+                                 self.homeTableView.beginUpdates()
+                                 self.homeTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
+                                 self.homeTableView.endUpdates()
+                                 self.homeTableView.contentOffset = lastOffset
+                                 */
+                                
+                                self.dataTableViewCellProtocolDelegate.reloadTableToDesiredSection(rowsToAdd: calendarData.count, sectionIndex: self.homescreenDto.scrollToSectionIndex)
+                                
+                            }
+                        }
+                    }
+                }
+            } else {
+                //Show Empty Screen
+            }
+        }
+    }
+    
+    /**
+     * This function is used to show the data under Calendar Tab..
+     **/
     func loadHomeData(pageNumber: Int, offSet: Int) -> Void {
         
         let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(homescreenDto.timeStamp))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
@@ -161,13 +232,16 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
                     self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
                     self.homeTableView.reloadData();
                 }
-
             } else {
                 //Show Empty Screen
             }
         }
     }
     
+    /**
+     * This funciton is to show data under the Invitation Tabs
+     * Accepted | Pending | Declined
+     **/
     func loadGatheringDataByStatus(status: String, pageNumber: Int, offSet: Int) -> Void {
         
         let queryStr = "userId=\(String(self.loggedInUser.userId))&status=\(status)&timestamp=\(String(homescreenDto.timeStamp))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
@@ -272,6 +346,9 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         }
     }
     
+    /**
+     * This function is to show dots in the Calendar at home screen
+     **/
     func loadCalendarEventsData() -> Void {
         
         var yearStartDateComponents = DateComponents();
@@ -342,7 +419,8 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
     func initilizeCalendarData() {
         homescreenDto.pageable.calendarDataPageNumber = 0;
         homescreenDto.calendarData = [HomeData]();
-        self.loadHomeData(pageNumber: homescreenDto.pageable.calendarDataPageNumber, offSet: homescreenDto.pageable.calendarDataOffset);
+        //self.loadHomeData(pageNumber: homescreenDto.pageable.calendarDataPageNumber, offSet: homescreenDto.pageable.calendarDataOffset);
+        self.loadPastEvents();
     }
     
     func initilizeInvitationTabsData() {
@@ -386,14 +464,15 @@ class NewHomeViewController: UIViewController,  NewHomeViewProtocol {
         let friendsViewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
         navigationController?.pushViewController(friendsViewController, animated: true)
     }
-}
 
-
-extension NewHomeViewController: UITabBarControllerDelegate {
     // UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         if (self.homeDtoList.count > 0) {
-           self.dataTableViewCellProtocolDelegate.reloadTableToTop();
+            if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: self.homescreenDto.scrollToSectionIndex)
+            } else {
+                self.dataTableViewCellProtocolDelegate.reloadTableToTop();
+            }
         }
     }
 }

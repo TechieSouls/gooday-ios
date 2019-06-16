@@ -93,10 +93,16 @@ class EventMember {
     
     func loadUserContacts(eventMemberArray: NSArray) -> [EventMember] {
         
+        let user = User().loadUserDataFromUserDefaults(userDataDict: setting);
         var eventMembers = [EventMember]();
         
         for eventMemberDict in eventMemberArray {
-            eventMembers.append(self.loadUserContactData(eventMemberDict: eventMemberDict as! NSDictionary));
+            
+            let eventMem = self.loadUserContactData(eventMemberDict: eventMemberDict as! NSDictionary);
+            if (eventMem.userId != nil && eventMem.userId == user.userId) {
+                continue;
+            }
+            eventMembers.append(eventMem);
         }
         return eventMembers;
         

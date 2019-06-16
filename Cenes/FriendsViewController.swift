@@ -65,6 +65,8 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
     
     func setupNavigationBarItems() {
         
+        self.navigationController?.navigationBar.isHidden = false;
+        
         let closeButton = UIButton(type: .system)
         closeButton.setTitle("Cancel", for: .normal)
         closeButton.frame = CGRect(x: 0, y: 0, width: 50, height: 20);
@@ -148,10 +150,6 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
                 if (self.inviteFriendsDto.cenesContacts.count != 0) {
                     self.inviteFriendsDto.isAllContactsView = false;
                 }
-                
-                for sectionObj in self.inviteFriendsDto.allContacts {
-                    self.inviteFriendsDto.alphabetStrip.append(sectionObj.sectionName);
-                }
             }
             self.friendTableView.reloadData();
         });
@@ -176,12 +174,12 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         self.inviteFriendsDto.allContacts = friendListDtos;
         self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.filteredEventMembers);
         
-        if (inviteFriendsDto.isSearchOn == false) {
+        /*if (inviteFriendsDto.isSearchOn == false) {
             self.inviteFriendsDto.alphabetStrip = [];
             for sectionObj in self.inviteFriendsDto.allContacts {
                 self.inviteFriendsDto.alphabetStrip.append(sectionObj.sectionName);
             }
-        }
+        }*/
         self.friendTableView.reloadData();
     }
     
@@ -250,7 +248,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         switch indexPath.row {
         case 0:
              if (inviteFriendsDto.totalNumberOfRows == 1) {
-                return (self.view.frame.size.height -  30);
+                return (self.view.frame.height -  150);
              }
              if (inviteFriendsDto.totalNumberOfRows == 2) {
                 if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
@@ -264,7 +262,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         case 1:
             if (inviteFriendsDto.totalNumberOfRows == 2) {
                 
-                var finalHeight = self.view.frame.size.height - 30;
+                var finalHeight = self.view.frame.height - 150;
                 if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
                     finalHeight = finalHeight - inviteFriendsDto.friendCollectionViewCell;
                 } else if (inviteFriendsDto.cenesContacts.count != 0) {
@@ -274,7 +272,7 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             }
             return inviteFriendsDto.allAndCenesContactsSwitchCell;
         case 2:
-            return (self.view.frame.size.height - (inviteFriendsDto.friendCollectionViewCell + inviteFriendsDto.allAndCenesContactsSwitchCell + 30));
+            return (self.view.frame.height - (inviteFriendsDto.friendCollectionViewCell + inviteFriendsDto.allAndCenesContactsSwitchCell + 150));
         default:
             return 100;
         }

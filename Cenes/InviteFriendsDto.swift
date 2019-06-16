@@ -20,7 +20,7 @@ class InviteFriendsDto {
     var friendCollectionViewCell: CGFloat = InviteFriendsCellHeight.friendsCollectionViewheight;
     var allAndCenesContactsSwitchCell: CGFloat = InviteFriendsCellHeight.allCenesContactsSwitchHeight;
     var totalNumberOfRows = 3;
-    var alphabetStrip = [String]();
+    var alphabetStrip = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "U", "W", "X", "Y", "Z", "#"];
     var isSearchOn: Bool = false;
     var searchText: String = "";
 }

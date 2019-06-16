@@ -75,4 +75,8 @@ class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalend
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillSelectionColorFor date: Date) -> UIColor? {
         return UIColor.orange;
     }
+    
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventSelectionColorsFor date: Date) -> [UIColor]? {
+        return [UIColor.orange];
+    }
 }

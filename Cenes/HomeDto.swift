@@ -17,6 +17,7 @@ class HomeDto {
     //var invitationTabs = [HomeInvitationTabs.Accepted: true, HomeInvitationTabs.Pending: false, HomeInvitationTabs.Declined: false];
     var invitationTabs: String = HomeInvitationTabs.Accepted;
     
+    var pastEvents = [HomeData]();
     var calendarData = [HomeData]();
     var acceptedGatherings = [HomeData]();
     var pendingGatherings = [HomeData]();
@@ -24,6 +25,7 @@ class HomeDto {
     var pageable = HomeDataPageNumbers();
     var timeStamp: Int = Int(Date().millisecondsSince1970);
     var calendarEventsData: CalendarEventsData = CalendarEventsData();
+    var scrollToSectionIndex = 0;
 }
 
 class HomeHeaderTabs {
@@ -51,7 +53,7 @@ class HomeInvitationTabs {
 }
 
 class HomeData {
-    var monthName: String!;
+    var sectionKeyInMillis: Int64!;
     var sectionName: String!;
     var sectionObjects = [Event]();
 }

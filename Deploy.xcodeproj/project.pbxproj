@@ -18,6 +18,7 @@
 		5E1217C92299A7640075961A /* VerticalCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217C82299A7640075961A /* VerticalCropView.swift */; };
 		5E1217CB2299B1840075961A /* GatheringImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */; };
 		5E1217CD229A64F00075961A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217CC229A64F00075961A /* UIImage+Custom.swift */; };
+		5E123C8022B0DC9A00BB7E6E /* UITableView+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E123C7F22B0DC9A00BB7E6E /* UITableView+Customs.swift */; };
 		5E20A491226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E20A48F226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.swift */; };
 		5E20A492226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E20A490226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib */; };
 		5E20A495226A1D8400F1DBC6 /* FriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E20A493226A1D8400F1DBC6 /* FriendCollectionViewCell.swift */; };
@@ -60,6 +61,8 @@
 		5E41ED1A2274218300E972E1 /* DataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E41ED182274218300E972E1 /* DataTableViewCell.xib */; };
 		5E41ED1E2275AE9400E972E1 /* HomeFSCalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E41ED1C2275AE9400E972E1 /* HomeFSCalendarTableViewCell.swift */; };
 		5E41ED1F2275AE9400E972E1 /* HomeFSCalendarTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E41ED1D2275AE9400E972E1 /* HomeFSCalendarTableViewCell.xib */; };
+		5E44D1E022AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E44D1DE22AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift */; };
+		5E44D1E122AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E44D1DF22AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib */; };
 		5E47C9F4225B16A800C738D3 /* UITabBarController+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */; };
 		5E51FD842265891900A86994 /* InviteFriendsDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E51FD832265891900A86994 /* InviteFriendsDto.swift */; };
 		5E51FD872265979000A86994 /* FriendAllContactsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E51FD852265979000A86994 /* FriendAllContactsTableViewCell.swift */; };
@@ -418,6 +421,7 @@
 		5E1217C82299A7640075961A /* VerticalCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalCropView.swift; sourceTree = "<group>"; };
 		5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringImagePickerViewController.swift; sourceTree = "<group>"; };
 		5E1217CC229A64F00075961A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
+		5E123C7F22B0DC9A00BB7E6E /* UITableView+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Customs.swift"; sourceTree = "<group>"; };
 		5E20A48F226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendsCollectionTableViewCell.swift; sourceTree = "<group>"; };
 		5E20A490226A1B6500F1DBC6 /* SelectedFriendsCollectionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectedFriendsCollectionTableViewCell.xib; sourceTree = "<group>"; };
 		5E20A493226A1D8400F1DBC6 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -460,6 +464,8 @@
 		5E41ED182274218300E972E1 /* DataTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DataTableViewCell.xib; sourceTree = "<group>"; };
 		5E41ED1C2275AE9400E972E1 /* HomeFSCalendarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFSCalendarTableViewCell.swift; sourceTree = "<group>"; };
 		5E41ED1D2275AE9400E972E1 /* HomeFSCalendarTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeFSCalendarTableViewCell.xib; sourceTree = "<group>"; };
+		5E44D1DE22AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthSeparatorTableViewCell.swift; sourceTree = "<group>"; };
+		5E44D1DF22AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MonthSeparatorTableViewCell.xib; sourceTree = "<group>"; };
 		5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+Customs.swift"; sourceTree = "<group>"; };
 		5E51FD832265891900A86994 /* InviteFriendsDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsDto.swift; sourceTree = "<group>"; };
 		5E51FD852265979000A86994 /* FriendAllContactsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAllContactsTableViewCell.swift; sourceTree = "<group>"; };
@@ -923,6 +929,8 @@
 				5EBC9CA92279F7A5005946C4 /* NoGatheringTableViewCell.xib */,
 				FA3429F521FB663800205876 /* HomeHolidayTableViewCell.swift */,
 				FA3429F621FB663800205876 /* HomeHolidayTableViewCell.xib */,
+				5E44D1DE22AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift */,
+				5E44D1DF22AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib */,
 			);
 			name = datacells;
 			sourceTree = "<group>";
@@ -1630,6 +1638,7 @@
 				5E67566622843367005C83B6 /* UIViewController+Customs.swift */,
 				5E67566822846C44005C83B6 /* UIDevice+Custom.swift */,
 				5E1217CC229A64F00075961A /* UIImage+Custom.swift */,
+				5E123C7F22B0DC9A00BB7E6E /* UITableView+Customs.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -1859,6 +1868,7 @@
 				FA3429FC21FB687D00205876 /* HomeCalendarTableViewCell.xib in Resources */,
 				AE4647831F6FE03E00B5CB67 /* flag_ac.png in Resources */,
 				5EDEE1E92240A42300330F47 /* MeTimeDescTableViewCell.xib in Resources */,
+				5E44D1E122AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib in Resources */,
 				5EECD1D8228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib in Resources */,
 				AE8617FA1F5982C600F99D75 /* HomeTableViewCellHeader.xib in Resources */,
 				AE4647A41F6FE03E00B5CB67 /* flag_sg.png in Resources */,
@@ -2205,6 +2215,7 @@
 				5E6F573722203ACC0053C21A /* GatheringPreviewDescTableViewCell.swift in Sources */,
 				FA625ED8218B50E800B6B23C /* CalendarService.swift in Sources */,
 				5E1217BC229668EC0075961A /* PhoneVerificationStep1ViewController.swift in Sources */,
+				5E44D1E022AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift in Sources */,
 				5EDEE1EC2240A56800330F47 /* MeTimeItemTableViewCell.swift in Sources */,
 				5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */,
 				5E40954C22533E7900CA9700 /* NotificationViewController+TableViewExt.swift in Sources */,
@@ -2266,6 +2277,7 @@
 				942C76D31F9937F100817FD6 /* AlarmInfoTableViewCell.swift in Sources */,
 				5E64C100228F31AD000F2629 /* AppSettingsViewController.swift in Sources */,
 				AE8184E51F960EC300D885A2 /* HomeUserCellLast.swift in Sources */,
+				5E123C8022B0DC9A00BB7E6E /* UITableView+Customs.swift in Sources */,
 				F4B871F31F0DDEF1001A9963 /* AppDelegate.swift in Sources */,
 				B956ADB61FB04E00005B13CA /* FriendsModel+CoreDataProperties.swift in Sources */,
 				FAB7652220D7ED5700695F2C /* AlarmInfoViewController.swift in Sources */,

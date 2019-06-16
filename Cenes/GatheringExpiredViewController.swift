@@ -11,30 +11,13 @@ import SideMenu
 
 class GatheringExpiredViewController: UIViewController {
     
-    @IBOutlet weak var profileBtn: UIImageView!
     
-    @IBOutlet weak var btnCreateNewGath: UIButton!
-    
-    @IBOutlet weak var homeBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.setupNavBar();
         // Do any additional setup after loading the view.
-        self.btnCreateNewGath.setTitleColor(cenesLabelBlue, for: .normal);
-        self.btnCreateNewGath.layer.cornerRadius = 40;
-        
-        profileBtn.setRounded();
-        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        if (loggedInUser.photo != nil) {
-            profileBtn.sd_setImage(with: URL(string: loggedInUser.photo), placeholderImage: UIImage(named: defaultProfileImage));
-        }
-        
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(profileBtnClicked(tapGestureRecognizer:)))
-        profileBtn.isUserInteractionEnabled = true
-        profileBtn.addGestureRecognizer(tapGestureRecognizer)
-
+        setupNavBar();
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,17 +25,16 @@ class GatheringExpiredViewController: UIViewController {
     }
     
     func setupNavBar() -> Void {
-        self.navigationController?.isNavigationBarHidden = true;
+        self.navigationController?.navigationBar.isHidden = true;
+        self.tabBarController?.tabBar.isHidden = true;
     }
-    @objc func profileBtnClicked(tapGestureRecognizer: UITapGestureRecognizer) {
-        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
-    }
-    @IBAction func homeBtnClicked(_ sender: Any) {
-        self.navigationController?.popToRootViewController(animated: true)
+    
+    @IBAction func backArrowPessed(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     @IBAction func btnCreateNewGathListener(_ sender: Any) {
-        let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
+        let createGatheringView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
         self.navigationController?.pushViewController(createGatheringView, animated: true)
         
 

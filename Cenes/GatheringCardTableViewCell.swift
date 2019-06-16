@@ -157,7 +157,11 @@ extension GatheringCardTableViewCell: UICollectionViewDelegate, UICollectionView
                 }
                 
                 if (newHomeViewControllerDelegate.loggedInUser.userId != eventMember.userId) {
-                    cell.name.text = String(eventMember.user.name.split(separator: " ")[0]);
+                    if (eventMember.user != nil && eventMember.user.name != nil) {
+                        cell.name.text = String(eventMember.user.name.split(separator: " ")[0]);
+                    } else {
+                        cell.name.text = String(eventMember.name.split(separator: " ")[0]);
+                    }
                 } else {
                     cell.name.text = "Me";
                 }

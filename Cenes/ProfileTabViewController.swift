@@ -36,6 +36,12 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
     var imageSelectedOption = "";
     var uploadImage: UIImage!;
     
+    class func MainViewController() {
+        
+        let tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tab") as! UITabBarController
+        return tabController.selectedIndex = 2
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

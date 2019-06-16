@@ -23,13 +23,13 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         registerTableCells();
         // Add Refresh Control to Table View
         if #available(iOS 10.0, *) {
-            dataTableView.refreshControl = refreshControl
+            //dataTableView.refreshControl = refreshControl
         } else {
-            dataTableView.addSubview(refreshControl)
+            //dataTableView.addSubview(refreshControl)
         }
         
         // Configure Refresh Control
-        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
+        //refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
 
     }
 
@@ -50,6 +50,8 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         dataTableView.register(UINib(nibName: "HomeCalendarTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HomeCalendarTableViewCell");
         dataTableView.register(UINib(nibName: "HomeHolidayTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HomeHolidayTableViewCell");
         
+        dataTableView.register(UINib(nibName: "MonthSeparatorTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "MonthSeparatorTableViewCell");
+        
         
         //homeTableView.register(UINib(nibName: "InvitationTabsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InvitationTabsTableViewCell");
         
@@ -63,6 +65,47 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
             let indexPath = IndexPath(row: 0, section: 0)
             dataTableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
         }
+    }
+    
+    func adjustInsets() {
+        
+        let tableHeight = self.dataTableView.frame.height + 20
+        let table40pcHeight = tableHeight / 100 * 40
+        
+        let bottomInset = tableHeight - table40pcHeight - 90
+        let topInset = table40pcHeight
+        
+        self.dataTableView.contentInset = UIEdgeInsetsMake(topInset, 0, bottomInset, 0)
+    }
+
+    func reloadTableToDesiredSection(rowsToAdd: Int, sectionIndex: Int) {
+        //dataTableView.scrollsToTop = true;
+        if (newHomeViewControllerDelegate.homeDtoList.count > 0) {
+            
+            /*
+            guard case self.dataTableView = self.dataTableView else {
+                return
+            }
+            let currentOffset = self.dataTableView.contentOffset
+            let yOffset = CGFloat(rowsToAdd) * 10 // MAKE SURE YOU SET THE ROW HEIGHT OTHERWISE IT WILL BE ZERO!!!
+            let newOffset = CGPoint(x: currentOffset.x, y: currentOffset.y + yOffset)
+            self.dataTableView.reloadData()
+            self.dataTableView.setContentOffset(newOffset, animated: false)
+            */
+            let lastIndexPath = IndexPath(row: 0, section: 0)
+
+            self.dataTableView.reloadData()
+
+            self.dataTableView.layoutIfNeeded()
+            
+            let indexPath = IndexPath(row: 0, section: sectionIndex)
+            dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        }
+    }
+    
+    func scrollTableToDesiredIndex(sectionIndex: Int) {
+        let indexPath = IndexPath(row: 0, section: sectionIndex)
+        dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     @objc private func refreshWeatherData(_ sender: Any) {
@@ -102,7 +145,9 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
         
         if (newHomeViewControllerDelegate.homeDtoList.count != 0) {
 
-            let event = newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
+            print("section", indexPath.section, "Row: ",indexPath.row)
+            
+           let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             
             if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
                 
@@ -138,8 +183,12 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 } else if (event.scheduleAs == "Holiday") {
                     let cell: HomeHolidayTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "HomeHolidayTableViewCell") as! HomeHolidayTableViewCell;
                     
-                    cell.holidayDate.text = Date(milliseconds: Int(event.startTime)).EMMMd();
                     cell.holidayLabel.text = event.title!;
+                    return cell;
+                }  else if (event.scheduleAs == "MonthSeparator") {
+                    let cell: MonthSeparatorTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "MonthSeparatorTableViewCell") as! MonthSeparatorTableViewCell;
+                    
+                    cell.monthSeparatorLabel.text = event.title!;
                     return cell;
                 }
                 
@@ -155,7 +204,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     if (newHomeViewControllerDelegate.loggedInUser.userId == host.userId) {
                         cell.ownerLabel.text = "Me";
                     } else {
-                        cell.ownerLabel.text = String(host.user.name.split(separator: " ")[0]);
+                        if (host.user != nil && host.user.name != nil) {
+                            cell.ownerLabel.text = String(host.user.name.split(separator: " ")[0]);
+                        } else {
+                            cell.ownerLabel.text = String(host.name.split(separator: " ")[0]);
+                        }
                     }
                     
                     if (host.user.photo != nil){
@@ -175,8 +228,12 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             }
             
         } else {
-            let cell: NoGatheringTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "NoGatheringTableViewCell") as! NoGatheringTableViewCell;
-            return cell;
+            if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                let cell: NoGatheringTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "NoGatheringTableViewCell") as! NoGatheringTableViewCell;
+                cell.newHomeViewControllerDelegate = newHomeViewControllerDelegate;
+                return cell;
+            }
+            
         }
         
         return UITableViewCell();
@@ -239,14 +296,23 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             viewController.pendingEventIndex = 0;
             self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
         } else {
-            
             if (self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
                 let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
                 if (event.scheduleAs == "Gathering") {
-                    let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-                    viewController.event = event;
                     
-                    self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+                    if (event.expired == true) {
+                        
+                        let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringExpiredViewController") as! GatheringExpiredViewController;
+                        self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+                        //self.newHomeViewControllerDelegate.present(viewController, animated: true, completion: nil);
+                        
+                    } else {
+                        let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                        viewController.event = event;
+                        
+                        self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+                    }
+                    
                 }
             }
             
@@ -405,5 +471,4 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
 
         }
     }
-
 }

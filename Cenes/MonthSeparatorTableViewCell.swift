@@ -1,23 +1,22 @@
 //
-//  HomeHolidayTableViewCell.swift
+//  MonthSeparatorTableViewCell.swift
 //  Deploy
 //
-//  Created by Macbook on 25/01/19.
+//  Created by Cenes_Dev on 11/06/2019.
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 
 import UIKit
 
-class HomeHolidayTableViewCell: UITableViewCell {
+class MonthSeparatorTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var holidayLabel: UILabel!;
+    @IBOutlet weak var monthSeparatorLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
         contentView.backgroundColor = themeColor;
-        holidayLabel.textColor = UIColor.black;
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

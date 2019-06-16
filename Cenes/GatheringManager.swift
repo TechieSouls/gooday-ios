@@ -67,6 +67,7 @@ class GatheringManager {
     
     func parseFriendsListResults(friendList: [EventMember]) -> [FriendListDto] {
         
+        var nonAlphabeticFriends = [EventMember]();
         var dataObjectArray = [FriendListDto]();
         var friendListMapDto = [String: FriendListDto]();
         for eventMember in friendList {
@@ -84,22 +85,32 @@ class GatheringManager {
             }
             var friendListDtoTemp = FriendListDto();
             
-            if (friendListMapDto.index(forKey: nameInitial) != nil) {
-                friendListDtoTemp = friendListMapDto[nameInitial]!;
+            if (!InviteFriendsDto().alphabetStrip.contains(nameInitial.uppercased())) {
+                nonAlphabeticFriends.append(eventMember);
+            } else {
+                if (friendListMapDto.index(forKey: nameInitial) != nil) {
+                    friendListDtoTemp = friendListMapDto[nameInitial]!;
+                }
+                
+                friendListDtoTemp.sectionName = nameInitial;
+                var members = friendListDtoTemp.sectionObjects;
+                members.append(eventMember);
+                friendListDtoTemp.sectionObjects = members;
+                
+                friendListMapDto[nameInitial] = friendListDtoTemp;
             }
-            
-            friendListDtoTemp.sectionName = nameInitial;
-            var members = friendListDtoTemp.sectionObjects;
-            members.append(eventMember);
-            friendListDtoTemp.sectionObjects = members;
-            
-            friendListMapDto[nameInitial] = friendListDtoTemp;
         }
         
         for (k,value) in Array(friendListMapDto).sorted(by: {$0.0 < $1.0}) {
             dataObjectArray.append(value);
         }
         
+        if (nonAlphabeticFriends.count > 0) {
+            var nonAlphabeticFriendDto = FriendListDto();
+            nonAlphabeticFriendDto.sectionName = "#";
+            nonAlphabeticFriendDto.sectionObjects = nonAlphabeticFriends;
+            dataObjectArray.append(nonAlphabeticFriendDto);
+        }
         return dataObjectArray;
     }
     

@@ -131,8 +131,10 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
             
         case .authorizedAlways:
             manager.startUpdatingLocation();
-            currentLatitude = (manager.location?.coordinate.latitude)!;
-            currentLongitude = (manager.location?.coordinate.longitude)!;
+            if (manager.location?.coordinate.latitude != nil) {
+                currentLatitude = (manager.location?.coordinate.latitude)!;
+                currentLongitude = (manager.location?.coordinate.longitude)!;
+            }
             break
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
@@ -165,6 +167,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         searchBar.delegate = self;
         searchBar.placeholder = "Search Location"
         searchBar.layer.borderWidth = 0
+        searchBar.returnKeyType = .done
+        
         // the UIViewController comes with a navigationItem property
         // this will automatically be initialized for you if when the
         // view controller is added to a navigation controller's stack
@@ -302,8 +306,10 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         locationDtos = [LocationDto]();
         if (searchText == "") {
             locationTableView.isHidden = true
+            customLocationButton.isHidden = true;
         } else {
             locationTableView.isHidden = false
+            customLocationButton.isHidden = false;
             loadWorldWideLocations(searchText: searchText);
         }
     }

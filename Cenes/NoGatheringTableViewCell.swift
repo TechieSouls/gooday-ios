@@ -10,6 +10,13 @@ import UIKit
 
 class NoGatheringTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var syncBtn: UIButton!
+    
+    @IBOutlet weak var createBtn: UIButton!
+    
+    var newHomeViewControllerDelegate: NewHomeViewController!;
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -21,4 +28,16 @@ class NoGatheringTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    
+    @IBAction func syncButtonPressed(_ sender: Any) {
+        //ProfileTabViewController.MainViewController();
+        
+        let viewController = newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "CalendarsViewController") as! CalendarsViewController;
+        newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+
+    }
+    @IBAction func createButtonPressed(_ sender: Any) {
+        let viewController = newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController;
+        newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+    }
 }

@@ -21,6 +21,7 @@ class FriendsTableViewCell: UITableViewCell {
         contentView.backgroundColor = themeColor;
         
         self.friendListInnerTable.backgroundColor = themeColor;
+        self.friendListInnerTable.sectionIndexColor = UIColor.darkGray;
         
         self.friendListInnerTable.register(UINib(nibName: "FriendListItemTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendListItemTableViewCell");
         

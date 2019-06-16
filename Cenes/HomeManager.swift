@@ -14,6 +14,7 @@ class HomeManager {
 
     func parseResults(resultArray: NSArray) -> [HomeData]{
         
+        var previousDate: Date = Date();
         var months: [String] = [String]();
         var dataObjectArray = [HomeData]()
 
@@ -26,16 +27,6 @@ class HomeManager {
             let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
             if dataType == "Event" {
                 let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
-                
-                let isLastDateOfMonth: Bool = false;
-                
-                let startTimeMonth = Calendar.current.component(.month, from: Date( milliseconds: Int(event.startTime)));
-                
-                var nextDayDateComponents = DateComponents();
-                nextDayDateComponents.day = 1;
-                let nextDayDate = Calendar.current.date(byAdding: nextDayDateComponents, to: Date( milliseconds: Int(event.startTime)));
-                
-                print(startTimeMonth, Calendar.current.component(.day, from: Date( milliseconds: Int(event.startTime))),  Calendar.current.component(.day, from: nextDayDate!), Calendar.current.component(.month, from: nextDayDate!))
                 
                 var key = Date(milliseconds: Int(event.startTime)).EMMMd()!;
                 let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
@@ -62,37 +53,59 @@ class HomeManager {
                         }
                     }
                 } else {
+                    
                     var array = [Event]()
+
+                    let previousDateMonth = Calendar.current.component(.month, from: previousDate);
+                    
+                    let startTimeMonth = Calendar.current.component(.month, from: Date( milliseconds: Int(event.startTime)));
+                    
                     array.append(event)
                     dict.setValue(array, forKey: key)
                     
                     let cenesEvent: HomeData = HomeData();
+                    cenesEvent.sectionKeyInMillis = event.startTime
                     cenesEvent.sectionName = key;
                     cenesEvent.sectionObjects = array;
                     dataObjectArray.append(cenesEvent)
                     
                 }
-                
-                //Addding Month Divider
-                /*for cenesEvent in dataObjectArray {
-                    if (cenesEvent.sectionName == key) {
-                        var events: [Event] = cenesEvent.sectionObjects;
-                        
-                        var monthDividerEvent = Event();
-                        monthDividerEvent.title = Date(milliseconds: Int(event.startTime)).MMMMsyyyy();
-                        monthDividerEvent.scheduleAs = "MonthDivider";
-                        events.append(monthDividerEvent);
-                        cenesEvent.sectionObjects = events;
-                    }
-                }*/
-                
             }
         }
-        
+
         for homedata in dataObjectArray {
             
             homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
         }
+        
+        if (dataObjectArray.count > 0) {
+            for i : Int in (0..<(dataObjectArray.count - 1)) {
+                let homeDataTemp = dataObjectArray[i];
+                let homeDataTempNext = dataObjectArray[i+1];
+                
+                
+                let tempMonth = Calendar.current.component(.month, from: Date(milliseconds: Int(homeDataTemp.sectionKeyInMillis)));
+                let tempMonthNext = Calendar.current.component(.month, from: Date(milliseconds: Int(homeDataTempNext.sectionKeyInMillis)));
+                
+                //If previous start time month les than next start time
+                //Then we will add this month.
+                if (tempMonth < tempMonthNext) {
+                    
+                    let monthEvent = Event();
+                    monthEvent.title = Date(milliseconds: Int(homeDataTempNext.sectionKeyInMillis)).MMMMsyyyy()!;
+                    monthEvent.scheduleAs = "MonthSeparator"
+                    
+                    let lastEventStartTime: Date = Calendar.current.date(byAdding: .second, value: 1, to: Date(milliseconds: Int(homeDataTemp.sectionObjects[homeDataTemp.sectionObjects.count-1].startTime)))!
+                    
+                    monthEvent.startTime = lastEventStartTime.millisecondsSince1970;
+                    homeDataTemp.sectionObjects.append(monthEvent);
+                    dataObjectArray[i] = homeDataTemp;
+                }
+                
+            }
+            
+        }
+            
         
         return dataObjectArray;
     }
@@ -177,6 +190,22 @@ class HomeManager {
             homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
         }
         return currentListTemp;
+    }
+    
+    
+    func mergePreviousDataAtTop(currentList: [HomeData], previous: [HomeData]) -> [HomeData] {
+        
+        var previousTemp = previous;
+        
+        for futObj in currentList {
+            previousTemp.append(futObj);
+        }
+        
+        for homedata in previousTemp {
+            
+            homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
+        }
+        return previousTemp;
     }
     
 }

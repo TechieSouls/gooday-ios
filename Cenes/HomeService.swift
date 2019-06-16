@@ -12,6 +12,7 @@ import Alamofire
 class HomeService {
     
     let get_home_events: String = "api/getEvents/v2";
+    let get_past_home_events: String = "/api/getPastEvents/v2";
     let get_home_calendar_events: String = "api/homeCalendarEvents/v2";
     let get_delete_event: String = "api/event/delete";
     
@@ -72,6 +73,16 @@ class HomeService {
     func getHomeCalendarEvents(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
         
         let url = "\(apiUrl)\(get_home_calendar_events)?\(queryStr)"
+        print("API : \(url)")
+        
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
+    func getHomePastEvents(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
+        
+        let url = "\(apiUrl)\(get_past_home_events)?\(queryStr)"
         print("API : \(url)")
         
         HttpService().getMethod(url: url, token: token, complete: {(response) in

@@ -460,9 +460,12 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         //Then we will either bring the new card or popup to previous screen.
         pendingEventIndex = pendingEventIndex + 1;
         if (pendingEventIndex < pendingEvents.count) {
-            event = pendingEvents[pendingEventIndex]
+            self.event = pendingEvents[pendingEventIndex]
             //populateCardDetails();
-            imageCard.center = self.view.center;
+            let indexPath = IndexPath.init(row: 0, section: 0);
+            self.invitationCardTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            self.invitationCardTableView.reloadData();
+            swipeCardView.center = self.view.center;
         } else {
             self.navigationController?.popViewController(animated: false);
         }
@@ -541,6 +544,8 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     cell.eventPicture.sd_setImage(with: URL(string: self.event.eventPicture));
                 } else if (self.event.imageToUpload != nil) {
                     cell.eventPicture.image = self.event.imageToUpload;
+                } else {
+                    cell.eventPicture.image = nil;
                 }
             } else {
                 if (self.event.imageToUpload != nil) {

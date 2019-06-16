@@ -304,8 +304,21 @@ let setting = UserDefaults.standard
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
-        print("RECIEVE PUSH\(userInfo)")
+        print("RECIEVE PUSH ********** \(userInfo["aps"])")
+        var dict = userInfo["aps"] as! NSDictionary;
         
+        //Conditio for silent push notification
+        if (dict.value(forKey: "content-available") as! Int == 1) {
+            let type = dict.value(forKey: "type") as! String;
+            if (type == "HomeRefresh") {
+                if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+                    self.cenesTabBar?.selectedIndex = 0
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refreshHomeScreenData();
+                }
+            }
+        }
         completionHandler(.newData)
     }
 
@@ -428,7 +441,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
         self.cenesTabBar?.setTabBarDotVisible(visible: true);
-        print(notification.request.content.userInfo)
+        print("***************   ************  ",notification.request.content.userInfo)
         NSLog("%@",notification)
         
         let userInfo = notification.request.content.userInfo["aps"]! as? NSDictionary
