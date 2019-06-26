@@ -54,9 +54,9 @@ class User {
         user.token = userDataDict.value(forKey: "token") as? String;
         user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
         
-        /*user.token = "1560411870698eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoYXJyaXNvbnNpbWEyMTE1NjAzMjU0NzA2OTgifQ.zRWSwFVxGWyLkdTFCW18N_rBP3giDYSCqiPF5xiMRL-6B4orOm-e8PQrHZj7QEDGcrXBF9RSJH4Z_ztYMT0WQw"
-        user.userId = 375;
-        user.phone = "https://deploy.cenesgroup.com/assets/uploads/profile/41740784-1169-430f-8c7b-b31bcaf661e9.jpg";*/
+        //user.token = "1560411870698eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoYXJyaXNvbnNpbWEyMTE1NjAzMjU0NzA2OTgifQ.zRWSwFVxGWyLkdTFCW18N_rBP3giDYSCqiPF5xiMRL-6B4orOm-e8PQrHZj7QEDGcrXBF9RSJH4Z_ztYMT0WQw"
+        //user.userId = 375;
+        //user.phone = "";
 
         return user;
     }

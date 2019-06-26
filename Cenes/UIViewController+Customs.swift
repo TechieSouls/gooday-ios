@@ -22,6 +22,13 @@ extension UIViewController {
         view.addGestureRecognizer(tap)
     }
     
+    func isEmailValid(email: String) -> Bool{
+        var emailRegex = "";
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES[c] %@", emailRegex)
+        return emailTest.evaluate(with: email)
+    }
+    
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }

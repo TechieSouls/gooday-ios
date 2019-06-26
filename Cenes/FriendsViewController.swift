@@ -45,6 +45,7 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
             isFirstTime = false
         }
         
+        PhonebookService.getPermissionForContacts();
         DispatchQueue.global(qos: .background).async {
             self.syncDeviceContacts();
         }

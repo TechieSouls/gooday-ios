@@ -51,6 +51,9 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
     @objc func startTimeBarPressed() {
         
+        //Hide keyboard if opened.
+        createGatheringDelegate.textfield.resignFirstResponder();
+        
         //If user press the start bar
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true) {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] = false
@@ -103,6 +106,9 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
     @objc func endTimeBarPressed() {
         
+        //Hide keyboard if opened.
+        createGatheringDelegate.textfield.resignFirstResponder();
+
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] = false
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
@@ -154,7 +160,6 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     @objc func dateBarPressed() {
         
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == false && createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == false) {
-
             
             if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] == true) {
                 
@@ -195,7 +200,6 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
     func timePickerDoneButtonPressed(timeInMillis: Int) {
         
-        
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true) {
             startTimeLabel.isHidden = false;
             startTimeLabel.text = Date(milliseconds: timeInMillis).hmma();
@@ -230,6 +234,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
             createGatheringDelegate.showHidePreviewGatheringButton();
+            
         }
         
         //If EndTime Bar was opened.
@@ -246,15 +251,17 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //It means if start time hour is greater that selected time in date piccker.
             //Like start time is 5pm and timepicker time is 1pm
             //Then we will make end time the next day
+            print("Hour of end time : ", datePickerDateComponets.hour, datePickerDateComponets.day)
             let startTimeHour: Int = startTimeDateComponents.hour!;
             let timePickerHour: Int = datePickerDateComponets.hour!;
             
             if (startTimeHour > timePickerHour) {
                 datePickerDateComponets.day = datePickerDateComponets.day! + 1;
-                
-                createGatheringDelegate.event.endTime = Calendar.current.date(from: datePickerDateComponets)!.millisecondsSince1970;
+            } else {
+                datePickerDateComponets.day = startTimeDateComponents.day!;
             }
-            
+            createGatheringDelegate.event.endTime = Calendar.current.date(from: datePickerDateComponets)!.millisecondsSince1970;
+
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
             createGatheringDelegate.showHidePreviewGatheringButton();
@@ -269,6 +276,11 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
     
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] =  false
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] =  false
+        
+        //If Predictive was on then, we would have to refesh the predictive calendar
+        if (createGatheringDelegate.event.isPredictiveOn == true) {
+            createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate.showPredictions();
+        }
     }
     
     func timePickerCancelButtonPressed() {

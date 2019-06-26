@@ -383,9 +383,6 @@ class WebService
         }
     }
     
-    
-    
-    
     func setPushToken() {
         print("me Time")
         let userid = setting.value(forKey: "userId") as! NSNumber

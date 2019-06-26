@@ -12,6 +12,7 @@ protocol DataTableViewCellProtocol {
     func reloadTableToTop();
     func reloadTableToDesiredSection(rowsToAdd: Int, sectionIndex: Int);
     func scrollTableToDesiredIndex(sectionIndex: Int);
+    func addRemoveSubViewOnHeaderTabSelected(selectedTab: String);
 }
 
 class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHomeViewProtocol {
@@ -38,9 +39,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         dateComponets.nanosecond = 0;
         homescreenDto.timeStamp = Int(Calendar.current.date(from: dateComponets)!.millisecondsSince1970);
         print("Home Screen Date : \(homescreenDto.timeStamp)")
+        
         tabBarController?.delegate = self
-        
-        
+
         //Calling Funcitons
         //Load Home Screen Data on user load
         self.registerTableCells()
@@ -48,17 +49,24 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         DispatchQueue.global(qos: .background).async {
             self.syncDeviceContacts();
         }
+        
+        self.refreshHomeScreenData();
     }
     
 
     override func viewWillAppear(_ animated: Bool) {
         self.setUpNavBarImages();
         self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] = false;
+        tabBarController?.delegate = self
+
+        DispatchQueue.main.async {
+            self.homeTableView.reloadData()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
-        refreshHomeScreenData();
+        //refreshHomeScreenData();
     }
     
     /*
@@ -87,11 +95,25 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         initilizeInvitationTabsData();
     }
     
+    /**
+     * This method will be used by other screen to refersh home page data when needed.
+     **/
+    func refershDataFromOtherScreens() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            self.refreshHomeScreenData();
+        });
+    }
+
+    
     func setUpNavBarImages() {
         self.navigationController?.navigationBar.shouldRemoveShadow(true)
         self.navigationController?.isNavigationBarHidden = false;
         self.navigationController?.navigationBar.isHidden = false;
         self.tabBarController?.tabBar.isHidden = false;
+        let myView = UIView.init(frame: CGRect.init(x: 0, y: -1, width: ((self.tabBarController?.tabBar.frame.width)!), height: 2));
+        myView.backgroundColor = themeColor;
+        self.tabBarController?.tabBar.addSubview(myView);
+        
         
         let homeButton = UIButton.init(type: .custom)
         homeButton.setTitle("Calendar", for: .normal)
@@ -158,16 +180,16 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
-                var calendarData = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                let calendarData = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
                 
                 self.homescreenDto.pageable.totalCalendarCounts = returnedDict["totalCounts"]  as! Int;
                 
                 self.homescreenDto.calendarData = HomeManager().mergeCurrentAndFutureList(currentList: self.homescreenDto.calendarData, futureList: calendarData)
                 
-                if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
-                    self.homeDtoList = self.homescreenDto.calendarData;
-                    self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
-                    self.homeTableView.reloadData();
+                //if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                    //self.homeDtoList = self.homescreenDto.calendarData;
+                    //self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
+                    //self.homeTableView.reloadData();
                     
                     let previousDate = Calendar.current.date(byAdding: .month, value: -6, to: Date())!
                     
@@ -176,11 +198,20 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     HomeService().getHomePastEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
                         //print(returnedDict)
                         
+                        self.homeTableView.reloadData();
+
                         //No Error then populate the table
                         if (returnedDict["success"] as? Bool == true) {
                             var calendarData = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                            print("Previous Events Count : ", calendarData.count)
+
                             if (calendarData.count > 0) {
-                                self.homescreenDto.scrollToSectionIndex = calendarData.count;
+                                if (self.homescreenDto.pageable.totalCalendarCounts == 0) {
+                                    self.homescreenDto.scrollToSectionIndex = calendarData.count - 1;
+                                } else {
+                                    self.homescreenDto.scrollToSectionIndex = calendarData.count;
+                                }
+                                
                                 
                                 self.homescreenDto.calendarData = HomeManager().mergePreviousDataAtTop(currentList: self.homescreenDto.calendarData, previous: calendarData);
                                 
@@ -202,7 +233,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                             }
                         }
                     }
-                }
+                //}
             } else {
                 //Show Empty Screen
             }
@@ -439,6 +470,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     
     @objc func calendarTabPressed() {
         self.homescreenDto.headerTabsActive = HomeHeaderTabs.CalendarTab;
+        
         self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = false;
 
         self.homeDtoList = homescreenDto.calendarData;
@@ -451,6 +483,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     @objc func invitationTabPressed() {
         self.homescreenDto.headerTabsActive = HomeHeaderTabs.InvitationTab;
         
+        //self.dataTableViewCellProtocolDelegate.addRemoveSubViewOnHeaderTabSelected(selectedTab: HomeHeaderTabs.InvitationTab);
+
         self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = true;
         self.homescreenDto.invitationTabs = HomeInvitationTabs.Accepted;
         self.homeDtoList = homescreenDto.acceptedGatherings;

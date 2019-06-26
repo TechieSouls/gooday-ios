@@ -51,7 +51,41 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
         cell.name.text = String(eventMember.name.split(separator: " ")[0]);
         
         if (eventMember.user != nil && eventMember.user.photo != nil) {
+            cell.profilePic.isHidden = false;
+            cell.nonCenesUserView.isHidden = true;
             cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+        } else {
+            
+            //Here we will check. If user is cenes member and has image then we will set it.
+            //If user is not a cenes member yet, then we will show first two letters
+            //of name as its label.
+            cell.profilePic.isHidden = true;
+            cell.nonCenesUserView.isHidden = false;
+            
+            var nonCenesUserName: String = "";
+            let nameSplitArr = eventMember.name.split(separator: " ");
+            nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
+            if (nameSplitArr.count > 1) {
+                
+                let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+                //If string contains valid characters, then goes in if loop
+                if String(nameSplitArr[1]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
+                    nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
+                } else {
+                    //If string containts speacial character, then we will check if there is anymore strnig
+                    //available, If yes then we will chekc for third string.
+                    if (nameSplitArr.count > 2) {
+                        if String(nameSplitArr[2]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
+                            nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
+                        } else {
+                            nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
+                        }
+                    } else {
+                        nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
+                    }
+                }
+            }
+            cell.nonCenesUserLabel.text = nonCenesUserName;            
         }
         return cell;
     }

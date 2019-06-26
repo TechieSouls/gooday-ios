@@ -14,11 +14,16 @@ class FriendCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var name: UILabel!
     
+    @IBOutlet weak var nonCenesUserView: UIView!
+    
+    @IBOutlet weak var nonCenesUserLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
         profilePic.setRounded();
+        nonCenesUserView.roundedUIViewGreyBackground();
     }
 
 }

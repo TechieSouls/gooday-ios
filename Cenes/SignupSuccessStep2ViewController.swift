@@ -64,6 +64,10 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         
         signupStep2TableView.register(UINib.init(nibName: "SignupStep2CalendarsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "SignupStep2CalendarsTableViewCell");
         
+        self.hideKeyboardWhenTappedAround();
+        
+        self.datePicker.maximumDate = Date();
+        
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         GIDSignIn.sharedInstance().uiDelegate = self

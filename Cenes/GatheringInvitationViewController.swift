@@ -10,10 +10,15 @@ import UIKit
 import MessageUI
 import Messages
 
+protocol NewHomeViewControllerDeglegate {
+    func refershDataFromOtherScreens();
+}
 class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate {
 
     
     @IBOutlet weak var acceptedImageView: UIImageView!
+    
+    @IBOutlet weak var sendInvitationImageView: UIImageView!
     
     @IBOutlet weak var rejectedImageiew: UIImageView!
     
@@ -38,6 +43,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var imageCard: UIView!;
     var leftToRightGestureEnabled = true;
     var rightToLeftGestureEnabled = true;
+    var newHomeViewControllerDeglegate: NewHomeViewController!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +59,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         rejectedImageiew.alpha = 0;
         deleteImageView.alpha = 0;
         nextScreenArrow.alpha = 0;
+        sendInvitationImageView.alpha = 0;
         
         //35 degree angle from center
         divisor = ((self.view.frame.width / 2) / 0.34)
@@ -85,9 +92,21 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         acceptedImageView.alpha = 0;
         rejectedImageiew.alpha = 0;
         nextScreenArrow.alpha = 0;
+        deleteImageView.alpha = 0;
+        sendInvitationImageView.alpha = 0;
+
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false;
         navigationController?.navigationBar.isHidden = true;
         tabBarController?.tabBar.isHidden = true;
 
+        if (event.eventId != nil) {
+            GatheringService().eventInfoTask(eventId: Int64(event!.eventId), complete: {(response) in
+                let data = response.value(forKey: "data") as! NSDictionary;
+                let eventTemp = Event().loadEventData(eventDict: data);
+                self.event.eventPicture = eventTemp.eventPicture;
+                self.invitationCardTableView.reloadData();
+            })
+        }
     }
     
     @objc func panRecognizer(_ sender: UIPanGestureRecognizer) {
@@ -96,10 +115,13 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         let xFromCenter = swipeCardView.center.x - self.view.center.x;
 
         print("State : ", sender.state.rawValue);
+        
+        //This marks the beginning of Gesture Begin.
         if (sender.state == UIGestureRecognizerState.began) {
             var gestureIsDraggingFromLeftToRight = (sender.velocity(in: view).x > 0)
-            if (gestureIsDraggingFromLeftToRight == true && leftToRightGestureEnabled == false) {//If user stated swiping from left to right
-                                                            //We will not move the screen and set its position at center
+            if (gestureIsDraggingFromLeftToRight == true && leftToRightGestureEnabled == false) {
+                //If user stated swiping from left to right
+                //We will not move the screen and set its position at center
                 sender.setTranslation(CGPoint.zero, in: self.view)
             }
             
@@ -109,6 +131,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             }
         }
         
+        //This will be called when card is swiped.
         if (sender.state == UIGestureRecognizerState.changed) {
             //print(translation.x)
             /*if (translation.x < 5 && translation.x > -5 && translation.y < 0) {
@@ -122,6 +145,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 
                 let acceptedAlpha = abs(xFromCenter) / self.view.center.x;
                 acceptedImageView.alpha = acceptedAlpha;
+                sendInvitationImageView.alpha = acceptedAlpha;
                 
             } else if (translation.x < -10 && rightToLeftGestureEnabled == true) { //Card is swiped right
                 swipeCardView.center = CGPoint(x: view.center.x + translation.x, y: view.center.y);
@@ -171,7 +195,26 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                             self.resetScreenToDefaultPosition();
                             self.swipeCardView.alpha = 1
                         } else {
-                            self.navigationController?.popViewController(animated: false);
+                            
+                            /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
+                                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                            } else {
+                                self.navigationController?.popViewController(animated: false);
+                            }*/
+                            //This is called when the user is from home screen
+                            if (self.newHomeViewControllerDeglegate != nil) {
+                                self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                self.navigationController?.popViewController(animated: false);
+
+                            } else {
+                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                    
+                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                    homeViewController?.refershDataFromOtherScreens();
+                                    self.navigationController?.popViewController(animated: false);
+                                    
+                                }
+                            }
                         }
                     } else {
                         
@@ -339,7 +382,26 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                             self.swipeCardView.alpha = 1;
                             //self.populateCardDetails();
                         } else {
-                            self.navigationController?.popViewController(animated: false);
+                            /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
+                                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                            } else {
+                                self.navigationController?.popViewController(animated: false);
+                            }*/
+                            
+                            //This is called when the user is from home screen
+                            if (self.newHomeViewControllerDeglegate != nil) {
+                                self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                self.navigationController?.popViewController(animated: false);
+
+                            } else {
+                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                    
+                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                    homeViewController?.refershDataFromOtherScreens();
+                                    self.navigationController?.popViewController(animated: false);
+
+                                }
+                            }
                         }
                         
                     } else {
@@ -356,7 +418,6 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                             self.navigationController?.popViewController(animated: false);
                         }
                     }
-                    
                 });
                 return;
             } else {
@@ -404,7 +465,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         self.navigationController?.pushViewController(viewController, animated: true);
     }
     
-    @IBAction func panToImageView(_ sender: UIPanGestureRecognizer) {
+    /*@IBAction func panToImageView(_ sender: UIPanGestureRecognizer) {
         
         imageCard = sender.view!;
         
@@ -444,7 +505,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             
         }
        
-    }
+    }*/
     
     /*
     // MARK: - Navigation
@@ -569,12 +630,27 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     
                     //And if he is editing the card.
                     if (event.requestType == EventRequestType.EditEvent) {
+                        
+                        acceptedImageView.isHidden = true;
                         editImageView.isHidden = true;
                         deleteImageView.isHidden = true;
+                        
+                        sendInvitationImageView.isHidden = false;
                         rejectedImageiew.isHidden = false;
                     } else {
+                        
+                        //If logged in user is the owner
+                        //Then he cannot accept the card.
+                        //So left to right swipe should be freezed
+                        leftToRightGestureEnabled = false;
+                        
+                        //if user is accepting or rejecting the card.
                         editImageView.isHidden = false;
                         deleteImageView.isHidden = false;
+                        sendInvitationImageView.isHidden = true;
+
+                        
+                        acceptedImageView.isHidden = false;
                         rejectedImageiew.isHidden = true;
                     }
                 } else {
@@ -612,8 +688,14 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     }
                 }
             } else {
-                editImageView.isHidden = true;
-                deleteImageView.isHidden = true;
+                
+                //This is the case when its a new card.
+                //And owner is about to create new invitation
+                editImageView.isHidden = true; // We will hide the edit option
+                deleteImageView.isHidden = true; //We will hide the delete option
+                acceptedImageView.isHidden = true; //We will hide the accept option
+                
+                sendInvitationImageView.isHidden = false;
                 rejectedImageiew.isHidden = false;
             }
             
@@ -623,7 +705,6 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             let cell : NextCardTableViewCell = tableView.dequeueReusableCell(withIdentifier: "NextCardTableViewCell") as! NextCardTableViewCell;
             cell.gatheringInvitationViewControllerDelegate = self;
             return cell;
-            
         }
        
         return UITableViewCell();

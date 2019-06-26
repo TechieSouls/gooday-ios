@@ -21,16 +21,11 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         super.awakeFromNib()
         // Initialization code
         registerTableCells();
-        // Add Refresh Control to Table View
-        if #available(iOS 10.0, *) {
-            //dataTableView.refreshControl = refreshControl
-        } else {
-            //dataTableView.addSubview(refreshControl)
-        }
+       
         
+        refreshControl.tag = 1001;
         // Configure Refresh Control
-        //refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
-
+        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -92,12 +87,8 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
             self.dataTableView.reloadData()
             self.dataTableView.setContentOffset(newOffset, animated: false)
             */
-            let lastIndexPath = IndexPath(row: 0, section: 0)
-
             self.dataTableView.reloadData()
-
             self.dataTableView.layoutIfNeeded()
-            
             let indexPath = IndexPath(row: 0, section: sectionIndex)
             dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
@@ -108,21 +99,38 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
+    func addRemoveSubViewOnHeaderTabSelected(selectedTab: String) {
+    
+        if (selectedTab == HomeHeaderTabs.CalendarTab) {
+            for subView in dataTableView.subviews {
+                if (subView.tag == 1001) {
+                    subView.removeFromSuperview();
+                }
+            }
+        } else {
+            // Add Refresh Control to Table View
+            dataTableView.addSubview(refreshControl)
+
+/*            if #available(iOS 10.0, *) {
+                dataTableView.refreshControl = refreshControl
+            } else {
+                dataTableView.addSubview(refreshControl)
+            }*/
+        }
+    }
+    
     @objc private func refreshWeatherData(_ sender: Any) {
         // Fetch Weather Data
         //fetchWeatherData()
-        newHomeViewControllerDelegate.homescreenDto.calendarData = [HomeData]();
         newHomeViewControllerDelegate.homescreenDto.acceptedGatherings = [HomeData]();
         newHomeViewControllerDelegate.homescreenDto.pendingGatherings = [HomeData]();
         newHomeViewControllerDelegate.homescreenDto.declinedGatherings = [HomeData]();
 
-        newHomeViewControllerDelegate.loadHomeData(pageNumber: 0, offSet: 20);
         newHomeViewControllerDelegate.loadGatheringDataByPullDown(status: "Going", pageNumber: 0, offSet: 20)
         newHomeViewControllerDelegate.loadGatheringDataByPullDown(status: "Pending", pageNumber: 0, offSet: 20)
         newHomeViewControllerDelegate.loadGatheringDataByPullDown(status: "NotGoing", pageNumber: 0, offSet: 20)
         self.refreshControl.endRefreshing()
     }
-    
 }
 
 extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
@@ -147,6 +155,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
 
             print("section", indexPath.section, "Row: ",indexPath.row)
             
+            let totalRows = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects.count;
            let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             
             if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
@@ -163,6 +172,21 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                             cell.profileImage.sd_setImage(with: URL(string: host.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"));
                         }
                     }
+                    
+                    if (totalRows > 1 && indexPath.row == (totalRows - 2)) {
+                        
+                        let eventTemp = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row + 1];
+                        if (eventTemp.scheduleAs == "MonthSeparator") {
+                            cell.separator.isHidden = true;
+                        } else {
+                            cell.separator.isHidden = false;
+                        }
+                        
+                    } else if (indexPath.row == (totalRows - 1)) {
+                        cell.separator.isHidden = true;
+                    } else {
+                        cell.separator.isHidden = false;
+                    }
                     return cell;
                 } else if (event.scheduleAs == "Event") {
                     let cell: HomeCalendarTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "HomeCalendarTableViewCell") as! HomeCalendarTableViewCell;
@@ -178,6 +202,21 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     } else if (event.source == "Apple") {
                         cell.calendarType.text = "Apple"
                         cell.roundedViewLabel.text = "A";
+                    }
+                    
+                    if (totalRows > 1 && indexPath.row == (totalRows - 2)) {
+                        
+                        let eventTemp = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row + 1];
+                        if (eventTemp.scheduleAs == "MonthSeparator") {
+                            cell.separator.isHidden = true;
+                        } else {
+                            cell.separator.isHidden = false;
+                        }
+                        
+                    } else if (indexPath.row == (totalRows - 1)) {
+                        cell.separator.isHidden = true;
+                    } else {
+                        cell.separator.isHidden = false;
                     }
                     return cell;
                 } else if (event.scheduleAs == "Holiday") {
@@ -236,7 +275,9 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             
         }
         
-        return UITableViewCell();
+        var noCell = UITableViewCell();
+        noCell.selectionStyle = .none;
+        return noCell;
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -256,13 +297,12 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 cell.headerLabel.text = self.newHomeViewControllerDelegate.homeDtoList[section].sectionName
                 return cell;
         }
-        
         return UITableViewCell();
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if (self.newHomeViewControllerDelegate.homescreenDto.invitationTabs == HomeInvitationTabs.Pending) {
+        if (self.newHomeViewControllerDelegate.homescreenDto.invitationTabs == HomeInvitationTabs.Pending &&  self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
             let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
             let eventObjectSelected = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             
@@ -287,6 +327,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         break;
                     }
                     if (isEventFound == false) {
+                        event.eventClickedFrom = EventClickedFrom.Gathering;
                         pendingEvents.append(event);
                     }
                 }
@@ -294,11 +335,14 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             
             viewController.pendingEvents = pendingEvents;
             viewController.pendingEventIndex = 0;
+            viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate
             self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
         } else {
             if (self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
                 let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
                 if (event.scheduleAs == "Gathering") {
+                    
+                    event.eventClickedFrom = EventClickedFrom.Gathering;
                     
                     if (event.expired == true) {
                         
@@ -309,7 +353,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     } else {
                         let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
                         viewController.event = event;
-                        
+                        viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate;
                         self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
                     }
                     
@@ -318,8 +362,6 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             
             
         }
-        
-        
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

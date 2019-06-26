@@ -72,7 +72,10 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         self.setUpNavBar();
         self.navigationController?.navigationBar.shouldRemoveShadow(true)
         tabBarController?.tabBar.isHidden = false;
-
+        let myView = UIView.init(frame: CGRect.init(x: 0, y: -1, width: ((self.tabBarController?.tabBar.frame.width)!), height: 2));
+        myView.backgroundColor = themeColor;
+        self.tabBarController?.tabBar.addSubview(myView);
+        
         /*if self.loggedInUser.photo != nil {
             let webServ = WebService()
             webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in

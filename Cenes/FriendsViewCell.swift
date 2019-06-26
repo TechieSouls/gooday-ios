@@ -23,7 +23,7 @@ class FriendsViewCell: UICollectionViewCell {
     @IBOutlet weak var nonCenesUserName: UILabel!
     
     
-    var cellThree : GatheringPeopleTableViewCell!
+    //var cellThree : GatheringPeopleTableViewCell!
         
     var indexPath : IndexPath!
     var delegate: DeleteFriendDelegate?
@@ -47,9 +47,9 @@ class FriendsViewCell: UICollectionViewCell {
             self.delegate?.deleteCell(cell: self)
         }
         else {
-            if self.cellThree != nil {
+            /*if self.cellThree != nil {
                 self.cellThree.deleteCEll(tag: sender.tag,cell:self)
-            }
+            }*/
             if self.cellDiary != nil {
                 self.cellDiary.deleteCEll(tag: sender.tag,cell:self)
             }

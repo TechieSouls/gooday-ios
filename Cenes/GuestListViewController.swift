@@ -38,9 +38,13 @@ class GuestListViewController: UIViewController {
     @IBOutlet weak var declinedViewFooterLabel: UILabel!
     
     
-    var eventMembers: [EventMember]!;
+    var event: Event!;
     
     var filteredEventMembers: [EventMember] = [EventMember]();
+    
+    var loggedInUser: User!;
+    
+    var isLoggedInUserAsOwner: Bool = false;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,11 +85,13 @@ class GuestListViewController: UIViewController {
         declinedUIView.layer.borderWidth = 5
         declinedUIView.layer.borderColor = UIColor.white.cgColor
         
-        invitedUIViewUILabel.text = String(eventMembers.count);
+        invitedUIViewUILabel.text = String(self.event.eventMembers.count);
+        
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
         var acceptedCount = 0;
         var declinedCount = 0;
-        for eventMem in eventMembers {
+        for eventMem in self.event.eventMembers {
             if (eventMem.status == "Going") {
                 acceptedCount = acceptedCount + 1;
             } else if (eventMem.status == "NotGoing") {
@@ -94,7 +100,57 @@ class GuestListViewController: UIViewController {
         }
         acceptedUIViewUILabel.text = String(acceptedCount);
         declinedUIViewUILabel.text = String(declinedCount);
-        self.filteredEventMembers = self.eventMembers;
+        
+        if (self.event.eventId != nil) {
+            //For Loop to fetch the host of the event
+            //Host should be at the top of the list
+            for evemem in self.event.eventMembers {
+                if (evemem.userId != nil && evemem.userId == self.event.createdById) {
+                    evemem.owner = true;
+                    
+                    if (loggedInUser.userId ==  evemem.userId) {
+                        self.isLoggedInUserAsOwner = true;
+                    }
+                    
+                    self.filteredEventMembers.append(evemem);
+                    break;
+                }
+            }
+            
+            //We will again iterate the loop to fetch all other guests
+            //except owner and they should be below host
+            for evemem in self.event.eventMembers {
+                if (evemem.userId != nil && evemem.userId != self.event.createdById) {
+                    evemem.owner = false;
+                    self.filteredEventMembers.append(evemem);
+                }
+            }
+            
+            if (self.isLoggedInUserAsOwner == true) {
+                for evemem in self.event.eventMembers {
+                    if (evemem.userId == nil) {
+                        self.filteredEventMembers.append(evemem);
+                    }
+                }
+            } else {
+                //We will again iterate the loop to fetch all non cenes users
+                var nonCenesUserCount = 0;
+                for evemem in self.event.eventMembers {
+                    if (evemem.userId == nil) {
+                        nonCenesUserCount = nonCenesUserCount + 1;
+                    }
+                }
+                if (nonCenesUserCount > 0) {
+                    let eveMem = EventMember();
+                    eveMem.name = "and \(nonCenesUserCount) Others";
+                    self.filteredEventMembers.append(eveMem);
+                }
+            }
+            
+            
+        } else {
+            self.filteredEventMembers = self.event.eventMembers;
+        }
     }
     
 
@@ -121,7 +177,51 @@ class GuestListViewController: UIViewController {
         
         
         self.filteredEventMembers = [EventMember]();
-        self.filteredEventMembers = self.eventMembers;
+        if (self.event.eventId != nil) {
+            //For Loop to fetch the host of the event
+            //Host should be at the top of the list
+            for evemem in self.event.eventMembers {
+                if (evemem.userId != nil && evemem.userId == self.event.createdById) {
+                    evemem.owner = true;
+                    self.filteredEventMembers.append(evemem);
+                    break;
+                }
+            }
+            
+            //We will again iterate the loop to fetch all other guests
+            //except owner and they should be below host
+            for evemem in self.event.eventMembers {
+                if (evemem.userId != nil && evemem.userId != self.event.createdById) {
+                    evemem.owner = false;
+                    self.filteredEventMembers.append(evemem);
+                }
+            }
+            
+            if (self.isLoggedInUserAsOwner == true) {
+                for evemem in self.event.eventMembers {
+                    if (evemem.userId == nil) {
+                        self.filteredEventMembers.append(evemem);
+                    }
+                }
+            } else {
+                //We will again iterate the loop to fetch all non cenes users
+                var nonCenesUserCount = 0;
+                for evemem in self.event.eventMembers {
+                    if (evemem.userId == nil) {
+                        nonCenesUserCount = nonCenesUserCount + 1;
+                    }
+                }
+                if (nonCenesUserCount > 0) {
+                    let eveMem = EventMember();
+                    eveMem.name = "and \(nonCenesUserCount) Others";
+                    self.filteredEventMembers.append(eveMem);
+                }
+            }
+
+        } else {
+            self.filteredEventMembers = self.event.eventMembers;
+        }
+
         self.guestListTableView.isHidden = false;
         self.noGuestsLabel.isHidden = true
         self.guestListTableView.reloadData();
@@ -135,7 +235,7 @@ class GuestListViewController: UIViewController {
         
         self.filteredEventMembers = [EventMember]();
 
-        for eventMem in eventMembers {
+        for eventMem in self.event.eventMembers {
             if (eventMem.status == "Going") {
                 filteredEventMembers.append(eventMem);
             }
@@ -160,7 +260,7 @@ class GuestListViewController: UIViewController {
         
         self.filteredEventMembers = [EventMember]();
 
-        for eventMem in eventMembers {
+        for eventMem in self.event.eventMembers {
             if (eventMem.status == "NotGoing") {
                 filteredEventMembers.append(eventMem);
             }
@@ -271,14 +371,18 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
         
         let cell: GuestListTableViewCell =  tableView.dequeueReusableCell(withIdentifier: "GuestListTableViewCell", for: indexPath) as! GuestListTableViewCell;
         
+        var hostPrefix = "";
+        if (eventMember.owner == true) {
+            hostPrefix = " (Host)";
+        }
         if (eventMember.user != nil) {
             
-            cell.cenesName.text = eventMember.user.name;
+            cell.cenesName.text = eventMember.user.name + hostPrefix;
             if (eventMember.user.photo != nil) {
                 cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
             }
         } else {
-            cell.cenesName.text = eventMember.name;
+            cell.cenesName.text = eventMember.name + hostPrefix;
         }
         
         if (eventMember.userContact != nil) {

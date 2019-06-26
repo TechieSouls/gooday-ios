@@ -141,24 +141,24 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
                 cell.nonCenesUserView.isHidden = false;
                 var nonCenesUserName: String = "";
                 let nameSplitArr = eventMember.name.split(separator: " ");
-                nonCenesUserName = String(nameSplitArr[0])[0..<1].capitalized
+                nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
                 if (nameSplitArr.count > 1) {
                     
                     let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
                     //If string contains valid characters, then goes in if loop
-                    if String(nameSplitArr[1])[0..<1].rangeOfCharacter(from: characterset.inverted) == nil {
-                        nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
+                    if String(nameSplitArr[1]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
+                        nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
                     } else {
                         //If string containts speacial character, then we will check if there is anymore strnig
                         //available, If yes then we will chekc for third string.
                         if (nameSplitArr.count > 2) {
-                            if String(nameSplitArr[2])[0..<1].rangeOfCharacter(from: characterset.inverted) == nil {
-                                nonCenesUserName.append(String(nameSplitArr[2])[0..<1].capitalized);
+                            if String(nameSplitArr[2]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
+                                nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
                             } else {
-                                nonCenesUserName.append(String(nameSplitArr[2])[1..<2].capitalized);
+                                nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
                             }
                         } else {
-                            nonCenesUserName.append(String(nameSplitArr[1])[1..<2].capitalized);
+                            nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
                         }
                     }
                 }

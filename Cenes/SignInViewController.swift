@@ -16,6 +16,8 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     
     @IBOutlet weak var passwordTextField: UITextField!
     
+    @IBOutlet weak var loginBtn: UIButton!
+    
     @IBOutlet weak var backButton: UIImageView!
     
     @IBOutlet weak var forgotPasswordButton: UIButton!
@@ -106,8 +108,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         return false;
     }
     
-    func alertMessage (message :String)
-    {
+    func alertMessage (message :String) {
         let alertController = UIAlertController(title: "Validation", message: message, preferredStyle: UIAlertControllerStyle.alert)
         
         let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
@@ -138,4 +139,33 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         let viewController = storyboard?.instantiateViewController(withIdentifier: "ForgotPasswordController") as! ForgotPasswordController;
         self.navigationController?.pushViewController(viewController, animated: true);
     }
+    
+    @IBAction func loginBtnClicked(_ sender: Any) {
+        
+        if (emailTxtField.text == "") {
+            showAlert(title: "Email is empty", message: "");
+        } else if (passwordTextField.text == "") {
+            showAlert(title: "Password is empty", message: "");
+        } else {
+            
+            UserService().emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in
+                
+                if returnedDict.value(forKey: "Error") as? Bool == true {
+                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                    
+                } else {
+                    
+                    DispatchQueue.global(qos: .background).async {
+                        self.syncDeviceContacts();
+                        WebService().setPushToken();
+                    }
+                    setting.setValue(UserSteps.Authentication, forKey: "footprints")
+                    
+                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                }
+            });
+            
+        }
+    }
+    
 }

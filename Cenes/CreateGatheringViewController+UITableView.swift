@@ -36,12 +36,12 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
         case 1:
             print("")
             identifier = "GatheringTitleTableViewCell"
-            let cell: GatheringTitleTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTitleTableViewCell)!
+            /*let cell: GatheringTitleTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringTitleTableViewCell)!
             cell.gatheringView = self
             
-            /*if self.eventName == "" {
+            if self.eventName == "" {
                 cell.eventTitleTextField.text = ""
-            }else{*/
+            }else{
                 cell.eventTitleTextField.text = self.event.title;
             //}
             
@@ -51,11 +51,11 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
                 cell.eventTitleTextField.isUserInteractionEnabled = true
             }
             
-            return cell
+            return cell*/
         case 2:
             print("")
             identifier = "GatheringPeopleTableViewCell"
-            let cell: GatheringPeopleTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringPeopleTableViewCell)!
+             /*let cell: GatheringPeopleTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringPeopleTableViewCell)!
             
             cell.createGatheringView = self
             cell.setShowArray()
@@ -65,7 +65,7 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
                 cell.lowerView.isHidden = true
             }
             cell.reloadFriends()
-            return cell
+            return cell*/
             
         case 3:
             print("")
@@ -73,7 +73,7 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             
             
             identifier = "GatheringDateTableViewCell"
-            let cell: GatheringDateTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringDateTableViewCell)!
+            /*let cell: GatheringDateTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringDateTableViewCell)!
             
             cell.cellDelegate = self
             cell.gatheringView = self
@@ -104,13 +104,13 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             if self.loadSummary == true {
                 cell.loadSummary(startTime: self.startTime!, endTime: self.endTime!)
             }
+ 
             
-            
-            return cell
+            return cell*/
         case 4:
             print("")
             identifier = "GatheringLocationTableViewCell"
-            let cell: GatheringLocationTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringLocationTableViewCell)!
+            /*let cell: GatheringLocationTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringLocationTableViewCell)!
             
             
             if self.event.location != nil {
@@ -125,11 +125,11 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
                     self.locationName = ""
                 }
             }
-            return cell
+            return cell*/
         case 5:
             print("")
             identifier = "GatheringDescTableViewCell"
-            let cell: GatheringDescTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringDescTableViewCell)!
+            /*let cell: GatheringDescTableViewCell = (tableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringDescTableViewCell)!
             cell.gatheringView = self
             
             /*if self.eventDetails == "" {
@@ -144,7 +144,7 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
                 cell.eventDetailsField.isUserInteractionEnabled = true
             }
             
-            return cell
+            return cell*/
             
         case 6:
             print("delte cell")
@@ -156,7 +156,8 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
             print("")
             return UITableViewCell()
         }
-        
+        return UITableViewCell()
+
     }
     
     

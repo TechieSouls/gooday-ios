@@ -57,11 +57,6 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OWO-F1-ETf">
-                        <rect key="frame" x="85" y="99" width="353" height="1"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <color key="backgroundColor" red="0.70980392156862748" green="0.70980392156862748" blue="0.71372549019607845" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
-                    </view>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YS3-Gc-fEC">
                         <rect key="frame" x="20" y="24" width="50" height="50"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -71,11 +66,16 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="profile_pic_no_image" translatesAutoresizingMaskIntoConstraints="NO" id="3Tu-dI-cYE">
-                                <rect key="frame" x="3" y="2" width="44" height="45"/>
+                                <rect key="frame" x="2" y="2" width="45.5" height="45.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OWO-F1-ETf">
+                        <rect key="frame" x="85" y="99" width="353" height="1"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" red="0.70980392156862748" green="0.70980392156862748" blue="0.71372549019607845" alpha="0.29999999999999999" colorSpace="calibratedRGB"/>
                     </view>
                 </subviews>
             </tableViewCellContentView>
@@ -84,6 +84,7 @@
             <connections>
                 <outlet property="location" destination="DsD-VT-u7g" id="YpT-We-doo"/>
                 <outlet property="profileImage" destination="3Tu-dI-cYE" id="Hts-jp-Q3b"/>
+                <outlet property="separator" destination="OWO-F1-ETf" id="NzW-A0-mzn"/>
                 <outlet property="time" destination="3lj-LA-0Ms" id="sdq-YV-5V1"/>
                 <outlet property="title" destination="DaA-pO-1X6" id="NqV-TU-4rV"/>
             </connections>

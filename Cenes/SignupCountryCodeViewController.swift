@@ -140,7 +140,7 @@ class SignupCountryCodeViewController: UIViewController, UITableViewDataSource, 
             
             let countryObject: CountryCodeService = countries[i];
             
-            let header: String = countryObject.getName().substring(toIndex: 1);
+            let header: String = String(countryObject.getName().prefix(1));
             
             if (!self.countryHeaders.contains(header)) {
                 self.countryHeaders.append(header);

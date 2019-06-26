@@ -64,7 +64,7 @@ class ProfileManager {
         
         for countryData in countryDataArray {
            
-            let initials = String((countryData["name"] as! String).split(separator: " ")[0]).substring(toIndex: 1).uppercased();
+            let initials = String((countryData["name"] as! String).split(separator: " ")[0]).prefix(1).uppercased();
             
             if (keyValueWorldHolidayData[initials] != nil) {
                 

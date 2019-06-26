@@ -48,7 +48,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         // Do any additional setup after loading the view.
         profilePic.setRounded()
         
-        let curvedPercent: CGFloat = 0.08;
+        /*let curvedPercent: CGFloat = 0.08;
         let arrowPath = UIBezierPath()
         arrowPath.move(to: CGPoint(x:0, y:0))
         arrowPath.addLine(to: CGPoint(x:topView.bounds.size.width, y:0))
@@ -62,7 +62,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         shapeLayer.frame = topView.bounds
         shapeLayer.masksToBounds = true
         topView.layer.mask = shapeLayer
-        topView.backgroundColor = themeColor;
+        topView.backgroundColor = themeColor;*/
         
         /*eventHostedCountView.layer.borderColor = UIColor(red:0.29, green:0.56, blue:0.89, alpha:1).cgColor;
         eventHostedCountView.layer.borderWidth = 5;
@@ -118,6 +118,9 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true;
         self.tabBarController?.tabBar.isHidden = false;
+        let myView = UIView.init(frame: CGRect.init(x: 0, y: -1, width: ((self.tabBarController?.tabBar.frame.width)!), height: 2));
+        myView.backgroundColor = themeColor;
+        self.tabBarController?.tabBar.addSubview(myView);
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
 
@@ -221,7 +224,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
             
             self.uploadImage = imageToUploadTemp.fixedOrientation();
             DispatchQueue.main.async {
-                self.profilePic.image = image;
+                self.profilePic.sd_setImage(with: URL(string: ""), placeholderImage: image);
                 self.profilePic.setNeedsDisplay()
 
             }

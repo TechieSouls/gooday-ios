@@ -59,7 +59,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     var imageSelectedOption = "";
     
     var loggedInUser: User!;
-    
+        
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, padding: 0.0);
 
     override func viewDidLoad() {
@@ -121,8 +121,18 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         textfield = UITextField(frame: CGRect(x: 80, y: 0, width: self.navigationController!.navigationBar.frame.size.width, height: 21.0));
         textfield.delegate = self;
+        let attributes = [
+            NSAttributedString.Key.foregroundColor.rawValue : UIColor.black,
+            NSAttributedString.Key.font.rawValue : UIFont.init(name: "AvenirNext-Bold", size: 18) // Note the !
+        ];
+        textfield.defaultTextAttributes = attributes // call in viewDidLoad
+
         if (event.eventId != nil) {
-            textfield.text = event.title!
+            let attributes = [
+                NSAttributedStringKey.foregroundColor: UIColor.black,
+                NSAttributedStringKey.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
+            ]
+            textfield.attributedText = NSAttributedString(string: "\(event.title!)", attributes:attributes);
         } else {
             
             let attributes = [
@@ -359,7 +369,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     @objc func backButtonPressed() {
         
-        let alert = UIAlertController(title: "Abondaon Event?", message: "If you decicde to leave this page, all \nprogress will be lost.", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "Abandon Event?", message: "If you decide to leave this page, all \nprogress will be lost.", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Leave", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
             self.navigationController?.popToRootViewController(animated: false);
         }))

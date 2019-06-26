@@ -94,7 +94,7 @@ class PasswordTableViewCell: UITableViewCell, UITextFieldDelegate {
 
             } else {
                 
-                let decimalCharacters = CharacterSet.decimalDigits
+                /*let decimalCharacters = CharacterSet.decimalDigits
                 let decimalRange = newPasswordField.text!.rangeOfCharacter(from: decimalCharacters)
                 if decimalRange == nil {
                     editPersonalDetailsViewControllerDelegate.showAlert(title: "Check Password \nRequirements", message: "")
@@ -120,7 +120,7 @@ class PasswordTableViewCell: UITableViewCell, UITextFieldDelegate {
                 } catch {
                     debugPrint(error.localizedDescription)
                     return false
-                }
+                }*/
                 editPersonalDetailsViewControllerDelegate.newPassword = newPasswordField.text!
                 editPersonalDetailsViewControllerDelegate.saveUserDetails();
                 return true;

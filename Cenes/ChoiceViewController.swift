@@ -99,7 +99,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        PhonebookService.getPermissionForContacts();
+
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)

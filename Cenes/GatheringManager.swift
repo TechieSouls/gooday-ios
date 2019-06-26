@@ -74,13 +74,13 @@ class GatheringManager {
             
             var nameInitial = "";
             if (eventMember.user != nil && eventMember.user.name != nil) {
-                nameInitial = eventMember.user.name.substring(toIndex: 1).uppercased();
+                nameInitial = eventMember.user.name.prefix(1).uppercased();
                 print(nameInitial)
             } else if (eventMember.userContact != nil) {
-                nameInitial = eventMember.userContact.name.substring(toIndex: 1).uppercased();
+                nameInitial = eventMember.userContact.name.prefix(1).uppercased();
                 print(nameInitial)
             } else if (eventMember.name != nil) {
-                nameInitial = eventMember.name.substring(toIndex: 1).uppercased();
+                nameInitial = eventMember.name.prefix(1).uppercased();
                 print(nameInitial)
             }
             var friendListDtoTemp = FriendListDto();

@@ -468,7 +468,9 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                                     for userContact in self.nonCenesUsers {
                                         phoneNumbers = "\(userContact.phone),\(phoneNumbers)";
                                     }
-                                    self.sendSMSText(phoneNumber: phoneNumbers.substring(toIndex: phoneNumbers.count-1));
+                                    //self.sendSMSText(phoneNumber: phoneNumbers.substring(toIndex: phoneNumbers.count-1));
+                                    
+                                    self.sendSMSText(phoneNumber: String(phoneNumbers.prefix(phoneNumbers.count - 1)));
                                 }
                                 
                                 
@@ -541,7 +543,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
                             for userContact in self.nonCenesUsers {
                                 phoneNumbers = userContact.phone+","+phoneNumbers;
                             }
-                            self.sendSMSText(phoneNumber: phoneNumbers.substring(toIndex: phoneNumbers.count-1));
+                            self.sendSMSText(phoneNumber: String(phoneNumbers.prefix(phoneNumbers.count-1 )));
+                            
                         }
                         self.summaryBool = true
                         self.loadSummary = true
@@ -898,7 +901,7 @@ extension CreateGatheringViewController: CollectionFriendsProtocol {
     }
 }
 
-extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
+/*extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
     func setCase(caseHeight: CellHeight, cellIndex: IndexPath) {
         
         self.cellHeightTime = caseHeight
@@ -930,4 +933,5 @@ extension CreateGatheringViewController : GatheringTableViewCellFiveDelegate {
         }
     }
 }
+ */
 

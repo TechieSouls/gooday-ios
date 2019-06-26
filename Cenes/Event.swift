@@ -30,7 +30,7 @@ class Event {
     var fullDayStartTime: String!;
     var key: String!;
     var isEditMode: Bool = false;
-    var eventClickedFrom: String = "Home";
+    var eventClickedFrom: String = EventClickedFrom.Home;
     var expired: Bool = false;
     var imageToUpload: UIImage!;
     var requestType = EventRequestType.NewEvent;
@@ -123,23 +123,29 @@ class Event {
     func getEventHostFromMembers() -> EventMember {
         
         var host: EventMember = EventMember();
-        for eventMem in self.eventMembers {
+        if (self.eventMembers != nil) {
             
-            if (eventMem.userId != nil && eventMem.userId == self.createdById) {
-                host = eventMem;
-                return host;
+            for eventMem in self.eventMembers {
+                
+                if (eventMem.userId != nil && eventMem.userId == self.createdById) {
+                    host = eventMem;
+                    return host;
+                }
             }
         }
+        
         return host;
     }
     
     func getEventMembersWithoutHost() -> [EventMember] {
         
         var eventMembersWithoutHost: [EventMember] = [EventMember]();
-        for eventMem in self.eventMembers {
-            
-            if (eventMem.userId != nil && eventMem.userId != self.createdById) {
-                eventMembersWithoutHost.append(eventMem);
+        if (self.eventMembers != nil) {
+            for eventMem in self.eventMembers {
+                
+                if (eventMem.userId != nil && eventMem.userId != self.createdById) {
+                    eventMembersWithoutHost.append(eventMem);
+                }
             }
         }
         return eventMembersWithoutHost;
@@ -150,21 +156,20 @@ class Event {
         var acceptedMembers = [EventMember]();
         
         //Addding all event members without logged in user
-        for eventMem in self.eventMembers {
-            if (eventMem.userId != nil && eventMem.userId != self.createdById && eventMem.userId != loggedInUserId && eventMem.status == "Going") {
-                acceptedMembers.append(eventMem);
+        if (self.eventMembers != nil) {
+            for eventMem in self.eventMembers {
+                if (eventMem.userId != nil && eventMem.userId != self.createdById && eventMem.userId != loggedInUserId && eventMem.status == "Going") {
+                    acceptedMembers.append(eventMem);
+                }
+            }
+            
+            //Adding Logged in event member at last
+            for eventMem in self.eventMembers {
+                if (eventMem.userId != nil && eventMem.userId != self.createdById && eventMem.userId == loggedInUserId && eventMem.status == "Going") {
+                    acceptedMembers.append(eventMem);
+                }
             }
         }
-        
-        //Adding Logged in event member at last
-        for eventMem in self.eventMembers {
-            if (eventMem.userId != nil && eventMem.userId != self.createdById && eventMem.userId == loggedInUserId && eventMem.status == "Going") {
-                acceptedMembers.append(eventMem);
-            }
-        }
-        
-        
-        
         return acceptedMembers;
     }
     
@@ -175,4 +180,10 @@ class EventRequestType {
     static let NewEvent = "NEW";
     static let EditEvent = "EDIT";
     static let ViewEvent = "VIEW";
+}
+
+class EventClickedFrom {
+    static let Home = "HOME";
+    static let Gathering = "GATHERING";
+    static let Notification = "NOTIFICATION";
 }

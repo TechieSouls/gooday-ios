@@ -53,8 +53,8 @@ class CountriesViewController: UIViewController {
             
             let countryObject: CountryCodeService = countries[i];
             
-            let headerAlphabet: String = countryObject.getName().substring(toIndex: 1).uppercased();
-            
+            //let headerAlphabet: String = countryObject.getName().substring(toIndex: 1).uppercased();
+            let headerAlphabet: String = String(countryObject.getName().prefix(1)).uppercased();
             if (self.countriesDict[headerAlphabet] == nil) {
                 
                 var countriesArr: [CountryCodeService] = [CountryCodeService]();

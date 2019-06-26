@@ -17,6 +17,7 @@ class HomeEventTableViewCell: UITableViewCell {
     @IBOutlet weak var location: UILabel!
     @IBOutlet weak var time: UILabel!
     
+    @IBOutlet weak var separator: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

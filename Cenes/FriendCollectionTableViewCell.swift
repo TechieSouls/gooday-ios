@@ -70,9 +70,9 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
 
                 var nonCenesUserName: String = "";
                 let nameSplitArr = userContact.name.split(separator: " ");
-                nonCenesUserName = String(nameSplitArr[0])[0..<1].capitalized
+                nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
                 if (nameSplitArr.count > 1) {
-                    nonCenesUserName.append(String(nameSplitArr[1])[0..<1].capitalized);
+                    nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
                 }
                 cell.nonCenesUiViewLabel.text = nonCenesUserName;
             }

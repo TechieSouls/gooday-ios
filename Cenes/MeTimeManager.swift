@@ -49,9 +49,10 @@ class MeTimeManager {
         if (patternStr == "") {
             for pattern in recurringPatternsSorted {
                 
-                patternStr = "\(patternStr)\(dayKeyAndNameMap(dayKey: pattern.dayOfWeek)),"
+                let dayOfweek = Calendar.current.component(.weekday, from: Date(milliseconds: Int(pattern.dayOfWeekTimestamp)));
+                patternStr = "\(patternStr)\(dayKeyAndNameMap(dayKey: dayOfweek)),"
             }
-            patternStr = patternStr.substring(toIndex: patternStr.length-1)
+            patternStr = String(patternStr.prefix(patternStr.count-1));
         }
         
         return patternStr;

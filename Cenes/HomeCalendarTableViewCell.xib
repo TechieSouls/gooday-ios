@@ -82,6 +82,7 @@
                 <outlet property="calendarType" destination="mk1-mD-6Mm" id="rtM-51-zPn"/>
                 <outlet property="roundView" destination="joS-QY-VuJ" id="xdw-PP-wvt"/>
                 <outlet property="roundedViewLabel" destination="yBE-PU-1YV" id="vjS-42-3ES"/>
+                <outlet property="separator" destination="bLf-vg-PR0" id="Wsn-Q9-Q4d"/>
             </connections>
             <point key="canvasLocation" x="76" y="69.265367316341838"/>
         </tableViewCell>

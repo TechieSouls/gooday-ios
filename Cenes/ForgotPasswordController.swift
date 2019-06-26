@@ -119,7 +119,7 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
                 
             } else {
                 
-                let decimalCharacters = CharacterSet.decimalDigits
+                /*let decimalCharacters = CharacterSet.decimalDigits
                 let decimalRange = newPasswordField.text!.rangeOfCharacter(from: decimalCharacters)
                 if decimalRange == nil {
                     self.showAlert(title: "Check Password \nRequirements", message: "")
@@ -145,7 +145,7 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
                 } catch {
                     debugPrint(error.localizedDescription)
                     return false
-                }
+                }*/
 
                 var postData = [String: Any]();
                 postData["email"] = emailTF.text!;

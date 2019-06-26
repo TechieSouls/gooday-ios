@@ -41,7 +41,9 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     
     override func viewWillAppear(_ animated: Bool) {
         
-       
+        let myView = UIView.init(frame: CGRect.init(x: 0, y: -1, width: ((self.tabBarController?.tabBar.frame.width)!), height: 2));
+        myView.backgroundColor = themeColor;
+        self.tabBarController?.tabBar.addSubview(myView);
     }
 
     override func viewDidAppear(_ animated: Bool) {

@@ -237,8 +237,8 @@ class InvitationCardTableViewCell: UITableViewCell {
         gatheringInvitaionViewControllerDelegate.trackCheckdeBubble = "guestList";
         
         let guestListViewController: GuestListViewController = gatheringInvitaionViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GuestListViewController") as! GuestListViewController;
-        guestListViewController.eventMembers = gatheringInvitaionViewControllerDelegate.event.eventMembers;
-        gatheringInvitaionViewControllerDelegate.present(guestListViewController, animated: true, completion: nil);
+            guestListViewController.event = gatheringInvitaionViewControllerDelegate.event;
+            gatheringInvitaionViewControllerDelegate.present(guestListViewController, animated: true, completion: nil);
     }
     
     

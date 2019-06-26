@@ -84,6 +84,13 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
                     let cell: DataTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "DataTableViewCell") as! DataTableViewCell
                     cell.newHomeViewControllerDelegate = self;
                     self.dataTableViewCellProtocolDelegate = cell;
+                
+                    if (homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                        dataTableViewCellProtocolDelegate.addRemoveSubViewOnHeaderTabSelected(selectedTab: HomeHeaderTabs.CalendarTab)
+                    } else {
+                        dataTableViewCellProtocolDelegate.addRemoveSubViewOnHeaderTabSelected(selectedTab: HomeHeaderTabs.InvitationTab)
+                    }
+                
                     cell.dataTableView.reloadData();
                     return cell;
             }

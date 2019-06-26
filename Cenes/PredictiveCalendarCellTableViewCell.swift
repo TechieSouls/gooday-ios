@@ -70,7 +70,6 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
             
             createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveInfoRow] = true;
             createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = false;
-            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = false;
             createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.friendsCollectionRow] = false;
 
             createGatheringDelegate.createGathTableView.reloadData();
@@ -78,13 +77,11 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
             
             //UnHiding navigation bar
             createGatheringDelegate.navigationController?.navigationBar.isHidden = false;
-            
-            
+                        
             createGatheringDelegate.createGathDto.timeMatchIconOn = false;
             predictiveInfoIcon.image = UIImage.init(named: "time_match_icon_off");
             createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveInfoRow] = false;
             createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = true;
-            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true;
             createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.friendsCollectionRow] = true;
             createGatheringDelegate.createGathTableView.reloadData();
         }
@@ -178,7 +175,6 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
     
     @IBAction func predictiveSwitchChanged(_ sender: UISwitch) {
         
-        
         createGatheringDelegate.event.isPredictiveOn = predictiveSwitch.isOn;
 
         if (predictiveSwitch.isOn == true) {
@@ -188,6 +184,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 let alert = UIAlertController(title: "Alert?", message: "Plaese select Start and End Time.", preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
                     self.predictiveSwitch.isOn = false;
+                    self.createGatheringDelegate.event.isPredictiveOn = self.predictiveSwitch.isOn;
                 }))
                 
                 createGatheringDelegate.present(alert, animated: true, completion: nil)
@@ -195,6 +192,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 let alert = UIAlertController(title: "Alert?", message: "Plaese select End Time.", preferredStyle: UIAlertControllerStyle.alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
                     self.predictiveSwitch.isOn = false;
+                    self.createGatheringDelegate.event.isPredictiveOn = self.predictiveSwitch.isOn;
                 }))
                 createGatheringDelegate.present(alert, animated: true, completion: nil)
 
@@ -219,7 +217,7 @@ func showPredictions() {
         }
     }
     if (friendIds != "") {
-        queryStr = queryStr + "&friends=\(friendIds.substring(toIndex: friendIds.count - 1))";
+        queryStr = queryStr + "&friends=\(friendIds.prefix(friendIds.count-1))";
     }
     let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
     
@@ -277,9 +275,7 @@ func showPredictions() {
                     
                 }
             }
-            
             self.predictiveCalendar.reloadData();
-            
         }
     });
     }
