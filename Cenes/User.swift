@@ -54,8 +54,8 @@ class User {
         user.token = userDataDict.value(forKey: "token") as? String;
         user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
         
-        //user.token = "1560411870698eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoYXJyaXNvbnNpbWEyMTE1NjAzMjU0NzA2OTgifQ.zRWSwFVxGWyLkdTFCW18N_rBP3giDYSCqiPF5xiMRL-6B4orOm-e8PQrHZj7QEDGcrXBF9RSJH4Z_ztYMT0WQw"
-        //user.userId = 375;
+        //user.token = "1562131902441eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJraW5nLnRhbjE1NjIwNDU1MDI0NDEifQ.rhkyNgQOIKkWeOTXKuwJCcqnVeuHaGRH8KPhu9jQVM-kiAfSRK_Kn3-9vGXsdRK6RFbCK3NdNZ1L3a3t-PHm_w"
+        //user.userId = 381;
         //user.phone = "";
 
         return user;

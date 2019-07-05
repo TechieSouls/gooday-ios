@@ -61,6 +61,8 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
                 } else {
                     cell.calendarArrow.image = UIImage.init(named: "close_calendar");
                 }
+                
+                self.dateDroDownCellProtocolDelegate = cell;
                 return cell;
             }
         case 1:
@@ -76,7 +78,8 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
                 let cell: HomeFSCalendarTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "HomeFSCalendarTableViewCell") as! HomeFSCalendarTableViewCell
                 cell.newHomeViewProtocolDelegate = self;
                 cell.newHomeViewControllerDelegate = self;
-                cell.fsCalendar.setCurrentPage(Date(milliseconds: self.homescreenDto.timeStamp), animated: false);
+                cell.fsCalendar.setCurrentPage(Date(milliseconds: self.homescreenDto.fsCalendarCurrentDateTimestamp), animated: false);
+                self.homeFSCalendarCellProtocol = cell;
                 return cell;
             }
         case 3:

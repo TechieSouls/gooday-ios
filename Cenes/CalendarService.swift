@@ -71,7 +71,7 @@ class CalendarService {
                         
                         let startTime = "\(event.startDate.millisecondsSince1970)"
                         let endTime = "\(event.endDate.millisecondsSince1970)"
-                        arrayDict.append(["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"Asia/Kolkata","scheduleAs":"Event","startTime":startTime,"endTime":endTime])
+                        arrayDict.append(["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":TimeZone.current,"scheduleAs":"Event","startTime":startTime,"endTime":endTime])
                         
                     }
                     params = ["data":arrayDict]

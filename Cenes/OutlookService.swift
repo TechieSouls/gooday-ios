@@ -18,6 +18,7 @@ class OutlookService {
         "authorize_uri": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
         "token_uri": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
         "scope": "openid profile offline_access User.Read Mail.Read Calendars.Read Contacts.Read",
+        //"scope": "openid profile offline_access https://outlook.office.com/user.read https://outlook.office.com/mail.read https://outlook.office.com/calendars.read https://outlook.office.com/calendars.readwrite",
         "redirect_uris": ["cenes://oauth2/callback"],
         "verbose": true,
         ] as OAuth2JSON

@@ -145,7 +145,7 @@ class UserService {
                         let userId = json.object(forKey: "userId")
                         let token = json.object(forKey: "token")
                         let email = json.object(forKey: "email")
-                        let  name = json.object(forKey: "name")
+                        let name = json.object(forKey: "name")
                         let phone = json.object(forKey: "phone")
                         let password = json.object(forKey: "password")
 
@@ -160,13 +160,17 @@ class UserService {
                             setting.setValue(genderUser, forKey: "gender")
                         }
                         
+                        if let name = json.object(forKey: "name") as? String {
+                            setting.setValue(name, forKey: "name")
+                        } else {
+                            setting.setValue("", forKey: "name")
+                        }
+                        
                         setting.setValue(userId!, forKey: "userId")
-                        setting.setValue(name!, forKey: "name")
                         setting.setValue(email!, forKey: "email")
                         setting.setValue(token!, forKey: "token")
                         setting.setValue(phone!, forKey: "phone")
                         setting.setValue(password!, forKey: "password")
-                        setting.setValue(2, forKey: "onboarding")
 
                         /*if (userPhoto != "") {
                             let webServ = WebService()

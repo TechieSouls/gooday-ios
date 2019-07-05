@@ -22,7 +22,6 @@ pod 'VisualEffectView'
 pod 'SwipeCellKit'
 pod 'Mantis', '~> 0.27'
 
-
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|

@@ -142,8 +142,8 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
                         self.syncDeviceContacts();
                         WebService().setPushToken();
                     }
-                    setting.setValue(4, forKey: "onboarding")
-
+                    setting.setValue(UserSteps.Authentication, forKey: "footprints");
+                    
                     let viewController = self.storyboard?.instantiateViewController(withIdentifier: "SignupSuccessStep2ViewController") as! SignupSuccessStep2ViewController;
                     self.navigationController?.pushViewController(viewController, animated: true);
                 }

@@ -161,7 +161,16 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
                     }
                     setting.setValue(UserSteps.Authentication, forKey: "footprints")
                     
-                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                    let user = User().loadUserDataFromUserDefaults(userDataDict: setting);
+                    if (user.name == nil || user.name == "") {
+                        
+                        let viewController = self.storyboard?.instantiateViewController(withIdentifier: "SignupSuccessStep2ViewController") as! SignupSuccessStep2ViewController;
+                        self.navigationController?.pushViewController(viewController, animated: true);
+                        
+                    } else {
+                        UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+
+                    }
                 }
             });
             

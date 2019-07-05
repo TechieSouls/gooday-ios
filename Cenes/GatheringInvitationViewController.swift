@@ -441,7 +441,22 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 HomeService().removeEventFromList(queryStr: queryStr, token: self.loggedInUser.token!, complete: {(response) in
                 });
             }
-            self.navigationController?.popViewController(animated: false);
+            //self.navigationController?.popViewController(animated: false);
+            
+            //This is called when the user is from home screen
+            if (self.newHomeViewControllerDeglegate != nil) {
+                self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                self.navigationController?.popViewController(animated: false);
+                
+            } else {
+                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refershDataFromOtherScreens();
+                    self.navigationController?.popViewController(animated: false);
+                    
+                }
+            }
             
         }
         alertController.addAction(OKAction)

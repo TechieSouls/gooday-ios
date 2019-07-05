@@ -8,7 +8,9 @@
 
 import UIKit
 
-class DateDropDownTableViewCell: UITableViewCell {
+class DateDropDownTableViewCell: UITableViewCell, DateDroDownCellProtocol {
+    
+    
 
     
     @IBOutlet weak var topDate: UILabel!
@@ -29,5 +31,21 @@ class DateDropDownTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func updateDate(milliseconds: Int) {
+        
+        let currentYear = Calendar.current.component(.year, from: Date());
+        let scrollYear = Calendar.current.component(.year, from: Date(milliseconds: milliseconds));
+
+        if (currentYear == scrollYear) {
+            self.topDate.text = String(Date(milliseconds: Int(milliseconds)).EMMMd()!);
+
+        } else {
+            self.topDate.text = String(Date(milliseconds: Int(milliseconds)).EMMMMdyyyy()!);
+        }
+        self.topDate.frame = CGRect(x: 0, y: 40/2, width: self.topDate.intrinsicContentSize.width, height: 40);
+
+        self.clanedarToggleArrowVioew.frame = CGRect(x: self.topDate.intrinsicContentSize.width+10, y: contentView.frame.height/2, width: 26, height: 32);
     }
 }

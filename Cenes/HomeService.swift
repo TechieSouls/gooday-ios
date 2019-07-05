@@ -11,11 +11,14 @@ import Alamofire
 
 class HomeService {
     
+    let get_month_wise_events: String = "/api/getEventsMonthWise/v2";
     let get_home_events: String = "api/getEvents/v2";
     let get_past_home_events: String = "/api/getPastEvents/v2";
     let get_home_calendar_events: String = "api/homeCalendarEvents/v2";
     let get_delete_event: String = "api/event/delete";
-    
+    let get_refresh_google_sync: String = "api/google/refreshEvents";
+    let get_outlook_google_sync: String = "api/outlook/refreshEvents";
+
     var requestArray = NSMutableArray()
     
     func refreshGoogleEvents(complete: @escaping(NSMutableDictionary)->Void ) {
@@ -70,6 +73,16 @@ class HomeService {
         });
     }
     
+    func getMonthWiseEvents(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
+        
+        let url = "\(apiUrl)\(get_month_wise_events)?\(queryStr)"
+        print("API : \(url)")
+        
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
     func getHomeCalendarEvents(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
         
         let url = "\(apiUrl)\(get_home_calendar_events)?\(queryStr)"
@@ -99,4 +112,23 @@ class HomeService {
         });
     }
     
+    func getSyncGoogleCalendar(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
+        
+        let url = "\(apiUrl)\(get_refresh_google_sync)?\(queryStr)"
+        print("API : \(url)")
+        
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
+    func getSyncOutlookCalendar(queryStr :String ,token : String ,complete: @escaping(NSDictionary)->Void ) {
+        
+        let url = "\(apiUrl)\(get_outlook_google_sync)?\(queryStr)"
+        print("API : \(url)")
+        
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
 }

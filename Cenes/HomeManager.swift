@@ -12,8 +12,247 @@ class HomeManager {
     
     var dataObjectArray = [HomeData]()
 
+    func parseResultsForHomeEvents(homescreenDto: HomeDto, resultArray: NSArray) -> HomeScreenDataHolder {
+        
+        var homescreenDto = homescreenDto;
+        var homeScreenDataHolder = HomeScreenDataHolder();
+        var totalEvents = homescreenDto.totalEventsList;
+        
+        var homeDataArrayToReturn = [HomeData]()
+        
+        var previousDate: Date = Date();
+        var months: [String] = [String]();
+        var dataObjectArray = [HomeData]()
+        
+        let dict = NSMutableDictionary()
+        
+        for i : Int in (0..<resultArray.count) {
+            
+            let outerDict = resultArray[i] as! NSDictionary
+            
+            let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
+            if dataType == "Event" {
+                let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
+                
+                if (totalEvents.contains(event.eventId)) {
+                    continue;
+                }
+                totalEvents.append(event.eventId);
+                let key = getMonthKeyForScrollIndex(startTime: Int(event.startTime));
+                let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(event.startTime));
+                
+                //let currentMonth
+                
+                if dict.value(forKey: key) != nil {
+                    //var array = dict.value(forKey: key) as! [CenesCalendarData]!
+                    var array = dict.value(forKey: key) as! [Event]
+                    
+                    var eventAlreadyExists = false;
+                    for eventObj in array {
+                        if (eventObj.eventId == event.eventId) {
+                            eventAlreadyExists = true;
+                            break;
+                        }
+                    }
+                    if (eventAlreadyExists == false) {
+                        array.append(event)
+                        dict.setValue(array, forKey: key)
+                        
+                        for cenesEvent in dataObjectArray {
+                            if (cenesEvent.sectionName == key) {
+                                cenesEvent.sectionObjects = array
+                            }
+                        }
+                    }
+                } else {
+                    var array = [Event]()
+                    
+                    let previousDateMonth = Calendar.current.component(.month, from: previousDate);
+                    
+                    let startTimeMonth = Calendar.current.component(.month, from: Date( milliseconds: Int(event.startTime)));
+                    
+                    array.append(event)
+                    dict.setValue(array, forKey: key)
+                    
+                    let cenesEvent: HomeData = HomeData();
+                    cenesEvent.year = Date(milliseconds: Int(event.startTime)).yyyy()
+                    cenesEvent.month = Date(milliseconds: Int(event.startTime)).MMMM()
+                    cenesEvent.sectionKeyInMillis = event.startTime
+                    cenesEvent.sectionName = key;
+                    cenesEvent.sectionNameWithYear = keyWithYear;
+                    cenesEvent.sectionObjects = array;
+                    dataObjectArray.append(cenesEvent)
+                }
+            }
+        }
+        
+        for homedata in dataObjectArray {
+            
+            homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
+        }
+        
+        if (dataObjectArray.count > 0) {
+            
+            var index = 0;
+            for homeData in  dataObjectArray {
+                
+                //If its not the first record.. Then we will go down.
+                if (index != 0) {
+                    
+                    //Fetch the previous home data in the data object array
+                    //Lets say fetch the events for 12 July
+                    let previousHomeData = dataObjectArray[index - 1];
+                    var previousHomeDataArray = previousHomeData.sectionObjects;
+                    
+                    //Fetch the current home data in the data object array
+                    //Lets say fetch the events for 14 July
+                    let currentHomeData = dataObjectArray[index];
+                    var currentHomeDataArray = currentHomeData.sectionObjects;
+                    
+                    //Now we will check if there is a month difference between prevous
+                    //events and current events.
+                    
+                    //Lets get one event from previous dates.
+                    let prevoiusDateEvent = previousHomeDataArray[0];
+                    
+                    //Lets get one event from current date
+                    let currentDateEvent = currentHomeDataArray[0];
+                    
+                    //Let create date component from prevous date event
+                    let previousDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(prevoiusDateEvent.startTime)));
+                    
+                    
+                    //Lets create date components from current date event
+                    let currentDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(currentDateEvent.startTime)));
+                    
+                    
+                    print("Previous Month : ",previousDateComponent.month, "Current Month : ",currentDateComponent.month);
+                    
+                    if (previousDateComponent.month != currentDateComponent.month) {
+                        
+                        let monthSeparatorTitle = Date(milliseconds: Int(currentDateEvent.startTime)).MMMMsyyyy()!;
+                        if (!homescreenDto.monthSeparatorList.contains(monthSeparatorTitle)) {
+                            homescreenDto.monthSeparatorList.append(monthSeparatorTitle);
+
+                            let monthEvent = Event();
+                            monthEvent.title = monthSeparatorTitle;
+                            monthEvent.scheduleAs = "MonthSeparator";
+                            
+                            monthEvent.startTime = currentDateEvent.startTime;
+                            
+                            var monthSeaparatorArra = [Event]();
+                            monthSeaparatorArra.append(monthEvent);
+                            
+                            let cenesEvent: HomeData = HomeData();
+                            cenesEvent.year = Date(milliseconds: Int(currentDateEvent.startTime)).yyyy()
+                            cenesEvent.month = Date(milliseconds: Int(currentDateEvent.startTime)).MMMM()
+                            cenesEvent.sectionKeyInMillis = currentDateEvent.startTime
+                            
+                            let newStartDate = Calendar.current.date(byAdding: .second, value: -1, to: Date(milliseconds: Int(monthEvent.startTime)))!;
+                            
+                            cenesEvent.sectionName = Date(milliseconds: Int(newStartDate.millisecondsSince1970)).MMMMsyyyy()!;
+                            cenesEvent.sectionNameWithYear = Date(milliseconds: Int(currentDateEvent.startTime)).MMMMsyyyy()!;
+                            cenesEvent.sectionObjects = monthSeaparatorArra;
+                            
+                            homeDataArrayToReturn.append(cenesEvent);
+                            
+                            homescreenDto.monthTrackerForDataLoad.append("\(currentDateComponent.month!)-\(currentDateComponent.year!)");
+                            
+                            let monthScrollDto = MonthScrollDto();
+                            monthScrollDto.indexKey = currentHomeData.sectionName;
+                            monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(dataObjectArray[index].sectionObjects[0].startTime))).year!;
+                            
+                            homescreenDto.timeStamp = Int(dataObjectArray[index].sectionObjects[0].startTime);
+                            
+                            let compos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: homescreenDto.timeStamp));
+                            
+                            homescreenDto.monthScrollIndex["\(compos.month!)-\(compos.year!)"] = monthScrollDto;
+                            
+                            monthScrollDto.timestamp = Int(Date(milliseconds: homescreenDto.timeStamp).startOfMonth().millisecondsSince1970);
+                            homescreenDto.topHeaderDateIndex[HomeManager().getMonthWithYearKeyForScrollIndex(startTime: homescreenDto.timeStamp)] = monthScrollDto;
+                        }
+                        //homescreenDto.scrollToMonthStartSectionAtHomeButton.append(monthScrollDto);
+                    }
+                } else {
+                    
+                    
+                    //if (totalEvents.count > 20) {
+                    
+                    let monthSeparatorTitle = Date(milliseconds: Int(homeData.sectionKeyInMillis)).MMMMsyyyy()!;
+                    
+                    if (!homescreenDto.monthSeparatorList.contains(monthSeparatorTitle)) {
+                        homescreenDto.monthSeparatorList.append(monthSeparatorTitle);
+                        
+                        let currentDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionKeyInMillis)));
+                        
+                        let monthEvent = Event();
+                        monthEvent.title = monthSeparatorTitle;
+                            monthEvent.scheduleAs = "MonthSeparator";
+                        
+                        monthEvent.startTime = homeData.sectionKeyInMillis;
+                        
+                        var monthSeaparatorArra = [Event]();
+                        monthSeaparatorArra.append(monthEvent);
+                        
+                        let cenesEvent: HomeData = HomeData();
+                        cenesEvent.year = Date(milliseconds: Int(homeData.sectionKeyInMillis)).yyyy()
+                        cenesEvent.month = Date(milliseconds: Int(homeData.sectionKeyInMillis)).MMMM()
+                        cenesEvent.sectionKeyInMillis = homeData.sectionKeyInMillis
+                        
+                        let newStartDate = Calendar.current.date(byAdding: .second, value: -1, to: Date(milliseconds: Int(monthEvent.startTime)))!;
+                        
+                        cenesEvent.sectionName = Date(milliseconds: Int(newStartDate.millisecondsSince1970)).MMMMsyyyy()!;
+                        cenesEvent.sectionNameWithYear = Date(milliseconds: Int(homeData.sectionKeyInMillis)).MMMMsyyyy()!;
+                        cenesEvent.sectionObjects = monthSeaparatorArra;
+                        
+                        homeDataArrayToReturn.append(cenesEvent);
+                        homescreenDto.monthTrackerForDataLoad.append("\(currentDateComponent.month!)-\(currentDateComponent.year!)");
+                        
+                        let monthScrollDto = MonthScrollDto();
+                        monthScrollDto.indexKey = homeData.sectionName;
+                        monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
+                        
+                        homescreenDto.timeStamp = Int(homeData.sectionObjects[0].startTime);
+                        
+                        let compos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: homescreenDto.timeStamp));
+                        
+                        homescreenDto.monthScrollIndex["\(compos.month!)-\(compos.year!)"] = monthScrollDto;
+                        
+                        monthScrollDto.timestamp = Int(Date(milliseconds: homescreenDto.timeStamp).startOfMonth().millisecondsSince1970);
+                        homescreenDto.topHeaderDateIndex[HomeManager().getMonthWithYearKeyForScrollIndex(startTime: homescreenDto.timeStamp)] = monthScrollDto;
+                    }
+                    
+                    //We will keep only one record and that is for current months starting event
+                    if (homescreenDto.scrollToMonthStartSectionAtHomeButton.count == 0) {
+                        
+                        let monthScrollDto = MonthScrollDto();
+                        monthScrollDto.indexKey = getMonthKeyForScrollIndex(startTime: Int(homeData.sectionObjects[0].startTime));
+                        monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
+                        monthScrollDto.timestamp = Int(homeData.sectionObjects[0].startTime);
+                        
+                        homescreenDto.scrollToMonthStartSectionAtHomeButton.append(monthScrollDto);
+                    }
+                    //}
+                }
+                
+                homeDataArrayToReturn.append(homeData);
+                index = index + 1;
+            }
+            
+        }
+        
+        homescreenDto.totalEventsList = totalEvents;
+        
+        homeScreenDataHolder.homescreenDto = homescreenDto;
+        homeScreenDataHolder.homeDataList = homeDataArrayToReturn;
+        return homeScreenDataHolder;
+    }
+    
+    
     func parseResults(resultArray: NSArray) -> [HomeData]{
         
+        var homeDataArrayToReturn = [HomeData]()
+
         var previousDate: Date = Date();
         var months: [String] = [String]();
         var dataObjectArray = [HomeData]()
@@ -27,33 +266,34 @@ class HomeManager {
             let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
             if dataType == "Event" {
                 let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
-                
-                var key = Date(milliseconds: Int(event.startTime)).EMMMd()!;
-                let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
-                let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
-                if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
-                    key = "Today";
-                }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
-                    key = "Tomorrow " + key;
-                }
-                
-                let newMonth = Date(milliseconds: Int(event.startTime)).MMMMsyyyy();
+                                
+                let key = getMonthKeyForScrollIndex(startTime: Int(event.startTime));
+                let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(event.startTime));
                 
                 //let currentMonth
                 
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
                     var array = dict.value(forKey: key) as! [Event]
-                    array.append(event)
-                    dict.setValue(array, forKey: key)
                     
-                    for cenesEvent in dataObjectArray {
-                        if (cenesEvent.sectionName == key) {
-                            cenesEvent.sectionObjects = array
+                    var eventAlreadyExists = false;
+                    for eventObj in array {
+                        if (eventObj.eventId == event.eventId) {
+                            eventAlreadyExists = true;
+                            break;
+                        }
+                    }
+                    if (eventAlreadyExists == false) {
+                        array.append(event)
+                        dict.setValue(array, forKey: key)
+                        
+                        for cenesEvent in dataObjectArray {
+                            if (cenesEvent.sectionName == key) {
+                                cenesEvent.sectionObjects = array
+                            }
                         }
                     }
                 } else {
-                    
                     var array = [Event]()
 
                     let previousDateMonth = Calendar.current.component(.month, from: previousDate);
@@ -64,11 +304,13 @@ class HomeManager {
                     dict.setValue(array, forKey: key)
                     
                     let cenesEvent: HomeData = HomeData();
+                    cenesEvent.year = Date(milliseconds: Int(event.startTime)).yyyy()
+                    cenesEvent.month = Date(milliseconds: Int(event.startTime)).MMMM()
                     cenesEvent.sectionKeyInMillis = event.startTime
                     cenesEvent.sectionName = key;
+                    cenesEvent.sectionNameWithYear = keyWithYear;
                     cenesEvent.sectionObjects = array;
                     dataObjectArray.append(cenesEvent)
-                    
                 }
             }
         }
@@ -79,35 +321,74 @@ class HomeManager {
         }
         
         if (dataObjectArray.count > 0) {
-            for i : Int in (0..<(dataObjectArray.count - 1)) {
-                let homeDataTemp = dataObjectArray[i];
-                let homeDataTempNext = dataObjectArray[i+1];
+            
+            var index = 0;
+            for homeData in  dataObjectArray {
                 
-                
-                let tempMonth = Calendar.current.component(.month, from: Date(milliseconds: Int(homeDataTemp.sectionKeyInMillis)));
-                let tempMonthNext = Calendar.current.component(.month, from: Date(milliseconds: Int(homeDataTempNext.sectionKeyInMillis)));
-                
-                //If previous start time month les than next start time
-                //Then we will add this month.
-                if (tempMonth < tempMonthNext) {
+                if (index != 0) {
+                  
+                    //Fetch the previous home data in the data object array
+                    //Lets say fetch the events for 12 July
+                    let previousHomeData = dataObjectArray[index - 1];
+                    var previousHomeDataArray = previousHomeData.sectionObjects;
+
+                    //Fetch the current home data in the data object array
+                    //Lets say fetch the events for 14 July
+                    let currentHomeData = dataObjectArray[index];
+                    var currentHomeDataArray = currentHomeData.sectionObjects;
                     
-                    let monthEvent = Event();
-                    monthEvent.title = Date(milliseconds: Int(homeDataTempNext.sectionKeyInMillis)).MMMMsyyyy()!;
-                    monthEvent.scheduleAs = "MonthSeparator"
+                    //Now we will check if there is a month difference between prevous
+                    //events and current events.
                     
-                    let lastEventStartTime: Date = Calendar.current.date(byAdding: .second, value: 1, to: Date(milliseconds: Int(homeDataTemp.sectionObjects[homeDataTemp.sectionObjects.count-1].startTime)))!
+                    //Lets get one event from previous dates.
+                    let prevoiusDateEvent = previousHomeDataArray[0];
                     
-                    monthEvent.startTime = lastEventStartTime.millisecondsSince1970;
-                    homeDataTemp.sectionObjects.append(monthEvent);
-                    dataObjectArray[i] = homeDataTemp;
+                    //Lets get one event from current date
+                    let currentDateEvent = currentHomeDataArray[0];
+                    
+                    //Let create date component from prevous date event
+                    let previousDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(prevoiusDateEvent.startTime)));
+                    
+                    
+                    //Lets create date components from current date event
+                    let currentDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(currentDateEvent.startTime)));
+
+                    
+                    print("Previous Month : ",previousDateComponent.month, "Current Month : ",currentDateComponent.month);
+                    
+                    if (previousDateComponent.month != currentDateComponent.month) {
+                        
+                        let monthEvent = Event();
+                        monthEvent.title = Date(milliseconds: Int(currentDateEvent.startTime)).MMMMsyyyy()!;
+                        monthEvent.scheduleAs = "MonthSeparator";
+                        
+                        monthEvent.startTime = currentDateEvent.startTime;
+                        
+                        var monthSeaparatorArra = [Event]();
+                        monthSeaparatorArra.append(monthEvent);
+                        
+                        let cenesEvent: HomeData = HomeData();
+                        cenesEvent.year = Date(milliseconds: Int(currentDateEvent.startTime)).yyyy()
+                        cenesEvent.month = Date(milliseconds: Int(currentDateEvent.startTime)).MMMM()
+                        cenesEvent.sectionKeyInMillis = currentDateEvent.startTime
+                        
+                        let newStartDate = Calendar.current.date(byAdding: .second, value: -1, to: Date(milliseconds: Int(monthEvent.startTime)))!;
+                        
+                        cenesEvent.sectionName = Date(milliseconds: Int(newStartDate.millisecondsSince1970)).MMMMsyyyy()!;
+                        cenesEvent.sectionNameWithYear = Date(milliseconds: Int(currentDateEvent.startTime)).MMMMsyyyy()!;
+                        cenesEvent.sectionObjects = monthSeaparatorArra;
+                        
+                        homeDataArrayToReturn.append(cenesEvent);
+                    }
                 }
                 
+                homeDataArrayToReturn.append(homeData);
+                index = index + 1;
             }
             
         }
-            
         
-        return dataObjectArray;
+        return homeDataArrayToReturn;
     }
     
     
@@ -122,6 +403,8 @@ class HomeManager {
             
             let event = Event().loadEventData(eventDict: outerDict)
             var key: String = Date(milliseconds: Int(event.startTime)).EMMMd()!;
+            var keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(event.startTime));
+
             let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
             let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(event.startTime)) )
             if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
@@ -147,6 +430,12 @@ class HomeManager {
                     
                     let cenesEvent: HomeData = HomeData();
                     cenesEvent.sectionName = key;
+                    cenesEvent.year = Date(milliseconds: Int(event.startTime)).yyyy()
+                    cenesEvent.month = Date(milliseconds: Int(event.startTime)).MMMM()
+                    cenesEvent.sectionKeyInMillis = event.startTime
+                    cenesEvent.sectionNameWithYear = keyWithYear;
+                    cenesEvent.sectionObjects = array;
+
                     cenesEvent.sectionObjects = array;
                     dataObjectArray.append(cenesEvent)
                     
@@ -185,6 +474,9 @@ class HomeManager {
             currentListTemp.append(futObj);
         }
         
+        currentListTemp = currentListTemp.sorted(by: { $0.sectionKeyInMillis < $1.sectionKeyInMillis })
+        
+        
         for homedata in currentListTemp {
             
             homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
@@ -201,6 +493,8 @@ class HomeManager {
             previousTemp.append(futObj);
         }
         
+        previousTemp = previousTemp.sorted(by: { $0.sectionKeyInMillis < $1.sectionKeyInMillis })
+
         for homedata in previousTemp {
             
             homedata.sectionObjects = homedata.sectionObjects.sorted(by: { $0.startTime < $1.startTime })
@@ -208,4 +502,79 @@ class HomeManager {
         return previousTemp;
     }
     
+    func getMonthKeyForScrollIndex(startTime: Int) -> String {
+        var key = Date(milliseconds: Int(startTime)).EMMMd()!;
+        let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+        let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(startTime)) )
+        
+        if (componentStart.year != components.year) {
+            key = (Date(milliseconds: startTime).EMMMMdyyyy()!);
+        }
+        if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
+            key = "Today";
+        }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
+            key = "Tomorrow " + key;
+        }
+        return key;
+    }
+    
+    func getMonthWithYearKeyForScrollIndex(startTime: Int) -> String {
+        var key = Date(milliseconds: Int(startTime)).EMMMMdyyyy()!;
+        let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+        let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(startTime)) );
+        return key;
+    }
+    
+    func getScrollIndexFromMonthKey(homeDataList: [HomeData], key: MonthScrollDto) -> Int {
+        
+        var scrollToIIndex = 0;
+        for homeData in homeDataList {
+            if (homeData.sectionName == key.indexKey) {
+                let year: Int = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
+                
+                if (year == key.year) {
+                    break;
+                }
+            }
+            scrollToIIndex = scrollToIIndex + 1;
+        }
+        return scrollToIIndex;
+    }
+    
+    
+    func getScrollIndexForTodaysEvent(homeDataList: [HomeData], key: MonthScrollDto) -> Int {
+        
+        var scrollToIIndex = 0;
+        for homeData in homeDataList {
+            if (homeData.sectionName == key.indexKey) {
+                let year: Int = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
+                
+                if (year == key.year) {
+                    break;
+                }
+            }
+            scrollToIIndex = scrollToIIndex + 1;
+        }
+        return scrollToIIndex;
+    }
+    
+    func populateTotalEventIds(eventIdList: [Int32], resultArray: NSArray) -> [Int32]{
+        
+        var eventIdList = eventIdList;
+        for i : Int in (0..<resultArray.count) {
+            
+            let outerDict = resultArray[i] as! NSDictionary
+            
+            let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
+            if dataType == "Event" {
+                let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
+                
+                if (!eventIdList.contains(event.eventId)) {
+                    eventIdList.append(event.eventId);
+                }
+            }
+        }
+        
+        return eventIdList;
+    }
 }

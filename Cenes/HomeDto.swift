@@ -25,7 +25,32 @@ class HomeDto {
     var pageable = HomeDataPageNumbers();
     var timeStamp: Int = Int(Date().millisecondsSince1970);
     var calendarEventsData: CalendarEventsData = CalendarEventsData();
-    var scrollToSectionIndex = 0;
+    
+    //This is needed for scrolling home screen to desired index.
+    //So we will store the month scroll details in it.
+    var scrollToMonthStartSectionAtHomeButton = [MonthScrollDto]();
+    var scrollToSectionSectionAtHomeButtonIndexNumber: Int = 0;
+    
+    var monthScrollIndex: [String: MonthScrollDto] = [String: MonthScrollDto]();
+    var monthTrackerForDataLoad = [String]();
+    
+    //This is to hold the title for home screen.
+    //Whenever user scrolls page, we will change the title based on the month
+    //At which he is at present.
+    var topHeaderDateIndex = [String: MonthScrollDto]();
+    
+    var pageableMonthTimestamp: Int = 0; //This is needed to track which moth is there in calendar scroll
+    var pageableMonthToAdd: Int = 0;    //This is needed to add 1 to cuttent month
+    var totalEventsList = [Int32]();   //This is needed to mark the total events
+    
+    //This is needed to keep track of month Separaotors added
+    //So thet ther wont be multiple separators in same month.
+    //When you scroll down to get next 20 events, There may be chance same month events
+    //are fetched and month separator can be added again.
+    var monthSeparatorList = [String]();
+    var fsCalendarCurrentDateTimestamp: Int = 0; //This is needed to track fscalendar scroll
+    var startTimeStampToFetchPageableData: Int = Int(Date().millisecondsSince1970); //This is needed to track fscalendar scroll
+
 }
 
 class HomeHeaderTabs {
@@ -53,9 +78,18 @@ class HomeInvitationTabs {
 }
 
 class HomeData {
+    var year: String!;
+    var month: String!;
     var sectionKeyInMillis: Int64!;
     var sectionName: String!;
+    var sectionNameWithYear: String!;
     var sectionObjects = [Event]();
+}
+
+class HomeScreenDataHolder {
+    var homeDataList: [HomeData]!;
+    var eventIdList: [Int32]!;
+    var homescreenDto: HomeDto!;
 }
 
 class CalendarEventsData {
@@ -80,6 +114,20 @@ class HomeDataPageNumbers {
 
     var calendarDataPageNumber = 0;
     var calendarDataOffset = 20;
-    var totalCalendarCounts = 0;
+    var totalCalendarCounts: Int = 0;
+
+}
+
+class MonthScrollDto {
+    
+    var indexKey : String = "";
+    var month: Int = 0;
+    var year: Int = 0;
+    var timestamp: Int = 0;
+}
+
+class HomeScrollType {
+    static var PAGESCROLL: String = "PageScroll";
+    static var CALENDARSCROLL: String = "CalendarScroll";
 
 }

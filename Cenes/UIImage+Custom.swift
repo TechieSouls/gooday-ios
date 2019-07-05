@@ -96,4 +96,5 @@ extension UIImage {
         case high    = 0.75
         case highest = 1
     }
+    
 }

@@ -50,7 +50,7 @@ let setting = UserDefaults.standard
         if footprints == UserSteps.Authentication { //if Authentication Done Then go to home screen
             
             let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-            if (loggedInUser.name == nil) {
+            if (loggedInUser.name == nil || loggedInUser.name == "") {
                 window?.rootViewController = SignupSuccessStep2ViewController.MainViewController();
             } else {
                 window?.rootViewController = HomeViewController.MainViewController()

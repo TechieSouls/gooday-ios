@@ -75,7 +75,7 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
 
     func reloadTableToDesiredSection(rowsToAdd: Int, sectionIndex: Int) {
         //dataTableView.scrollsToTop = true;
-        if (newHomeViewControllerDelegate.homeDtoList.count > 0) {
+            if (newHomeViewControllerDelegate.homeDtoList.count > 0) {
             
             /*
             guard case self.dataTableView = self.dataTableView else {
@@ -87,11 +87,19 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
             self.dataTableView.reloadData()
             self.dataTableView.setContentOffset(newOffset, animated: false)
             */
+            self.dataTableView.delegate = self;
             self.dataTableView.reloadData()
             self.dataTableView.layoutIfNeeded()
-            let indexPath = IndexPath(row: 0, section: sectionIndex)
-            dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                
+            DispatchQueue.main.async {
+                let indexPath = IndexPath(row: 0, section: sectionIndex)
+                self.dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
         }
+    }
+    
+    func refreshInnerTable() {
+        dataTableView.reloadData();
     }
     
     func scrollTableToDesiredIndex(sectionIndex: Int) {
@@ -130,6 +138,47 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         newHomeViewControllerDelegate.loadGatheringDataByPullDown(status: "Pending", pageNumber: 0, offSet: 20)
         newHomeViewControllerDelegate.loadGatheringDataByPullDown(status: "NotGoing", pageNumber: 0, offSet: 20)
         self.refreshControl.endRefreshing()
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+            let tableView = scrollView as! UITableView;
+            let indexPath = tableView.indexPathsForVisibleRows![0];
+            let homeDto = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section];
+            
+            if (homeDto.sectionObjects[0].scheduleAs != "MonthSeparator") {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "E MMMM d yyyy";
+                let dateObj = dateFormatter.date(from: homeDto.sectionNameWithYear);
+                
+                let monthDateFormatter = DateFormatter()
+                monthDateFormatter.dateFormat = "MMMM";
+                let monthstr = monthDateFormatter.string(from: dateObj!);
+                
+                let yearDateFormatter = DateFormatter()
+                yearDateFormatter.dateFormat = "yyyy";
+                let yearStr = yearDateFormatter.string(from: dateObj!);
+                
+                var topDatekey = "";
+                for (key, value) in self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex {
+                    if (key.contains(monthstr) && key.contains(yearStr)) {
+                        topDatekey = key;
+                        break;
+                    }
+                }
+                
+                if (topDatekey != "" && self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey] != nil) {
+                    //print("Hehahahah ahahahah ahahha ahahahaha  hhhh",homeDto.sectionName!);
+                    var monthDto = self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey];
+                    if (monthDto != nil) {
+                        self.newHomeViewControllerDelegate.dateDroDownCellProtocolDelegate.updateDate(milliseconds: monthDto!.timestamp);
+                    }
+                    
+                }
+            }
+            
+        }
     }
 }
 
@@ -294,10 +343,28 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if (self.newHomeViewControllerDelegate != nil && self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
             let cell: GatheringCardHeaderTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "GatheringCardHeaderTableViewCell") as! GatheringCardHeaderTableViewCell;
+            
+            let event = self.newHomeViewControllerDelegate.homeDtoList[section].sectionObjects[0];
+            if (event.scheduleAs == "MonthSeparator") {
+                cell.headerLabel.text = "";
+
+            } else {
                 cell.headerLabel.text = self.newHomeViewControllerDelegate.homeDtoList[section].sectionName
+
+            }
                 return cell;
         }
         return UITableViewCell();
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if (self.newHomeViewControllerDelegate != nil && self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
+            let event = self.newHomeViewControllerDelegate.homeDtoList[section].sectionObjects[0];
+            if (event.scheduleAs == "MonthSeparator") {
+                return 0;
+            }
+        }
+        return 30;
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -390,6 +457,15 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     
                     self.newHomeViewControllerDelegate.loadHomeData(pageNumber: self.newHomeViewControllerDelegate.homescreenDto.pageable.calendarDataPageNumber, offSet: self.newHomeViewControllerDelegate.homescreenDto.pageable.calendarDataOffset)
                     
+                    /*let newDate = Calendar.current.date(byAdding: .month, value: self.newHomeViewControllerDelegate.homescreenDto.pageableMonthToAdd, to: Date(milliseconds: self.newHomeViewControllerDelegate.homescreenDto.pageableMonthTimestamp))!;
+                    
+                    let dateComponentsOfPageableMonth = Calendar.current.dateComponents(in: TimeZone.current, from: newDate)
+                    let startTimestamp: Int = Int(newDate.startOfMonth().millisecondsSince1970);
+                    let endTimestamp: Int = Int(newDate.endOfMonth().millisecondsSince1970);
+                    
+                    self.newHomeViewControllerDelegate.homescreenDto.pageableMonthToAdd = 1;
+                    self.newHomeViewControllerDelegate.homescreenDto.pageableMonthTimestamp = startTimestamp;
+                    self.newHomeViewControllerDelegate.getMonthPageEvents(compos: dateComponentsOfPageableMonth, startimeStamp: startTimestamp, endtimeStamp: endTimestamp, scrollType: HomeScrollType.PAGESCROLL);*/
                 } else {
                     
                     if (self.newHomeViewControllerDelegate.homescreenDto.invitationTabs == HomeInvitationTabs.Accepted) {

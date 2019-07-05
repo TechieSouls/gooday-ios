@@ -109,6 +109,13 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                             })
                         }
                         
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                
+                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                homeViewController?.refershDataFromOtherScreens();
+                            }
+                        });
                         self.showAlert(title: "Account Synced", message: "");
                     }
                 }
@@ -257,6 +264,15 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 });
             }
             
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refershDataFromOtherScreens();
+                }
+            });
+
+            
             self.showAlert(title: "Account Synced", message: "");
         }
     }
@@ -272,7 +288,16 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         UserService().deleteSyncTokenByTokenId(queryStr: queryStr, token: loggedInUser.token) {(response) in
             print("Deleted");
             self.isSynced = false;
-            self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: false, email: "")
+            self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: false, email: "");
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refershDataFromOtherScreens();
+                }
+            });
+
         }
         
         self.showAlert(title: "Account Deleted", message: "");

@@ -129,6 +129,15 @@ extension HolidayCalendarListViewController: UITableViewDelegate, UITableViewDat
                 })
                 calendarSyncToken = nil
                 tableView.reloadData();
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                        
+                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                        homeViewController?.refershDataFromOtherScreens();
+                        
+                    }
+                });
             }
         } else {
                 let country = countryDataArrayTemp?.sectionData[indexPath.row];
@@ -143,7 +152,18 @@ extension HolidayCalendarListViewController: UITableViewDelegate, UITableViewDat
                         
                     });
                 }
-                self.navigationController?.popViewController(animated: true);
+            
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                        
+                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                        homeViewController?.refershDataFromOtherScreens();
+                        self.navigationController?.popViewController(animated: false);
+                        
+                    }
+                });
+
+            
             }
         /*} else {
             let country = countryDataArrayTemp[indexPath.row - 1];

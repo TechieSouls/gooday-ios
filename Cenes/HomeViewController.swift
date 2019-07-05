@@ -419,7 +419,6 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
                             let str = self.dateFormatter.string(from: Date())
                             let forMattedDate = self.dateFormatter.date(from: str)
                             
-                            
                             webservice.getHomeEvents(dateString: "\((forMattedDate?.millisecondsSince1970)!)", timeZoneString: "") { (returnedDict) in
                                 print("Got results")
                                 self.stopAnimating()
@@ -1126,27 +1125,7 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
         dateFormatter.dateFormat = "EEEE"
         let date2Str = dateFormatter.string(from: dateFromServer as Date).uppercased()
         return "\(date1Str) \(date2Str)";
-    }
-    
-    func showToast(message : String) {
-        
-        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 75, y: self.view.frame.size.height-100, width: 150, height: 35))
-        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
-        toastLabel.textColor = UIColor.white
-        toastLabel.textAlignment = .center;
-        toastLabel.font = UIFont(name: "Montserrat-Light", size: 12.0)
-        toastLabel.text = message
-        toastLabel.alpha = 1.0
-        toastLabel.layer.cornerRadius = 10;
-        toastLabel.clipsToBounds  =  true
-        self.view.addSubview(toastLabel)
-        UIView.animate(withDuration: 4.0, delay: 0.1, options: .curveEaseOut, animations: {
-            toastLabel.alpha = 0.0
-        }, completion: {(isCompleted) in
-            toastLabel.removeFromSuperview()
-        })
-    }
-    
+    }    
 }
 
 
@@ -1177,7 +1156,7 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                 
             }else{
-                self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                //self.dataObjectArray = HomeManager().parseResults(resultArray: (returnedDict["data"] as? NSArray)!)
                 
                 self.tableView.reloadData()
                 if self.dataObjectArray.count > 0 {

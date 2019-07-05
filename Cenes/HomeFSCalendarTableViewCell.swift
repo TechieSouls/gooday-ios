@@ -12,7 +12,7 @@ import FSCalendar
 protocol NewHomeViewProtocol {
     func calendarDatePressed(date: Date);
 }
-class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance {
+class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalendarDataSource, FSCalendarDelegateAppearance, HomeFSCalendarCellProtocol{
 
     @IBOutlet weak var fsCalendar: FSCalendar!
     
@@ -31,6 +31,11 @@ class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalend
 
         // Configure the view for the selected state
     }
+    
+    func updateCalendarToTodayMonth() {
+        fsCalendar.currentPage = Date();
+    }
+    
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print(date, monthPosition)
@@ -78,5 +83,21 @@ class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalend
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventSelectionColorsFor date: Date) -> [UIColor]? {
         return [UIColor.orange];
+    }
+    
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        
+        let cuurentPageDateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: calendar.currentPage.clampedDate);
+    
+        print("Start Data : ",calendar.currentPage.clampedDate.startOfMonth(), "End of month : ", calendar.currentPage.clampedDate.endOfMonth());
+        
+        let calendarPageComponents = Calendar.current.dateComponents(in: TimeZone.current, from: calendar.currentPage.clampedDate);
+        
+        print("Month Scroll : ",cuurentPageDateComponents.year," Month : ",cuurentPageDateComponents.month)
+        
+        newHomeViewControllerDelegate.homescreenDto.fsCalendarCurrentDateTimestamp = Int(calendar.currentPage.clampedDate.startOfMonth().millisecondsSince1970);
+        
+        newHomeViewControllerDelegate.getMonthPageEvents(compos: cuurentPageDateComponents, startimeStamp: Int(calendar.currentPage.clampedDate.startOfMonth().millisecondsSince1970), endtimeStamp: Int(calendar.currentPage.clampedDate.endOfMonth().millisecondsSince1970), scrollType: HomeScrollType.CALENDARSCROLL);
+        
     }
 }

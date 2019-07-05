@@ -28,6 +28,20 @@ extension Date {
         self.addTimeInterval(TimeInterval(Double(millis % 1000) / 1000 ))
     }
     
+    func yyyy() -> String? { //Sat Jun 16
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy"
+        return dateFormatter.string(from: self).capitalized
+        // or use capitalized(with: locale) if you want
+    }
+    
+    func MMMM() -> String? { //Sat Jun 16
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM"
+        return dateFormatter.string(from: self).capitalized
+        // or use capitalized(with: locale) if you want
+    }
+    
     func dMMM() -> String? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dMMM"
@@ -134,5 +148,20 @@ extension Date {
             return "\(String(secondsDiff))s";
         }
         return String("0s");
+    }
+    
+    func startOfMonth() -> Date {
+        
+        var dateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: self);
+        dateComponents.day = 1;
+        dateComponents.hour = 0;
+        dateComponents.minute = 0;
+        dateComponents.second = 0;
+        dateComponents.nanosecond = 0;
+        return Calendar.current.date(from: dateComponents)!;
+    }
+    
+    func endOfMonth() -> Date {
+        return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startOfMonth())!
     }
 }
