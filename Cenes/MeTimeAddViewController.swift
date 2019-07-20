@@ -132,10 +132,12 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         self.setupDayButtons(button: thursday);
         self.setupDayButtons(button: friday);
         self.setupDayButtons(button: saturday);
+        
+        self.showMeTimeCardView();
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.showMeTimeCardView();
     }
     
     @objc func startTimeViewPressed() {
@@ -237,10 +239,13 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                         let status = response.value(forKey: "status") as! String;
                         if (status == "success") {
                             
-                            let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;
-                            self.metimeRecurringEvent.recurringEventId = recurringEvent.value(forKey: "recurringEventId") as! Int32;
-                            self.uploadMeTimeImage();
-                            
+                            if (response.value(forKey: "recurringEvent") != nil) {
+                                let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;
+                                self.metimeRecurringEvent.recurringEventId = recurringEvent.value(forKey: "recurringEventId") as! Int32;
+                                self.uploadMeTimeImage();
+                            } else {
+                                self.showAlert(title: "Alert", message: "There is some error while saving MeTime.");
+                            }
                         }
                     } else {
                         let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);

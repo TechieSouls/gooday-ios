@@ -108,6 +108,8 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
     }
     
     func initilize() {
+        
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.pageNumber = 0;
         self.totalNotificationCounts = 0;
         self.notificationPerPage = [NotificationData]();

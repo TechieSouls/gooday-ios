@@ -190,7 +190,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     }
 
     func loadNearbyLocations(searchText: String) -> Void {
-        let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=\(currentLatitude),\(currentLongitude)&radius=50000&name=\(searchText.replacingOccurrences(of: " ", with: "+"))";
+        let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=\(currentLatitude),\(currentLongitude)&radius=5000&name=\(searchText.replacingOccurrences(of: " ", with: "+"))";
         
         print(url);
         HttpService().getMethod(url: url, token: "", complete: {(response) in
@@ -264,15 +264,20 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         locationDto.sectionObjects = finalnbList;
                         self.locationDtos.append(locationDto);
                         self.nearByLocations = finalnbList;
+                        
+                        self.locationTableView.reloadData();
+                    } else {
+                        self.loadWorldWideLocations(searchText: searchText);
                     }
-                    self.locationTableView.reloadData();
+                } else {
+                    self.loadWorldWideLocations(searchText: searchText);
                 }
             }
         });
     }
     
     func loadWorldWideLocations(searchText: String) -> Void {
-        /*let url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&input=\(searchText)";
+        let url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&input=\(searchText.replacingOccurrences(of: " ", with: "+"))";
         
         print(url);
         HttpService().getMethod(url: url, token: "", complete: {(response) in
@@ -280,12 +285,23 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
             if let statusStr = response.value(forKey: "status") as? String {
                 if (statusStr == "OK" || statusStr == "ZERO_RESULTS") {
                     let locationsNSArray = response.value(forKey: "predictions") as! NSArray;
-                    self.worldWideLocations = LocationManager().parseWorldWideLocationResults(worldwideResults: locationsNSArray);
+                    self.nearByLocations = LocationManager().parseWorldWideLocationResults(worldwideResults: locationsNSArray);
+                    
+                    
+                    if (self.nearByLocations.count > 0) {
+                        var locationDto = LocationDto();
+                        locationDto.sectionName = "Suggested Locations";
+                        locationDto.sectionObjects = self.nearByLocations;
+                        self.locationDtos.append(locationDto);
+                        
+                        self.locationTableView.reloadData();
+                    }
                 }
-            }*/
-            self.loadNearbyLocations(searchText: searchText);
+            }
+            //self.loadNearbyLocations(searchText: searchText);
+            self.locationTableView.reloadData();
 
-        //});
+        });
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -310,7 +326,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         } else {
             locationTableView.isHidden = false
             customLocationButton.isHidden = false;
-            loadWorldWideLocations(searchText: searchText);
+            //loadWorldWideLocations(searchText: searchText);
+            loadNearbyLocations(searchText: searchText);
         }
     }
     

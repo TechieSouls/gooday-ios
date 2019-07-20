@@ -77,8 +77,14 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.nonCenesUiViewLabel.text = nonCenesUserName;
             }
             
-            let firstName = userContact.name.split(separator: " ")[0];
-            cell.name.text = String(firstName);
+            if (userContact.name != nil && userContact.name != "") {
+                let firstName = userContact.name.split(separator: " ")[0];
+                cell.name.text = String(firstName);
+
+            } else {
+                let firstName = "Unknown \(String(userContact.userContactId))"
+                cell.name.text = String(firstName);
+            }
             
             let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
             cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);

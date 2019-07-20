@@ -34,23 +34,27 @@ class ThirdPartyCalendarTableViewCell: UITableViewCell, ThirdPartyCalendarProtoc
     
     @IBAction func deleteSyncBtnPressed(_ sender: Any) {
         
-        if (selectedCalendarDelegate.calendarSelected == SelectedCalendar.GoogleCalendar) {
-            if (selectedCalendarDelegate.isSynced == false) {
-                selectedCalendarDelegate.googleSyncBegins();
-            } else {
-                self.selectedCalendarDelegate.deleteSyncBySyncId(syncId: selectedCalendarDelegate.calendarSyncToken.refreshTokenId)
-            }
-        } else if (selectedCalendarDelegate.calendarSelected == SelectedCalendar.OutlookCalendar) {
-            if (selectedCalendarDelegate.isSynced == false) {
-                selectedCalendarDelegate.outlookSyncBegins();
-            } else {
-                self.selectedCalendarDelegate.deleteSyncBySyncId(syncId: selectedCalendarDelegate.calendarSyncToken.refreshTokenId)
-            }
-        } else if (selectedCalendarDelegate.calendarSelected == SelectedCalendar.AppleCalendar) {
-            if (selectedCalendarDelegate.isSynced == false) {
-                selectedCalendarDelegate.appleSyncBegins()
-            } else {
-                self.selectedCalendarDelegate.deleteSyncBySyncId(syncId: selectedCalendarDelegate.calendarSyncToken.refreshTokenId)
+        if (selectedCalendarDelegate != nil) {
+            if (selectedCalendarDelegate.calendarSelected == SelectedCalendar.GoogleCalendar) {
+                if (selectedCalendarDelegate.isSynced == false) {
+                    selectedCalendarDelegate.googleSyncBegins();
+                } else {
+                    self.selectedCalendarDelegate.deleteSyncBySyncId(syncId: selectedCalendarDelegate.calendarSyncToken.refreshTokenId)
+                }
+            } else if (selectedCalendarDelegate.calendarSelected == SelectedCalendar.OutlookCalendar) {
+                if (selectedCalendarDelegate.isSynced == false) {
+                    selectedCalendarDelegate.outlookSyncBegins();
+                } else {
+                    self.selectedCalendarDelegate.deleteSyncBySyncId(syncId: selectedCalendarDelegate.calendarSyncToken.refreshTokenId)
+                }
+            } else if (selectedCalendarDelegate.calendarSelected == SelectedCalendar.AppleCalendar) {
+                if (selectedCalendarDelegate.isSynced == false) {
+                    selectedCalendarDelegate.appleSyncBegins()
+                } else {
+                    if (selectedCalendarDelegate.calendarSyncToken != nil && selectedCalendarDelegate.calendarSyncToken.refreshTokenId != nil) {
+                        self.selectedCalendarDelegate.deleteSyncBySyncId(syncId: selectedCalendarDelegate.calendarSyncToken.refreshTokenId)
+                    }
+                }
             }
         }
     }

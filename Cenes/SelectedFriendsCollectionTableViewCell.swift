@@ -48,7 +48,13 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
         
         let eventMember = createGatheringDelegate.event.eventMembers[indexPath.row];
         
-        cell.name.text = String(eventMember.name.split(separator: " ")[0]);
+        if (eventMember.user != nil) {
+            cell.name.text = String(eventMember.user.name.split(separator: " ")[0]);
+        } else if (eventMember.name != nil) {
+            cell.name.text = String(eventMember.name);
+        } else {
+            cell.name.text = "Unknown";
+        }
         
         if (eventMember.user != nil && eventMember.user.photo != nil) {
             cell.profilePic.isHidden = false;
@@ -63,7 +69,12 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
             cell.nonCenesUserView.isHidden = false;
             
             var nonCenesUserName: String = "";
-            let nameSplitArr = eventMember.name.split(separator: " ");
+            var nameSplitArr : [ArraySlice<Character>]!;
+            if (eventMember.user != nil) {
+               nameSplitArr =  eventMember.user.name.split(separator: " ");
+            } else if (eventMember.name != nil) {
+                nameSplitArr = eventMember.name.split(separator: " ");
+            }
             nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
             if (nameSplitArr.count > 1) {
                 

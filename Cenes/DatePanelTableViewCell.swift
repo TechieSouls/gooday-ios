@@ -278,7 +278,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] =  false
         
         //If Predictive was on then, we would have to refesh the predictive calendar
-        if (createGatheringDelegate.event.isPredictiveOn == true) {
+        if (createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate != nil && createGatheringDelegate.event.isPredictiveOn == true) {
             createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate.showPredictions();
         }
     }

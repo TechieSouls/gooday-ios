@@ -270,7 +270,9 @@ class InvitationCardTableViewCell: UITableViewCell {
         
         if (gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
             if (gatheringInvitaionViewControllerDelegate.event.eventPicture != nil) {
-                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.eventPicture));
+                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail));
+
+                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.eventPicture), placeholderImage: UIImage(url: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail)));
             } else if (gatheringInvitaionViewControllerDelegate.event.imageToUpload != nil) {
                 eventPicture.image = gatheringInvitaionViewControllerDelegate.event.imageToUpload;
             }

@@ -159,6 +159,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         var updatedTextString : NSString = textField.text as! NSString
         updatedTextString = updatedTextString.replacingCharacters(in: range, with: string) as NSString
+        if (updatedTextString.length > 25) {
+            return false;
+        }
+        
         event.title = updatedTextString as! String;
         
         if (event.title.count != 0) {
@@ -218,7 +222,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             
             /*let imageCropper = self.storyboard?.instantiateViewController(withIdentifier: "GatheringImagePickerViewController") as! GatheringImagePickerViewController
             imageCropper.imageToCrop = image;
-            imageCropper.createGatherigV2ProtocolDelegate = self;
+            imageCropper.createGatherigV2ProtocoinglDelegate = self;
             self.present(imageCropper, animated: true, completion: nil)*/
             
             /*let imageCropper = self.storyboard?.instantiateViewController(withIdentifier: "MyImageCropperViewController") as! MyImageCropperViewController
@@ -286,6 +290,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func friendsDonePressed(eventMembers: [EventMember]) {
         self.event.eventMembers = eventMembers;
         self.createGathTableView.reloadData();
+        //If Predictive was on then, we would have to refesh the predictive calendar
+        if (self.predictiveCalendarViewTableViewCellDelegate != nil && self.event.isPredictiveOn == true) {
+            self.predictiveCalendarViewTableViewCellDelegate.showPredictions();
+        }
     }
     
     func removeBlurredBackgroundView(viewToBlur: UIView) {
@@ -422,8 +430,14 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     }
     
     func didGetCroppedImage(image: UIImage) {
-        gatheringInfoCellDelegate.imageSelected();
-        //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
-        event.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue))
+        
+        if (self.gatheringInfoCellDelegate != nil) {
+            self.gatheringInfoCellDelegate.imageSelected();
+            //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
+            event.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue))
+        } else {
+            self.showAlert(title: "Error", message: "Cannot upload from screenshot")
+        }
+        
     }
 }

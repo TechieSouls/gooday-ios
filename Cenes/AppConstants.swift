@@ -65,3 +65,4 @@ let cenesWebUrl = "https://dev.cenesgroup.com";
 let shareLinkText = " \"[Host]\" invites you to \"[Title]\". RSVP through the Cenes app. Link below: ";
 let shareEventUrl = "https://dev.cenesgroup.com/event/invitation/"
 let faqLink = "https://www.cenesgroup.com/faq";
+let privacyPolicyLink = "https://www.cenesgroup.com/app/privacyPolicy";

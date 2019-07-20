@@ -26,7 +26,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fgy-FW-I00">
-                                        <rect key="frame" x="50" y="20" width="280" height="33"/>
+                                        <rect key="frame" x="47" y="15" width="280" height="33"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="18"/>
                                         <state key="normal" title="GET STARTED"/>
@@ -37,12 +37,18 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <pageControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="FT6-QX-AKy">
+                                <rect key="frame" x="152" y="690" width="71" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </pageControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <connections>
                         <outlet property="getStartedBtn" destination="fgy-FW-I00" id="Va0-TZ-5st"/>
                         <outlet property="getStartedBtnView" destination="YfJ-TU-Du4" id="VlA-zG-ouj"/>
+                        <outlet property="pageControlBox" destination="FT6-QX-AKy" id="avr-jy-n5I"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LVH-GY-2M3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -59,10 +65,10 @@
             </objects>
             <point key="canvasLocation" x="2507" y="-731"/>
         </scene>
-        <!--Page Item View Controller-->
+        <!--Time Match Onboarding View Controller-->
         <scene sceneID="Y4z-RQ-yNr">
             <objects>
-                <viewController storyboardIdentifier="PageItemViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Qoq-3T-Mya" customClass="PageItemViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimeMatchOnboardingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Qoq-3T-Mya" customClass="TimeMatchOnboardingViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ogy-V6-NJm"/>
                         <viewControllerLayoutGuide type="bottom" id="43F-sm-6A9"/>
@@ -71,20 +77,127 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ayG-bi-iBK">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_base" translatesAutoresizingMaskIntoConstraints="NO" id="ayG-bi-iBK">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="TIMEMATCHING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qNj-Vy-eug">
+                                <rect key="frame" x="30" y="80" width="314" height="30"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B2p-GH-5Lf">
+                                <rect key="frame" x="30" y="130" width="314" height="75"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <string key="text">Everyone has their own schedule. 
+Sync your calendar with Cenes to let your friends know your availability. </string>
+                                <fontDescription key="fontDescription" name="AvenirNext-DemiBoldItalic" family="Avenir Next" pointSize="18"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="predictive_bubble_img" translatesAutoresizingMaskIntoConstraints="NO" id="0Ci-sX-Yah" customClass="predictive_bubble_img">
+                                <rect key="frame" x="16" y="280" width="344" height="314"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6HV-9p-MYV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4101.6000000000004" y="-726.35467980295573"/>
+        </scene>
+        <!--Invitation Onboarding View Controller-->
+        <scene sceneID="bKI-fD-0or">
+            <objects>
+                <viewController storyboardIdentifier="InvitationOnboardingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="tYl-ue-sHm" customClass="InvitationOnboardingViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DOL-ta-bIw"/>
+                        <viewControllerLayoutGuide type="bottom" id="frK-kV-ZY7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="sg9-7P-3ju">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_base" translatesAutoresizingMaskIntoConstraints="NO" id="kGP-hD-GM7" customClass="onboadding_">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pev-kg-cjJ">
+                                <rect key="frame" x="30" y="130" width="314" height="75"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <string key="text">Create custom invitations for your guests to RSVP. Manage your social 
+events right within our calendar. </string>
+                                <fontDescription key="fontDescription" name="AvenirNext-DemiBoldItalic" family="Avenir Next" pointSize="18"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="INVITATION" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="80q-gl-j19">
+                                <rect key="frame" x="30" y="80" width="314" height="30"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invitation_group_img" translatesAutoresizingMaskIntoConstraints="NO" id="DYB-E8-cjd">
+                                <rect key="frame" x="30" y="240" width="314" height="454"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <connections>
-                        <outlet property="onbaordingImg" destination="ayG-bi-iBK" id="Imo-BB-Zw6"/>
-                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6HV-9p-MYV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2ue-nv-aSf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3292" y="-731.5270935960591"/>
+            <point key="canvasLocation" x="4813.6000000000004" y="-726.35467980295573"/>
+        </scene>
+        <!--Page Item View Controller-->
+        <scene sceneID="0DO-Vx-jYb">
+            <objects>
+                <viewController storyboardIdentifier="PageItemViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bzH-Yb-q49" customClass="PageItemViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fEx-hh-qdd"/>
+                        <viewControllerLayoutGuide type="bottom" id="mp6-NR-SSa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="trQ-BB-TMH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invite_background_bubble" translatesAutoresizingMaskIntoConstraints="NO" id="ReQ-KG-Dux">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="INVITE GUESTS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClS-vL-cuP">
+                                <rect key="frame" x="30" y="80" width="314" height="30"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UtV-fW-6VK">
+                                <rect key="frame" x="30" y="130" width="314" height="75"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <string key="text">Make your next event more personal.
+Begin by inviting your friends on Cenes or straight from your contacts. </string>
+                                <fontDescription key="fontDescription" name="AvenirNext-DemiBoldItalic" family="Avenir Next" pointSize="18"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="w42-L6-v4G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3344.8000000000002" y="-726.35467980295573"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="invitation_group_img" width="101" height="139"/>
+        <image name="invite_background_bubble" width="125" height="270.66665649414062"/>
+        <image name="onboarding_base" width="125" height="270.66665649414062"/>
+        <image name="predictive_bubble_img" width="112" height="102.33333587646484"/>
+    </resources>
 </document>

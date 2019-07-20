@@ -24,6 +24,7 @@ class HomeDto {
     var declinedGatherings = [HomeData]();
     var pageable = HomeDataPageNumbers();
     var timeStamp: Int = Int(Date().millisecondsSince1970);
+    var timestampForInvitationTabs: Int = Int(Date().millisecondsSince1970);
     var calendarEventsData: CalendarEventsData = CalendarEventsData();
     
     //This is needed for scrolling home screen to desired index.
@@ -42,6 +43,9 @@ class HomeDto {
     var pageableMonthTimestamp: Int = 0; //This is needed to track which moth is there in calendar scroll
     var pageableMonthToAdd: Int = 0;    //This is needed to add 1 to cuttent month
     var totalEventsList = [Int32]();   //This is needed to mark the total events
+    var timestampForTopHeader: Int = Int(Date().millisecondsSince1970);
+
+    var currentMonthStartDateTimeStamp: Int = Int(Date().startOfMonth().millisecondsSince1970);
     
     //This is needed to keep track of month Separaotors added
     //So thet ther wont be multiple separators in same month.

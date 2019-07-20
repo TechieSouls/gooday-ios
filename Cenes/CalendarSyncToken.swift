@@ -20,7 +20,7 @@ class CalendarSyncToken {
         let calendarSyncToken = CalendarSyncToken();
         calendarSyncToken.refreshTokenId = calendarSyncTokenDict.value(forKey: "refreshTokenId") as! Int32;
         calendarSyncToken.userId = calendarSyncTokenDict.value(forKey: "userId") as! Int32;
-        calendarSyncToken.refreshToken = calendarSyncTokenDict.value(forKey: "refreshToken") as! String;
+        calendarSyncToken.refreshToken = calendarSyncTokenDict.value(forKey: "refreshToken") as? String ?? nil;
         calendarSyncToken.accountType = calendarSyncTokenDict.value(forKey: "accountType") as! String;
         calendarSyncToken.emailId = calendarSyncTokenDict.value(forKey: "emailId") as? String ?? nil;
         

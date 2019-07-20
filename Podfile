@@ -21,6 +21,8 @@ pod 'SDWebImage', '~> 4.0'
 pod 'VisualEffectView'
 pod 'SwipeCellKit'
 pod 'Mantis', '~> 0.27'
+pod 'Fabric'
+pod 'Crashlytics'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

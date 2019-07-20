@@ -40,6 +40,8 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
         
         let profilePicTap = UITapGestureRecognizer.init(target: self, action: #selector(profilePicPressed));
         profilePic.addGestureRecognizer(profilePicTap);
+        
+        usernameField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -87,6 +89,19 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
     
     @objc func profilePicPressed() {
         signupSuccessStep2ViewControllerDelegate.photoIconClicked();
+    }
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        
+        if (textField.text != "") {
+            let cgColors = [UIColor.white.cgColor, UIColor(red:0.29, green:0.56, blue:0.89, alpha:0.75).cgColor, UIColor.white.cgColor]
+            
+            usernameField.layer.addSublayer(getTextFieldBottomBorderGradient(textField: usernameField, cgColors: cgColors));
+        } else {
+            let cgColors = [UIColor.white.cgColor, UIColor(red:0.71, green:0.71, blue:0.71, alpha:0.75).cgColor, UIColor.white.cgColor]
+            usernameField.layer.insertSublayer(getTextFieldBottomBorderGradient(textField: usernameField, cgColors: cgColors), at: 0);
+            
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

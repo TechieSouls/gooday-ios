@@ -148,6 +148,8 @@
 		5EC7A17F2280492D0010E804 /* PasswordTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC7A17D2280492D0010E804 /* PasswordTableViewCell.xib */; };
 		5EC7A1812281513C0010E804 /* ProfileDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A1802281513C0010E804 /* ProfileDto.swift */; };
 		5EC7A1832281AB090010E804 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A1822281AB090010E804 /* ProfileService.swift */; };
+		5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */; };
+		5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */; };
 		5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */; };
 		5ED6FECF224B687B00E940DE /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FECE224B687B00E940DE /* Connectivity.swift */; };
 		5ED6FED3224B9B7A00E940DE /* ProfileTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */; };
@@ -540,6 +542,8 @@
 		5EC7A17D2280492D0010E804 /* PasswordTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PasswordTableViewCell.xib; sourceTree = "<group>"; };
 		5EC7A1802281513C0010E804 /* ProfileDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDto.swift; sourceTree = "<group>"; };
 		5EC7A1822281AB090010E804 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMatchOnboardingViewController.swift; sourceTree = "<group>"; };
+		5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationOnboardingViewController.swift; sourceTree = "<group>"; };
 		5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveData.swift; sourceTree = "<group>"; };
 		5ED6FECE224B687B00E940DE /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTabViewController.swift; sourceTree = "<group>"; };
@@ -937,6 +941,8 @@
 			children = (
 				5E237FF422A77F7D00D4D033 /* PageItemViewController.swift */,
 				5E237FF622A7806E00D4D033 /* OnboardingPageViewController.swift */,
+				5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */,
+				5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */,
 			);
 			name = Onboarding;
 			sourceTree = "<group>";
@@ -1658,6 +1664,7 @@
 				F4B871ED1F0DDEF1001A9963 /* Resources */,
 				BBFC90FCB2AA2100017EE8D0 /* [CP] Embed Pods Frameworks */,
 				568DC5F4F54B5035A5A6429E /* [CP] Copy Pods Resources */,
+				5E8552B922D493380062541A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1934,6 +1941,24 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Deploy/Pods-Deploy-resources.sh\"\n";
 		};
+		5E8552B922D493380062541A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 8d5ed83a144251c4e4003000b2db9cfb29e680db 46f61f0f36733f605fc5176e7834a1423ab3633d3e64cae93b9296b0c215759d\n";
+		};
 		8513B021278CF235AD8A707A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2166,6 +2191,7 @@
 				FA00904021F702D50038BF3D /* GatheringCardHeaderTableViewCell.swift in Sources */,
 				5EC73CEF1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift in Sources */,
 				5E237FF722A7806E00D4D033 /* OnboardingPageViewController.swift in Sources */,
+				5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */,
 				5EC7A1832281AB090010E804 /* ProfileService.swift in Sources */,
 				F47C358A1F17F93700CAE09A /* AppConstants.swift in Sources */,
 				B99D55C91FC1358D0020AC50 /* Alarm+CoreDataClass.swift in Sources */,
@@ -2191,6 +2217,7 @@
 				B94B39921FA7BAF400A806FE /* RemindersEmptyTableViewCell.swift in Sources */,
 				FA42F06A2140632500721A7A /* UserService.swift in Sources */,
 				5E6AE0C72242055B0076A275 /* MeTimeAddViewController.swift in Sources */,
+				5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */,
 				5EF595EF224899E5005EF500 /* UILabel+Customs.swift in Sources */,
 				FAF895CE21C95BB800AD6C86 /* HomeManager.swift in Sources */,
 				B9710C921FA3BB4E000A45B3 /* AddOrEditReminderViewController.swift in Sources */,

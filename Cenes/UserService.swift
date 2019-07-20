@@ -25,6 +25,7 @@ class UserService {
     let post_validate_password = "api/user/validatePassword";
     let post_sync_google_events = "api/google/events/v2";
     let post_sync_device_events = "api/user/syncdevicecalendar";
+    let post_refresh_device_events = "api/apple/refreshEvents";
     let post_sync_outlook_events = "api/outlook/events/v2";
     let post_upload_profile_pic = "api/user/profile/upload/v2";
     let post_sync_holiday_calendar = "api/holiday/calendar/events/v2";
@@ -344,6 +345,16 @@ class UserService {
     func syncDeviceEvents(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(post_sync_device_events)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+        
+    }
+    
+    func refreshDeviceEvents(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_refresh_device_events)";
         
         HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
             complete(response);

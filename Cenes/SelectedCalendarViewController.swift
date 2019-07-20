@@ -25,6 +25,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
     var calendarSyncToken: CalendarSyncToken!;
     var outlookService = OutlookService.shared();
     var thirdPartyCalendarProtocolDelegate: ThirdPartyCalendarProtocol!
+    var activityIndicator = UIActivityIndicatorView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +47,11 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         GIDSignIn.sharedInstance().serverClientID = "212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com";
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]
+        
+        
+        activityIndicator.activityIndicatorViewStyle = .gray;
+        activityIndicator.center = view.center;
+        self.view.addSubview(activityIndicator);
         
     }
     
@@ -95,11 +101,13 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         self.isSynced = true;
                         self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: true, email: unwrappedEmail)
 
-                        
-                        DispatchQueue.global(qos: .background).async {
+                        self.activityIndicator.startAnimating();
+                        //DispatchQueue.global(qos: .background).async {
                             // your code here
                             UserService().syncOutlookEvents(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                                 print("Outlook Synced.")
+                                self.showAlert(title: "Account Synced", message: "");
+                                self.activityIndicator.stopAnimating();
                                 let success = response.value(forKey: "success") as! Bool;
                                 if (success == true) {
                                     let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
@@ -107,7 +115,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                     self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                                 }
                             })
-                        }
+                        //}
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                             if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
@@ -116,7 +124,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                 homeViewController?.refershDataFromOtherScreens();
                             }
                         });
-                        self.showAlert(title: "Account Synced", message: "");
                     }
                 }
                 
@@ -126,7 +133,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 }
             }
         }
-        
     }
     
     func appleSyncBegins() {
@@ -141,7 +147,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         
         eventStore.requestAccess(to: .event) { (granted, error) in
             
-            
             if (granted) && (error == nil) {
             
                  print("granted \(granted)")
@@ -150,7 +155,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 let calendar = Calendar.current
                 
                 var datecomponent = DateComponents()
-                datecomponent.day = 30
+                datecomponent.year = 1
                 var endDate = calendar.date(byAdding: datecomponent, to: Date())
                 
                 let calendars = eventStore.calendars(for: .event)
@@ -163,8 +168,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                     }
                     newCalendar.append(calendar)
                 }
-                
-                
                 
                 let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
                 
@@ -180,6 +183,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         
                         let event = event as EKEvent
                         
+                        print(event.eventIdentifier);
                         
                         if (event.isAllDay == true) {
                             continue;
@@ -195,8 +199,22 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         
                         let startTime = "\(event.startDate.millisecondsSince1970)"
                         let endTime = "\(event.endDate.millisecondsSince1970)"
-                        arrayDict.append(["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime])
+                       
                         
+                        let nowDateMillis = Date().millisecondsSince1970
+                        
+                        
+                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+
+                        if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                            
+                            postData["processed"] = "\(1)";
+                            arrayDict.append(postData)
+                        } else {
+                           
+                            postData["processed"] = "\(0)";
+                            arrayDict.append(postData)
+                        }
                     }
                 
                     var params =  [String:Any]();
@@ -204,12 +222,17 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                     params["userId"] = self.loggedInUser.userId;
                     params["name"] = name;
 
+                    DispatchQueue.main.async {
+                        self.activityIndicator.startAnimating();
+                    }
                     //Running In Background
-                    DispatchQueue.global(qos: .background).async {
+                    //DispatchQueue.global(qos: .background).async {
                         // your code here
                         UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
                             print("Device Synced.")
-                            
+                            self.activityIndicator.stopAnimating();
+                            self.showAlert(title: "Account Synced", message: "");
+
                             let success = response.value(forKey: "success") as! Bool;
                             if (success == true) {
                                 let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
@@ -218,9 +241,42 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                             }
                             
                         })
+                    //}
+                    
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                            
+                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                            homeViewController?.refershDataFromOtherScreens();
+                        }
+                    });
+
+                } else {
+                    
+                    
+                    var params =  [String:Any]();
+                    params["data"]  = [NSMutableDictionary]();
+                    params["userId"] = self.loggedInUser.userId;
+                    params["name"] = name;
+
+                    //Running In Background
+                    DispatchQueue.global(qos: .background).async {
+                        // your code here
+                        UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                            print("Device Synced.")
+                            self.showAlert(title: "Account Synced", message: "");
+
+                            let success = response.value(forKey: "success") as! Bool;
+                            if (success == true) {
+                                let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
+                                
+                                self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                            }
+                            
+                        })
                     }
                     
-                    self.showAlert(title: "Account Synced", message: "");
                 }
             }
             else{
@@ -252,9 +308,13 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             postData["accessToken"] = authentication?.accessToken!;
             
             //Running in Background
-            DispatchQueue.global(qos: .background).async {
+            //DispatchQueue.global(qos: .background).async {
+            activityIndicator.startAnimating();
                 UserService().syncGoogleEvent(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                     print("synced");
+                    self.activityIndicator.stopAnimating();
+                    self.showAlert(title: "Account Synced", message: "");
+
                     let success = response.value(forKey: "success") as! Bool;
                     if (success == true) {
                         let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
@@ -262,7 +322,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                     }
                 });
-            }
+            //}
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                 if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
@@ -271,9 +331,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                     homeViewController?.refershDataFromOtherScreens();
                 }
             });
-
-            
-            self.showAlert(title: "Account Synced", message: "");
         }
     }
     
@@ -284,12 +341,17 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
 
     func deleteSyncBySyncId(syncId: Int32) {
         
+        activityIndicator.startAnimating();
+        
         let queryStr = "calendarSyncTokenId=\(String(syncId))";
         UserService().deleteSyncTokenByTokenId(queryStr: queryStr, token: loggedInUser.token) {(response) in
             print("Deleted");
             self.isSynced = false;
             self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: false, email: "");
             
+            self.activityIndicator.stopAnimating();
+            self.showAlert(title: "Account Deleted", message: "");
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                 if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                     
@@ -297,10 +359,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                     homeViewController?.refershDataFromOtherScreens();
                 }
             });
-
         }
         
-        self.showAlert(title: "Account Deleted", message: "");
     }
 }
 

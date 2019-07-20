@@ -22,6 +22,8 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
     
     @IBOutlet weak var getAccessView: UIView!
     
+    @IBOutlet weak var termsAndConditionsLabel: UILabel!
+    
     var countryCodeService: CountryCodeService!
     
     class func MainViewController() -> UINavigationController {
@@ -32,6 +34,9 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        let tandctapGesture = UITapGestureRecognizer.init(target: self, action: #selector(tandcPressed));
+        termsAndConditionsLabel.addGestureRecognizer(tandctapGesture);
+        
         let countryDropdownBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryDropdownBarPressed))
         countryDropdownBar.addGestureRecognizer(countryDropdownBarTap);
         
@@ -123,6 +128,11 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         self.navigationController?.pushViewController(viewController, animated: true);
     }
     
+    @objc func tandcPressed() {
+        if let url = URL(string: privacyPolicyLink) {
+            UIApplication.shared.open(url)
+        }
+    }
     
     @IBAction func getAccessButtonPressed(_ sender: Any) {
         

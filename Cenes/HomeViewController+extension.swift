@@ -50,7 +50,7 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
             if (self.homescreenDto.homeRowsVisibility[HomeRows.TopDateRow] == true) {
                 let cell: DateDropDownTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "DateDropDownTableViewCell") as! DateDropDownTableViewCell
                 cell.newHomeViewControllerDelegate = self;
-                cell.topDate.text = String(Date(milliseconds: Int(self.homescreenDto.timeStamp)).EMMMd()!);
+                cell.topDate.text = String(Date(milliseconds: Int(self.homescreenDto.fsCalendarCurrentDateTimestamp)).MMMM()!);
                 let textWidth = cell.topDate.intrinsicContentSize.width;
                 print("textWidth", textWidth);
                 cell.topDate.frame = CGRect(x: 0, y: 40/2, width: textWidth, height: 40);
@@ -74,14 +74,15 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
                 return cell;
             }
         case 2:
-            if (self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
                 let cell: HomeFSCalendarTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "HomeFSCalendarTableViewCell") as! HomeFSCalendarTableViewCell
                 cell.newHomeViewProtocolDelegate = self;
                 cell.newHomeViewControllerDelegate = self;
                 cell.fsCalendar.setCurrentPage(Date(milliseconds: self.homescreenDto.fsCalendarCurrentDateTimestamp), animated: false);
                 self.homeFSCalendarCellProtocol = cell;
-                return cell;
-            }
+                self.homeFSCalendarTableViewCellDelegate = cell;
+                if (self.homescreenDto.homeRowsVisibility[HomeRows.CalendarRow] == true) {
+                    return cell;
+                }
         case 3:
             if (self.homescreenDto.homeRowsVisibility[HomeRows.TableRow] == true) {
                     let cell: DataTableViewCell = self.homeTableView.dequeueReusableCell(withIdentifier: "DataTableViewCell") as! DataTableViewCell

@@ -11,7 +11,8 @@ import CoreData
 import FBSDKLoginKit
 import FacebookCore
 import UserNotifications
- 
+import Fabric
+import Crashlytics
 import GoogleSignIn
 import Google
 import SideMenu
@@ -43,6 +44,8 @@ let setting = UserDefaults.standard
         
         print("My App Launched on Termination**************************************");
     
+        Fabric.with([Crashlytics.self])
+        
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
         // Override point for customization after application launch.
@@ -455,6 +458,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                     homeViewController?.refreshHomeScreenData();
                 }
             } else {
+                if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+                    self.cenesTabBar?.selectedIndex = 0
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refreshHomeScreenData();
+                }
+            
                 completionHandler([.alert, .sound])
             }
         
@@ -487,9 +497,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0
                 
-                let notificationViewController = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? NotificationViewController
-                notificationViewController?.initilize();
-                
+                //let notificationViewController = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? NotificationViewController
+                //notificationViewController?.initilize();
+                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                homeViewController?.refreshHomeScreenData();
                 /*let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
                 
                 if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{

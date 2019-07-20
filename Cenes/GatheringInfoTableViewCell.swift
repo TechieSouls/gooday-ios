@@ -91,9 +91,14 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
     func imageSelected() {
         imageLabel.isHidden = false;
         
-        //Code to show hide Event Preview Button.
-        createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.imageField] = true;
-        createGatheringDelegate.showHidePreviewGatheringButton();
+        if (createGatheringDelegate != nil) {
+            //Code to show hide Event Preview Button.
+            createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.imageField] = true;
+            createGatheringDelegate.showHidePreviewGatheringButton();
+
+        } else {
+            createGatheringDelegate.showAlert(title: "Error", message: "Cannot upload from screenshot")
+        }
     }
     
 }

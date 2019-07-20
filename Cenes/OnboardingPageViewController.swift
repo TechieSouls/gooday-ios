@@ -8,13 +8,25 @@
 
 import UIKit
 
-class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSource {
+class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     
     @IBOutlet weak var getStartedBtnView: UIView!
     @IBOutlet weak var getStartedBtn: UIButton!
+    @IBOutlet weak var pageControlBox: UIPageControl!
     
+    var itemIndex = 0;
+    var pageIndex = 0;
     var pageViewController : UIPageViewController!;
-    let onboardingImages = ["onboarding_step1", "onboarding_step2", "onboarding_step3"];
+    let onboardingTitles = ["INVITE GUESTS", "TIMEMATCH", "INVITATION"];
+    let onboardingDescription = ["Make your next event more personal. Begin by inviting your friends on Cenes or straight from your contacts.", "Everyone has their own schedule. Sync your calendar with Cenes to let your friends know your availability.", "Create custom invitations for your guests to RSVP. Manage your social events right within our calendar."];
+
+    let firstViewController = UIStoryboard.init(name: "Onboarding", bundle: Bundle.main).instantiateViewController(withIdentifier: "PageItemViewController") as! PageItemViewController
+
+    let timematchController = UIStoryboard.init(name: "Onboarding", bundle: Bundle.main).instantiateViewController(withIdentifier: "TimeMatchOnboardingViewController") as! TimeMatchOnboardingViewController
+    
+
+    let invitationController = UIStoryboard.init(name: "Onboarding", bundle: Bundle.main).instantiateViewController(withIdentifier: "InvitationOnboardingViewController") as! InvitationOnboardingViewController
+
     
     class func MainViewController() -> OnboardingPageViewController {
         let onboardingBoard: UIStoryboard = UIStoryboard.init(name: "Onboarding", bundle: nil);
@@ -36,7 +48,9 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
         getStartedBtnView.layer.shadowOpacity = 1
         getStartedBtnView.layer.shadowRadius = 10
         self.view.addSubview(getStartedBtnView)
+        self.view.addSubview(pageControlBox)
 
+        pageControlBox.currentPage = 0;
     }
     
 
@@ -54,9 +68,11 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
         
         let onboardingBoard: UIStoryboard = UIStoryboard.init(name: "Onboarding", bundle: nil);
         let swipePageController = onboardingBoard.instantiateViewController(withIdentifier: "SwipePageController") as! UIPageViewController;
-        
+
         swipePageController.dataSource = self;
-        if (onboardingImages.count  > 0) {
+        swipePageController.delegate = self
+
+        if (onboardingTitles.count  > 0) {
          
             let firstController = getItemController(0)!
             let startingController = [firstController];
@@ -66,74 +82,67 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
         pageViewController = swipePageController;
         addChildViewController(pageViewController);
         self.view.addSubview(pageViewController.view);
-        //pageViewController.didMove(toParentViewController: self);
     }
     
     func setupPageControll() {
         
         let appearance = UIPageControl.appearance();
-        appearance.backgroundColor = UIColor.black
+        appearance.backgroundColor = UIColor.clear
         
     }
     
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        
-        let itemController = viewController as! PageItemViewController;
-        print("Before : ",itemController.itemIndex)
 
-        if (itemController.itemIndex > 0) {
-            return getItemController(itemController.itemIndex-1);
+        if type(of: viewController) == PageItemViewController.self {
+            pageControlBox.currentPage = 0;
+            return nil
+        } else if (type(of: viewController) == TimeMatchOnboardingViewController.self) {
+            pageControlBox.currentPage = 1;
+            return firstViewController;
+        } else if (type(of: viewController) == InvitationOnboardingViewController.self) {
+            pageControlBox.currentPage = 2;
+            return timematchController;
         }
-        
-        return nil;
+            return nil;
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-
-        let itemController = viewController as! PageItemViewController;
-        print("After : ",itemController.itemIndex)
-
-        if (itemController.itemIndex < onboardingImages.count) {
-            return getItemController(itemController.itemIndex+1);
-        }
         
-        return nil;
-    }
-    
-    /*func presentationCount(for pageViewController: UIPageViewController) -> Int {
-        return onboardingImages.count;
-    }
-    
-    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        return 0;
-    }*/
-    
-    func currentControllerIndex() -> Int {
-        let pageItemController = self.currentControllerIndex();
-        
-        if let controller = pageItemController as? PageItemViewController {
-            return controller.itemIndex;
-        }
-        return -1;
-    }
-    
-    func currentController() -> UIViewController? {
-        
-        if (self.pageViewController.viewControllers!.count > 0) {
-            return self.pageViewController.viewControllers![0]
+        if type(of: viewController) == PageItemViewController.self {
+            pageControlBox.currentPage = 0;
+            return timematchController;
+        } else if (type(of: viewController) == TimeMatchOnboardingViewController.self) {
+            pageControlBox.currentPage = 1;
+            return invitationController;
+        } else if (type(of: viewController) == InvitationOnboardingViewController.self) {
+            pageControlBox.currentPage = 2;
+            return nil;
         }
         return nil;
     }
     
-    func getItemController(_ itemIndex: Int) -> PageItemViewController? {
-    
-        if (itemIndex < onboardingImages.count) {
-            let viewController = self.storyboard?.instantiateViewController(withIdentifier: "PageItemViewController") as! PageItemViewController;
-            viewController.itemIndex = itemIndex;
-            viewController.imageName = onboardingImages[itemIndex];
-            return viewController;
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        
+        if (completed) {
+            
         }
+    }
+    
+    func getItemController(_ itemIndex: Int) -> UIViewController? {
+    
+            self.pageIndex = itemIndex;
+            if (itemIndex == 0) {
+                let viewController = UIStoryboard.init(name: "Onboarding", bundle: Bundle.main).instantiateViewController(withIdentifier: "PageItemViewController") as! PageItemViewController
+                return viewController;
+            } else if (itemIndex == 1) {
+                let viewController = UIStoryboard.init(name: "Onboarding", bundle: Bundle.main).instantiateViewController(withIdentifier: "TimeMatchOnboardingViewController") as! TimeMatchOnboardingViewController
+                
+                return viewController;
+            }  else if (itemIndex == 2) {
+                let viewController = UIStoryboard.init(name: "Onboarding", bundle: Bundle.main).instantiateViewController(withIdentifier: "InvitationOnboardingViewController") as! InvitationOnboardingViewController
+                return viewController;
+            }
         
         return nil;
     }

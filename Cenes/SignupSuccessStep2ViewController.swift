@@ -236,7 +236,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                 let calendar = Calendar.current
                 
                 var datecomponent = DateComponents()
-                datecomponent.day = 30
+                datecomponent.year = 1
                 var endDate = calendar.date(byAdding: datecomponent, to: Date())
                 
                 let calendars = eventStore.calendars(for: .event)
@@ -279,7 +279,20 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                         
                         let startTime = "\(event.startDate.millisecondsSince1970)"
                         let endTime = "\(event.endDate.millisecondsSince1970)"
-                    arrayDict.append(["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime])
+                        
+                        let nowDateMillis = Date().millisecondsSince1970
+
+                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                        
+                        if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                            
+                            postData["processed"] = "\(1)";
+                            arrayDict.append(postData)
+                        } else {
+                            
+                            postData["processed"] = "\(0)";
+                            arrayDict.append(postData)
+                        }
                         
                     }
                     params = ["data":arrayDict]

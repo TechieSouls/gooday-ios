@@ -9,6 +9,7 @@
 import UIKit
 import EventKit
 import EventKitUI
+import Crashlytics
 
 protocol DataTableViewCellProtocol {
     func reloadTableToTop();
@@ -27,7 +28,8 @@ protocol HomeFSCalendarCellProtocol {
 class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHomeViewProtocol {
     
     @IBOutlet weak var homeTableView: UITableView!
-    
+    @IBOutlet weak var calendrStatusToast: UILabel!
+
     var refreshCalButton: UIButton!;
     var homescreenDto: HomeDto = HomeDto();
     var loggedInUser: User!;
@@ -36,6 +38,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     var currentDateSectionIndex = 0;
     var dataTableViewCellProtocolDelegate: DataTableViewCellProtocol!;
     var dateDroDownCellProtocolDelegate: DateDroDownCellProtocol!;
+    var homeFSCalendarTableViewCellDelegate: HomeFSCalendarTableViewCell!
+    
     var homeFSCalendarCellProtocol: HomeFSCalendarCellProtocol!;
     var activityIndicator = UIActivityIndicatorView();
     
@@ -44,6 +48,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         //self.calendarView.backgroundColor = themeColor;
         // Do any additional setup after loading the view.
         
+        calendrStatusToast.layer.cornerRadius = 10;
+        calendrStatusToast.clipsToBounds  =  true
+
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);        
         
         var dateComponets = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
@@ -54,8 +61,13 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         homescreenDto.timeStamp = Int(Calendar.current.date(from: dateComponets)!.millisecondsSince1970);
         print("Home Screen Date : \(homescreenDto.timeStamp)")
         
-        tabBarController?.delegate = self
+        tabBarController?.delegate = self;
+        
+        activityIndicator.activityIndicatorViewStyle = .gray;
+        activityIndicator.center = view.center;
+        self.view.addSubview(activityIndicator);
 
+        self.calendrStatusToast.frame = CGRect.init(x: ((self.view.frame.width/2) - (self.calendrStatusToast.frame.width/2)) , y: (self.view.frame.height/2) + 30, width: self.calendrStatusToast.frame.width, height: 35)
         //Calling Funcitons
         //Load Home Screen Data on user load
         self.registerTableCells()
@@ -167,10 +179,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         refreshCalButton.frame = CGRect.init(x: 0, y: 0, width: 24, height: 24)
         refreshCalButton.addTarget(self, action:#selector(refreshButtonPressed), for: UIControlEvents.touchUpInside)
         
-        activityIndicator.activityIndicatorViewStyle = .gray;
-        activityIndicator.center = refreshCalButton.center;
-        refreshCalButton.addSubview(activityIndicator);
-        
         let refreshCalBarButton = UIBarButtonItem.init(customView: refreshCalButton)
 
         
@@ -231,9 +239,29 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
                     if (calendarData.count > 0) {
                         
+                        var calDataFroMonthScrollDto: HomeData!
+                        var sectionObjectIndex: Int = 0;
+                        var isFinalMonthDtoIndexFound = false;
+                        for homeDataDto in calendarData {
+                            
+                            sectionObjectIndex = 0;
+                            for event in homeDataDto.sectionObjects {
+                                if (event.scheduleAs != "MonthSeparator") {
+                                    calDataFroMonthScrollDto = homeDataDto;
+                                    isFinalMonthDtoIndexFound = true;
+                                    break;
+                                }
+                                sectionObjectIndex = sectionObjectIndex +  1;
+                            }
+                            
+                            if (isFinalMonthDtoIndexFound == true) {
+                                break;
+                            }
+                        }
+                        
                         let monthScrollDto = MonthScrollDto();
-                        monthScrollDto.indexKey = calendarData[0].sectionName;
-                        monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(calendarData[0].sectionObjects[0].startTime))).year!;
+                        monthScrollDto.indexKey = calDataFroMonthScrollDto.sectionName;
+                        monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(calDataFroMonthScrollDto.sectionObjects[sectionObjectIndex].startTime))).year!;
                         
                         //self.homescreenDto.timeStamp = Int(calendarData[0].sectionObjects[0].startTime);
                         
@@ -288,14 +316,13 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexFromMonthKey(homeDataList: self.homeDtoList, key: self.homescreenDto.monthScrollIndex["\(compos.month!)-\(compos.year!)"]!));
                 }
             }
-            
-            
         }
     }
     
     func loadPastEvents() -> Void {
+        
         self.homescreenDto.calendarData = [HomeData]();
-        let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(homescreenDto.startTimeStampToFetchPageableData))&pageNumber=\(String(0))&offSet=\(String(20))";
+        let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(self.homescreenDto.currentMonthStartDateTimeStamp))&pageNumber=\(String(0))&offSet=\(String(20))";
         
         HomeService().getHomeEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
             //print(returnedDict)
@@ -316,27 +343,52 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     self.homescreenDto.calendarData = calendarData;
                     
                     //If this is the initial hit, Then we will get the first event inedx.
-                        let firstHomeData = calendarData[0];
+                    let currentPresentDate = Date().millisecondsSince1970;
+                    var homeDataForCuurentMonthFutureEvent: HomeData!;
+                    var isGreaterDateFound = false;
+                    for homeDataTemp in calendarData {
                         
-                        let monthScrollDto = MonthScrollDto();
-                        monthScrollDto.indexKey = firstHomeData.sectionName;
-                        monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime))).year!;
+                        for eventTemp in homeDataTemp.sectionObjects {
+                            
+                            if (eventTemp.startTime >=  currentPresentDate) {
+                                homeDataForCuurentMonthFutureEvent = homeDataTemp;
+                                isGreaterDateFound = true;
+                                break;
+                            }
+                        }
                         
-                        monthScrollDto.timestamp = Int(Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime)).startOfMonth().millisecondsSince1970);
+                        if (isGreaterDateFound == true) {
+                            break;
+                        }
+                    }
+                    
+                    
+                    var firstHomeData = calendarData[0];
+                    if (homeDataForCuurentMonthFutureEvent != nil) {
+                        firstHomeData = homeDataForCuurentMonthFutureEvent;
+                    }
+                
+                
+                    
+                    let monthScrollDto = MonthScrollDto();
+                    monthScrollDto.indexKey = firstHomeData.sectionName;
+                    monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime))).year!;
+                    
+                    monthScrollDto.timestamp = Int(Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime)).startOfMonth().millisecondsSince1970);
+                    
+                    self.homescreenDto.topHeaderDateIndex[HomeManager().getMonthWithYearKeyForScrollIndex(startTime: Int(Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime)).startOfMonth().millisecondsSince1970))] = monthScrollDto;
                         
-                        self.homescreenDto.topHeaderDateIndex[HomeManager().getMonthWithYearKeyForScrollIndex(startTime: Int(Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime)).startOfMonth().millisecondsSince1970))] = monthScrollDto;
-                        
-                        
-                        //self.homescreenDto.scrollToMonthStartSectionAtHomeButton.insert(monthScrollDto, at: 0);
+                    self.homescreenDto.scrollToMonthStartSectionAtHomeButton = [MonthScrollDto]();
+                        self.homescreenDto.scrollToMonthStartSectionAtHomeButton.append(monthScrollDto);
                 }
                 //if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
                     //self.homeDtoList = self.homescreenDto.calendarData;
-                    self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
+                    //self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
                     //self.homeTableView.reloadData();
                     
                     let previousDate = Calendar.current.date(byAdding: .month, value: -12, to: Date(milliseconds: Int(self.homescreenDto.startTimeStampToFetchPageableData)))!
   
-                    let queryStr = "userId=\(String(self.loggedInUser.userId))&startTime=\(String(describing: previousDate.millisecondsSince1970))&endTime=\(String(describing: self.homescreenDto.startTimeStampToFetchPageableData))";
+                    let queryStr = "userId=\(String(self.loggedInUser.userId))&startTime=\(String(describing: previousDate.millisecondsSince1970))&endTime=\(String(describing: self.homescreenDto.currentMonthStartDateTimeStamp))";
                 
                     HomeService().getHomePastEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
                         //print(returnedDict)
@@ -366,6 +418,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                             self.homescreenDto = homeScreenDataHolder.homescreenDto;
                             print("Previous Events Count : ", calendarData.count)
 
+                            //If we have past events counts is greater than zero
                             if (calendarData.count > 0) {
                                 
                                 //If we dont have any current events for a user. Then
@@ -385,32 +438,23 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                                 if (self.homescreenDto.pageable.totalCalendarCounts == 0) {
                                     //self.homescreenDto.scrollToSectionIndex = calendarData.count - 1;
                                 } else {
-                                    //self.homescreenDto.scrollToSectionIndex = calendarData.count;
                                     if (self.currentDateSectionIndex == 0) {
                                         self.currentDateSectionIndex = calendarData.count
                                     }
                                 }
                                 
                                 self.homescreenDto.calendarData = HomeManager().mergePreviousDataAtTop(currentList: self.homescreenDto.calendarData, previous: calendarData);
+                            }
+                            
+                            if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
                                 
                                 self.homeDtoList = self.homescreenDto.calendarData;
                                 self.totalPageCounts =  self.homescreenDto.pageable.totalCalendarCounts;
-                                
-                                
-                                // Better than reload the whole tableview
-                                /*let lastOffset = self.homeTableView.contentOffset
-                                 
-                                 self.homeTableView.beginUpdates()
-                                 self.homeTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
-                                 self.homeTableView.endUpdates()
-                                 self.homeTableView.contentOffset = lastOffset
-                                 */
-                                //self.homeTableView.reloadData();
                                 self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-                                self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
-
-                                //self.dataTableViewCellProtocolDelegate.reloadTableToDesiredSection(rowsToAdd: calendarData.count, sectionIndex: self.homescreenDto.scrollToSectionIndex)
                                 
+                                if (self.homescreenDto.scrollToMonthStartSectionAtHomeButton.count > 0) {
+                                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
+                                }
                             }
                         }
                     }
@@ -451,6 +495,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 }*/
                 
                 if (calendarData.count > 0) {
+                    
+                    self.homescreenDto.pageable.calendarDataPageNumber = self.homescreenDto.pageable.calendarDataPageNumber + 20;
+
                     
                     //If this is the initial hit, Then we will get the first event inedx.
                     if (pageNumber == 0) {
@@ -520,7 +567,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
      **/
     func loadGatheringDataByStatus(status: String, pageNumber: Int, offSet: Int) -> Void {
         
-        let queryStr = "userId=\(String(self.loggedInUser.userId))&status=\(status)&timestamp=\(String(homescreenDto.timeStamp))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
+        let queryStr = "userId=\(String(self.loggedInUser.userId))&status=\(status)&timestamp=\(String(homescreenDto.timestampForInvitationTabs))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
         
         GatheringService().getGatheringEventsByStatus(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
             //print(returnedDict)
@@ -558,6 +605,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         self.homeDtoList = self.homescreenDto.declinedGatherings;
                         self.totalPageCounts = self.homescreenDto.pageable.totalDeclinedCounts;
                         self.homeTableView.reloadData();
+                        self.homeFSCalendarTableViewCellDelegate.fsCalendar.adjustMonthPosition();
+                        
                     }
                 }
                 
@@ -570,7 +619,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     
     func loadGatheringDataByPullDown(status: String, pageNumber: Int, offSet: Int) -> Void {
         
-        let queryStr = "userId=\(String(self.loggedInUser.userId))&status=\(status)&timestamp=\(String(homescreenDto.timeStamp))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
+        let queryStr = "userId=\(String(self.loggedInUser.userId))&status=\(status)&timestamp=\(String(homescreenDto.timestampForInvitationTabs))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
         
         GatheringService().getGatheringEventsByStatus(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
             print(returnedDict)
@@ -626,6 +675,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
      * This function is to show dots in the Calendar at home screen
      **/
     func loadCalendarEventsData() -> Void {
+        
+        self.homescreenDto.calendarEventsData = CalendarEventsData();
         
         var yearStartDateComponents = DateComponents();
         yearStartDateComponents.day = 1;
@@ -694,7 +745,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
         let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homescreenDto.timeStamp)) )
         if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
-            key = "Today";
+            key = "Today " + key;
         }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
             key = "Tomorrow " + key;
         }
@@ -711,6 +762,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     }
     
     func initilizeCalendarData() {
+        
         homescreenDto.pageable.calendarDataPageNumber = 0;
         homescreenDto.calendarData = [HomeData]();
         homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
@@ -749,7 +801,105 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.loadGatheringDataByStatus(status: "NotGoing", pageNumber: homescreenDto.pageable.declinedGathetingPageNumber, offSet: homescreenDto.pageable.declinedGatheringOffset);
     }
     
-    func postSyncDeviceCalendar() {
+    @objc func calendarTabPressed() {
+        self.homescreenDto.headerTabsActive = HomeHeaderTabs.CalendarTab;
+        
+        self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = false;
+
+        self.homeDtoList = homescreenDto.calendarData;
+        self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts;
+
+        self.setUpNavBarImages();
+        
+        self.homeTableView.reloadData();
+        self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+        
+        if (self.homescreenDto.scrollToMonthStartSectionAtHomeButton.count > 0) {
+            self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0].timestamp);
+            if (self.homeFSCalendarCellProtocol != nil) {
+                self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
+            }
+            self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
+        }
+        
+    }
+    
+    @objc func invitationTabPressed() {
+        self.homescreenDto.headerTabsActive = HomeHeaderTabs.InvitationTab;
+        
+        //self.dataTableViewCellProtocolDelegate.addRemoveSubViewOnHeaderTabSelected(selectedTab: HomeHeaderTabs.InvitationTab);
+
+        self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = true;
+        self.homescreenDto.invitationTabs = HomeInvitationTabs.Accepted;
+        self.homeDtoList = homescreenDto.acceptedGatherings;
+        self.totalPageCounts = self.homescreenDto.pageable.totalAcceptedCounts;
+        
+        self.setUpNavBarImages();
+        self.homeTableView.reloadData()
+        self.dataTableViewCellProtocolDelegate.reloadTableToTop();
+        //self.loadGatheringDataByStatus(status: "Going");
+    }
+    
+    @objc func plusButtonPressed() {
+        let friendsViewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
+        navigationController?.pushViewController(friendsViewController, animated: true)
+    }
+
+    @objc func refreshButtonPressed() {
+
+        self.view.isUserInteractionEnabled = false;
+        self.activityIndicator.startAnimating();
+        self.refreshCalButton.startRotating(duration: 0.5, repeatCount: 1, clockwise: true);
+        
+        self.tabBarController?.tabBar.isUserInteractionEnabled = false;
+        self.calendrStatusToast.alpha = 1
+        self.calendrStatusToast.isHidden = false;
+        self.calendrStatusToast.text = "Syncing calendar...";
+
+        var isRefreshDone: [String: Bool] = [String: Bool]();
+        let queryStr = "userId=\(String(self.loggedInUser.userId))";
+        HomeService().getSyncGoogleCalendar(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+            //self.activityIndicator.stopAnimating();
+            
+            isRefreshDone["Google"] = true;
+            if (isRefreshDone.count == 3) {
+                self.refreshCalButton.stopRotating();
+                self.activityIndicator.stopAnimating();
+                self.view.isUserInteractionEnabled = true;
+                self.tabBarController?.tabBar.isUserInteractionEnabled = true;
+
+                self.refreshHomeScreenData();
+                
+                self.calendrStatusToast.text  = "Done";
+                UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+                    self.calendrStatusToast.alpha = 0.0
+                }, completion: {(isCompleted) in
+                    self.calendrStatusToast.isHidden = true;
+                })
+            }
+            
+        });
+
+        HomeService().getSyncOutlookCalendar(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+            
+            isRefreshDone["Outlook"] = true;
+            if (isRefreshDone.count == 3) {
+                self.refreshCalButton.stopRotating();
+                self.activityIndicator.stopAnimating();
+                self.view.isUserInteractionEnabled = true;
+                self.tabBarController?.tabBar.isUserInteractionEnabled = true;
+
+                self.refreshHomeScreenData();
+                
+                self.calendrStatusToast.text  = "Done";
+                UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+                    self.calendrStatusToast.alpha = 0.0
+                }, completion: {(isCompleted) in
+                    self.calendrStatusToast.isHidden = true;
+                })
+            }
+        });
+        
         var params : [String:Any]
         let eventStore : EKEventStore = EKEventStore()
         
@@ -766,7 +916,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 let calendar = Calendar.current
                 
                 var datecomponent = DateComponents()
-                datecomponent.day = 30
+                datecomponent.year = 1
                 var endDate = calendar.date(byAdding: datecomponent, to: Date())
                 
                 let calendars = eventStore.calendars(for: .event)
@@ -784,8 +934,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 
                 let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
                 
-                let userid = setting.value(forKey: "userId") as! NSNumber
-                let uid = "\(userid)"
                 let eventArray = eventStore.events(matching: predicate)
                 
                 if eventArray.count > 0 {
@@ -811,7 +959,20 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         
                         let startTime = "\(event.startDate.millisecondsSince1970)"
                         let endTime = "\(event.endDate.millisecondsSince1970)"
-                        arrayDict.append(["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime])
+                        
+                        let nowDateMillis = Date().millisecondsSince1970
+                        
+                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                        
+                        if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                            
+                            postData["processed"] = "\(1)";
+                            arrayDict.append(postData)
+                        } else {
+                            
+                            postData["processed"] = "\(0)";
+                            arrayDict.append(postData)
+                        }
                         
                     }
                     
@@ -821,70 +982,33 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     params["name"] = name;
                     
                     //Running In Background
-                    DispatchQueue.global(qos: .background).async {
-                        // your code here
-                        UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
-                            print("Device Synced.")
+                    //DispatchQueue.global(qos: .background).async {
+                    // your code here
+                    UserService().refreshDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                        print("Device Synced.")
+                        
+                        isRefreshDone["Apple"] = true;
+                        if (isRefreshDone.count == 3) {
+                            self.refreshCalButton.stopRotating();
+                            self.activityIndicator.stopAnimating();
+                            self.view.isUserInteractionEnabled = true;
+                            self.tabBarController?.tabBar.isUserInteractionEnabled = true;
+
+                            self.refreshHomeScreenData();
                             
-                        })
-                    }
+                            self.calendrStatusToast.text  = "Done";
+                            UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+                                self.calendrStatusToast.alpha = 0.0
+                            }, completion: {(isCompleted) in
+                                self.calendrStatusToast.isHidden = true;
+                            })
+                        }
+                        
+                    })
+                    //}
                 }
             }
-            
         }
-    }
-    
-    @objc func calendarTabPressed() {
-        self.homescreenDto.headerTabsActive = HomeHeaderTabs.CalendarTab;
-        
-        self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = false;
-
-        self.homeDtoList = homescreenDto.calendarData;
-        self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts;
-
-        self.setUpNavBarImages();
-        self.homeTableView.reloadData()
-        self.dataTableViewCellProtocolDelegate.reloadTableToTop();
-        //self.loadHomeData();
-    }
-    
-    @objc func invitationTabPressed() {
-        self.homescreenDto.headerTabsActive = HomeHeaderTabs.InvitationTab;
-        
-        //self.dataTableViewCellProtocolDelegate.addRemoveSubViewOnHeaderTabSelected(selectedTab: HomeHeaderTabs.InvitationTab);
-
-        self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = true;
-        self.homescreenDto.invitationTabs = HomeInvitationTabs.Accepted;
-        self.homeDtoList = homescreenDto.acceptedGatherings;
-        self.setUpNavBarImages();
-        self.homeTableView.reloadData()
-        self.dataTableViewCellProtocolDelegate.reloadTableToTop();
-        //self.loadGatheringDataByStatus(status: "Going");
-    }
-    
-    @objc func plusButtonPressed() {
-        let friendsViewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
-        navigationController?.pushViewController(friendsViewController, animated: true)
-    }
-
-    @objc func refreshButtonPressed() {
-
-        //activityIndicator.startAnimating();
-        refreshCalButton.startRotating();
-        let queryStr = "userId=\(String(self.loggedInUser.userId))";
-        HomeService().getSyncGoogleCalendar(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
-            //self.activityIndicator.stopAnimating();
-            self.refreshCalButton.stopRotating();
-            
-            self.refreshHomeScreenData();
-            
-            self.showToast(message: "Calendars Synced")
-        });
-
-        HomeService().getSyncOutlookCalendar(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
-            
-        });
-        postSyncDeviceCalendar();
     }
         /*self.spinnerBtn.startAnimate(spinnerType: SpinnerType.lineSpinFade, spinnercolor: UIColor.red, spinnerSize: 20, complete: {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
@@ -902,7 +1026,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 
                 
                 self.homescreenDto.timeStamp = Int(Date().millisecondsSince1970);
-                self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: self.homescreenDto.timeStamp);
+                self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0].timestamp);
                 if (self.homeFSCalendarCellProtocol != nil) {
                     self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
                 }
@@ -916,6 +1040,12 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 
             } else {
                 self.dataTableViewCellProtocolDelegate.reloadTableToTop();
+            }
+        } else {
+            self.homescreenDto.timeStamp = Int(Date().millisecondsSince1970);
+            self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: Int(Date().millisecondsSince1970));
+            if (self.homeFSCalendarCellProtocol != nil) {
+                self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
             }
         }
     }

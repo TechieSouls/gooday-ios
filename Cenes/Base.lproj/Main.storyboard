@@ -45,8 +45,8 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P1f-wb-mnj">
-                                        <rect key="frame" x="65" y="63" width="285" height="90"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="65" y="179" width="285" height="90"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T6e-tf-W0S">
                                                 <rect key="frame" x="0.0" y="30" width="60" height="60"/>
@@ -602,7 +602,7 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.85882352941176465" green="0.87058823529411766" blue="0.87058823529411766" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCk-0M-flL">
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LCk-0M-flL">
                                 <rect key="frame" x="65" y="727" width="285" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <attributedString key="attributedText">
@@ -635,6 +635,7 @@
                         <outlet property="getAccessButton" destination="gnh-Fu-oW0" id="1Yg-Yo-A8r"/>
                         <outlet property="getAccessView" destination="aR5-Vb-Wjh" id="qAx-M4-Gjk"/>
                         <outlet property="phoneNumberTextField" destination="gf2-mH-7iM" id="tkc-at-38Z"/>
+                        <outlet property="termsAndConditionsLabel" destination="LCk-0M-flL" id="fo1-fL-J6O"/>
                         <segue destination="6qV-gn-ifH" kind="show" id="8eA-tV-EUk"/>
                     </connections>
                 </viewController>
@@ -1449,12 +1450,21 @@
                                     <outlet property="delegate" destination="ZEu-Mw-MAH" id="ZiT-8K-u1J"/>
                                 </connections>
                             </tableView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Syncing calendar..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="geN-6r-i9r">
+                                <rect key="frame" x="140" y="650" width="150" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="GU0-gT-dUK"/>
                     </view>
                     <navigationItem key="navigationItem" id="Pes-jM-vqb"/>
                     <connections>
+                        <outlet property="calendrStatusToast" destination="geN-6r-i9r" id="Lnd-Ay-1Nl"/>
                         <outlet property="homeTableView" destination="liX-Fo-nm7" id="Fgd-95-Tju"/>
                     </connections>
                 </viewController>
@@ -1551,25 +1561,45 @@ ALREADY
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="accept_img" translatesAutoresizingMaskIntoConstraints="NO" id="dlE-5s-SJ1">
-                                        <rect key="frame" x="20" y="90" width="100" height="100"/>
+                                        <rect key="frame" x="22.666666666666664" y="92.666666666666657" width="95" height="95"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="send_invitation_icon" translatesAutoresizingMaskIntoConstraints="NO" id="Pyo-26-DGR">
-                                        <rect key="frame" x="20" y="90" width="100" height="100"/>
+                                        <rect key="frame" x="40" y="110" width="65" height="65"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Ss-Jo-hUu">
+                                        <rect key="frame" x="20" y="90" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invitation_loader_spinner" translatesAutoresizingMaskIntoConstraints="NO" id="vt2-ba-kM9">
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                        </subviews>
+                                    </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="reject_img" translatesAutoresizingMaskIntoConstraints="NO" id="KbQ-9J-I8h">
-                                        <rect key="frame" x="264" y="90" width="100" height="100"/>
+                                        <rect key="frame" x="267" y="93" width="95" height="95"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="edit_event_icon" translatesAutoresizingMaskIntoConstraints="NO" id="3xQ-vM-U73">
-                                        <rect key="frame" x="264" y="90" width="100" height="100"/>
+                                        <rect key="frame" x="280" y="100" width="65" height="65"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="delete_event_icon" translatesAutoresizingMaskIntoConstraints="NO" id="35V-3S-PXi">
                                         <rect key="frame" x="300" y="210" width="100" height="123"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     </imageView>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qfu-X2-cKw">
+                                        <rect key="frame" x="264" y="90" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invitation_loader_spinner" translatesAutoresizingMaskIntoConstraints="NO" id="1dR-8Y-bpm">
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </imageView>
+                                        </subviews>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -1599,11 +1629,15 @@ ALREADY
                     </view>
                     <connections>
                         <outlet property="acceptedImageView" destination="dlE-5s-SJ1" id="j2E-55-bFS"/>
+                        <outlet property="acceptedSendInvitationLoader" destination="vt2-ba-kM9" id="EcW-Hq-G7D"/>
+                        <outlet property="acceptedSendInvitationLoaderView" destination="4Ss-Jo-hUu" id="ayv-Qv-hgl"/>
                         <outlet property="deleteImageView" destination="35V-3S-PXi" id="VbI-sV-fHC"/>
                         <outlet property="editImageView" destination="3xQ-vM-U73" id="2ob-SQ-zNP"/>
                         <outlet property="invitationCardTableView" destination="Cxk-TV-RRa" id="elq-nq-Zsv"/>
                         <outlet property="nextScreenArrow" destination="1Kh-zg-Pgd" id="TzM-Jl-XFf"/>
                         <outlet property="rejectedImageiew" destination="KbQ-9J-I8h" id="91u-Xs-uoR"/>
+                        <outlet property="rejectedInvitationLoader" destination="1dR-8Y-bpm" id="GkH-uF-BZm"/>
+                        <outlet property="rejectedInvitationLoaderView" destination="Qfu-X2-cKw" id="ABR-xQ-jy0"/>
                         <outlet property="sendInvitationImageView" destination="Pyo-26-DGR" id="jFB-9A-kAv"/>
                         <outlet property="swipeCardView" destination="7kW-wk-oJi" id="KA3-db-3gd"/>
                     </connections>
@@ -5709,6 +5743,7 @@ ALREADY
         <image name="homeUnselected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="image_white_default" width="40.666667938232422" height="36.666667938232422"/>
         <image name="invitation_card" width="400" height="266.66665649414062"/>
+        <image name="invitation_loader_spinner" width="33.333332061767578" height="33.333332061767578"/>
         <image name="metimeSelected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="metimeUnSelected" width="22.333333969116211" height="23.333333969116211"/>
         <image name="notification_icon" width="15.333333015441895" height="16"/>
@@ -5739,11 +5774,11 @@ ALREADY
     <inferredMetricsTieBreakers>
         <segue reference="Bpo-Ea-8hE"/>
         <segue reference="PXI-Ri-yjX"/>
-        <segue reference="g6q-MS-Mfj"/>
+        <segue reference="iFo-v5-JcP"/>
         <segue reference="Xmm-eh-cxS"/>
         <segue reference="HSP-rP-a3L"/>
         <segue reference="enX-q2-EFx"/>
         <segue reference="OYa-35-IV8"/>
-        <segue reference="TPW-rV-ae3"/>
+        <segue reference="DDM-i0-nof"/>
     </inferredMetricsTieBreakers>
 </document>

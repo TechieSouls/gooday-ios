@@ -55,14 +55,16 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
         
         LocationService().getLocationLatLong(id: nearByLocObje.placeId, complete: {(response) in
             
-            let data = response["data"] as! [String: Any];
-            if let locationPoints = data["geometry"] as? [String: Any] {
-                let latLong = locationPoints["location"] as? [String: Any]
-                nearByLocObje.latitudeDouble = latLong!["lat"] as! Double
-                nearByLocObje.longitudeDouble = latLong!["lng"] as! Double
+            if (response["data"] != nil) {
+                let data = response["data"] as! [String: Any];
+                if let locationPoints = data["geometry"] as? [String: Any] {
+                    let latLong = locationPoints["location"] as? [String: Any]
+                    nearByLocObje.latitudeDouble = latLong!["lat"] as! Double
+                    nearByLocObje.longitudeDouble = latLong!["lng"] as! Double
+                }
+                self.selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
+
             }
-            
-            self.selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
             self.navigationController?.popViewController(animated: true);
         }); 
     }

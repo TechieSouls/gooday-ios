@@ -14,13 +14,13 @@ class HomeManager {
 
     func parseResultsForHomeEvents(homescreenDto: HomeDto, resultArray: NSArray) -> HomeScreenDataHolder {
         
-        var homescreenDto = homescreenDto;
-        var homeScreenDataHolder = HomeScreenDataHolder();
+        let homescreenDto = homescreenDto;
+        let homeScreenDataHolder = HomeScreenDataHolder();
         var totalEvents = homescreenDto.totalEventsList;
         
         var homeDataArrayToReturn = [HomeData]()
         
-        var previousDate: Date = Date();
+        let previousDate: Date = Date();
         var months: [String] = [String]();
         var dataObjectArray = [HomeData]()
         
@@ -511,7 +511,7 @@ class HomeManager {
             key = (Date(milliseconds: startTime).EMMMMdyyyy()!);
         }
         if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
-            key = "Today";
+            key = "Today " + key;
         }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
             key = "Tomorrow " + key;
         }
@@ -530,8 +530,10 @@ class HomeManager {
         var scrollToIIndex = 0;
         for homeData in homeDataList {
             if (homeData.sectionName == key.indexKey) {
-                let year: Int = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
-                
+                var year: Int = 0
+                if (homeData.sectionObjects[0].scheduleAs != "MonthSeparator") {
+                    year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
+                }
                 if (year == key.year) {
                     break;
                 }

@@ -39,10 +39,10 @@ class DateDropDownTableViewCell: UITableViewCell, DateDroDownCellProtocol {
         let scrollYear = Calendar.current.component(.year, from: Date(milliseconds: milliseconds));
 
         if (currentYear == scrollYear) {
-            self.topDate.text = String(Date(milliseconds: Int(milliseconds)).EMMMd()!);
+            self.topDate.text = String(Date(milliseconds: Int(milliseconds)).MMMM()!);
 
         } else {
-            self.topDate.text = String(Date(milliseconds: Int(milliseconds)).EMMMMdyyyy()!);
+            self.topDate.text = String(Date(milliseconds: Int(milliseconds)).MMMMsyyyy()!);
         }
         self.topDate.frame = CGRect(x: 0, y: 40/2, width: self.topDate.intrinsicContentSize.width, height: 40);
 

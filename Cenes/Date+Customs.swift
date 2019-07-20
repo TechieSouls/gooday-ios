@@ -28,14 +28,14 @@ extension Date {
         self.addTimeInterval(TimeInterval(Double(millis % 1000) / 1000 ))
     }
     
-    func yyyy() -> String? { //Sat Jun 16
+    func yyyy() -> String? { //2019
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy"
         return dateFormatter.string(from: self).capitalized
         // or use capitalized(with: locale) if you want
     }
     
-    func MMMM() -> String? { //Sat Jun 16
+    func MMMM() -> String? { //August
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM"
         return dateFormatter.string(from: self).capitalized

@@ -142,7 +142,7 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+        if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab && self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
             let tableView = scrollView as! UITableView;
             let indexPath = tableView.indexPathsForVisibleRows![0];
             let homeDto = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section];
@@ -172,9 +172,23 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
                     //print("Hehahahah ahahahah ahahha ahahahaha  hhhh",homeDto.sectionName!);
                     var monthDto = self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey];
                     if (monthDto != nil) {
+                       
+                        
+                        
+                        let componentsForScrollDate = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: monthDto!.timestamp));
+                        
+                       let componentsForTopHeaderDate =  Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: self.newHomeViewControllerDelegate.homescreenDto.timestampForTopHeader));
+                       
+                        //This condition is needed, becuse theer may be multiple headres for that months and
+                        //after page scroll, a header may give same month and upddate top header date again.
+                        if (componentsForScrollDate.month != componentsForTopHeaderDate.month) {
                         self.newHomeViewControllerDelegate.dateDroDownCellProtocolDelegate.updateDate(milliseconds: monthDto!.timestamp);
+                            
+                            self.newHomeViewControllerDelegate.homescreenDto.timestampForTopHeader = monthDto!.timestamp;
+                        }
+                        
+
                     }
-                    
                 }
             }
             
@@ -452,9 +466,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 //self.dataTableView.tableFooterView?.isHidden = false
                 
                 if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
-                    
-                    self.newHomeViewControllerDelegate.homescreenDto.pageable.calendarDataPageNumber = self.newHomeViewControllerDelegate.homescreenDto.pageable.calendarDataPageNumber + 20;
-                    
+                                        
                     self.newHomeViewControllerDelegate.loadHomeData(pageNumber: self.newHomeViewControllerDelegate.homescreenDto.pageable.calendarDataPageNumber, offSet: self.newHomeViewControllerDelegate.homescreenDto.pageable.calendarDataOffset)
                     
                     /*let newDate = Calendar.current.date(byAdding: .month, value: self.newHomeViewControllerDelegate.homescreenDto.pageableMonthToAdd, to: Date(milliseconds: self.newHomeViewControllerDelegate.homescreenDto.pageableMonthTimestamp))!;

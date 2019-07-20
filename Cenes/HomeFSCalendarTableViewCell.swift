@@ -43,6 +43,8 @@ class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalend
         newHomeViewProtocolDelegate.calendarDatePressed(date: date);
     }
     
+    
+    //This fot number of dots
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
         var dotsCount = 0;
@@ -57,6 +59,7 @@ class HomeFSCalendarTableViewCell: UITableViewCell, FSCalendarDelegate, FSCalend
         return dotsCount;
     }
     
+    //This is for dots color.
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
         
         var dotsCount = 0;

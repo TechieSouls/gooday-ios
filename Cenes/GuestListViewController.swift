@@ -376,13 +376,21 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
             hostPrefix = " (Host)";
         }
         if (eventMember.user != nil) {
-            
-            cell.cenesName.text = eventMember.user.name + hostPrefix;
+            if (eventMember.user.name != nil) {
+                cell.cenesName.text = eventMember.user.name + hostPrefix;
+            } else {
+                cell.cenesName.text = "Unknown \(String(eventMember.eventMemberId))" + hostPrefix;
+            }
             if (eventMember.user.photo != nil) {
                 cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
             }
         } else {
-            cell.cenesName.text = eventMember.name + hostPrefix;
+            
+            if (eventMember.user != nil && eventMember.user.name != nil) {
+                cell.cenesName.text = eventMember.user.name + hostPrefix;
+            } else {
+                cell.cenesName.text = "Unknown \(String(eventMember.eventMemberId))" + hostPrefix;
+            }
         }
         
         if (eventMember.userContact != nil) {

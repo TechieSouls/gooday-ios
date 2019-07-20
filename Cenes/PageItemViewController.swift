@@ -12,12 +12,32 @@ class PageItemViewController: UIViewController {
 
     @IBOutlet weak var onbaordingImg: UIImageView!
     
+    @IBOutlet weak var obTitle: UILabel!
+    
+    @IBOutlet weak var obDescription: UILabel!
+    
     var itemIndex: Int = 0;
     var imageName = "" {
         
         didSet {
-            if let imageView = onbaordingImg {
+            if let imageView = self.onbaordingImg {
                 imageView.image = UIImage(named : imageName);
+            }
+        }
+    }
+    
+    var uititleStr = "" {
+        didSet {
+            if let uititle = obTitle {
+                uititle.text = uititleStr
+            }
+        }
+    }
+    
+    var uiDescStr = "" {
+        didSet {
+            if let uititle = obTitle {
+                uititle.text = uiDescStr
             }
         }
     }
@@ -26,11 +46,11 @@ class PageItemViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        onbaordingImg.image = UIImage(named : imageName);
+        //onbaordingImg.image = UIImage(named : imageName);
+        //obTitle.text = uititleStr;
+        //obDescription.text = uiDescStr;
     }
-    
-
-    /*
+        /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation

@@ -16,7 +16,8 @@ class HolidayCalendarListViewController: UIViewController {
     var alphabeticStrip: [String] = [String]();
     var loggedInUser: User!;
     var calendarSyncToken: CalendarSyncToken!;
-    
+    var activityIndicator = UIActivityIndicatorView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
@@ -29,6 +30,10 @@ class HolidayCalendarListViewController: UIViewController {
         countryDataArray = ProfileManager().getWorldHolidayData();
         
         alphabeticStrip = ProfileManager().getAlphabeticStrip();
+        
+        activityIndicator.activityIndicatorViewStyle = .gray;
+        activityIndicator.center = view.center;
+        self.view.addSubview(activityIndicator);
     }
     /*
     // MARK: - Navigation
@@ -123,21 +128,26 @@ extension HolidayCalendarListViewController: UITableViewDelegate, UITableViewDat
         //if (indexPath.row == 0) {
         if (countryDataArrayTemp?.sectionName == "#") {
             if (calendarSyncToken != nil) {
+                
+                self.activityIndicator.startAnimating();
                 let queryStr = "calendarSyncTokenId=\(String(calendarSyncToken.refreshTokenId))";
                 UserService().deleteSyncTokenByTokenId(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
                     
-                })
-                calendarSyncToken = nil
-                tableView.reloadData();
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                    self.activityIndicator.stopAnimating();
+
                     if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                         
                         let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
                         homeViewController?.refershDataFromOtherScreens();
                         
                     }
-                });
+                })
+                calendarSyncToken = nil
+                tableView.reloadData();
+                
+                //DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                
+                //});
             }
         } else {
                 let country = countryDataArrayTemp?.sectionData[indexPath.row];
@@ -146,24 +156,25 @@ extension HolidayCalendarListViewController: UITableViewDelegate, UITableViewDat
                 postData["userId"] = loggedInUser.userId;
                 postData["calendarId"] = (country!["value"] as! String);
                 postData["name"] = (country!["name"] as! String);
-                
-                DispatchQueue.global(qos: .background).async {
+            
+            
+                //DispatchQueue.global(qos: .background).async {
+                activityIndicator.startAnimating()
                     UserService().syncHolidayCalendar(postData: postData, token: self.loggedInUser.token, complete: {(response) in
+                        self.activityIndicator.stopAnimating();
+                        
+                        if (self.tabBarController != nil) {
+                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                
+                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                homeViewController?.refershDataFromOtherScreens();
+                                self.navigationController?.popViewController(animated: false);
+                                
+                            }
+                        }
                         
                     });
-                }
-            
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                        
-                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                        homeViewController?.refershDataFromOtherScreens();
-                        self.navigationController?.popViewController(animated: false);
-                        
-                    }
-                });
-
-            
+                //}
             }
         /*} else {
             let country = countryDataArrayTemp[indexPath.row - 1];
