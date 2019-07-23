@@ -484,17 +484,20 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         if userInfo!["type"] as? String == "HomeRefresh" {
 
-            if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+            /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0
                 
                 let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
                 homeViewController?.refreshHomeScreenData();
-            }
+            }*/
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
         } else if userInfo!["type"] as? String == "Gathering" {
             
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
             
-            
-            if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+            /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0
                 
                 //let notificationViewController = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? NotificationViewController
@@ -523,7 +526,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 gathering?.invitationData = invitationData
                 //gathering?.setInvitation()
                 }*/
-            }
+            }*/
         }
         
         if userInfo!["type"] as? String == "Reminder" {

@@ -80,8 +80,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
         
         if (notification.readStatus != "Read") {
             let queryStr = "notificationId=\(String(notificationId))";
-            NotificationService().markNotificationReadByNotificationId(queryStr: queryStr, token: self.loggedInUser.token, complete: {(returnedDict)
-                in
+            NotificationService().markNotificationReadByNotificationId(queryStr: queryStr, token: self.loggedInUser.token, complete: {(returnedDict) in
                 for notification in self.allNotifications {
                     if (notification.notificationId == notificationId) {
                         notification.readStatus = "Read";
@@ -168,8 +167,6 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 
                 self.notificationTableView.tableFooterView = self.spinner
                 self.notificationTableView.tableFooterView?.isHidden = false
-                
-                self.pageNumber = self.pageNumber + 20;
                 
                 self.loadNotification();
             }

@@ -122,6 +122,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                     let data = response.value(forKey: "data") as! NSDictionary;
                     let eventTemp = Event().loadEventData(eventDict: data);
                     self.event.eventPicture = eventTemp.eventPicture;
+                    self.event.eventMembers = eventTemp.eventMembers;
                     self.event.thumbnail = eventTemp.thumbnail;
                     self.invitationCardTableView.reloadData();
                 }

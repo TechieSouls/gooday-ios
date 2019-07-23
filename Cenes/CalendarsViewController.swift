@@ -51,6 +51,7 @@ class CalendarsViewController: UIViewController {
     }
 
     override func viewDidAppear(_ animated: Bool) {
+        calendarSyncTokens = [CalendarSyncToken]();
         loadUserProperties();
     }
     /*
@@ -130,6 +131,7 @@ class CalendarsViewController: UIViewController {
             if (success == true) {
                 
                 let calendarSyncTokenArray = response.value(forKey: "data") as! NSArray;
+                print(calendarSyncTokenArray)
                 self.calendarSyncTokens = CalendarSyncToken().loadCalendarSyncTokens(calendarSyncTokenArray: calendarSyncTokenArray);
                 
                 for calendarSyncToken in self.calendarSyncTokens {

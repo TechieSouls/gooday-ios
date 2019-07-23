@@ -386,10 +386,8 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
             }
         } else {
             
-            if (eventMember.user != nil && eventMember.user.name != nil) {
-                cell.cenesName.text = eventMember.user.name + hostPrefix;
-            } else {
-                cell.cenesName.text = "Unknown \(String(eventMember.eventMemberId))" + hostPrefix;
+            if (eventMember.name != nil) {
+                cell.cenesName.text = eventMember.name;
             }
         }
         

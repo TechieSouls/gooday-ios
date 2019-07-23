@@ -36,4 +36,12 @@ class CalendarSyncToken {
         }
         return calendarSyncTokens;
     }
+    
+    func updateCalendarSettingDefault(calendarName: String, isSynced: Bool) {
+        setting.setValue(isSynced, forKey: calendarName);
+    }
+    
+    func calendarExistInSettingDefault(calendarName: String) -> Bool {
+        return setting.value(forKey: calendarName) as! Bool
+    }
 }

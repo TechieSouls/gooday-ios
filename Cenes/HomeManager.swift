@@ -49,7 +49,14 @@ class HomeManager {
                     
                     var eventAlreadyExists = false;
                     for eventObj in array {
-                        if (eventObj.eventId == event.eventId) {
+                        if (eventObj.source == "Outlook" || eventObj.source == "Apple" || eventObj.source == "Google") {
+                            
+                            if (eventObj.sourceEventId == event.sourceEventId) {
+                                eventAlreadyExists = true;
+                                break;
+                            }
+                            
+                        } else if (eventObj.eventId == event.eventId) {
                             eventAlreadyExists = true;
                             break;
                         }
@@ -469,10 +476,43 @@ class HomeManager {
     func mergeCurrentAndFutureList(currentList: [HomeData], futureList: [HomeData]) -> [HomeData] {
         
         var currentListTemp = currentList;
-        
         for futObj in futureList {
-            currentListTemp.append(futObj);
-        }
+            
+            var sameKeyAlreadyExists = false;
+            
+                for currListObj in currentListTemp {
+                    
+                    if (currListObj.sectionName == futObj.sectionName) {
+                        sameKeyAlreadyExists = true;
+                        
+                        
+                        var currListObjSectionObjs = currListObj.sectionObjects
+                        
+                        for futSecObj in futObj.sectionObjects {
+                            
+                            var secObjAlreadyExists = false;
+                            
+                            for currSecObj in currListObjSectionObjs {
+                                
+                                if (currSecObj.eventId == futSecObj.eventId) {
+                                    secObjAlreadyExists = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (secObjAlreadyExists == false) {
+                                currListObjSectionObjs.append(futSecObj);
+                            }
+                        }
+                        
+                        currListObj.sectionObjects = currListObjSectionObjs;
+                    }
+                }
+            
+                if (sameKeyAlreadyExists == false) {
+                    currentListTemp.append(futObj);
+                }
+        } //Logic to handle events with same ids.
         
         currentListTemp = currentListTemp.sorted(by: { $0.sectionKeyInMillis < $1.sectionKeyInMillis })
         

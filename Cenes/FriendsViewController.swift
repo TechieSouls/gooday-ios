@@ -98,7 +98,6 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);
         } else {
             self.navigationItem.rightBarButtonItem = nil;
-            
         }
     }
     

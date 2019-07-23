@@ -26,6 +26,7 @@ class Event {
     var isFullDay: Bool = false
     var placeId: String!;
     var predictiveData: String!;
+    var sourceEventId: String!;
     var predictiveDataArr : NSMutableArray!
     var fullDayStartTime: String!;
     var key: String!;
@@ -52,6 +53,7 @@ class Event {
         event.endTime = eventDict.value(forKey: "endTime") as? Int64 ?? event.startTime;
         event.location = eventDict.value(forKey: "location") as? String;
         event.source = eventDict.value(forKey: "source") as? String ?? "Cenes";
+        event.sourceEventId = eventDict.value(forKey: "sourceEventId") as? String ?? nil;
         event.latitude = eventDict.value(forKey: "latitude") as? String;
         event.longitude = eventDict.value(forKey: "longitude") as? String;
         event.scheduleAs = eventDict.value(forKey: "scheduleAs") as? String;
@@ -91,6 +93,7 @@ class Event {
         eventJson["longitude"] = event.longitude;
         eventJson["createdById"] = event.createdById;
         eventJson["source"] = event.source;
+        eventJson["sourceEventId"] = event.sourceEventId;
         eventJson["thumbnail"] = event.thumbnail;
         eventJson["isPredictiveOn"] = event.isPredictiveOn;
         eventJson["isFullDay"] = event.isFullDay;

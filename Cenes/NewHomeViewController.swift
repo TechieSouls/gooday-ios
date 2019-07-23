@@ -48,6 +48,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         //self.calendarView.backgroundColor = themeColor;
         // Do any additional setup after loading the view.
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshHomeScreenFromNotification), name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
         calendrStatusToast.layer.cornerRadius = 10;
         calendrStatusToast.clipsToBounds  =  true
 
@@ -108,6 +110,21 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             
         });
     }
+    
+    @objc func refreshHomeScreenFromNotification() {
+        
+        //This method will load the events under calendar Tab
+        self.initilizeCalendarData();
+        
+        
+        //This method will load the dots in the calendar
+        self.loadCalendarEventsData();
+        
+        //This method is to load the invitation tabs data.
+        self.initilizeInvitationTabsData();
+    }
+
+    
     func refreshHomeScreenData() {
         
         //This method will load the events under calendar Tab
@@ -322,11 +339,18 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     func loadPastEvents() -> Void {
         
         self.homescreenDto.calendarData = [HomeData]();
-        let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(self.homescreenDto.currentMonthStartDateTimeStamp))&pageNumber=\(String(0))&offSet=\(String(20))";
+        //let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(self.homescreenDto.currentMonthStartDateTimeStamp))&pageNumber=\(String(0))&offSet=\(String(20))";
         
-        HomeService().getHomeEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
+        //HomeService().getHomeEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
             //print(returnedDict)
-            
+      
+        let endDateCompo = Int(Date().endOfMonth().millisecondsSince1970);
+        homescreenDto.startTimeStampToFetchPageableData = Int(endDateCompo);
+        let queryStr = "userId=\(String(loggedInUser.userId))&startimeStamp=\(String(self.homescreenDto.currentMonthStartDateTimeStamp))&endtimeStamp=\(String(endDateCompo))";
+        
+        HomeService().getMonthWiseEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
+
+        
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
                 

@@ -19,10 +19,6 @@ class GuestListTableViewCell: UITableViewCell {
     
     @IBOutlet weak var separator: UIView!
     
-    
-    
-    
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

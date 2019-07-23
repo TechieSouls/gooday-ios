@@ -162,9 +162,13 @@ class GatheringService {
                 upload.responseJSON { response in
                     
                     print("Suceess:\(String(describing: response.result.value ))")
-                    let json = response.result.value as! NSDictionary
-                    
-                    returnedDict["data"] = json
+                    if (response.result.value != nil) {
+                        let json = response.result.value as! NSDictionary
+                        returnedDict["data"] = json
+                    } else {
+                        returnedDict["Error"] = true
+                        returnedDict["ErrorMsg"] = "Photo cannot be uploaded."
+                    }
                     complete(returnedDict)
                     
                 }

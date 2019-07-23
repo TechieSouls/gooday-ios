@@ -53,12 +53,38 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         activityIndicator.center = view.center;
         self.view.addSubview(activityIndicator);
         
+        loadUserProperties();
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false;
     }
 
+    func loadUserProperties() {
+        
+        let queryStr = "userId=\(String(loggedInUser.userId!))";
+        UserService().findUserSyncTokens(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
+            
+            let success = response.value(forKey: "success") as! Bool;
+            if (success == true) {
+                
+                let calendarSyncTokenArray = response.value(forKey: "data") as! NSArray;
+                print(calendarSyncTokenArray)
+                var calendarSyncTokens = CalendarSyncToken().loadCalendarSyncTokens(calendarSyncTokenArray: calendarSyncTokenArray);
+                
+                for calSyncTok in calendarSyncTokens {
+                    if (calSyncTok.accountType == self.calendarSelected) {
+                        self.calendarSyncToken = calSyncTok;
+                        break;
+                    }
+                }
+                self.selectedCalendarTableView.reloadData();
+            } else {
+                self.showAlert(title: "Error", message: response.value(forKey: "message") as! String);
+            }
+        })
+    }
     /*
     // MARK: - Navigation
 
@@ -106,24 +132,29 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                             // your code here
                             UserService().syncOutlookEvents(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                                 print("Outlook Synced.")
-                                self.showAlert(title: "Account Synced", message: "");
-                                self.activityIndicator.stopAnimating();
                                 let success = response.value(forKey: "success") as! Bool;
                                 if (success == true) {
+                                    
+                                    CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
+                                    
                                     let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                                     
                                     self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                                 }
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                                    
+                                    self.activityIndicator.stopAnimating();
+                                    self.showAlert(title: "Account Synced", message: "");
+                                    
+                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                        
+                                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                        homeViewController?.refershDataFromOtherScreens();
+                                    }
+                                });
                             })
                         //}
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                
-                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                homeViewController?.refershDataFromOtherScreens();
-                            }
-                        });
                     }
                 }
                 
@@ -230,8 +261,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         // your code here
                         UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
                             print("Device Synced.")
-                            self.activityIndicator.stopAnimating();
-                            self.showAlert(title: "Account Synced", message: "");
 
                             let success = response.value(forKey: "success") as! Bool;
                             if (success == true) {
@@ -240,17 +269,22 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                 self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                             }
                             
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                                
+                                self.activityIndicator.stopAnimating();
+                                self.showAlert(title: "Account Synced", message: "");
+
+                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                    
+                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                    homeViewController?.refershDataFromOtherScreens();
+                                }
+                            });
+
                         })
                     //}
                     
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                            
-                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                            homeViewController?.refershDataFromOtherScreens();
-                        }
-                    });
 
                 } else {
                     
@@ -269,6 +303,9 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
 
                             let success = response.value(forKey: "success") as! Bool;
                             if (success == true) {
+                                
+                                CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
+                                
                                 let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                                 
                                 self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
@@ -312,25 +349,28 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             activityIndicator.startAnimating();
                 UserService().syncGoogleEvent(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                     print("synced");
-                    self.activityIndicator.stopAnimating();
-                    self.showAlert(title: "Account Synced", message: "");
-
                     let success = response.value(forKey: "success") as! Bool;
                     if (success == true) {
                         let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                         
                         self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                     }
+                    
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                        CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
+                        self.activityIndicator.stopAnimating();
+                        self.showAlert(title: "Account Synced", message: "");
+                        
+                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                            
+                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                            homeViewController?.refershDataFromOtherScreens();
+                        }
+                    });
+
                 });
             //}
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                    
-                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                    homeViewController?.refershDataFromOtherScreens();
-                }
-            });
         }
     }
     
@@ -348,11 +388,13 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             print("Deleted");
             self.isSynced = false;
             self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: false, email: "");
-            
-            self.activityIndicator.stopAnimating();
-            self.showAlert(title: "Account Deleted", message: "");
+            CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: false);
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                
+                self.activityIndicator.stopAnimating();
+                self.showAlert(title: "Account Deleted", message: "");
+                
                 if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                     
                     let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController

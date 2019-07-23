@@ -148,6 +148,9 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
                 
                 
                 if (notificationsNsArray.count > 0) {
+                    
+                    self.pageNumber = self.pageNumber + 20;
+                    
                      self.notificationTableView.isHidden = false
                      self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
                     for notification in self.notificationPerPage {
