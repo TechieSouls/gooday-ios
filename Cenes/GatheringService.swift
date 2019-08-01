@@ -194,13 +194,19 @@ class GatheringService {
         let req = Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers:Auth_header).validate(statusCode: 200..<300).responseJSON{
         (response ) in
         
-            let json = response.result.value as! NSDictionary
-            
-            returnedDict["data"] = json.value(forKey: "data")
-            returnedDict["success"] = json.value(forKey: "success")
+            if (response.result.value != nil) {
+                let json = response.result.value as! NSDictionary
+                
+                returnedDict["data"] = json.value(forKey: "data")
+                returnedDict["success"] = json.value(forKey: "success")
+
+            } else {
+                returnedDict["Error"] = true
+                returnedDict["success"] = false;
+                returnedDict["message"] = "Event not found";
+            }
             
             complete(returnedDict)
-    
         }
         self.requestArray.add(req)
     }

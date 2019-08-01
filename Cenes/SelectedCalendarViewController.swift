@@ -128,6 +128,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: true, email: unwrappedEmail)
 
                         self.activityIndicator.startAnimating();
+                        UIApplication.shared.beginIgnoringInteractionEvents()
+
                         //DispatchQueue.global(qos: .background).async {
                             // your code here
                             UserService().syncOutlookEvents(postData: postData, token: self.loggedInUser.token, complete: {(response) in
@@ -144,6 +146,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                                     
+                                    UIApplication.shared.endIgnoringInteractionEvents();
+
                                     self.activityIndicator.stopAnimating();
                                     self.showAlert(title: "Account Synced", message: "");
                                     
@@ -255,6 +259,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
 
                     DispatchQueue.main.async {
                         self.activityIndicator.startAnimating();
+                        UIApplication.shared.beginIgnoringInteractionEvents()
                     }
                     //Running In Background
                     //DispatchQueue.global(qos: .background).async {
@@ -270,7 +275,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                             }
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-                                
+                                UIApplication.shared.endIgnoringInteractionEvents();
                                 self.activityIndicator.stopAnimating();
                                 self.showAlert(title: "Account Synced", message: "");
 
@@ -283,9 +288,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
 
                         })
                     //}
-                    
-                    
-
                 } else {
                     
                     
@@ -347,6 +349,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             //Running in Background
             //DispatchQueue.global(qos: .background).async {
             activityIndicator.startAnimating();
+            UIApplication.shared.beginIgnoringInteractionEvents()
+
                 UserService().syncGoogleEvent(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                     print("synced");
                     let success = response.value(forKey: "success") as! Bool;
@@ -359,6 +363,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                         CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
+                        
+                        UIApplication.shared.endIgnoringInteractionEvents();
                         self.activityIndicator.stopAnimating();
                         self.showAlert(title: "Account Synced", message: "");
                         
@@ -382,7 +388,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
     func deleteSyncBySyncId(syncId: Int32) {
         
         activityIndicator.startAnimating();
-        
+        UIApplication.shared.beginIgnoringInteractionEvents()
+
         let queryStr = "calendarSyncTokenId=\(String(syncId))";
         UserService().deleteSyncTokenByTokenId(queryStr: queryStr, token: loggedInUser.token) {(response) in
             print("Deleted");
@@ -391,7 +398,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: false);
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                
+                UIApplication.shared.endIgnoringInteractionEvents();
+
                 self.activityIndicator.stopAnimating();
                 self.showAlert(title: "Account Deleted", message: "");
                 

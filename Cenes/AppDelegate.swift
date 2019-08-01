@@ -497,6 +497,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
             
+            let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+            let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+            viewContro.fromPushNotificaiton = true;
+            viewContro.event = Event();
+            viewContro.event.eventId = userInfo!["id"] as! Int32;
+            self.window?.rootViewController = viewContro
+            self.window?.makeKeyAndVisible()
+            
             /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0
                 

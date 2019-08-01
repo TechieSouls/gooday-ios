@@ -118,7 +118,7 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
             
             
             var postData: [String: Any] = [String: Any]();
-            postData["name"] = usernameField.text!;
+            postData["username"] = usernameField.text!;
             postData["userId"] = signupSuccessStep2ViewControllerDelegate.loggedInUser.userId;
             User().updateUserValuesInUserDefaults(user: signupSuccessStep2ViewControllerDelegate.loggedInUser);
             

@@ -31,6 +31,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     @IBOutlet weak var calendrStatusToast: UILabel!
 
     var refreshCalButton: UIButton!;
+    var createGathButton: UIButton!;
+
     var homescreenDto: HomeDto = HomeDto();
     var loggedInUser: User!;
     var homeDtoList = [HomeData]();
@@ -70,13 +72,13 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.view.addSubview(activityIndicator);
 
         self.calendrStatusToast.frame = CGRect.init(x: ((self.view.frame.width/2) - (self.calendrStatusToast.frame.width/2)) , y: (self.view.frame.height/2) + 30, width: self.calendrStatusToast.frame.width, height: 35)
+        
+        
         //Calling Funcitons
         //Load Home Screen Data on user load
         self.registerTableCells()
         
-        DispatchQueue.global(qos: .background).async {
-            self.syncDeviceContacts();
-        }
+        
         self.refreshHomeScreenData();
     }
     
@@ -91,7 +93,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated:
+        Bool) {
         
         //refreshHomeScreenData();
     }
@@ -199,13 +202,15 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         let refreshCalBarButton = UIBarButtonItem.init(customView: refreshCalButton)
 
         
-        let calendarButton = UIButton.init(type: .custom)
-        calendarButton.setImage(UIImage.init(named: "plus_icon"), for: UIControlState.normal)
+        createGathButton = UIButton.init(type: .custom)
+        createGathButton.setImage(UIImage.init(named: "plus_icon"), for: UIControlState.normal)
         //calendarButton.setImage(UIImage.init(named: "plus_icon"),, for: UIControlState.selected)
-        calendarButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
-        calendarButton.addTarget(self, action:#selector(plusButtonPressed), for: UIControlEvents.touchUpInside)
+        createGathButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
+        createGathButton.addTarget(self, action:#selector(plusButtonPressed), for: UIControlEvents.touchUpInside)
+        
+        self.createGathButton.isUserInteractionEnabled = false;
 
-        let calendarBarButton = UIBarButtonItem.init(customView: calendarButton)
+        let calendarBarButton = UIBarButtonItem.init(customView: createGathButton)
 
         self.navigationItem.rightBarButtonItems = [calendarBarButton, refreshCalBarButton]
        
@@ -417,6 +422,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     HomeService().getHomePastEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
                         //print(returnedDict)
                         
+                        self.createGathButton.isUserInteractionEnabled = true;
+
                         self.homeTableView.reloadData();
 
                         if (returnedDict["success"] as? Bool == true) {
@@ -480,6 +487,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                                     self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
                                 }
                             }
+                        }
+                        
+                        
+                        DispatchQueue.global(qos: .background).async {
+                            self.syncDeviceContacts();
                         }
                     }
                 //}

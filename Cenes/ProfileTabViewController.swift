@@ -239,8 +239,12 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
                     if (success == false) {
                         self.showAlert(title: "Error", message: resp.value(forKey: "message") as! String);
                     } else {
+                        
                         self.loggedInUser.photo = resp.value(forKey: "data") as! String;
                         User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
                     }
                 })
             }
@@ -268,6 +272,8 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         DispatchQueue.global(qos: .background).async {
             UserService().postUserDetails(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                 //User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
             });
         }
     }

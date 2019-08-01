@@ -65,6 +65,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.hideKeyboardWhenTappedAround();
         
         // Do any additional setup after loading the view.
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);

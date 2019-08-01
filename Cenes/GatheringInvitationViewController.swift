@@ -51,6 +51,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var leftToRightGestureEnabled = true;
     var rightToLeftGestureEnabled = true;
     var newHomeViewControllerDeglegate: NewHomeViewController!;
+    var fromPushNotificaiton = false;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,9 +122,34 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 if (response.value(forKey: "data") != nil) {
                     let data = response.value(forKey: "data") as! NSDictionary;
                     let eventTemp = Event().loadEventData(eventDict: data);
-                    self.event.eventPicture = eventTemp.eventPicture;
-                    self.event.eventMembers = eventTemp.eventMembers;
-                    self.event.thumbnail = eventTemp.thumbnail;
+                    
+                     if (self.fromPushNotificaiton == true) {
+                        self.isLoggedInUserAsOwner = false;
+                        self.leftToRightGestureEnabled = true;
+                        self.rightToLeftGestureEnabled = true;
+
+                        self.event = eventTemp;
+                        
+                     } else {
+                        if (self.event.requestType != EventRequestType.EditEvent) {
+                            self.event.eventPicture = eventTemp.eventPicture;
+                        }
+                        
+                        
+                        for eventMemFromDb in eventTemp.eventMembers {
+                            
+                            var editMembersIndex = 0;
+                            for eveMemFromEdit in self.event.eventMembers {
+                                
+                                if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
+                                    self.event.eventMembers[editMembersIndex] = eventMemFromDb;
+                                    break;
+                                }
+                                editMembersIndex  = editMembersIndex + 1;
+                            }
+                        }
+                        self.event.thumbnail = eventTemp.thumbnail;
+                    }
                     self.invitationCardTableView.reloadData();
                 }
             })
@@ -245,6 +271,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 self.swipeCardView.alpha = 1
                                 
                                 self.invitationCardTableView.reloadData();
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                    self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+                                });
                             } else {
                                 
                                 /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
@@ -253,20 +283,30 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                  self.navigationController?.popViewController(animated: false);
                                  }*/
                                 //This is called when the user is from home screen
-                                if (self.newHomeViewControllerDeglegate != nil) {
-                                    self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                    self.navigationController?.popViewController(animated: true);
-                                    
+                                
+                                //This is needed when user clciked on push notification.
+                                if (self.fromPushNotificaiton == true) {
+                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                    });
                                 } else {
-                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                        
-                                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                        homeViewController?.refershDataFromOtherScreens();
+                                    if (self.newHomeViewControllerDeglegate != nil) {
+                                        self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
                                         self.navigationController?.popViewController(animated: true);
                                         
+                                    } else {
+                                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                            
+                                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                            homeViewController?.refershDataFromOtherScreens();
+                                            self.navigationController?.popViewController(animated: true);
+                                            
+                                        }
                                     }
                                 }
-                            }
+                                                            }
                         } else {
                             
                             //If owner is looking at the event and,
@@ -408,6 +448,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     let imageToUpload = self.event.imageToUpload;
                                     GatheringService().createGathering(uploadDict: self.event.toDictionary(event: self.event), complete: {(response) in
                                         print("Saved Successfully...")
+                                        
                                         let error = response.value(forKey: "Error") as! Bool;
                                         if (error == false) {
                                             let dataDict = response.value(forKey: "data") as! NSDictionary;
@@ -419,33 +460,36 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         }
                                         
                                     });
-                                    DispatchQueue.main.async {
-                                        // Go back to the main thread to update the UI.
-                                        //If user has no non cenes members then we will directly take him to
-                                        //Home screen, Otherwise message box will open and user will then
-                                        //redirect to home screen after action
-                                        if (nonCenesMembers.count == 0) {
-                                            //self.navigationController?.popToRootViewController(animated: false);
-                                            //This is called when the user is from home screen
-                                            if (self.newHomeViewControllerDeglegate != nil) {
-                                                self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                    
+                                }
+                                
+                                DispatchQueue.main.async {
+                                    // Go back to the main thread to update the UI.
+                                    //If user has no non cenes members then we will directly take him to
+                                    //Home screen, Otherwise message box will open and user will then
+                                    //redirect to home screen after action
+                                    if (nonCenesMembers.count == 0) {
+                                        //self.navigationController?.popToRootViewController(animated: false);
+                                        //This is called when the user is from home screen
+                                        if (self.newHomeViewControllerDeglegate != nil) {
+                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                            //self.navigationController?.popViewController(animated: true);
+                                            UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                            
+                                        } else {
+                                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                
+                                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                homeViewController?.refershDataFromOtherScreens();
                                                 //self.navigationController?.popViewController(animated: true);
                                                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
                                                 
-                                            } else {
-                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                    
-                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                    homeViewController?.refershDataFromOtherScreens();
-                                                    //self.navigationController?.popViewController(animated: true);
-                                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                                    
-                                                }
                                             }
-                                            
                                         }
+                                        
                                     }
                                 }
+                                //}
                             }
                         }
                     }
@@ -490,6 +534,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 //self.populateCardDetails();
                                 self.invitationCardTableView.reloadData();
                                 
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                    self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+                                });
+                                
                             } else {
                                 /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
                                  UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
@@ -497,18 +545,27 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                  self.navigationController?.popViewController(animated: false);
                                  }*/
                                 
-                                //This is called when the user is from home screen
-                                if (self.newHomeViewControllerDeglegate != nil) {
-                                    self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                    self.navigationController?.popViewController(animated: true);
+                                
+                                if (self.fromPushNotificaiton == true) {
                                     
+                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                    });
                                 } else {
-                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                        
-                                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                        homeViewController?.refershDataFromOtherScreens();
+                                    //This is called when the user is from home screen
+                                    if (self.newHomeViewControllerDeglegate != nil) {
+                                        self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
                                         self.navigationController?.popViewController(animated: true);
                                         
+                                    } else {
+                                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                            
+                                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                            homeViewController?.refershDataFromOtherScreens();
+                                            self.navigationController?.popViewController(animated: true);
+                                            
+                                        }
                                     }
                                 }
                             }
@@ -651,9 +708,18 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             let indexPath = IndexPath.init(row: 0, section: 0);
             self.invitationCardTableView.scrollToRow(at: indexPath, at: .top, animated: true)
             self.invitationCardTableView.reloadData();
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+            });
             swipeCardView.center = self.view.center;
         } else {
-            self.navigationController?.popViewController(animated: false);
+            
+            if (fromPushNotificaiton == true) {
+                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+            } else {
+                self.navigationController?.popViewController(animated: false);
+            }
         }
     }
     
@@ -735,16 +801,26 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             
             if (self.event.eventId != nil) {
                 
-                if ((self.event.thumbnail) != nil) {
-                    cell.eventPicture.sd_setImage(with: URL(string: self.event.thumbnail));
-                }
-                
-                if (self.event.eventPicture != nil) {
-                    cell.eventPicture.sd_setImage(with: URL(string: self.event.eventPicture));
-                } else if (self.event.imageToUpload != nil) {
+                if (self.event.imageToUpload != nil) {
                     cell.eventPicture.image = self.event.imageToUpload;
                 } else {
-                    cell.eventPicture.image = nil;
+                    /*if ((self.event.thumbnail) != nil) {
+                        cell.eventPicture.sd_setImage(with: URL(string: self.event.thumbnail), placeholderImage: UIImage.init(url: URL(string: self.event.thumbnail)));
+                    }*/
+                    
+                    if (self.event.eventPicture != nil) {
+                        
+                        if (self.event.thumbnail != nil) {
+                            cell.eventPicture.sd_setImage(with: URL(string: self.event.eventPicture), placeholderImage: UIImage.init(url: URL(string: self.event.thumbnail)));
+                        } else {
+                            cell.eventPicture.sd_setImage(with: URL(string: self.event.eventPicture));
+                        }
+                        
+                    } else if (self.event.imageToUpload != nil) {
+                        cell.eventPicture.image = self.event.imageToUpload;
+                    } else {
+                        cell.eventPicture.image = nil;
+                    }
                 }
             } else {
                 if (self.event.imageToUpload != nil) {

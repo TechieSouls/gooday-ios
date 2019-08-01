@@ -16,7 +16,6 @@ class InvitationCardTableViewCell: UITableViewCell {
     
     @IBOutlet weak var eventTime: UILabel!
     
-    
     @IBOutlet weak var guestListView: UIView!
     
     @IBOutlet weak var locationView: UIView!
@@ -35,6 +34,8 @@ class InvitationCardTableViewCell: UITableViewCell {
     
     @IBOutlet weak var locationViewLocationIcon: UIImageView!
     
+    @IBOutlet weak var topHeaderView: UIView!
+    
     var gatheringInvitaionViewControllerDelegate: GatheringInvitationViewController!
     
     override func awakeFromNib() {
@@ -49,6 +50,23 @@ class InvitationCardTableViewCell: UITableViewCell {
         chatProfilePic.roundedView();
         chatProfilePic.layer.borderWidth = 2;
         chatProfilePic.layer.borderColor = UIColor.white.cgColor;
+        
+        let layer = UIView(frame: CGRect(x: 0, y: 0, width: self.topHeaderView.frame.width, height: self.topHeaderView.frame.height))
+        
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(x: 0, y: 0, width: self.topHeaderView.frame.width, height: self.topHeaderView.frame.height)
+        gradient.colors = [
+            UIColor.white.cgColor,
+            UIColor.black.cgColor
+        ]
+        gradient.locations = [0, 1]
+        gradient.startPoint = CGPoint(x: 0.5, y: 1)
+        gradient.endPoint = CGPoint(x: 0.5, y: 0.06)
+        layer.layer.addSublayer(gradient)
+        
+        self.topHeaderView.addSubview(layer)
+        
+        
         
         let guestListViewTapGesture = UITapGestureRecognizer(target: self, action: Selector("guestListViewPressed"));
         guestListView.addGestureRecognizer(guestListViewTapGesture);

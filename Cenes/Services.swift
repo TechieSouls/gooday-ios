@@ -390,11 +390,16 @@ class WebService
        
         let tokenPush = UserDefaults.standard.object(forKey: "tokenData") as? String
         if tokenPush != nil {
+            
         let params:Parameters = [
             "userId" :uid,
             "deviceToken" :
             tokenPush,
-            "deviceType":"ios"]
+            "deviceType":"ios",
+            "model" : "\(UIDevice.modelName)",
+            "manufacturer" : "Apple",
+            "version" : "\(UIDevice.current.systemVersion)"
+            ]
         
         let token =  setting.string(forKey: "token")
         guard token != nil else { return }

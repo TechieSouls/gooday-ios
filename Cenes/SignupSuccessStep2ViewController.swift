@@ -44,6 +44,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     
     var signupStep2FormTableViewCellProtocolDelegate: SignupStep2FormTableViewCellProtocol!
     var signupStep2CalendarsTableViewProtocolDelegate: SignupStep2CalendarsTableViewProtocol!
+    var signupStep2FormTableViewCellDelegate: SignupStep2FormTableViewCell!;
     var loggedInUser: User!;
     var outlookService = OutlookService.shared();
     let picController = UIImagePickerController();
@@ -327,8 +328,31 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     
     @IBAction func completeButtonPressed(_ sender: Any) {
         
-        if (loggedInUser.name == nil) {
-            self.showAlert(title: "Name cannot be left empty", message: "");
+        if (self.loggedInUser.name == nil) {
+            
+            if (self.signupStep2FormTableViewCellDelegate.usernameField.text != "") {
+                
+                self.loggedInUser.name = signupStep2FormTableViewCellDelegate.usernameField.text!
+                
+                var postData: [String: Any] = [String: Any]();
+                postData["username"] = signupStep2FormTableViewCellDelegate.usernameField.text!;
+                postData["userId"] = self.loggedInUser.userId;
+                User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+                
+                DispatchQueue.global(qos: .background).async {
+                    UserService().postUserDetails(postData: postData, token: self.loggedInUser.token, complete: {(response) in
+                        print("Name Updated")
+                    });
+                }
+                
+                setting.setValue(UserSteps.Authentication, forKey: "footprints")
+                DispatchQueue.main.async {
+                    WebService().setPushToken()
+                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                }
+            } else {
+                self.showAlert(title: "Name cannot be left empty", message: "");
+            }
         } else {
             setting.setValue(UserSteps.Authentication, forKey: "footprints")
             DispatchQueue.main.async {
@@ -414,6 +438,8 @@ extension SignupSuccessStep2ViewController: UITableViewDelegate, UITableViewData
                 cell.usernameField.text = loggedInUser.name!;
             }
             self.signupStep2FormTableViewCellProtocolDelegate = cell;
+            
+            self.signupStep2FormTableViewCellDelegate = cell;
             return cell;
 
         case 1:
