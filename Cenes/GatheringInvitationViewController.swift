@@ -275,6 +275,8 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                                     self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
                                 });
+                                
+                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
                             } else {
                                 
                                 /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
@@ -537,6 +539,9 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                                     self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
                                 });
+                                
+                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
                                 
                             } else {
                                 /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
