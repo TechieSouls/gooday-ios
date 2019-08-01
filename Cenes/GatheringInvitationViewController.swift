@@ -115,7 +115,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false;
         navigationController?.navigationBar.isHidden = true;
         tabBarController?.tabBar.isHidden = true;
-
+        
         if (event.eventId != nil) {
             GatheringService().eventInfoTask(eventId: Int64(event!.eventId), complete: {(response) in
                 
@@ -153,6 +153,12 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                     self.invitationCardTableView.reloadData();
                 }
             })
+        }
+        
+        if (event != nil && event.imageToUpload != nil) {
+            print("Uploading Startsss")
+            self.uploadImageAndGetUrl();
+            print("Uploading Endss")
         }
     }
     
@@ -452,7 +458,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         print("Saved Successfully...")
                                         
                                         let error = response.value(forKey: "Error") as! Bool;
-                                        if (error == false) {
+                                        if (error == false && imageToUpload != nil) {
                                             let dataDict = response.value(forKey: "data") as! NSDictionary;
                                             let eventId = dataDict.value(forKey: "eventId") as! Int32
                                             GatheringService().uploadEventImageV2(image: imageToUpload, eventId: eventId, loggedInUser: self.loggedInUser, complete: {(resp) in
@@ -465,7 +471,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     
                                 }
                                 
-                                DispatchQueue.main.async {
+                                //DispatchQueue.main.async {
                                     // Go back to the main thread to update the UI.
                                     //If user has no non cenes members then we will directly take him to
                                     //Home screen, Otherwise message box will open and user will then
@@ -485,12 +491,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                 homeViewController?.refershDataFromOtherScreens();
                                                 //self.navigationController?.popViewController(animated: true);
                                                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                                
                                             }
                                         }
-                                        
                                     }
-                                }
+                                //}
                                 //}
                             }
                         }
@@ -754,6 +758,35 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         
         //If its an edit event request then we will send user to Home screen
         UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+    }
+    
+    func uploadImageAndGetUrl() {
+        
+        GatheringService().uploadEventImageV3(image: event.imageToUpload!, loggedInUser: self.loggedInUser, complete: {(response) in
+            
+            let success = response.value(forKey: "success") as! Bool;
+            if (success == true) {
+                
+                if (response.value(forKey: "data") != nil) {
+                    
+                    let images = response.value(forKey: "data") as! NSDictionary;
+                    
+                    if (images.value(forKey: "large") != nil) {
+                        self.event.eventPicture = images.value(forKey: "large") as! String;
+                    }
+                    
+                    if (images.value(forKey: "thumbnail") != nil) {
+                        self.event.thumbnail = images.value(forKey: "thumbnail") as! String;
+                    } else {
+                        self.event.thumbnail = images.value(forKey: "large") as! String;
+                    }
+                    
+                    self.event.imageToUpload = nil;
+                }
+                
+            }
+            
+        });
     }
 }
 
