@@ -60,9 +60,9 @@ let inviteFriendInvitationSms = "Check out Cenes for your smartphone. Download i
 let instabugToken = "d81ee39bd8a6ea5c21f101ae80daef5a";
 
 //SETTINGS SCREEN
-let aboutUsVersionUpdateLink = "http://dev.cenesgroup.com";
-let cenesWebUrl = "https://dev.cenesgroup.com";
+let aboutUsVersionUpdateLink = "https://cenesgroup.com";
+let cenesWebUrl = "https://betaweb.cenesgroup.com";
 let shareLinkText = " \"[Host]\" invites you to \"[Title]\". RSVP through the Cenes app. Link below: ";
-let shareEventUrl = "https://dev.cenesgroup.com/event/invitation/"
+let shareEventUrl = "https://betaweb.cenesgroup.com/event/invitation/"
 let faqLink = "https://www.cenesgroup.com/faq";
 let privacyPolicyLink = "https://www.cenesgroup.com/app/privacyPolicy";
