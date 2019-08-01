@@ -72,8 +72,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.view.addSubview(activityIndicator);
 
         self.calendrStatusToast.frame = CGRect.init(x: ((self.view.frame.width/2) - (self.calendrStatusToast.frame.width/2)) , y: (self.view.frame.height/2) + 30, width: self.calendrStatusToast.frame.width, height: 35)
-        
-        
+
+        self.createGathButton = UIButton.init(type: .custom);
+        self.createGathButton.isUserInteractionEnabled = false;
+        self.setUpNavBarImages();
+
         //Calling Funcitons
         //Load Home Screen Data on user load
         self.registerTableCells()
@@ -202,14 +205,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         let refreshCalBarButton = UIBarButtonItem.init(customView: refreshCalButton)
 
         
-        createGathButton = UIButton.init(type: .custom)
         createGathButton.setImage(UIImage.init(named: "plus_icon"), for: UIControlState.normal)
         //calendarButton.setImage(UIImage.init(named: "plus_icon"),, for: UIControlState.selected)
         createGathButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
         createGathButton.addTarget(self, action:#selector(plusButtonPressed), for: UIControlEvents.touchUpInside)
         
-        self.createGathButton.isUserInteractionEnabled = false;
-
         let calendarBarButton = UIBarButtonItem.init(customView: createGathButton)
 
         self.navigationItem.rightBarButtonItems = [calendarBarButton, refreshCalBarButton]

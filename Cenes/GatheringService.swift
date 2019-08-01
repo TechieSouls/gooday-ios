@@ -124,7 +124,7 @@ class GatheringService {
                     
                 }
             case .failure(let encodingError):
-                print(encodingError)
+                print(encodingError.localizedDescription)
                 returnedDict["Error"] = true
                 returnedDict["ErrorMsg"] = encodingError.localizedDescription
                 complete(returnedDict)
@@ -178,6 +178,50 @@ class GatheringService {
                 returnedDict["ErrorMsg"] = encodingError.localizedDescription
                 complete(returnedDict)
                 
+            }
+            
+        }
+    }
+    
+    //Function to upload Gathering event image
+    func uploadEventImageV3(image : UIImage?, loggedInUser: User , complete: @escaping(NSDictionary)->Void)
+    {
+        guard image != nil else { return }
+        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let Auth_header    = ["token" : loggedInUser.token]
+        
+        var returnedDict = NSDictionary()
+        Alamofire.upload(multipartFormData: { (MultipartFormData) in
+            MultipartFormData.append(imgData, withName: "uploadfile", fileName: "file.jpg", mimeType: "image/jpg")
+        }, usingThreshold: UInt64.init(), to: "\(apiUrl)/api/event/uploadv2", method: .post, headers:Auth_header as! HTTPHeaders) { (result) in
+            switch result {
+            case .success(let upload,_,_):
+                
+                upload.uploadProgress(closure: { (progress) in
+                    print("Upload Progress: \(progress.fractionCompleted)")
+                })
+                
+                upload.responseJSON { response in
+                    
+                    print("Suceess:\(String(describing: response.result.value ))")
+                    if (response.result.value != nil) {
+                        returnedDict = response.result.value as! NSDictionary
+                    } else {
+                        var returResp = [String: Any]();
+                        returResp["success"] = false
+                        returResp["message"] = "Photo cannot be uploaded."
+                        returnedDict = returResp as NSDictionary;
+                    }
+                    complete(returnedDict)
+                    
+                }
+            case .failure(let encodingError):
+                print(encodingError)
+                var returResp = [String: Any]();
+                returResp["success"] = false
+                returResp["message"] = encodingError.localizedDescription
+                returnedDict = returResp as NSDictionary;
+                complete(returnedDict)
             }
             
         }
