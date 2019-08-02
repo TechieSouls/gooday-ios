@@ -383,7 +383,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if (self.newHomeViewControllerDelegate.homescreenDto.invitationTabs == HomeInvitationTabs.Pending &&  self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
+        if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.InvitationTab &&  self.newHomeViewControllerDelegate.homescreenDto.invitationTabs == HomeInvitationTabs.Pending &&  self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
             let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
             let eventObjectSelected = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             

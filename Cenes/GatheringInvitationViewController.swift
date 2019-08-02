@@ -457,7 +457,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     GatheringService().createGathering(uploadDict: self.event.toDictionary(event: self.event), complete: {(response) in
                                         print("Saved Successfully...")
                                         
-                                        let error = response.value(forKey: "Error") as! Bool;
+                                        /*let error = response.value(forKey: "Error") as! Bool;
                                         if (error == false && imageToUpload != nil) {
                                             let dataDict = response.value(forKey: "data") as! NSDictionary;
                                             let eventId = dataDict.value(forKey: "eventId") as! Int32
@@ -465,7 +465,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                 print("Saved Uploaded...")
                                                 
                                             });
-                                        }
+                                        }*/
                                         
                                     });
                                     
@@ -583,7 +583,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                             if (self.event.eventId != nil) {
                                 
                                 if (self.event.requestType == EventRequestType.EditEvent) {
-                                    self.navigationController?.popViewController(animated: true);
+                                    //self.navigationController?.popViewController(animated: true);
                                     
                                 } else {
                                     self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x, y: self.swipeCardView.center.y);
@@ -781,7 +781,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         self.event.thumbnail = images.value(forKey: "large") as! String;
                     }
                     
-                    self.event.imageToUpload = nil;
+                    //self.event.imageToUpload = nil;
                 }
                 
             }
@@ -885,7 +885,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                         
                         acceptedImageView.isHidden = true;
                         editImageView.isHidden = true;
-                        deleteImageView.isHidden = true;
+                        deleteImageView.isHidden = false;
                         
                         sendInvitationImageView.isHidden = false;
                         editImageView.isHidden = false;
