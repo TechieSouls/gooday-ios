@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		278CDFF5A1CF54251224B21D /* Pods_Beta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 390DACA28A1D9C115CADEE00 /* Pods_Beta.framework */; };
+		3B79A9B6CCA143531AFBCD54 /* Pods_Cenes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F890D00FAD77304335E8E5FB /* Pods_Cenes.framework */; };
 		5E078D1F2236A5150082A013 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E078D1E2236A5150082A013 /* NotificationService.swift */; };
 		5E078D212236A6760082A013 /* GatheringManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E078D202236A6760082A013 /* GatheringManager.swift */; };
 		5E1217BC229668EC0075961A /* PhoneVerificationStep1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217BB229668EC0075961A /* PhoneVerificationStep1ViewController.swift */; };
@@ -400,6 +400,7 @@
 
 /* Begin PBXFileReference section */
 		105C6ED5E6B4297DE396BFF3 /* Pods_Deploy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Deploy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3497B4CE9D1B3020FCEA1BBE /* Pods-Cenes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cenes.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cenes/Pods-Cenes.release.xcconfig"; sourceTree = "<group>"; };
 		390DACA28A1D9C115CADEE00 /* Pods_Beta.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Beta.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E078D1E2236A5150082A013 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5E078D202236A6760082A013 /* GatheringManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringManager.swift; sourceTree = "<group>"; };
@@ -718,6 +719,7 @@
 		B99D55CD1FC184F00020AC50 /* AlarmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmManager.swift; sourceTree = "<group>"; };
 		B9EECDB01FD4D8EB001CC478 /* RemindersViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RemindersViewController+Extensions.swift"; sourceTree = "<group>"; };
 		B9FB16A11FBAA31F00FB0FD0 /* CreateDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDiaryViewController.swift; sourceTree = "<group>"; };
+		DDD98E685343D92752240B79 /* Pods-Cenes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cenes.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cenes/Pods-Cenes.debug.xcconfig"; sourceTree = "<group>"; };
 		F40A899E1F1FD70A002BBC17 /* MailLogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailLogInViewController.swift; sourceTree = "<group>"; };
 		F40A89A01F1FD74B002BBC17 /* UtilMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilMethod.swift; sourceTree = "<group>"; };
 		F4103CC71F2AF4220071B3D6 /* Reminder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reminder.swift; sourceTree = "<group>"; };
@@ -729,7 +731,7 @@
 		F48F49C01F24DC2200825EAE /* HomeCenesEventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCenesEventTableViewCell.swift; sourceTree = "<group>"; };
 		F48F49C11F24DC2200825EAE /* HomeCenesEventTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeCenesEventTableViewCell.xib; sourceTree = "<group>"; };
 		F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
-		F4B871EF1F0DDEF1001A9963 /* Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Beta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4B871EF1F0DDEF1001A9963 /* Cenes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cenes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B871F21F0DDEF1001A9963 /* AppDelegate.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; tabWidth = 4; };
 		F4B871F41F0DDEF1001A9963 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F4B871F71F0DDEF1001A9963 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -737,10 +739,10 @@
 		F4B871FC1F0DDEF1001A9963 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4B871FF1F0DDEF1001A9963 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F4B872011F0DDEF1001A9963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F4B872061F0DDEF1001A9963 /* BetaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4B872061F0DDEF1001A9963 /* CenesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CenesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B8720A1F0DDEF2001A9963 /* CenesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenesTests.swift; sourceTree = "<group>"; };
 		F4B8720C1F0DDEF2001A9963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F4B872111F0DDEF2001A9963 /* BetaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4B872111F0DDEF2001A9963 /* CenesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CenesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B872151F0DDEF2001A9963 /* CenesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenesUITests.swift; sourceTree = "<group>"; };
 		F4B872171F0DDEF2001A9963 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F4D2C1221F37C6E6005638D8 /* HomeTableViewCellTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTableViewCellTwo.swift; sourceTree = "<group>"; };
@@ -798,7 +800,7 @@
 				FAFFE18C20D6AB700052AFA2 /* PushKit.framework in Frameworks */,
 				AE87A6D41F74EFA500ED988F /* EventKitUI.framework in Frameworks */,
 				AE87A6D21F74EF1800ED988F /* EventKit.framework in Frameworks */,
-				278CDFF5A1CF54251224B21D /* Pods_Beta.framework in Frameworks */,
+				3B79A9B6CCA143531AFBCD54 /* Pods_Cenes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -826,6 +828,8 @@
 				7EFF747EDA04134FE37B4358 /* Pods-Deploy.release.xcconfig */,
 				73722F291EFA8FDFED659F89 /* Pods-Beta.debug.xcconfig */,
 				705D324F166131A2C266EDE3 /* Pods-Beta.release.xcconfig */,
+				DDD98E685343D92752240B79 /* Pods-Cenes.debug.xcconfig */,
+				3497B4CE9D1B3020FCEA1BBE /* Pods-Cenes.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1434,9 +1438,9 @@
 		F4B871F01F0DDEF1001A9963 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F4B871EF1F0DDEF1001A9963 /* Beta.app */,
-				F4B872061F0DDEF1001A9963 /* BetaTests.xctest */,
-				F4B872111F0DDEF2001A9963 /* BetaUITests.xctest */,
+				F4B871EF1F0DDEF1001A9963 /* Cenes.app */,
+				F4B872061F0DDEF1001A9963 /* CenesTests.xctest */,
+				F4B872111F0DDEF2001A9963 /* CenesUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1657,9 +1661,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F4B871EE1F0DDEF1001A9963 /* Beta */ = {
+		F4B871EE1F0DDEF1001A9963 /* Cenes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F4B8721A1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "Beta" */;
+			buildConfigurationList = F4B8721A1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "Cenes" */;
 			buildPhases = (
 				8513B021278CF235AD8A707A /* [CP] Check Pods Manifest.lock */,
 				F4B871EB1F0DDEF1001A9963 /* Sources */,
@@ -1673,14 +1677,14 @@
 			);
 			dependencies = (
 			);
-			name = Beta;
+			name = Cenes;
 			productName = Cenes;
-			productReference = F4B871EF1F0DDEF1001A9963 /* Beta.app */;
+			productReference = F4B871EF1F0DDEF1001A9963 /* Cenes.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F4B872051F0DDEF1001A9963 /* BetaTests */ = {
+		F4B872051F0DDEF1001A9963 /* CenesTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F4B8721D1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "BetaTests" */;
+			buildConfigurationList = F4B8721D1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "CenesTests" */;
 			buildPhases = (
 				F4B872021F0DDEF1001A9963 /* Sources */,
 				F4B872031F0DDEF1001A9963 /* Frameworks */,
@@ -1691,14 +1695,14 @@
 			dependencies = (
 				F4B872081F0DDEF1001A9963 /* PBXTargetDependency */,
 			);
-			name = BetaTests;
+			name = CenesTests;
 			productName = CenesTests;
-			productReference = F4B872061F0DDEF1001A9963 /* BetaTests.xctest */;
+			productReference = F4B872061F0DDEF1001A9963 /* CenesTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F4B872101F0DDEF2001A9963 /* BetaUITests */ = {
+		F4B872101F0DDEF2001A9963 /* CenesUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F4B872201F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "BetaUITests" */;
+			buildConfigurationList = F4B872201F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "CenesUITests" */;
 			buildPhases = (
 				F4B8720D1F0DDEF2001A9963 /* Sources */,
 				F4B8720E1F0DDEF2001A9963 /* Frameworks */,
@@ -1709,9 +1713,9 @@
 			dependencies = (
 				F4B872131F0DDEF2001A9963 /* PBXTargetDependency */,
 			);
-			name = BetaUITests;
+			name = CenesUITests;
 			productName = CenesUITests;
-			productReference = F4B872111F0DDEF2001A9963 /* BetaUITests.xctest */;
+			productReference = F4B872111F0DDEF2001A9963 /* CenesUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -1755,7 +1759,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F4B871EA1F0DDEF1001A9963 /* Build configuration list for PBXProject "Beta" */;
+			buildConfigurationList = F4B871EA1F0DDEF1001A9963 /* Build configuration list for PBXProject "Cenes" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1769,9 +1773,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F4B871EE1F0DDEF1001A9963 /* Beta */,
-				F4B872051F0DDEF1001A9963 /* BetaTests */,
-				F4B872101F0DDEF2001A9963 /* BetaUITests */,
+				F4B871EE1F0DDEF1001A9963 /* Cenes */,
+				F4B872051F0DDEF1001A9963 /* CenesTests */,
+				F4B872101F0DDEF2001A9963 /* CenesUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1933,7 +1937,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Beta/Pods-Beta-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-Cenes/Pods-Cenes-resources.sh",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1942,7 +1946,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Beta/Pods-Beta-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cenes/Pods-Cenes-resources.sh\"\n";
 		};
 		5E8552B922D493380062541A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1973,7 +1977,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Beta-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Cenes-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1986,7 +1990,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Beta/Pods-Beta-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-Cenes/Pods-Cenes-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/ActionButton/ActionButton.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
@@ -2033,7 +2037,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Beta/Pods-Beta-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cenes/Pods-Cenes-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2307,12 +2311,12 @@
 /* Begin PBXTargetDependency section */
 		F4B872081F0DDEF1001A9963 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F4B871EE1F0DDEF1001A9963 /* Beta */;
+			target = F4B871EE1F0DDEF1001A9963 /* Cenes */;
 			targetProxy = F4B872071F0DDEF1001A9963 /* PBXContainerItemProxy */;
 		};
 		F4B872131F0DDEF2001A9963 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F4B871EE1F0DDEF1001A9963 /* Beta */;
+			target = F4B871EE1F0DDEF1001A9963 /* Cenes */;
 			targetProxy = F4B872121F0DDEF2001A9963 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -2458,7 +2462,7 @@
 		};
 		F4B8721B1F0DDEF2001A9963 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 73722F291EFA8FDFED659F89 /* Pods-Beta.debug.xcconfig */;
+			baseConfigurationReference = DDD98E685343D92752240B79 /* Pods-Cenes.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
@@ -2484,7 +2488,7 @@
 		};
 		F4B8721C1F0DDEF2001A9963 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 705D324F166131A2C266EDE3 /* Pods-Beta.release.xcconfig */;
+			baseConfigurationReference = 3497B4CE9D1B3020FCEA1BBE /* Pods-Cenes.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
@@ -2521,7 +2525,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Beta.app/Beta";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cenes.app/Cenes";
 			};
 			name = Debug;
 		};
@@ -2539,7 +2543,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Beta.app/Beta";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cenes.app/Cenes";
 			};
 			name = Release;
 		};
@@ -2580,7 +2584,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F4B871EA1F0DDEF1001A9963 /* Build configuration list for PBXProject "Beta" */ = {
+		F4B871EA1F0DDEF1001A9963 /* Build configuration list for PBXProject "Cenes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F4B872181F0DDEF2001A9963 /* Debug */,
@@ -2589,7 +2593,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F4B8721A1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "Beta" */ = {
+		F4B8721A1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "Cenes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F4B8721B1F0DDEF2001A9963 /* Debug */,
@@ -2598,7 +2602,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F4B8721D1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "BetaTests" */ = {
+		F4B8721D1F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "CenesTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F4B8721E1F0DDEF2001A9963 /* Debug */,
@@ -2607,7 +2611,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F4B872201F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "BetaUITests" */ = {
+		F4B872201F0DDEF2001A9963 /* Build configuration list for PBXNativeTarget "CenesUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F4B872211F0DDEF2001A9963 /* Debug */,
