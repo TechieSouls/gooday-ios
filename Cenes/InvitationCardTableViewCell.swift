@@ -54,7 +54,7 @@ class InvitationCardTableViewCell: UITableViewCell {
         let layer = UIView(frame: CGRect(x: 0, y: 0, width: self.topHeaderView.frame.width, height: self.topHeaderView.frame.height))
         
         let gradient = CAGradientLayer()
-        gradient.frame = CGRect(x: 0, y: 0, width: self.topHeaderView.frame.width, height: self.topHeaderView.frame.height)
+        gradient.frame = CGRect(x: 0, y: 0, width: self.contentView.frame.width, height: self.topHeaderView.frame.height)
         gradient.colors = [
             UIColor.white.cgColor,
             UIColor.black.cgColor

@@ -261,6 +261,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         actionSheetController.addAction(cancelAction)
         
         // present an actionSheet...
+        addActionSheetForiPad(actionSheet: actionSheetController)
         self.present(actionSheetController, animated: true, completion: nil)
     }
     

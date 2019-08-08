@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.cenesgroup.betaapp</string>
+		<string>$(AppIdentifierPrefix)com.cenesgroup.cenesapp01</string>
 	</array>
 </dict>
 </plist>

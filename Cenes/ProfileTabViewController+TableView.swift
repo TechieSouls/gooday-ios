@@ -86,6 +86,7 @@ extension ProfileTabViewController: UITableViewDelegate, UITableViewDataSource {
             actionSheetController.addAction(cancelAction)
             
             // present an actionSheet...
+            addActionSheetForiPad(actionSheet: actionSheetController)
             self.present(actionSheetController, animated: true, completion: nil)
             break;
         default:
