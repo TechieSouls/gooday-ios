@@ -206,6 +206,11 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     if let phone = setting.value(forKey: "verifiedPhone") {
                         postData["phone"] = phone;
                     }
+                
+                    if let country = setting.value(forKey: "countryCode") {
+                        postData["country"] = country;
+                    }
+                    
                     self.loginSocialRequest(postData: postData);
                 }
             })
@@ -298,8 +303,75 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 }
                 
             } else {
-                self.showAlert(title: "Alert", message: response.value(forKey: "message") as! String);
+                
+                let message = response.value(forKey: "message") as! String;
+                if (response.value(forKey: "errorCode") != nil) {
+                    let errorCode = response.value(forKey: "errorCode") as! Int;
+                    if (errorCode == 1001) {
+                        
+                        let phoneNumberToDisplay = "\(String((postData["phone"] as! String).prefix(4)))xxxx\((postData["phone"] as! String).suffix(3))";
+                        
+                        let alertBody = "Do you want to update your phone number to \(phoneNumberToDisplay) ??";
+                        
+                        let alertController = UIAlertController(title: message, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                        
+                        let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
+                            print ("Ok")
+                            
+                            alertController.dismiss(animated: true, completion: nil);
+                            
+                            self.confirmAlert(postData: postData);
+                        }
+                        
+                        
+                        let noAction = UIAlertAction(title: "No", style: .default) { (UIAlertAction) in
+                            print ("No")
+                        }
+                        alertController.addAction(okAction)
+                        alertController.addAction(noAction)
+                        self.present(alertController, animated: true, completion: nil)
+
+                    }
+                } else {
+                    self.showAlert(title: "Alert", message: message);
+                }
             }
         });
     }
+    
+    func confirmAlert(postData: [String: Any]) {
+        
+        
+        let emailToVerify = (postData["email"] as! String).split(separator: "@")[1];
+        
+        let emailPrefix = (postData["email"] as! String).split(separator: "@")[0];
+        
+        let prefixChars = emailPrefix.prefix(2);
+        var suffixChars = "";
+        for _ in 1...(emailPrefix.count-2) {
+            suffixChars = suffixChars + "*";
+        }
+        
+        let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
+        let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in
+            print ("Ok")
+            
+            var updatPostData = [String: Any]();
+            updatPostData["email"] = postData["email"];
+            updatPostData["phone"] = postData["phone"];
+
+            UserService().sendPhoneNumberUpdateEmail(postData: updatPostData, complete:{(response) in
+                
+                setting.removeObject(forKey: "verifiedPhone");
+                setting.setValue(UserSteps.OnBoardingScreens, forKey: "footprints");
+                UIApplication.shared.keyWindow?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
+                
+            });
+        }
+        confirmAlertController.addAction(confirmAction)
+        self.present(confirmAlertController, animated: true, completion: nil)
+    }
 }
+

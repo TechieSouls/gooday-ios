@@ -106,8 +106,6 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     }
     */
 
-    
-    
     @IBAction func signupButtonPressed(_ sender: Any) {
         
         let isFormValidFlag = isFormValid();
@@ -119,6 +117,9 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             postData["authType"] = "email";
             if let phone = setting.value(forKey: "verifiedPhone") {
                 postData["phone"] = phone;
+            }
+            if let country = setting.value(forKey: "countryCode") {
+                postData["country"] = country;
             }
             UserService().emailSignupRequest(postData: postData, complete: {(response) in
                 print(response);

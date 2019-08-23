@@ -162,6 +162,15 @@ extension Date {
     }
     
     func endOfMonth() -> Date {
-        return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startOfMonth())!
+        
+        var dateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: self);
+        dateComponents.day = 1;
+        dateComponents.hour = 23;
+        dateComponents.minute = 59;
+        dateComponents.second = 59;
+        dateComponents.nanosecond = 0;
+        let startDate = Calendar.current.date(from: dateComponents)!;
+
+        return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: startDate)!
     }
 }

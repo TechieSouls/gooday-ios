@@ -168,11 +168,11 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         if (event.title.count != 0) {
             //Code to show hide Event Preview Button.
             createGathDto.trackGatheringDataFilled[CreateGatheringFields.titleField] = true;
-            showHidePreviewGatheringButton();
+            //showHidePreviewGatheringButton();
         } else {
             //Code to show hide Event Preview Button.
             createGathDto.trackGatheringDataFilled[CreateGatheringFields.titleField] = false;
-            showHidePreviewGatheringButton();
+            //showHidePreviewGatheringButton();
         }
         
         return true;
@@ -265,9 +265,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         self.present(actionSheetController, animated: true, completion: nil)
     }
     
-    func showHidePreviewGatheringButton() {
-        let isFormFilled = GatheringManager().allFieldsFilled(createGathDto: createGathDto);
-        if (isFormFilled == true) {
+    func showHidePreviewGatheringButton(show: Bool) {
+        //let isFormFilled = GatheringManager().allFieldsFilled(createGathDto: createGathDto);
+        if (show == true) {
             previewGatheringBtnView.isHidden = false;
         } else {
             previewGatheringBtnView.isHidden = true;
@@ -354,26 +354,64 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     @IBAction func previewGatheringButtonPressed(_ sender: Any) {
         
-        if (self.event.eventId != nil) {
+        var isValid = true;
+        
+        if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.titleField] == false) {
+            isValid = false;
+            self.showAlert(title: "Alert", message: "Please enter Event title.");
+        } else if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] == false) {
             
-            var hostExists = false;
-            for eve in self.event.eventMembers {
-                if (eve.eventMemberId == eventHost.eventMemberId) {
-                    hostExists = true;
+            isValid = false;
+            self.showAlert(title: "Alert", message: "Please select start time");
+        }  else if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] == false) {
+            
+            isValid = false;
+            self.showAlert(title: "Alert", message: "Please select end time");
+        }   else if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] == false) {
+            
+            isValid = false;
+            self.showAlert(title: "Alert", message: "Please select event date");
+        } else if (event.eventMembers.count > 1) {
+            
+            if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.locationField] == false) {
+                
+                isValid = false;
+                self.showAlert(title: "Alert", message: "Please select event location");
+                
+            } else if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.messageField] == false) {
+                
+                isValid = false;
+                self.showAlert(title: "Alert", message: "Please add description");
+            } else if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.imageField] == false) {
+                
+                isValid = false;
+                self.showAlert(title: "Alert", message: "Please select event picture");
+                
+            }
+        }
+        
+        if (isValid == true) {
+            if (self.event.eventId != nil) {
+                var hostExists = false;
+                for eve in self.event.eventMembers {
+                    if (eve.eventMemberId == eventHost.eventMemberId) {
+                        hostExists = true;
+                    }
+                }
+                if (hostExists == false) {
+                    self.event.eventMembers.append(eventHost);
                 }
             }
-            if (hostExists == false) {
-                self.event.eventMembers.append(eventHost);
+            
+            
+            let viewController: GatheringInvitationViewController = storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+            viewController.event = self.event;
+            if (viewController.event.eventId != nil) {
+                viewController.event.requestType = EventRequestType.EditEvent;
             }
+            self.navigationController?.pushViewController(viewController, animated: true);
+            
         }
-        
-        
-        let viewController: GatheringInvitationViewController = storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-        viewController.event = self.event;
-        if (viewController.event.eventId != nil) {
-            viewController.event.requestType = EventRequestType.EditEvent;
-        }
-        self.navigationController?.pushViewController(viewController, animated: true);
     }
     
     @objc func backButtonPressed() {

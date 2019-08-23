@@ -119,40 +119,43 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         if (event.eventId != nil) {
             GatheringService().eventInfoTask(eventId: Int64(event!.eventId), complete: {(response) in
                 
-                if (response.value(forKey: "data") != nil) {
-                    let data = response.value(forKey: "data") as! NSDictionary;
-                    let eventTemp = Event().loadEventData(eventDict: data);
-                    
-                     if (self.fromPushNotificaiton == true) {
-                        self.isLoggedInUserAsOwner = false;
-                        self.leftToRightGestureEnabled = true;
-                        self.rightToLeftGestureEnabled = true;
-
-                        self.event = eventTemp;
+                let success = response.value(forKey: "success") as! Bool;
+                if (success == true) {
+                    if (response.value(forKey: "data") != nil) {
+                        let data = response.value(forKey: "data") as! NSDictionary;
+                        let eventTemp = Event().loadEventData(eventDict: data);
                         
-                     } else {
-                        if (self.event.requestType != EventRequestType.EditEvent) {
-                            self.event.eventPicture = eventTemp.eventPicture;
-                        }
-                        
-                        
-                        for eventMemFromDb in eventTemp.eventMembers {
+                        if (self.fromPushNotificaiton == true) {
+                            self.isLoggedInUserAsOwner = false;
+                            self.leftToRightGestureEnabled = true;
+                            self.rightToLeftGestureEnabled = true;
                             
-                            var editMembersIndex = 0;
-                            for eveMemFromEdit in self.event.eventMembers {
-                                
-                                if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
-                                    self.event.eventMembers[editMembersIndex] = eventMemFromDb;
-                                    break;
-                                }
-                                editMembersIndex  = editMembersIndex + 1;
+                            self.event = eventTemp;
+                            
+                        } else {
+                            if (self.event.requestType != EventRequestType.EditEvent) {
+                                self.event.eventPicture = eventTemp.eventPicture;
                             }
+                            
+                            
+                            for eventMemFromDb in eventTemp.eventMembers {
+                                
+                                var editMembersIndex = 0;
+                                for eveMemFromEdit in self.event.eventMembers {
+                                    
+                                    if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
+                                        self.event.eventMembers[editMembersIndex] = eventMemFromDb;
+                                        break;
+                                    }
+                                    editMembersIndex  = editMembersIndex + 1;
+                                }
+                            }
+                            self.event.thumbnail = eventTemp.thumbnail;
                         }
-                        self.event.thumbnail = eventTemp.thumbnail;
+                        self.invitationCardTableView.reloadData();
                     }
-                    self.invitationCardTableView.reloadData();
                 }
-            })
+            });
         }
         
         if (event != nil && event.imageToUpload != nil) {
@@ -831,6 +834,9 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                 if (self.eventOwner.user != nil && self.eventOwner.user.photo != nil) {
                     cell.chatProfilePic.sd_setImage(with: URL(string: self.eventOwner.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                     cell.profilePic.sd_setImage(with: URL(string: self.eventOwner.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+                } else {
+                    cell.chatProfilePic.image = UIImage.init(named: "profile_pic_no_image");
+                    cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
                 }
                 if (self.eventOwner.userId == self.loggedInUser.userId) {
                     self.isLoggedInUserAsOwner = true;
@@ -857,7 +863,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     } else if (self.event.imageToUpload != nil) {
                         cell.eventPicture.image = self.event.imageToUpload;
                     } else {
-                        cell.eventPicture.image = nil;
+                        cell.eventPicture.image = UIImage.init(named: "invitation_default");
                     }
                 }
             } else {

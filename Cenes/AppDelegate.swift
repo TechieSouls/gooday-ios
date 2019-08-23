@@ -74,7 +74,7 @@ let setting = UserDefaults.standard
             if !accepted {
                 print("Notification access denied.")
                 
-            }else{
+            } else {
                 DispatchQueue.main.async {
                     print ("Notificaiton access success")
                     UIApplication.shared.registerForRemoteNotifications()
@@ -261,8 +261,24 @@ let setting = UserDefaults.standard
             return true
         }
         if url.scheme == "cenesbeta" {
-            let service = OutlookService.shared()
-            service.handleOAuthCallback(url: url)
+            
+            if (url.host != nil && url.host == "event") {
+                
+                let queryStr = url.query;
+                let params = queryStr?.split(separator: "=");
+                let eventId = params![1];
+                
+                let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+                let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                viewContro.fromPushNotificaiton = true;
+                viewContro.event = Event();
+                viewContro.event.eventId = eventId as! Int32;
+                self.window?.rootViewController = viewContro
+                self.window?.makeKeyAndVisible()
+            } else {
+                let service = OutlookService.shared()
+                service.handleOAuthCallback(url: url);
+            }
             return true
         }
         return false
@@ -496,6 +512,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         } else if userInfo!["type"] as? String == "Gathering" {
             
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+            
+            let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+            let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+            viewContro.fromPushNotificaiton = true;
+            viewContro.event = Event();
+            viewContro.event.eventId = userInfo!["id"] as! Int32;
+            self.window?.rootViewController = viewContro
+            self.window?.makeKeyAndVisible()
             
             /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0

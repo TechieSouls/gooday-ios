@@ -90,6 +90,9 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             if eventMember.user != nil && eventMember.user.photo != nil {
                 cell.profileImageView.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
                 cell.unselectedProfilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+            } else {
+                cell.profileImageView.image = UIImage(named: "profile_pic_no_image");
+                cell.unselectedProfilePic.image = UIImage(named: "profile_pic_no_image");
             }
             
             let userContactId: Int = Int(eventMember.userContactId);

@@ -103,7 +103,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         profileDto = ProfileDto();
         profileDto.img = "app_settings_icon";
         profileDto.title = "App Settings";
-        profileDto.desc = "Connected Accounts, Delete Account";
+        profileDto.desc = "Delete Account";
         profileDtos.append(profileDto);
         
         profileDto = ProfileDto();

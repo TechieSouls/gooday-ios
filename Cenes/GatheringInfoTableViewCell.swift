@@ -59,7 +59,7 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         
         //Code to show hide Event Preview Button.
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.messageField] = true;
-        createGatheringDelegate.showHidePreviewGatheringButton();
+        //createGatheringDelegate.showHidePreviewGatheringButton();
     }
     
     func locationSelected(location: Location) {
@@ -85,7 +85,7 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         
         //Code to show hide Event Preview Button.
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.locationField] = true;
-        createGatheringDelegate.showHidePreviewGatheringButton();
+        //createGatheringDelegate.showHidePreviewGatheringButton();
     }
     
     func imageSelected() {
@@ -94,7 +94,7 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         if (createGatheringDelegate != nil) {
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.imageField] = true;
-            createGatheringDelegate.showHidePreviewGatheringButton();
+            //createGatheringDelegate.showHidePreviewGatheringButton();
 
         } else {
             createGatheringDelegate.showAlert(title: "Error", message: "Cannot upload from screenshot")

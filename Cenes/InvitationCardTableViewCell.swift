@@ -127,7 +127,12 @@ class InvitationCardTableViewCell: UITableViewCell {
                 alert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
             }
         } else {
-            let alert = UIAlertController(title: "Location", message: "\(String(gatheringInvitaionViewControllerDelegate.event.location))", preferredStyle: .alert);
+            
+            var location = "No Location Selected";
+            if (gatheringInvitaionViewControllerDelegate.event.location != nil) {
+                location = gatheringInvitaionViewControllerDelegate.event.location;
+            }
+            let alert = UIAlertController(title: "Location", message: "\(String(location))", preferredStyle: .alert);
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(resp) in
                 self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
                 self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")

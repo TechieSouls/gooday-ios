@@ -38,6 +38,19 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
         
+        //if (eventId == nil && inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
+        var userExistsInList = false;
+        for eventMem in inviteFriendsDto.selectedFriendCollectionViewList {
+            if (eventMem.user != nil && (eventMem.user.userId == self.loggedInUser.userId)) {
+                userExistsInList = true;
+                break;
+            }
+        }
+        if (userExistsInList == false) {
+            inviteFriendsDto.selectedFriendCollectionViewList.append(Event().getLoggedInUserAsEventMember());
+        }
+        //}
+        
         if (isFirstTime == true || eventId != nil) {
             self.getFriendsWithName(nameStartsWith: "")
         } else {
@@ -87,18 +100,19 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         };
         definesPresentationContext = true
 
+        self.refreshNavigationBarItems();
     }
     
     func refreshNavigationBarItems() {
-        if (inviteFriendsDto.selectedFriendCollectionViewList.count  > 0) {
+        //if (inviteFriendsDto.selectedFriendCollectionViewList.count  > 0) {
             let doneButton = UIButton(type: .system);
             doneButton.setTitle("Save", for: .normal);
             doneButton.addTarget(self, action: #selector(selectFriendsDone(_ :)), for: .touchUpInside)
             
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: doneButton);
-        } else {
+        /*} else {
             self.navigationItem.rightBarButtonItem = nil;
-        }
+        }*/
     }
     
     func updateSearchResults(for searchController: UISearchController) {

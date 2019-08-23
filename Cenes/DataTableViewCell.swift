@@ -231,8 +231,10 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     cell.time.text = String(Date(milliseconds: Int(event.startTime)).hmma());
                     let host = event.getEventHostFromMembers();
                     if (host.user != nil) {
-                        if (host.user.photo != nil){
+                        if (host.user.photo != nil) {
                             cell.profileImage.sd_setImage(with: URL(string: host.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"));
+                        } else {
+                            cell.profileImage.image = UIImage(named: "profile_pic_no_image");
                         }
                     }
                     
@@ -433,15 +435,14 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         
                     } else {
                         let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-                        viewController.event = event;
+                        
+                        viewController.event = Event().copyDataToNewEventObject(event: event);
                         viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate;
                         self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
                     }
                     
                 }
             }
-            
-            
         }
     }
     

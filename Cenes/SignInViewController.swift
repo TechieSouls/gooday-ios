@@ -90,8 +90,42 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             UserService().emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in
                 
                 if returnedDict.value(forKey: "Error") as? Bool == true {
-                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                     
+                    if (returnedDict.value(forKey: "ErrorCode") != nil) {
+                        
+                        let errorCode = returnedDict.value(forKey: "ErrorCode") as! Int;
+                        if (errorCode == 1001) {
+                            
+                            let phone = setting.value(forKey: "verifiedPhone") as! String;
+                            
+                            let phoneNumberToDisplay = "\(String(phone.prefix(4)))xxxx\(phone.suffix(3))";
+                            
+                            let alertBody = "Do you want to update your phone number to \(phoneNumberToDisplay) ??";
+                            
+                            let alertController = UIAlertController(title: returnedDict.value(forKey: "ErrorMsg") as! String, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                            
+                            let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
+                                print ("Ok")
+                                
+                                alertController.dismiss(animated: true, completion: nil);
+                                
+                                self.confirmAlert(email: self.emailTxtField.text!);
+                            }
+                            
+                            
+                            let noAction = UIAlertAction(title: "No", style: .default) { (UIAlertAction) in
+                                print ("No")
+                                setting.setValue(UserSteps.PhoneVerification, forKey: "footprints");
+                                UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
+                            }
+                            alertController.addAction(okAction)
+                            alertController.addAction(noAction)
+                            self.present(alertController, animated: true, completion: nil)
+                            
+                        }
+                    } else {
+                        self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                    }
                 } else {
                     
                     DispatchQueue.global(qos: .background).async {
@@ -106,16 +140,6 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         }
         
         return false;
-    }
-    
-    func alertMessage (message :String) {
-        let alertController = UIAlertController(title: "Validation", message: message, preferredStyle: UIAlertControllerStyle.alert)
-        
-        let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
-            print ("Ok")
-        }
-        alertController.addAction(okAction)
-        self.present(alertController, animated: true, completion: nil)
     }
     
     func syncDeviceContacts() {
@@ -151,8 +175,43 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             UserService().emailSignIn(email: emailTxtField.text!, password: passwordTextField.text!, complete: { (returnedDict) in
                 
                 if returnedDict.value(forKey: "Error") as? Bool == true {
-                    self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
                     
+                    if (returnedDict.value(forKey: "ErrorCode") != nil) {
+                    
+                        let errorCode = returnedDict.value(forKey: "ErrorCode") as! Int;
+                        if (errorCode == 1001) {
+                            
+                            let phone = setting.value(forKey: "verifiedPhone") as! String;
+                            
+                            let phoneNumberToDisplay = "\(String(phone.prefix(4)))xxxx\(phone.suffix(3))";
+                            
+                            let alertBody = "Do you want to update your phone number to \(phoneNumberToDisplay) ??";
+                            
+                            let alertController = UIAlertController(title: returnedDict.value(forKey: "ErrorMsg") as! String, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                            
+                            let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
+                                print ("Ok")
+                                
+                                alertController.dismiss(animated: true, completion: nil);
+                                
+                                self.confirmAlert(email: self.emailTxtField.text!);
+                            }
+                            
+                            
+                            let noAction = UIAlertAction(title: "No", style: .default) { (UIAlertAction) in
+                                print ("No")
+                                setting.setValue(UserSteps.PhoneVerification, forKey: "footprints");
+                                UIApplication.shared.keyWindow?.rootViewController = ChoiceViewController.MainViewController()
+                            }
+                            alertController.addAction(okAction)
+                            alertController.addAction(noAction)
+                            self.present(alertController, animated: true, completion: nil)
+
+                        }
+                    } else {
+                        
+                        self.showAlert(title: "Error", message: (returnedDict["ErrorMsg"] as? String)!)
+                    }
                 } else {
                     
                     DispatchQueue.global(qos: .background).async {
@@ -177,4 +236,37 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         }
     }
     
+    func confirmAlert(email: String) {
+        
+        let emailToVerify = email.split(separator: "@")[1];
+        
+        let emailPrefix = email.split(separator: "@")[0];
+        
+        let prefixChars = emailPrefix.prefix(2);
+        var suffixChars = "";
+        for n in 1...(emailPrefix.count-2) {
+            suffixChars = suffixChars + "*";
+        }
+        
+        let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
+        let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in
+            print ("Ok");
+            
+            var updatPostData = [String: Any]();
+            updatPostData["email"] = email;
+            updatPostData["phone"] = setting.value(forKey: "verifiedPhone") as! String;
+
+            UserService().sendPhoneNumberUpdateEmail(postData: updatPostData, complete:{(response) in
+                
+                setting.removeObject(forKey: "verifiedPhone");
+                setting.setValue(UserSteps.OnBoardingScreens, forKey: "footprints");
+                UIApplication.shared.keyWindow?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
+                
+            });
+        }
+        confirmAlertController.addAction(confirmAction)
+        self.present(confirmAlertController, animated: true, completion: nil)
+    }
 }

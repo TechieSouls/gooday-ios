@@ -77,7 +77,11 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.nonCenesUiViewLabel.text = nonCenesUserName;
             }
             
-            if (userContact.name != nil && userContact.name != "") {
+            if (userContact.user != nil && userContact.user.name != nil) {
+                
+                cell.name.text = String(userContact.user.name);
+
+            } else if (userContact.name != nil && userContact.name != "") {
                 let firstName = userContact.name.split(separator: " ")[0];
                 cell.name.text = String(firstName);
 
@@ -86,11 +90,16 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.name.text = String(firstName);
             }
             
-            let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
-            cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);
-            if (userContact.userContactId != nil) {
-                removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
-                cell.tag = Int(userContact.userContactId);
+            if (userContact.user != nil && (userContact.user.userId == self.friendsViewControllerDelegate.loggedInUser.userId)) {
+                cell.removeFriendIcon.isHidden = true;
+            } else {
+                cell.removeFriendIcon.isHidden = false;
+                let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
+                cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);
+                if (userContact.userContactId != nil) {
+                    removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
+                    cell.tag = Int(userContact.userContactId);
+                }
             }
         }
         return cell
@@ -101,7 +110,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
         
         var count = 0;
         for selectedFriend in self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList {
-            if (selectedFriend.userContactId == sender.userContactId) {
+            if (selectedFriend.userContactId != nil && selectedFriend.userContactId == sender.userContactId) {
                 self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.remove(at: count);
                 break;
             }

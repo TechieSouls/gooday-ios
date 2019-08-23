@@ -383,6 +383,8 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
             }
             if (eventMember.user.photo != nil) {
                 cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+            } else {
+                cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
             }
         } else {
             

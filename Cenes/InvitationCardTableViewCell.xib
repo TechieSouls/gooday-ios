@@ -23,7 +23,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="429" height="779"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FMG-ZA-Ynv">
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="invitation_default" translatesAutoresizingMaskIntoConstraints="NO" id="FMG-ZA-Ynv">
                                 <rect key="frame" x="0.0" y="0.0" width="429" height="779"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -153,6 +153,7 @@
     <resources>
         <image name="guest_list_icon" width="80" height="80"/>
         <image name="host_circle" width="37.333332061767578" height="37.333332061767578"/>
+        <image name="invitation_default" width="176.66667175292969" height="310"/>
         <image name="location_off_icon" width="63.333332061767578" height="80"/>
         <image name="message_off_icon" width="83.333335876464844" height="80"/>
         <image name="profile_pic_no_image" width="666.66668701171875" height="666.66668701171875"/>

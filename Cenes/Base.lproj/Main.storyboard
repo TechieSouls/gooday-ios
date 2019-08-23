@@ -24,7 +24,7 @@
         <!--Choice View Controller-->
         <scene sceneID="v4G-8o-lAh">
             <objects>
-                <viewController storyboardIdentifier="ChoiceViewController" id="aFq-6z-FPa" customClass="ChoiceViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChoiceViewController" id="aFq-6z-FPa" customClass="ChoiceViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jjn-yX-rok">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -108,7 +108,7 @@
         <!--Sign In View Controller-->
         <scene sceneID="hnM-6j-2F9">
             <objects>
-                <viewController storyboardIdentifier="SignInViewController" id="h7F-Sa-Fot" customClass="SignInViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignInViewController" id="h7F-Sa-Fot" customClass="SignInViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qTI-VK-7kf">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -195,7 +195,7 @@
         <!--Forgot Password Controller-->
         <scene sceneID="le2-AL-i8p">
             <objects>
-                <viewController storyboardIdentifier="ForgotPasswordController" id="w2W-wm-ZjS" customClass="ForgotPasswordController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ForgotPasswordController" id="w2W-wm-ZjS" customClass="ForgotPasswordController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xPa-X9-bmE">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -276,7 +276,7 @@
         <!--Signup Success View Controller-->
         <scene sceneID="Zd9-XS-dM4">
             <objects>
-                <viewController storyboardIdentifier="SignupSuccessViewController" id="ast-LH-THm" customClass="SignupSuccessViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignupSuccessViewController" id="ast-LH-THm" customClass="SignupSuccessViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VnZ-C8-dLu">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -410,7 +410,7 @@
         <!--Signup Success Step2 View Controller-->
         <scene sceneID="e7I-dU-Aka">
             <objects>
-                <viewController storyboardIdentifier="SignupSuccessStep2ViewController" id="huB-0a-lwZ" customClass="SignupSuccessStep2ViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignupSuccessStep2ViewController" id="huB-0a-lwZ" customClass="SignupSuccessStep2ViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ucJ-FZ-CaI">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -529,7 +529,7 @@
         <!--Phone Verification Step1 View Controller-->
         <scene sceneID="p9z-6j-hpw">
             <objects>
-                <viewController storyboardIdentifier="PhoneVerificationStep1ViewController" id="f3L-1i-ZIc" customClass="PhoneVerificationStep1ViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhoneVerificationStep1ViewController" id="f3L-1i-ZIc" customClass="PhoneVerificationStep1ViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5DH-OT-meD">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -612,7 +612,15 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content="terms and conditions.">
+                                    <fragment content="terms and conditions">
+                                        <attributes>
+                                            <color key="NSBackgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="NSColor" red="0.0" green="0.58823529411764708" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="15" name="Avenir-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
                                         <attributes>
                                             <color key="NSBackgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="NSColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -620,7 +628,22 @@
                                             <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
+                                    <fragment content="and">
+                                        <attributes>
+                                            <color key="NSBackgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="15" name="Avenir-Light"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
                                 </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="privacy policy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f3v-Rp-2lF">
+                                <rect key="frame" x="156" y="770" width="102" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="15"/>
+                                <color key="textColor" red="0.0" green="0.50845147562449644" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -635,6 +658,7 @@
                         <outlet property="getAccessButton" destination="gnh-Fu-oW0" id="1Yg-Yo-A8r"/>
                         <outlet property="getAccessView" destination="aR5-Vb-Wjh" id="qAx-M4-Gjk"/>
                         <outlet property="phoneNumberTextField" destination="gf2-mH-7iM" id="tkc-at-38Z"/>
+                        <outlet property="privacyPolicyLabel" destination="f3v-Rp-2lF" id="Gx6-Vn-qh3"/>
                         <outlet property="termsAndConditionsLabel" destination="LCk-0M-flL" id="fo1-fL-J6O"/>
                         <segue destination="6qV-gn-ifH" kind="show" id="8eA-tV-EUk"/>
                     </connections>
@@ -872,7 +896,7 @@
         <!--Home View Controller-->
         <scene sceneID="BDO-GQ-WWz">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="8sI-qa-Afx" customClass="HomeViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="8sI-qa-Afx" customClass="HomeViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8XR-zy-9N7">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -981,7 +1005,7 @@
         <!--Profile Tab View Controller-->
         <scene sceneID="tEr-xT-7k4">
             <objects>
-                <viewController storyboardIdentifier="ProfileTabViewController" id="fZO-fB-H3A" customClass="ProfileTabViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileTabViewController" id="fZO-fB-H3A" customClass="ProfileTabViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yyQ-3M-K5G">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1005,7 +1029,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="430"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="profile_pic_no_image" translatesAutoresizingMaskIntoConstraints="NO" id="DaH-uq-4fO">
+                                    <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="profile_pic_no_image" translatesAutoresizingMaskIntoConstraints="NO" id="DaH-uq-4fO">
                                         <rect key="frame" x="148" y="90" width="125" height="125"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
@@ -1110,7 +1134,7 @@
         <!--Personal Details View Controller-->
         <scene sceneID="0O2-gg-mSQ">
             <objects>
-                <viewController storyboardIdentifier="PersonalDetailsViewController" id="PqB-lz-kZi" customClass="PersonalDetailsViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PersonalDetailsViewController" id="PqB-lz-kZi" customClass="PersonalDetailsViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pLL-2K-hqy">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1283,7 +1307,7 @@
         <!--Calendars View Controller-->
         <scene sceneID="SNR-m2-hWa">
             <objects>
-                <viewController storyboardIdentifier="CalendarsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="l3S-7j-ieL" customClass="CalendarsViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CalendarsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="l3S-7j-ieL" customClass="CalendarsViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ga7-2U-KJ5">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1377,7 +1401,7 @@
         <!--Selected Calendar View Controller-->
         <scene sceneID="9O2-bf-Igz">
             <objects>
-                <viewController storyboardIdentifier="SelectedCalendarViewController" id="9eZ-lR-7rX" customClass="SelectedCalendarViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SelectedCalendarViewController" id="9eZ-lR-7rX" customClass="SelectedCalendarViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q1g-bU-9RT">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1406,7 +1430,7 @@
         <!--Edit Personal Details View Controller-->
         <scene sceneID="VSs-bc-xb4">
             <objects>
-                <viewController storyboardIdentifier="EditPersonalDetailsViewController" id="TKt-wg-kYc" customClass="EditPersonalDetailsViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EditPersonalDetailsViewController" id="TKt-wg-kYc" customClass="EditPersonalDetailsViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GgD-xf-WFz">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1435,7 +1459,7 @@
         <!--New Home View Controller-->
         <scene sceneID="ZcJ-rm-wJq">
             <objects>
-                <viewController storyboardIdentifier="NewHomeViewController" id="ZEu-Mw-MAH" customClass="NewHomeViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewHomeViewController" id="ZEu-Mw-MAH" customClass="NewHomeViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lbD-Ts-uEd">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1475,7 +1499,7 @@
         <!--Gathering Expired View Controller-->
         <scene sceneID="6WU-DS-ggQ">
             <objects>
-                <viewController storyboardIdentifier="GatheringExpiredViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="B36-Us-QhU" customClass="GatheringExpiredViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GatheringExpiredViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="B36-Us-QhU" customClass="GatheringExpiredViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="YHA-m8-wV0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1551,7 +1575,7 @@ ALREADY
         <!--Gathering Invitation View Controller-->
         <scene sceneID="Pmu-z6-ZXp">
             <objects>
-                <viewController storyboardIdentifier="GatheringInvitationViewController" id="rqz-4t-HmO" customClass="GatheringInvitationViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GatheringInvitationViewController" id="rqz-4t-HmO" customClass="GatheringInvitationViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P2Y-gi-Wgq">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1649,7 +1673,7 @@ ALREADY
         <!--Guest List View Controller-->
         <scene sceneID="Mcr-lJ-kzH">
             <objects>
-                <viewController storyboardIdentifier="GuestListViewController" id="cUt-zv-wL8" customClass="GuestListViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GuestListViewController" id="cUt-zv-wL8" customClass="GuestListViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oKN-Sm-lpb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1785,7 +1809,7 @@ ALREADY
         <!--Camera View Controller-->
         <scene sceneID="tCj-Oj-572">
             <objects>
-                <viewController storyboardIdentifier="profile" id="nlu-1s-ini" customClass="PCameraViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="profile" id="nlu-1s-ini" customClass="PCameraViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="S5C-hG-Qf6">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1885,7 +1909,7 @@ ALREADY
         <!--Base Onboarding View Controller-->
         <scene sceneID="LxL-m3-IHa">
             <objects>
-                <viewController storyboardIdentifier="onbooardingNavigation1" id="Ad4-QL-Jdi" customClass="BaseOnboardingViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="onbooardingNavigation1" id="Ad4-QL-Jdi" customClass="BaseOnboardingViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Xmz-Pt-RNR">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1977,7 +2001,7 @@ ALREADY
         <!--World Holiday Calendar View Controller-->
         <scene sceneID="9tq-7W-pH0">
             <objects>
-                <viewController storyboardIdentifier="holiday" id="Fyd-nc-vPe" customClass="WorldHolidayCalendarViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="holiday" id="Fyd-nc-vPe" customClass="WorldHolidayCalendarViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5qA-Mv-bNv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2052,7 +2076,7 @@ ALREADY
         <!--Holiday Calendar List View Controller-->
         <scene sceneID="SWA-bV-d5e">
             <objects>
-                <viewController storyboardIdentifier="HolidayCalendarListViewController" id="gsn-LM-Gzw" customClass="HolidayCalendarListViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HolidayCalendarListViewController" id="gsn-LM-Gzw" customClass="HolidayCalendarListViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6HA-xp-t5r">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2081,7 +2105,7 @@ ALREADY
         <!--Sync Calendar-->
         <scene sceneID="Wyq-FS-Ivj">
             <objects>
-                <viewController storyboardIdentifier="calendar" title="Sync Calendar" id="pPY-Ni-o1M" customClass="AddCalendarViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="calendar" title="Sync Calendar" id="pPY-Ni-o1M" customClass="AddCalendarViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="m1V-wQ-tIV">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2169,7 +2193,7 @@ ALREADY
         <!--Profile View Controller-->
         <scene sceneID="6QQ-x4-ugn">
             <objects>
-                <viewController storyboardIdentifier="ProfileViewController" id="MMH-iS-HTt" customClass="ProfileViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileViewController" id="MMH-iS-HTt" customClass="ProfileViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TSe-d3-LHr">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2311,7 +2335,7 @@ ALREADY
         <!--Me Time View Controller-->
         <scene sceneID="tIy-R1-KMv">
             <objects>
-                <viewController storyboardIdentifier="MeTime" id="hGK-I9-UoI" customClass="MeTimeViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MeTime" id="hGK-I9-UoI" customClass="MeTimeViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="u22-5q-51Z">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2531,7 +2555,7 @@ ALREADY
         <!--CENES-->
         <scene sceneID="Dbo-te-Qak">
             <objects>
-                <viewController id="HFR-6b-g4G" customClass="ReminderViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="HFR-6b-g4G" customClass="ReminderViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GuO-Ac-ly0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2589,7 +2613,7 @@ ALREADY
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <inset key="separatorInset" minX="30" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ReminderViewCell" rowHeight="44" id="MY4-KK-GYb" customClass="ReminderViewCell" customModule="Deploy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ReminderViewCell" rowHeight="44" id="MY4-KK-GYb" customClass="ReminderViewCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="55.333333333333343" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MY4-KK-GYb" id="yhy-LD-Oum">
@@ -2698,7 +2722,7 @@ ALREADY
         <!--New Me Time View Controller-->
         <scene sceneID="ZSP-O5-bCb">
             <objects>
-                <viewController id="q4O-Ug-prh" customClass="NewMeTimeViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="q4O-Ug-prh" customClass="NewMeTimeViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BqF-n6-bme">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2751,7 +2775,7 @@ ALREADY
         <!--Me Time Add View Controller-->
         <scene sceneID="Lic-dR-2Tk">
             <objects>
-                <viewController storyboardIdentifier="MeTimeAddViewController" wantsFullScreenLayout="YES" modalPresentationStyle="overFullScreen" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="eQo-bi-N6y" customClass="MeTimeAddViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MeTimeAddViewController" wantsFullScreenLayout="YES" modalPresentationStyle="overFullScreen" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="eQo-bi-N6y" customClass="MeTimeAddViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" opaque="NO" contentMode="scaleAspectFit" id="lKh-vw-cQ9">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3028,7 +3052,7 @@ ALREADY
         <!--My Reminders-->
         <scene sceneID="nY9-k7-mHF">
             <objects>
-                <viewController storyboardIdentifier="RemindersViewController" id="3c6-Tc-ISE" customClass="RemindersViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RemindersViewController" id="3c6-Tc-ISE" customClass="RemindersViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zZj-gW-57X">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3037,7 +3061,7 @@ ALREADY
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Reminder" rowHeight="50" id="g7V-vV-rWp" customClass="RemindersTableViewCell" customModule="Deploy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Reminder" rowHeight="50" id="g7V-vV-rWp" customClass="RemindersTableViewCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="55.333333333333343" width="414" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="g7V-vV-rWp" id="yeH-t0-eCk">
@@ -3078,7 +3102,7 @@ ALREADY
                                             <outlet property="reminderLabel" destination="8wb-zB-j30" id="IhG-OI-SJS"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="EmptyCell" rowHeight="150" id="a2r-1X-wpv" customClass="RemindersEmptyTableViewCell" customModule="Deploy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="EmptyCell" rowHeight="150" id="a2r-1X-wpv" customClass="RemindersEmptyTableViewCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="105.33333333333334" width="414" height="150"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="a2r-1X-wpv" id="iio-qO-Sgf">
@@ -3103,7 +3127,7 @@ ALREADY
                                             <outlet property="emptyLabel" destination="TZb-qu-oNS" id="hL0-kC-bdX"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReminderDetail" rowHeight="110" id="AdS-cZ-W8k" customClass="ReminderDetailTableViewCell" customModule="Deploy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReminderDetail" rowHeight="110" id="AdS-cZ-W8k" customClass="ReminderDetailTableViewCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="255.33333333333337" width="414" height="110"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AdS-cZ-W8k" id="e3R-pn-8jY">
@@ -3238,7 +3262,7 @@ ALREADY
         <!--Side Menu View Controller-->
         <scene sceneID="TSY-3H-fxG">
             <objects>
-                <viewController storyboardIdentifier="SideMenuViewController" id="3Xq-0X-MuG" customClass="SideMenuViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SideMenuViewController" id="3Xq-0X-MuG" customClass="SideMenuViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zgk-79-c1b">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3422,7 +3446,7 @@ ALREADY
         <!--About View Controller-->
         <scene sceneID="kcP-ah-EEa">
             <objects>
-                <viewController storyboardIdentifier="aboutUs" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YB4-Mn-9ke" customClass="AboutViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="aboutUs" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YB4-Mn-9ke" customClass="AboutViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="0e8-M6-prh">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3474,7 +3498,7 @@ ALREADY
         <!--Add Or Edit Reminder View Controller-->
         <scene sceneID="rWU-xb-uW5">
             <objects>
-                <viewController storyboardIdentifier="AddOrEditReminderViewController" id="v9O-nC-IAQ" customClass="AddOrEditReminderViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddOrEditReminderViewController" id="v9O-nC-IAQ" customClass="AddOrEditReminderViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yct-9m-tvk">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3612,7 +3636,7 @@ ALREADY
         <!--App Settings View Controller-->
         <scene sceneID="5ZS-nS-Nu5">
             <objects>
-                <viewController storyboardIdentifier="AppSettingsViewController" id="EYb-2Z-eRM" customClass="AppSettingsViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AppSettingsViewController" id="EYb-2Z-eRM" customClass="AppSettingsViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2PF-5j-G0d">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3650,7 +3674,7 @@ ALREADY
         <!--App Settings Edit View Controller-->
         <scene sceneID="hBj-iv-lPw">
             <objects>
-                <viewController storyboardIdentifier="AppSettingsEditViewController" id="0xr-sG-go2" customClass="AppSettingsEditViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AppSettingsEditViewController" id="0xr-sG-go2" customClass="AppSettingsEditViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="f3H-ZI-hJo">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3679,7 +3703,7 @@ ALREADY
         <!--Location Table View Controller-->
         <scene sceneID="KQy-HE-bhe">
             <objects>
-                <tableViewController id="Er2-48-YVt" customClass="LocationTableViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="Er2-48-YVt" customClass="LocationTableViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="205-iK-Ap1">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3738,7 +3762,7 @@ ALREADY
         <!--Cenes Tab Controller-->
         <scene sceneID="L6q-pA-7YQ">
             <objects>
-                <tabBarController storyboardIdentifier="tab" extendedLayoutIncludesOpaqueBars="YES" id="Z4R-Ke-SW6" customClass="CenesTabController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="tab" extendedLayoutIncludesOpaqueBars="YES" id="Z4R-Ke-SW6" customClass="CenesTabController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="8bw-cV-Deo">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -3812,7 +3836,7 @@ ALREADY
         <!--Gathering View Controller-->
         <scene sceneID="tNf-sz-HYu">
             <objects>
-                <viewController storyboardIdentifier="GatheringViewController" id="xqI-zW-jpp" customClass="GatheringViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GatheringViewController" id="xqI-zW-jpp" customClass="GatheringViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ybu-bB-rlU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4064,7 +4088,7 @@ ALREADY
         <!--Diary-->
         <scene sceneID="atM-m8-a4F">
             <objects>
-                <viewController title="Diary" id="Bge-xt-IPQ" customClass="DiaryViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Diary" id="Bge-xt-IPQ" customClass="DiaryViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jYz-hX-xHr">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4079,7 +4103,7 @@ ALREADY
                                     <inset key="sectionInset" minX="15" minY="15" maxX="15" maxY="15"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DiaryCell" id="fhG-vR-5d5" customClass="DiaryCell" customModule="Deploy" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DiaryCell" id="fhG-vR-5d5" customClass="DiaryCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="15" y="59" width="165" height="200"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -4150,7 +4174,7 @@ ALREADY
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
-                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="DiaryHeaderView" id="4Jy-4Q-RKi" customClass="DiaryHeaderView" customModule="Deploy" customModuleProvider="target">
+                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="DiaryHeaderView" id="4Jy-4Q-RKi" customClass="DiaryHeaderView" customModule="Cenes" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
@@ -4202,7 +4226,7 @@ ALREADY
         <!--Create Diary View Controller-->
         <scene sceneID="BDc-sc-yIF">
             <objects>
-                <viewController hidesBottomBarWhenPushed="YES" id="Kp1-kh-ZVr" customClass="CreateDiaryViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="Kp1-kh-ZVr" customClass="CreateDiaryViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hNR-72-fKT">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4267,7 +4291,7 @@ ALREADY
         <!--Diary Info View Controller-->
         <scene sceneID="hN9-62-Sti">
             <objects>
-                <viewController storyboardIdentifier="DiaryInfoViewController" hidesBottomBarWhenPushed="YES" id="iFI-Iq-d9K" customClass="DiaryInfoViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DiaryInfoViewController" hidesBottomBarWhenPushed="YES" id="iFI-Iq-d9K" customClass="DiaryInfoViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ls2-mH-pKL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4437,7 +4461,7 @@ ALREADY
         <!--Create Gathering View Controller-->
         <scene sceneID="vw1-bf-fh1">
             <objects>
-                <viewController storyboardIdentifier="createGathering" hidesBottomBarWhenPushed="YES" id="lkG-d0-IvE" customClass="CreateGatheringViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="createGathering" hidesBottomBarWhenPushed="YES" id="lkG-d0-IvE" customClass="CreateGatheringViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PFE-fs-vMn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4595,7 +4619,7 @@ ALREADY
         <!--Gathering Preview Controller-->
         <scene sceneID="tMD-p5-zN6">
             <objects>
-                <viewController storyboardIdentifier="GatheringPreviewController" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="K0x-fl-juo" customClass="GatheringPreviewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GatheringPreviewController" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="K0x-fl-juo" customClass="GatheringPreviewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="T4U-aa-uqT">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4652,7 +4676,7 @@ ALREADY
         <!--Alarm-->
         <scene sceneID="qBz-4c-a0U">
             <objects>
-                <viewController id="i8i-Ea-bMI" customClass="AlarmViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="i8i-Ea-bMI" customClass="AlarmViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OfB-Ii-4fn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4670,7 +4694,7 @@ ALREADY
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Alarm" rowHeight="100" id="XYY-Oz-4Eh" customClass="AlarmTableViewCell" customModule="Deploy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Alarm" rowHeight="100" id="XYY-Oz-4Eh" customClass="AlarmTableViewCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XYY-Oz-4Eh" id="N2A-x2-Icd">
@@ -4773,7 +4797,7 @@ ALREADY
         <!--Alarm-->
         <scene sceneID="Jsz-cM-C5q">
             <objects>
-                <viewController storyboardIdentifier="AddAlarmViewController" id="qT1-lx-PE8" customClass="AddAlarmViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddAlarmViewController" id="qT1-lx-PE8" customClass="AddAlarmViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="h4J-B2-CEc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4782,7 +4806,7 @@ ALREADY
                                 <rect key="frame" x="0.0" y="312" width="414" height="433"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="AlarmInfo" rowHeight="55" id="9Zw-xO-G2Z" customClass="AlarmDetailTableViewCell" customModule="Deploy" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="AlarmInfo" rowHeight="55" id="9Zw-xO-G2Z" customClass="AlarmDetailTableViewCell" customModule="Cenes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="55"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9Zw-xO-G2Z" id="rdb-6X-3mZ">
@@ -4860,7 +4884,7 @@ ALREADY
         <!--Alarm Info View Controller-->
         <scene sceneID="QIO-lZ-wBH">
             <objects>
-                <viewController id="GRY-dd-obM" customClass="AlarmInfoViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="GRY-dd-obM" customClass="AlarmInfoViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ok3-4p-SMa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5076,7 +5100,7 @@ ALREADY
         <!--Countries View Controller-->
         <scene sceneID="Xkj-rK-LYJ">
             <objects>
-                <viewController storyboardIdentifier="CountriesViewController" id="maH-xe-h9P" customClass="CountriesViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CountriesViewController" id="maH-xe-h9P" customClass="CountriesViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9Xk-0b-THi">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5111,7 +5135,7 @@ ALREADY
         <!--Phone Verification Step2 View Controller-->
         <scene sceneID="d1t-0E-nGM">
             <objects>
-                <viewController storyboardIdentifier="PhoneVerificationStep2ViewController" id="6qV-gn-ifH" customClass="PhoneVerificationStep2ViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhoneVerificationStep2ViewController" id="6qV-gn-ifH" customClass="PhoneVerificationStep2ViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="X4H-jT-AwY">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5197,7 +5221,7 @@ ALREADY
         <!--Home View Controller-->
         <scene sceneID="dDo-JE-SIU">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="7tP-yZ-OAw" customClass="HomeViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="7tP-yZ-OAw" customClass="HomeViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eo6-1z-fzM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5303,7 +5327,7 @@ ALREADY
         <!--Friends View Controller-->
         <scene sceneID="29O-P6-GTC">
             <objects>
-                <viewController storyboardIdentifier="FriendsViewController" id="JMm-T2-aez" customClass="FriendsViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FriendsViewController" id="JMm-T2-aez" customClass="FriendsViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2pr-gH-pHM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5332,7 +5356,7 @@ ALREADY
         <!--Create GatheringV2 View Controller-->
         <scene sceneID="jET-Js-G1J">
             <objects>
-                <viewController storyboardIdentifier="CreateGatheringV2ViewController" id="Dih-4d-qef" customClass="CreateGatheringV2ViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateGatheringV2ViewController" id="Dih-4d-qef" customClass="CreateGatheringV2ViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cL9-PW-Njh">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5379,7 +5403,7 @@ ALREADY
                                     </button>
                                 </subviews>
                             </view>
-                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p6W-be-UPy">
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p6W-be-UPy">
                                 <rect key="frame" x="0.0" y="806" width="415" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
@@ -5418,7 +5442,7 @@ ALREADY
         <!--Create Gathering Message View Controller-->
         <scene sceneID="xnB-Dr-qgy">
             <objects>
-                <viewController storyboardIdentifier="CreateGatheringMessageViewController" id="YDW-9G-QpB" customClass="CreateGatheringMessageViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateGatheringMessageViewController" id="YDW-9G-QpB" customClass="CreateGatheringMessageViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="m8i-Q4-Lxs">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5498,7 +5522,7 @@ ALREADY
         <!--Create Gathering Location View Controller-->
         <scene sceneID="uxW-tn-AbT">
             <objects>
-                <viewController storyboardIdentifier="CreateGatheringLocationViewController" id="cEy-E0-mgV" customClass="CreateGatheringLocationViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateGatheringLocationViewController" id="cEy-E0-mgV" customClass="CreateGatheringLocationViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nih-bb-bTb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5539,7 +5563,7 @@ ALREADY
         <!--Gathering Image Picker View Controller-->
         <scene sceneID="S0u-5L-kge">
             <objects>
-                <viewController storyboardIdentifier="GatheringImagePickerViewController" id="g8X-HL-4fZ" customClass="GatheringImagePickerViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GatheringImagePickerViewController" id="g8X-HL-4fZ" customClass="GatheringImagePickerViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="flS-Kk-t6Y">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5620,7 +5644,7 @@ ALREADY
         <!--My Image Cropper View Controller-->
         <scene sceneID="Qj4-gF-7gG">
             <objects>
-                <viewController storyboardIdentifier="MyImageCropperViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="XtS-7F-V5j" customClass="MyImageCropperViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MyImageCropperViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="XtS-7F-V5j" customClass="MyImageCropperViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xLK-N7-NVm">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5667,7 +5691,7 @@ ALREADY
         <!--What's New-->
         <scene sceneID="FJm-vT-YTK">
             <objects>
-                <viewController id="Z3l-ze-jx9" customClass="NotificationViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Z3l-ze-jx9" customClass="NotificationViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kJs-zd-Hc7">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
