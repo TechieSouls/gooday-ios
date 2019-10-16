@@ -11,5 +11,5 @@ import Foundation
 class EventDto {
     
     var sectionName: String!;
-    var sectionObjects = [Event]();
+    var sectionObjects = [EventMO]();
 }

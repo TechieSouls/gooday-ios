@@ -98,7 +98,7 @@ Calendar</string>
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="outlook_icon" translatesAutoresizingMaskIntoConstraints="NO" id="FFu-lU-iLX">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="outlook_icon_alphabet" translatesAutoresizingMaskIntoConstraints="NO" id="FFu-lU-iLX">
                                         <rect key="frame" x="20" y="20" width="20" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
@@ -135,7 +135,7 @@ Outlook</string>
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="apple_icon" translatesAutoresizingMaskIntoConstraints="NO" id="C0Q-P0-Ewp">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="apple_icon_alphabet" translatesAutoresizingMaskIntoConstraints="NO" id="C0Q-P0-Ewp">
                                         <rect key="frame" x="20" y="20" width="20" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
@@ -174,7 +174,9 @@ Calendar</string>
     </objects>
     <resources>
         <image name="apple_icon" width="11.333333015441895" height="13.333333015441895"/>
+        <image name="apple_icon_alphabet" width="166.66667175292969" height="158"/>
         <image name="google_icon" width="17.333333969116211" height="17.333333969116211"/>
         <image name="outlook_icon" width="13.333333015441895" height="13.333333015441895"/>
+        <image name="outlook_icon_alphabet" width="166.66667175292969" height="166.66667175292969"/>
     </resources>
 </document>

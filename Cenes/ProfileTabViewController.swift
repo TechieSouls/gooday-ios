@@ -103,7 +103,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         profileDto = ProfileDto();
         profileDto.img = "app_settings_icon";
         profileDto.title = "App Settings";
-        profileDto.desc = "Connected Accounts, Delete Account";
+        profileDto.desc = "Delete Account";
         profileDtos.append(profileDto);
         
         profileDto = ProfileDto();
@@ -111,6 +111,13 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         profileDto.title = "Need Help?";
         profileDto.desc = "FAQ, Help & Feedback";
         profileDtos.append(profileDto);
+        
+        profileDto = ProfileDto();
+        profileDto.img = "version_update_icon";
+        profileDto.title = "About";
+        profileDto.desc = "Update to latest version";
+        profileDtos.append(profileDto);
+
 
     }
     
@@ -188,6 +195,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         actionSheetController.addAction(cancelAction)
         
         // present an actionSheet...
+        addActionSheetForiPad(actionSheet: actionSheetController)
         present(actionSheetController, animated: true, completion: nil)
     }
     

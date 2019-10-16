@@ -18,6 +18,8 @@ class UserService {
     let get_forget_password_email = "auth/forgetPassword/v2";
     let get_forget_password_send_email = "auth/forgetPassword/v2/sendEmail";
     let get_country_by_ip_address = "auth/getCountryByIpAddress";
+    let get_simcard_info_by_userId = "/api/user/findSimCardByUserId";//userId
+    
     
     let post_signup_user_step1 = "api/users/signupstep1";
     let post_signup_user_step2 = "api/users/signupstep2";
@@ -33,7 +35,8 @@ class UserService {
     let post_delete_user_by_phone_password = "api/deleteUserByPhonePassword";
     let post_verification_code = "api/guest/sendVerificationCode";
     let post_check_verification_code = "api/guest/checkVerificationCode";
-
+    let post_save_simcard_info = "/api/user/saveSimCardInfo";
+    let post_send_update_phone_number_email = "/auth/updatePhoneNumber/v2/sendEmail"
     
     let delete_sync_token = "api/user/deleteSyncBySyncId"
     
@@ -86,7 +89,6 @@ class UserService {
                         let name = json.object(forKey: "name")
                         let email = json.object(forKey: "email")
                         
-                        
                         setting.setValue(userId!, forKey: "userId")
                         setting.setValue(name!, forKey: "name")
                         setting.setValue(email!, forKey: "email")
@@ -116,8 +118,12 @@ class UserService {
         let parameters: Parameters = [
             "authType": "email",
             "email": email,
-            "password": password
+            "password": password,
+            "phone": setting.value(forKey: "verifiedPhone")!,
+            "country": setting.value(forKey: "countryCode")!
         ]
+        
+        print(setting.value(forKey: "verifiedPhone"))
         print( "Inside emailSignIn")
         
         let returnedDict = NSMutableDictionary()
@@ -183,12 +189,15 @@ class UserService {
                             })
                         }*/
                         
-                    }else if json["errorCode"] as? Int == 100 {
+                    } else if json["errorCode"] as? Int == 100 {
                         returnedDict["Error"] = true
                         returnedDict["ErrorMsg"] = "Incorrect Email or Password."
                         
-                    }else{
+                    } else {
                         //Work to do
+                        returnedDict["ErrorCode"] = json["errorCode"] as! Int
+                        returnedDict["Error"] = true
+                        returnedDict["ErrorMsg"] = json["errorDetail"] as! String
                     }
                     
                     
@@ -325,14 +334,7 @@ class UserService {
         });
     }
     
-    func findUserStatsByUserId(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
-        let url = "\(apiUrl)\(get_user_stats)?\(queryStr)";
-        print("Url : \(url)")
-        HttpService().getMethod(url: url, token: token, complete: {(response) in
-            complete(response)
-        });
-    }
-    
+
     func syncGoogleEvent(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(post_sync_google_events)";
@@ -342,6 +344,7 @@ class UserService {
         });
         
     }
+
     func syncDeviceEvents(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(post_sync_device_events)";
@@ -407,6 +410,26 @@ class UserService {
         });
     }
     
+    func saveUserSimCardInfo(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_save_simcard_info)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+    
+    func sendPhoneNumberUpdateEmail(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_send_update_phone_number_email)";
+        
+        HttpService().postMethodWithoutToken(url: url, postData: postData, complete: {(response) in
+            complete(response);
+        });
+    }
+
+    
+
     func postVerificationCodeWithoutToken(postData: [String: Any], complete: @escaping(NSDictionary)->Void) {
         
         let url = "\(apiUrl)\(post_verification_code)";
@@ -436,6 +459,22 @@ class UserService {
         });
     }
     
+    func findUserSimCardInfo(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_simcard_info_by_userId)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+    
+    func findUserStatsByUserId(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_user_stats)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
+    }
+
     func findUserByEmail(queryStr: String, token: String,  complete: @escaping(NSDictionary) ->Void ) {
         
         let url = "\(apiUrl)\(get_user_by_email)?\(queryStr)";

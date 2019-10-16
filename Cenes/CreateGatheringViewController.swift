@@ -39,7 +39,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     @IBOutlet weak var gatheringTableView: UITableView!
     
-    var event: Event = Event();
+    var event: EventMO = EventMO();
     var loggedInUser: User = User();
     
     var gatheringImage : UIImage!
@@ -314,7 +314,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         var predictiveString : String!
         
         
-        print("EVENT JSON : \(Event().toDictionary(event: event))")
+        print("EVENT JSON : \(event.description)")
         
         return;
 		
@@ -358,26 +358,27 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             var eventMembers = [NSMutableDictionary]()
             
-            for userContact in self.event.eventMembers {
+            for userContact in self.event.eventMembers! {
                
-                if (userContact.cenesMember == "no") {
+                let eventMemMO = userContact as! EventMemberMO;
+                if (eventMemMO.cenesMember == "no") {
                     continue;
                 }
                 let dict = NSMutableDictionary()
                 
-                dict["name"] = userContact.name
-                dict["userId"] = userContact.userId
+                dict["name"] = eventMemMO.name
+                dict["userId"] = eventMemMO.userId
                 
-                if let status = userContact.status {
+                if let status = eventMemMO.status {
                     dict["status"] = status
                 }
                 
                 let id = "\((setting.value(forKey: "userId") as? NSNumber)!)"
-                if "\(userContact.userId)" == id {
+                if "\(eventMemMO.userId)" == id {
                     continue
                 }
-                if userContact.user != nil {
-                    dict["picture"] = userContact.user.photo;
+                if eventMemMO.user != nil {
+                    dict["picture"] = eventMemMO.user!.photo;
                 }
                 eventMembers.append(dict)
             }
@@ -738,7 +739,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         } else if(segue.identifier == "showGatheringPreview"){
             let eventPreview = self.event;
             let gatheringPreviewController = segue.destination as! GatheringPreviewController
-            gatheringPreviewController.event = eventPreview;
+            //gatheringPreviewController.event = eventPreview;
         }
     }
     
@@ -870,7 +871,7 @@ extension CreateGatheringViewController: SelectedLocationDelegate {
 }
 
 extension CreateGatheringViewController: CollectionFriendsProtocol {
-    func collectionFriendsList(selectedFriendHolder: [EventMember]) {
+    func collectionFriendsList(selectedFriendHolder: [EventMemberMO]) {
         
         print("Callback Function Called....")
         
@@ -879,19 +880,23 @@ extension CreateGatheringViewController: CollectionFriendsProtocol {
         if (selectedFriendHolder.count > 0) {
             
             if (eventMembers == nil) {
-                self.event.eventMembers = selectedFriendHolder;
+                for selctedFriendMO in selectedFriendHolder {
+                    self.event.addToEventMembers(selctedFriendMO);
+                }
+            
             } else {
                 for selectedMem in selectedFriendHolder {
                     
                     var userAlreadyExists = false;
                     for eventMem in eventMembers! {
-                        if (eventMem.userContactId == selectedMem.userContactId) {
+                        let eventMemMO = eventMem as! EventMemberMO;
+                        if (eventMemMO.userContactId == selectedMem.userContactId) {
                             userAlreadyExists = true;
                             break;
                         }
                     }
                     if (!userAlreadyExists) {
-                        self.event.eventMembers.append(selectedMem);
+                        self.event.addToEventMembers(selectedMem);
                     }
                 }
             }

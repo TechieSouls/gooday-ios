@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Deploy 2.0.17</string>
+	<string>Deploy 2.0.20</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
+	<string>2.0.20</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -46,7 +46,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>17</string>
+	<string>20</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -84,21 +84,21 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>Need To Access Calendar Events in the App</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Cenes request to use camera</string>
+	<string>If not allowed, you will be unable to send photos clicked from camera to friends on Cenes</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Cenes would like to acess your contacts</string>
+	<string>Cenes will upload your address book to our server to help you find mobile contacts using Cenes. This data won't be saved or used for other purposes. Match mobile contacts?</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Cenes would need access the location for accurate results</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Cenes would like to access the location</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSLocationUsageDescription</key>
-	<string>Cenes would need access the location to notify on selected regions</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Cenes would need access the location to notify on selected regions</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app will use microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app will use photo library</string>
+	<string>If not allowed, you will be unable to send photos from photo gallery to friends on Cenes</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Regular.ttf</string>
@@ -133,6 +133,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>privacy - location usage description</key>
-	<string>Cenes would need access the location to notify on selected regions</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 </dict>
 </plist>

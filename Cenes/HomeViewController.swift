@@ -950,7 +950,7 @@ extension HomeViewController :UITableViewDataSource,UITableViewDelegate{
                 cell.locationView.isHidden = false
             }
             
-            let owner = HomeManager().getHost(event: event);
+            let owner = EventMember(); //HomeManager().getHost(event: event);
             cell.profilePic.setRounded();
             if (owner != nil && owner.photo != nil){
                 cell.profilePic.sd_setImage(with: URL(string: (owner.photo)!), placeholderImage: UIImage(named: "cenes_user_no_image"));

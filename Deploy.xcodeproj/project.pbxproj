@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E046C0B23139A1800183EB4 /* EventModel+CoreDataProp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E046C0A23139A1800183EB4 /* EventModel+CoreDataProp.swift */; };
 		5E078D1F2236A5150082A013 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E078D1E2236A5150082A013 /* NotificationService.swift */; };
 		5E078D212236A6760082A013 /* GatheringManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E078D202236A6760082A013 /* GatheringManager.swift */; };
 		5E1217BC229668EC0075961A /* PhoneVerificationStep1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217BB229668EC0075961A /* PhoneVerificationStep1ViewController.swift */; };
@@ -85,10 +86,14 @@
 		5E51FDAC226982AA00A86994 /* PredictiveCalendarCellTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E51FDAA226982AA00A86994 /* PredictiveCalendarCellTableViewCell.xib */; };
 		5E51FDAF2269AD9200A86994 /* PredictiveInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E51FDAD2269AD9200A86994 /* PredictiveInfoTableViewCell.swift */; };
 		5E51FDB02269AD9200A86994 /* PredictiveInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E51FDAE2269AD9200A86994 /* PredictiveInfoTableViewCell.xib */; };
+		5E5408AC2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5408AB2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift */; };
 		5E57873D224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873B224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift */; };
 		5E57873E224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */; };
 		5E578741224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */; };
 		5E578742224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E578740224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib */; };
+		5E5D500C234C844E0093AE8A /* CenesUserContactMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5D500A234C844E0093AE8A /* CenesUserContactMO+CoreDataClass.swift */; };
+		5E5D500D234C844E0093AE8A /* CenesUserContactMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5D500B234C844E0093AE8A /* CenesUserContactMO+CoreDataProperties.swift */; };
+		5E5D500F234C84670093AE8A /* CenesUserContactModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5D500E234C84670093AE8A /* CenesUserContactModel+CoreDataManager.swift */; };
 		5E64C0F5228ECDE9000F2629 /* CountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */; };
 		5E64C0FB228F153E000F2629 /* CountryItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */; };
 		5E64C0FC228F153E000F2629 /* CountryItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */; };
@@ -118,6 +123,11 @@
 		5E6F5734222039AD0053C21A /* GatheringPreviewTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E6F5732222039AD0053C21A /* GatheringPreviewTitleTableViewCell.xib */; };
 		5E6F573722203ACC0053C21A /* GatheringPreviewDescTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F573522203ACC0053C21A /* GatheringPreviewDescTableViewCell.swift */; };
 		5E6F573822203ACC0053C21A /* GatheringPreviewDescTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E6F573622203ACC0053C21A /* GatheringPreviewDescTableViewCell.xib */; };
+		5E9A18ED231786EC00AC5E79 /* EventMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9A18E9231786EC00AC5E79 /* EventMO+CoreDataClass.swift */; };
+		5E9A18EE231786EC00AC5E79 /* EventMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9A18EA231786EC00AC5E79 /* EventMO+CoreDataProperties.swift */; };
+		5E9A18EF231786EC00AC5E79 /* EventMemberMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9A18EB231786EC00AC5E79 /* EventMemberMO+CoreDataClass.swift */; };
+		5E9A18F0231786EC00AC5E79 /* EventMemberMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9A18EC231786EC00AC5E79 /* EventMemberMO+CoreDataProperties.swift */; };
+		5E9B1B0C23389B8C0037A2EC /* VersionUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B1B0B23389B8C0037A2EC /* VersionUpdateViewController.swift */; };
 		5E9DBBF02261B592000F9AA4 /* deploy.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBEE2261B592000F9AA4 /* deploy.xcdatamodeld */; };
 		5E9DBBF22261BFCB000F9AA4 /* PersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */; };
 		5E9DBBF42261C1D2000F9AA4 /* NotificationPersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */; };
@@ -135,7 +145,6 @@
 		5EBC9CAB2279F7A5005946C4 /* NoGatheringTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EBC9CA92279F7A5005946C4 /* NoGatheringTableViewCell.xib */; };
 		5EC64E8D2285C594001FB7A7 /* CenesProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC64E8C2285C594001FB7A7 /* CenesProperty.swift */; };
 		5EC73CEF1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */; };
-		5EC73CF31F4FFF3800D9679B /* BaseOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */; };
 		5EC7A167227DAC5A0010E804 /* BottomCurveDesignableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A166227DAC5A0010E804 /* BottomCurveDesignableView.swift */; };
 		5EC7A16B227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A169227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift */; };
 		5EC7A16C227DBC4B0010E804 /* PeronalDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC7A16A227DBC4B0010E804 /* PeronalDetailsTableViewCell.xib */; };
@@ -151,6 +160,12 @@
 		5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */; };
 		5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */; };
 		5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */; };
+		5ED3E01E234703DE00C720F4 /* CenesUserMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3E01A234703DE00C720F4 /* CenesUserMO+CoreDataClass.swift */; };
+		5ED3E01F234703DE00C720F4 /* CenesUserMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3E01B234703DE00C720F4 /* CenesUserMO+CoreDataProperties.swift */; };
+		5ED3E020234703DE00C720F4 /* NotificationMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3E01C234703DE00C720F4 /* NotificationMO+CoreDataClass.swift */; };
+		5ED3E021234703DE00C720F4 /* NotificationMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3E01D234703DE00C720F4 /* NotificationMO+CoreDataProperties.swift */; };
+		5ED3E023234791AC00C720F4 /* CenesUserModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3E022234791AC00C720F4 /* CenesUserModel+CoreDataManager.swift */; };
+		5ED3E02523479C1000C720F4 /* EventMemberModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3E02423479C1000C720F4 /* EventMemberModel+CoreDataManager.swift */; };
 		5ED6FECF224B687B00E940DE /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FECE224B687B00E940DE /* Connectivity.swift */; };
 		5ED6FED3224B9B7A00E940DE /* ProfileTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */; };
 		5ED747B62226BA9000C3458A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B52226BA9000C3458A /* Event.swift */; };
@@ -324,7 +339,6 @@
 		F42AC09D1F27858E009FF9FA /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42AC09C1F27858E009FF9FA /* Services.swift */; };
 		F45626AF1F32407A00B68761 /* ReminderData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45626AE1F32407A00B68761 /* ReminderData.swift */; };
 		F47C358A1F17F93700CAE09A /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47C35891F17F93700CAE09A /* AppConstants.swift */; };
-		F48F480A1F39FC790003B586 /* PCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48F48091F39FC790003B586 /* PCameraViewController.swift */; };
 		F48F49C21F24DC2200825EAE /* HomeCenesEventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48F49C01F24DC2200825EAE /* HomeCenesEventTableViewCell.swift */; };
 		F48F49C31F24DC2200825EAE /* HomeCenesEventTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F48F49C11F24DC2200825EAE /* HomeCenesEventTableViewCell.xib */; };
 		F4B1C72F1F2E94EC00174414 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */; };
@@ -401,6 +415,7 @@
 
 /* Begin PBXFileReference section */
 		105C6ED5E6B4297DE396BFF3 /* Pods_Deploy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Deploy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E046C0A23139A1800183EB4 /* EventModel+CoreDataProp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventModel+CoreDataProp.swift"; sourceTree = "<group>"; };
 		5E078D1E2236A5150082A013 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5E078D202236A6760082A013 /* GatheringManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringManager.swift; sourceTree = "<group>"; };
 		5E1217BB229668EC0075961A /* PhoneVerificationStep1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneVerificationStep1ViewController.swift; sourceTree = "<group>"; };
@@ -479,10 +494,14 @@
 		5E51FDAA226982AA00A86994 /* PredictiveCalendarCellTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PredictiveCalendarCellTableViewCell.xib; sourceTree = "<group>"; };
 		5E51FDAD2269AD9200A86994 /* PredictiveInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveInfoTableViewCell.swift; sourceTree = "<group>"; };
 		5E51FDAE2269AD9200A86994 /* PredictiveInfoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PredictiveInfoTableViewCell.xib; sourceTree = "<group>"; };
+		5E5408AB2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationModel+CoreDataManager.swift"; sourceTree = "<group>"; };
 		5E57873B224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeTwoLineTitleTableViewCell.swift; sourceTree = "<group>"; };
 		5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeTwoLineTitleTableViewCell.xib; sourceTree = "<group>"; };
 		5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeThreeLineTableViewCell.swift; sourceTree = "<group>"; };
 		5E578740224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeThreeLineTableViewCell.xib; sourceTree = "<group>"; };
+		5E5D500A234C844E0093AE8A /* CenesUserContactMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CenesUserContactMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5E5D500B234C844E0093AE8A /* CenesUserContactMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CenesUserContactMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5E5D500E234C84670093AE8A /* CenesUserContactModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CenesUserContactModel+CoreDataManager.swift"; sourceTree = "<group>"; };
 		5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountriesViewController.swift; sourceTree = "<group>"; };
 		5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryItemTableViewCell.swift; sourceTree = "<group>"; };
 		5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryItemTableViewCell.xib; sourceTree = "<group>"; };
@@ -512,6 +531,11 @@
 		5E6F5732222039AD0053C21A /* GatheringPreviewTitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GatheringPreviewTitleTableViewCell.xib; sourceTree = "<group>"; };
 		5E6F573522203ACC0053C21A /* GatheringPreviewDescTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringPreviewDescTableViewCell.swift; sourceTree = "<group>"; };
 		5E6F573622203ACC0053C21A /* GatheringPreviewDescTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GatheringPreviewDescTableViewCell.xib; sourceTree = "<group>"; };
+		5E9A18E9231786EC00AC5E79 /* EventMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5E9A18EA231786EC00AC5E79 /* EventMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5E9A18EB231786EC00AC5E79 /* EventMemberMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventMemberMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5E9A18EC231786EC00AC5E79 /* EventMemberMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventMemberMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5E9B1B0B23389B8C0037A2EC /* VersionUpdateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionUpdateViewController.swift; sourceTree = "<group>"; };
 		5E9DBBEF2261B592000F9AA4 /* deploy.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = deploy.xcdatamodel; sourceTree = "<group>"; };
 		5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceManager.swift; sourceTree = "<group>"; };
 		5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPersistanceManager.swift; sourceTree = "<group>"; };
@@ -529,7 +553,6 @@
 		5EBC9CA92279F7A5005946C4 /* NoGatheringTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoGatheringTableViewCell.xib; sourceTree = "<group>"; };
 		5EC64E8C2285C594001FB7A7 /* CenesProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenesProperty.swift; sourceTree = "<group>"; };
 		5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldHolidayCalendarViewController.swift; sourceTree = "<group>"; };
-		5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseOnboardingViewController.swift; sourceTree = "<group>"; };
 		5EC7A166227DAC5A0010E804 /* BottomCurveDesignableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCurveDesignableView.swift; sourceTree = "<group>"; };
 		5EC7A169227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeronalDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		5EC7A16A227DBC4B0010E804 /* PeronalDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeronalDetailsTableViewCell.xib; sourceTree = "<group>"; };
@@ -545,6 +568,12 @@
 		5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMatchOnboardingViewController.swift; sourceTree = "<group>"; };
 		5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationOnboardingViewController.swift; sourceTree = "<group>"; };
 		5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveData.swift; sourceTree = "<group>"; };
+		5ED3E01A234703DE00C720F4 /* CenesUserMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CenesUserMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5ED3E01B234703DE00C720F4 /* CenesUserMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CenesUserMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5ED3E01C234703DE00C720F4 /* NotificationMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5ED3E01D234703DE00C720F4 /* NotificationMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5ED3E022234791AC00C720F4 /* CenesUserModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CenesUserModel+CoreDataManager.swift"; sourceTree = "<group>"; };
+		5ED3E02423479C1000C720F4 /* EventMemberModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EventMemberModel+CoreDataManager.swift"; sourceTree = "<group>"; };
 		5ED6FECE224B687B00E940DE /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTabViewController.swift; sourceTree = "<group>"; };
 		5ED747B52226BA9000C3458A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -724,7 +753,6 @@
 		F42AC09C1F27858E009FF9FA /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		F45626AE1F32407A00B68761 /* ReminderData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReminderData.swift; sourceTree = "<group>"; };
 		F47C35891F17F93700CAE09A /* AppConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
-		F48F48091F39FC790003B586 /* PCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCameraViewController.swift; sourceTree = "<group>"; };
 		F48F49C01F24DC2200825EAE /* HomeCenesEventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCenesEventTableViewCell.swift; sourceTree = "<group>"; };
 		F48F49C11F24DC2200825EAE /* HomeCenesEventTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeCenesEventTableViewCell.xib; sourceTree = "<group>"; };
 		F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
@@ -1052,6 +1080,7 @@
 		5ED6FED1224B841300E940DE /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				5E9B1B0B23389B8C0037A2EC /* VersionUpdateViewController.swift */,
 				5EC7A16D227DBDAE0010E804 /* extension */,
 				5EC7A168227DBBF40010E804 /* cells */,
 				5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */,
@@ -1385,6 +1414,16 @@
 		B9E8A78B1FC3F3D8000DE506 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				5E5D500A234C844E0093AE8A /* CenesUserContactMO+CoreDataClass.swift */,
+				5E5D500B234C844E0093AE8A /* CenesUserContactMO+CoreDataProperties.swift */,
+				5ED3E01A234703DE00C720F4 /* CenesUserMO+CoreDataClass.swift */,
+				5ED3E01B234703DE00C720F4 /* CenesUserMO+CoreDataProperties.swift */,
+				5ED3E01C234703DE00C720F4 /* NotificationMO+CoreDataClass.swift */,
+				5ED3E01D234703DE00C720F4 /* NotificationMO+CoreDataProperties.swift */,
+				5E9A18E9231786EC00AC5E79 /* EventMO+CoreDataClass.swift */,
+				5E9A18EA231786EC00AC5E79 /* EventMO+CoreDataProperties.swift */,
+				5E9A18EB231786EC00AC5E79 /* EventMemberMO+CoreDataClass.swift */,
+				5E9A18EC231786EC00AC5E79 /* EventMemberMO+CoreDataProperties.swift */,
 				B99D55C71FC1358D0020AC50 /* Alarm+CoreDataClass.swift */,
 				B99D55C81FC1358D0020AC50 /* Alarm+CoreDataProperties.swift */,
 				B956ADAB1FB04E00005B13CA /* RemindersModel+CoreDataClass.swift */,
@@ -1393,6 +1432,11 @@
 				B956ADAE1FB04E00005B13CA /* LocationsModel+CoreDataProperties.swift */,
 				B956ADAF1FB04E00005B13CA /* FriendsModel+CoreDataClass.swift */,
 				B956ADB01FB04E00005B13CA /* FriendsModel+CoreDataProperties.swift */,
+				5E046C0A23139A1800183EB4 /* EventModel+CoreDataProp.swift */,
+				5E5408AB2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift */,
+				5ED3E022234791AC00C720F4 /* CenesUserModel+CoreDataManager.swift */,
+				5ED3E02423479C1000C720F4 /* EventMemberModel+CoreDataManager.swift */,
+				5E5D500E234C84670093AE8A /* CenesUserContactModel+CoreDataManager.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1532,13 +1576,11 @@
 				F4B871F41F0DDEF1001A9963 /* LoginViewController.swift */,
 				F40A899E1F1FD70A002BBC17 /* MailLogInViewController.swift */,
 				F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */,
-				F48F48091F39FC790003B586 /* PCameraViewController.swift */,
 				5EEE36421F50D78E0095517C /* BaseViewController.swift */,
 				AE8F3A751FC40FCD00ED13CC /* OutlookService.swift */,
 				944A7B511F98044F001491D3 /* Alarm */,
 				AE4A817C1FAB1D90008AB844 /* CenesTabController.swift */,
 				AEDD81481FB0734500F15742 /* ProfileViewController.swift */,
-				5EC73CF21F4FFF3800D9679B /* BaseOnboardingViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1994,9 +2036,11 @@
 				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/Groot/Groot.framework",
 				"${BUILT_PRODUCTS_DIR}/IoniconsSwift/IoniconsSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Mantis/Mantis.framework",
 				"${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
@@ -2017,9 +2061,11 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Groot.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IoniconsSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mantis.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NVActivityIndicatorView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -2043,6 +2089,7 @@
 				5ED6FED3224B9B7A00E940DE /* ProfileTabViewController.swift in Sources */,
 				F40A899F1F1FD70A002BBC17 /* MailLogInViewController.swift in Sources */,
 				FA9FC42221CE93920066A446 /* AutheticateManager.swift in Sources */,
+				5ED3E01F234703DE00C720F4 /* CenesUserMO+CoreDataProperties.swift in Sources */,
 				5ED747BA2226BAE900C3458A /* User.swift in Sources */,
 				5E51FD982268277400A86994 /* InnerTableHeaderTableViewCell.swift in Sources */,
 				F4D2C1241F37C6E6005638D8 /* HomeTableViewCellTwo.swift in Sources */,
@@ -2058,6 +2105,7 @@
 				5EDEE1EF2240A9DB00330F47 /* NewMeTimeViewController.swift in Sources */,
 				AE3B98731F876A2700E24994 /* FriendsViewCell.swift in Sources */,
 				5E6F5733222039AD0053C21A /* GatheringPreviewTitleTableViewCell.swift in Sources */,
+				5E046C0B23139A1800183EB4 /* EventModel+CoreDataProp.swift in Sources */,
 				5E40954922531DCE00CA9700 /* NotificationManager.swift in Sources */,
 				5E69990A2221182600A275B6 /* GatheringPreviewController+UITableView.swift in Sources */,
 				5E51FD9F2268736E00A86994 /* CreateGatheringV2ViewController.swift in Sources */,
@@ -2078,6 +2126,7 @@
 				5EF8409A223778740046E68D /* NewHomeViewController.swift in Sources */,
 				FA27BD0E21F2365100E674D4 /* GatheringService.swift in Sources */,
 				5E578741224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift in Sources */,
+				5E5D500D234C844E0093AE8A /* CenesUserContactMO+CoreDataProperties.swift in Sources */,
 				5E51FDA2226874E700A86994 /* CreateGatheringV2ViewController+UITableView.swift in Sources */,
 				5EFFC0AC222ED6030037D2EC /* NotificationGatheringTableViewCell.swift in Sources */,
 				F42AC09D1F27858E009FF9FA /* Services.swift in Sources */,
@@ -2091,6 +2140,7 @@
 				AE7AD0361F9EFABB007B50F7 /* InvitationViewCell.swift in Sources */,
 				AE5BA7D01FAB283A00EBF76B /* SideMenuViewController.swift in Sources */,
 				FA3429F721FB663800205876 /* HomeHolidayTableViewCell.swift in Sources */,
+				5E9A18F0231786EC00AC5E79 /* EventMemberMO+CoreDataProperties.swift in Sources */,
 				B956ADB31FB04E00005B13CA /* LocationsModel+CoreDataClass.swift in Sources */,
 				5E64C10522905F9D000F2629 /* DeleteAccountTableViewCell.swift in Sources */,
 				5E64C0FB228F153E000F2629 /* CountryItemTableViewCell.swift in Sources */,
@@ -2106,6 +2156,7 @@
 				FA110EC2215FDF4D007DB7EA /* CountryCodeService.swift in Sources */,
 				5EEE363F1F508DA20095517C /* CountryPicker.m in Sources */,
 				944A7B551F980701001491D3 /* AddAlarmViewController.swift in Sources */,
+				5ED3E020234703DE00C720F4 /* NotificationMO+CoreDataClass.swift in Sources */,
 				B956ADB41FB04E00005B13CA /* LocationsModel+CoreDataProperties.swift in Sources */,
 				5E51FD942265FD5100A86994 /* SelectedFriendCollectionViewCell.swift in Sources */,
 				B9710C901FA3BA35000A45B3 /* RemindersTableViewCell.swift in Sources */,
@@ -2114,6 +2165,7 @@
 				AE8F47151FB9B65500C153F0 /* DiaryViewController.swift in Sources */,
 				5E2797C5222BC2D20098F295 /* GatheringLocTableViewCell.swift in Sources */,
 				FA025A3121F5D9B300240E08 /* UIImageView+Customs.swift in Sources */,
+				5E5408AC2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift in Sources */,
 				AEB0114C1F6697FB00A5B520 /* GatheringEventTableViewCell.swift in Sources */,
 				5E2797CC222C02BC0098F295 /* FriendsViewController.swift in Sources */,
 				5E41ED1E2275AE9400E972E1 /* HomeFSCalendarTableViewCell.swift in Sources */,
@@ -2142,7 +2194,6 @@
 				5E64C0F5228ECDE9000F2629 /* CountriesViewController.swift in Sources */,
 				FAC5314821CBE5F100E033BB /* Date+Customs.swift in Sources */,
 				5E2797C9222BCBA90098F295 /* GatheringGuestTableViewCell.swift in Sources */,
-				F48F480A1F39FC790003B586 /* PCameraViewController.swift in Sources */,
 				AE37C7D71F6BA5680080916A /* SettingsViewController.swift in Sources */,
 				B9710C981FA67A68000A45B3 /* LocationModel.swift in Sources */,
 				AE5841AF1FBB148B000D4F86 /* DiaryHeaderView.swift in Sources */,
@@ -2155,6 +2206,7 @@
 				AE92F0261F947F490051CCF6 /* DeleteCell.swift in Sources */,
 				5ED747B62226BA9000C3458A /* Event.swift in Sources */,
 				AE2043521F8B588F00C48468 /* NotificationViewController.swift in Sources */,
+				5E9A18EE231786EC00AC5E79 /* EventMO+CoreDataProperties.swift in Sources */,
 				5EF840932237646B0046E68D /* HolidayCalendarListViewController.swift in Sources */,
 				5E20A498226B797A00F1DBC6 /* CreateGatheringMessageViewController.swift in Sources */,
 				5E1217C92299A7640075961A /* VerticalCropView.swift in Sources */,
@@ -2166,9 +2218,11 @@
 				FA42F0682140547D00721A7A /* PhonebookService.swift in Sources */,
 				5E64C0FE228F1B79000F2629 /* CountryDto.swift in Sources */,
 				AE4D06C3200E18A600225D97 /* ForgotPasswordController.swift in Sources */,
+				5E5D500F234C84670093AE8A /* CenesUserContactModel+CoreDataManager.swift in Sources */,
 				FA3429FB21FB687D00205876 /* HomeCalendarTableViewCell.swift in Sources */,
 				944A7B531F980494001491D3 /* AlarmTableViewCell.swift in Sources */,
 				B9710C941FA3C697000A45B3 /* ReminderModel.swift in Sources */,
+				5E9A18ED231786EC00AC5E79 /* EventMO+CoreDataClass.swift in Sources */,
 				5EDEE1F42240BE2D00330F47 /* MeTimeService.swift in Sources */,
 				AE8F471A1FB9B70100C153F0 /* DiaryCellOne.swift in Sources */,
 				5E51FDA82268E4C300A86994 /* CreateGathDto.swift in Sources */,
@@ -2181,6 +2235,7 @@
 				5E1217BE229670010075961A /* PhoneVerificationStep2ViewController.swift in Sources */,
 				FA528FAB214566640006D6F5 /* CenesUtilFunc.swift in Sources */,
 				5E51FD872265979000A86994 /* FriendAllContactsTableViewCell.swift in Sources */,
+				5E9B1B0C23389B8C0037A2EC /* VersionUpdateViewController.swift in Sources */,
 				5EF84097223765910046E68D /* CountryTableViewCell.swift in Sources */,
 				FA025A2F21F5D13800240E08 /* RoundedCardDesignView.swift in Sources */,
 				B9710C8E1FA3B82B000A45B3 /* RemindersViewController.swift in Sources */,
@@ -2205,6 +2260,7 @@
 				5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */,
 				5E40954C22533E7900CA9700 /* NotificationViewController+TableViewExt.swift in Sources */,
 				F411018A1F16A0CD001A6B7D /* HomeViewController.swift in Sources */,
+				5ED3E023234791AC00C720F4 /* CenesUserModel+CoreDataManager.swift in Sources */,
 				AEDD81491FB0734500F15742 /* ProfileViewController.swift in Sources */,
 				5EF840A02237C2280046E68D /* HomeEventTableViewCell.swift in Sources */,
 				942F78C41FA174D2006A7C61 /* Scheduler.swift in Sources */,
@@ -2215,6 +2271,7 @@
 				5EED1A8F228B282200346C33 /* CalendarSyncToken.swift in Sources */,
 				F40A89A11F1FD74B002BBC17 /* UtilMethod.swift in Sources */,
 				B94B39921FA7BAF400A806FE /* RemindersEmptyTableViewCell.swift in Sources */,
+				5E9A18EF231786EC00AC5E79 /* EventMemberMO+CoreDataClass.swift in Sources */,
 				FA42F06A2140632500721A7A /* UserService.swift in Sources */,
 				5E6AE0C72242055B0076A275 /* MeTimeAddViewController.swift in Sources */,
 				5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */,
@@ -2225,7 +2282,6 @@
 				5EEF293B225F4905000DC690 /* GuestListTableViewCell.swift in Sources */,
 				5EEF2938225F4671000DC690 /* GuestListViewController.swift in Sources */,
 				FA27BD0C21F1D04000E674D4 /* UserContact.swift in Sources */,
-				5EC73CF31F4FFF3800D9679B /* BaseOnboardingViewController.swift in Sources */,
 				5EC7A17A228036E80010E804 /* UsernameTableViewCell.swift in Sources */,
 				AE5A7C211F6798EE00C7B10C /* AddLocationViewController.swift in Sources */,
 				5E41E95C223533F700CEECFB /* EventDto.swift in Sources */,
@@ -2241,6 +2297,7 @@
 				5E20A49C226DC81300F1DBC6 /* LocationManager.swift in Sources */,
 				5EF840A42237C2550046E68D /* HomeEventHeaderViewCell.swift in Sources */,
 				5E28510422AA4C98004504D1 /* MyEditImageView.swift in Sources */,
+				5ED3E02523479C1000C720F4 /* EventMemberModel+CoreDataManager.swift in Sources */,
 				5E9DBBF622645A11000F9AA4 /* FriendListDto.swift in Sources */,
 				F4F4DFDC1F0EC1BF00169990 /* SignUpViewController.swift in Sources */,
 				FA2E3CFC213AA3A50010B8B0 /* SSBadgeButton.swift in Sources */,
@@ -2255,6 +2312,7 @@
 				5E6DA42A22854862006D86D9 /* ThirdPartyCalendarTableViewCell.swift in Sources */,
 				5E078D1F2236A5150082A013 /* NotificationService.swift in Sources */,
 				5E6DA425228544AA006D86D9 /* CalendarsViewController.swift in Sources */,
+				5ED3E01E234703DE00C720F4 /* CenesUserMO+CoreDataClass.swift in Sources */,
 				5E1217C522981C260075961A /* NextCardTableViewCell.swift in Sources */,
 				5EC64E8D2285C594001FB7A7 /* CenesProperty.swift in Sources */,
 				942C76D31F9937F100817FD6 /* AlarmInfoTableViewCell.swift in Sources */,
@@ -2264,6 +2322,7 @@
 				F4B871F31F0DDEF1001A9963 /* AppDelegate.swift in Sources */,
 				B956ADB61FB04E00005B13CA /* FriendsModel+CoreDataProperties.swift in Sources */,
 				FAB7652220D7ED5700695F2C /* AlarmInfoViewController.swift in Sources */,
+				5ED3E021234703DE00C720F4 /* NotificationMO+CoreDataProperties.swift in Sources */,
 				5E6DA42D22854B9F006D86D9 /* SelectedCalendarViewController+TableView.swift in Sources */,
 				5EC7A177228035F30010E804 /* EditPersonalDetailsViewController.swift in Sources */,
 				5EAF0CB422893C9500AE2264 /* SignupStep2FormTableViewCell.swift in Sources */,
@@ -2272,6 +2331,7 @@
 				AE2F2EBD1F9DCC3200B05A92 /* NotificationData.swift in Sources */,
 				F4B1C72F1F2E94EC00174414 /* LocationViewController.swift in Sources */,
 				5EADEB21222BBF2600569864 /* GatheringDayTableViewCell.swift in Sources */,
+				5E5D500C234C844E0093AE8A /* CenesUserContactMO+CoreDataClass.swift in Sources */,
 				5E51FD9C2268673B00A86994 /* DatePanelTableViewCell.swift in Sources */,
 				5EDEE1FA2240CC7A00330F47 /* MeTimeManager.swift in Sources */,
 				5E51FDAB226982AA00A86994 /* PredictiveCalendarCellTableViewCell.swift in Sources */,

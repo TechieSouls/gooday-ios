@@ -77,7 +77,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_base" translatesAutoresizingMaskIntoConstraints="NO" id="ayG-bi-iBK">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_base_2" translatesAutoresizingMaskIntoConstraints="NO" id="ayG-bi-iBK">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
@@ -121,7 +121,7 @@ Sync your calendar with Cenes to let your friends know your availability. </stri
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_base" translatesAutoresizingMaskIntoConstraints="NO" id="kGP-hD-GM7" customClass="onboadding_">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboarding_base_1_3" translatesAutoresizingMaskIntoConstraints="NO" id="kGP-hD-GM7" customClass="onboadding_">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
@@ -197,7 +197,8 @@ Begin by inviting your friends on Cenes or straight from your contacts. </string
     <resources>
         <image name="invitation_group_img" width="101" height="139"/>
         <image name="invite_background_bubble" width="125" height="270.66665649414062"/>
-        <image name="onboarding_base" width="125" height="270.66665649414062"/>
+        <image name="onboarding_base_1_3" width="176.66667175292969" height="310"/>
+        <image name="onboarding_base_2" width="176.66667175292969" height="310"/>
         <image name="predictive_bubble_img" width="112" height="102.33333587646484"/>
     </resources>
 </document>

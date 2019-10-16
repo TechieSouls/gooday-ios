@@ -271,8 +271,11 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                         
                         let title = event.title
                         
-                        let location = event.location
-                        
+                        var location = ""
+                        if let loc = event.location{
+                            location = loc
+                        }
+
                         var description = ""
                         if let desc = event.notes{
                             description = desc
@@ -283,7 +286,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                         
                         let nowDateMillis = Date().millisecondsSince1970
 
-                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
                         
                         if (event.startDate.millisecondsSince1970 < nowDateMillis) {
                             

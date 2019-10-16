@@ -16,11 +16,12 @@ import Crashlytics
 import GoogleSignIn
 import Google
 import SideMenu
+import Reachability
  
 let setting = UserDefaults.standard
+let reachability = Reachability()!
 
 @UIApplicationMain
-
  class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
@@ -30,7 +31,6 @@ let setting = UserDefaults.standard
     let cenesPersistentContainer = NSPersistentContainer(name: "Cenes")
     
     var storeLoaded = false
-    
     
     func loadPersistentContainer() {
         cenesPersistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -74,7 +74,7 @@ let setting = UserDefaults.standard
             if !accepted {
                 print("Notification access denied.")
                 
-            }else{
+            } else {
                 DispatchQueue.main.async {
                     print ("Notificaiton access success")
                     UIApplication.shared.registerForRemoteNotifications()
@@ -117,11 +117,6 @@ let setting = UserDefaults.standard
                 }
             })
         }
-        
-        //DispatchQueue.main.async {
-            //PhonebookService().phoneNumberWithContryCode();
-        //}
-        
         return true
     }
     
@@ -261,8 +256,24 @@ let setting = UserDefaults.standard
             return true
         }
         if url.scheme == "cenes" {
-            let service = OutlookService.shared()
-            service.handleOAuthCallback(url: url)
+            
+            if (url.host != nil && url.host == "event") {
+                
+                let queryStr = url.query;
+                let params = queryStr?.split(separator: "=");
+                let eventKey = params![1];
+                
+                let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+                let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                viewContro.fromPushNotificaiton = true;
+                viewContro.event = EventMO();
+                viewContro.event.key = String(eventKey);
+                self.window?.rootViewController = viewContro
+                self.window?.makeKeyAndVisible()
+            } else {
+                let service = OutlookService.shared()
+                service.handleOAuthCallback(url: url);
+            }
             return true
         }
         return false
@@ -480,6 +491,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             return
         }
         
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
         if userInfo!["type"] as? String == "HomeRefresh" {
@@ -500,7 +513,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
             let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
             viewContro.fromPushNotificaiton = true;
-            viewContro.event = Event();
+            viewContro.event = EventMO();
             viewContro.event.eventId = userInfo!["id"] as! Int32;
             self.window?.rootViewController = viewContro
             self.window?.makeKeyAndVisible()

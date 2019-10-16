@@ -10,8 +10,9 @@ import UIKit
 import IoniconsSwift
 import NVActivityIndicatorView
 import SideMenu
+import CoreData
 
-class NotificationViewController: UIViewController, NVActivityIndicatorViewable {
+class NotificationViewController: UIViewController, NVActivityIndicatorViewable, UITabBarControllerDelegate {
     
     
     @IBOutlet weak var notificationTableView: UITableView!
@@ -26,14 +27,23 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
     var imageDownloadsInProgress = [IndexPath : IconDownloader]()
     var notificationPerPage = [NotificationData]()
     var allNotifications = [NotificationData]()
+    
+    var allNotificationModels = [NotificationMO]()
+    var notificationModelPerPage = [NotificationMO]()
+
     var notificationDtos = [NotificationDto]();
     var pageNumber = 0;
     var totalNotificationCounts = 0;
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+
     private let refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshNotificationData), name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+
+
         self.notificationTableView.register(UINib(nibName: "NotificationGatheringTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NotificationGatheringTableViewCell")
         self.notificationTableView.register(UINib(nibName: "HeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HeaderTableViewCell")
         
@@ -47,15 +57,15 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         // Configure Refresh Control
         self.refreshControl.addTarget(self, action: #selector(refreshNotificationData(_:)), for: .valueChanged)
 
-        
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        
+
         self.tabBarController?.delegate = self
         
         
-        if Connectivity.isConnectedToInternet {
+        //if Connectivity.isConnectedToInternet {
             self.initilize();
-        } /*else {
+        //}
+        /*else {
             
             self.allNotifications = NotificationPersistanceManager().getAllNotifications();
             self.notificationPerPage = NotificationPersistanceManager().getAllNotifications();
@@ -83,6 +93,10 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
                 self.setUpNavBar()
             })
         }*/
+        self.notificationTableView.isHidden = false;
+        self.notificationDtos = NotificationManager().parseNotificationModelList(notifications: self.allNotificationModels, notificationDtos: self.notificationDtos);
+        self.notificationTableView.reloadData();
+
         self.tabBarController?.setTabBarDotVisible(visible: false);
         // Do any additional setup after loading the view.
         
@@ -115,23 +129,41 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         self.notificationPerPage = [NotificationData]();
         self.allNotifications = [NotificationData]();
         self.notificationDtos = [NotificationDto]();
+        self.allNotificationModels = [NotificationMO]();
+        self.notificationModelPerPage = [NotificationMO]();
         
-        let queryStr = "recepientId=\(String(self.loggedInUser.userId))";
-        NotificationService().findNotificationCounts(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
-            self.refreshControl.endRefreshing()
-            if (response["success"] as! Bool == true) {
-                self.totalNotificationCounts = response["data"] as! Int;
-                print("Total Notifications : ",self.totalNotificationCounts);
-                if (self.totalNotificationCounts > 0) {
-                    self.loadNotification();
+        //NotificationModel().emtpyNotificationModel();
+        //CenesUserModel().deleteAllCenesUserModel(context: context!);
+        
+        self.allNotificationModels = NotificationModel().fetchOfflineNotifications();
+        if (self.allNotificationModels.count > 0) {
+            //let totalEventsPresent = self.allNotificationModels.count;
+            //self.pageNumber = self.pageNumber + (totalEventsPresent/20)*20
+            self.notificationTableView.isHidden = false;
+        }
+        self.notificationDtos = NotificationManager().parseNotificationModelList(notifications: self.allNotificationModels, notificationDtos: self.notificationDtos);
+        self.notificationTableView.reloadData();
+
+        if (Connectivity.isConnectedToInternet) {
+            
+            let queryStr = "recepientId=\(String(self.loggedInUser.userId))";
+            NotificationService().findNotificationCounts(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+                self.refreshControl.endRefreshing()
+                if (response["success"] as! Bool == true) {
+                    self.totalNotificationCounts = response["data"] as! Int;
+                    print("Total Notifications : ",self.totalNotificationCounts);
+                    if (self.totalNotificationCounts > 0) {
+                        self.loadNotification();
+                    } else {
+                        self.notificationTableView.isHidden = true;
+                        self.notNotificationLabel.isHidden = false;
+                    }
                 } else {
-                    self.notificationTableView.isHidden = true;
-                    self.notNotificationLabel.isHidden = false;
+                    self.errorAlert(message: response["message"] as! String)
                 }
-            } else {
-                self.errorAlert(message: response["message"] as! String)
-            }
-        })
+            });
+        }
+        
     }
     
     func loadNotification() -> Void {
@@ -139,39 +171,42 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         let queryStr = "userId=\(String(self.loggedInUser.userId))&pageNumber=\(self.pageNumber)&offset=20";
         NotificationService().getPageableNotifications(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
             
-            self.notificationTableView.tableFooterView = nil
-            self.notificationTableView.tableFooterView?.isHidden = true
-            
             if (response["success"] as! Bool == true) {
                 
                 let notificationsNsArray = response["data"] as! NSArray;
-                
-                
+            
                 if (notificationsNsArray.count > 0) {
                     
-                    self.pageNumber = self.pageNumber + 20;
                     
                      self.notificationTableView.isHidden = false
-                     self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
+                     /*self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
                     for notification in self.notificationPerPage {
                         self.allNotifications.append(notification);
+                    }*/
+                        
+                    //Save Notification Locally.
+                    if (self.pageNumber == 0) {
+                        NotificationModel().emtpyNotificationModel();
+                        self.allNotificationModels = [NotificationMO]();
                     }
                     
-                    //Save Notification Locally.
-                    /*for notification in self.allNotifications {
-                        NotificationPersistanceManager().saveNotification(notificationData: notification);
-                    }*/
+                    self.notificationModelPerPage = NotificationModel().saveNotificationModelArray(notificationDataArray: notificationsNsArray);
+                    for notification in self.notificationModelPerPage {
+                        
+                        self.allNotificationModels.append(notification);
+                    }
+
+                    //self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+                    //self.allNotificationModels = NotificationModel().fetchOfflineNotifications(context: self.context!);
+                    self.notificationDtos = NotificationManager().parseNotificationModelList(notifications: self.allNotificationModels, notificationDtos: self.notificationDtos);
                     
-                    self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
-                    
-                    self.notificationTableView.layer.removeAllAnimations();
+                    //self.notificationTableView.layer.removeAllAnimations();
                     self.notificationTableView.reloadData();
-                    
+                    self.pageNumber = self.pageNumber + 20;
                 }
             } else {
                 self.errorAlert(message: response["message"] as! String)
             }
-            
         });
         
         /*let webservice = WebService()
@@ -265,22 +300,20 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         return finalDate
     }
     
-    
-    
     /*func parseResults(resultArray:NSArray){
-        
+     
          notificationDict = [NotificationData]()
          earlierDict = [NotificationData]()
         self.notificationTableView.reloadData()
-        
+     
         if resultArray.count > 0 {
         self.notificationTableView.isHidden = false
         for result in resultArray {
             let data = result as! NSDictionary
-            
+     
             let keyNum = data.value(forKey: "createdAt") as! NSNumber
             let key = "\(keyNum)"
-            
+     
             
             let notification = NotificationData().loadNotificationData(notificationDict: data);
             
@@ -324,7 +357,6 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         
         homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
         
-        let rightBarButton = UIBarButtonItem.init(customView: homeButton)
         //self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
@@ -335,12 +367,10 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
     @objc func profileButtonPressed(){
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
-}
 
-extension NotificationViewController: UITabBarControllerDelegate {
     // UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if (self.allNotifications.count > 0) {
+        if (self.allNotificationModels.count > 0) {
             self.notificationTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true)
         }
     }

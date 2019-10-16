@@ -19,7 +19,7 @@ class Event {
     var latitude: String!;
     var longitude: String!;
     var createdById: Int32 = User().loadUserDataFromUserDefaults(userDataDict: setting).userId;
-    var source: String = "Cenes";
+    var source: String? = "Cenes";
     var scheduleAs: String? = "Gathering";
     var thumbnail: String!;
     var isPredictiveOn: Bool = false;
@@ -111,6 +111,36 @@ class Event {
         return eventJson;
     }
     
+    func copyDataToNewEventObject(event: Event) -> Event {
+        var tempEvent = Event();
+        
+        tempEvent.title = event.title;
+        tempEvent.description = event.description;
+        tempEvent.eventPicture = event.eventPicture
+        tempEvent.eventId = event.eventId;
+        tempEvent.startTime = event.startTime;
+        tempEvent.endTime = event.endTime;
+        tempEvent.location = event.location;
+        tempEvent.source = event.source;
+        tempEvent.sourceEventId = event.sourceEventId;
+        tempEvent.latitude = event.latitude;
+        tempEvent.longitude = event.longitude;
+        tempEvent.scheduleAs = event.scheduleAs;
+        tempEvent.createdById = event.createdById;
+        tempEvent.thumbnail = event.thumbnail;
+        tempEvent.isPredictiveOn = event.isPredictiveOn;
+        tempEvent.isFullDay = event.isFullDay;
+        tempEvent.placeId = event.placeId;
+        tempEvent.predictiveData = event.predictiveData;
+        tempEvent.fullDayStartTime = event.fullDayStartTime;
+        tempEvent.key = event.key;
+        tempEvent.expired = event.expired;
+        
+        
+        tempEvent.eventMembers = event.eventMembers;
+        return tempEvent;
+    }
+    
     func getLoggedInUserAsEventMember() -> EventMember {
         
         let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
@@ -118,6 +148,7 @@ class Event {
         let eventMember = EventMember();
         eventMember.userId = loggedInUser.userId;
         eventMember.user = loggedInUser;
+        eventMember.cenesMember = "yes";
         eventMember.status = "Going";
         
         return eventMember;

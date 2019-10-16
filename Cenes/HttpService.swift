@@ -33,6 +33,32 @@ class HttpService {
         }
     }
     
+    func getMethodForList(url: String, token: String,complete: @escaping(NSDictionary)->Void) {
+        
+        let Auth_header = [ "token" : token ]
+        
+        Alamofire.request("\(url)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
+            
+            var returnDict = NSDictionary();
+            
+            switch response.result {
+            case .success:
+                let returnArray = response.result.value as! NSArray;
+                var responseDict: [String: Any] = [:]
+                responseDict["success"] = true;
+                responseDict["data"] = returnArray;
+                returnDict = responseDict as NSDictionary;
+            case .failure(let error):
+                print(error.localizedDescription)
+                var responseDict: [String: Any] = [:]
+                responseDict["success"] = false;
+                responseDict["message"] = error.localizedDescription;
+                returnDict = responseDict as NSDictionary;
+            }
+            complete(returnDict)
+        }
+    }
+    
     func postMethod(url: String, postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void) {
         
         let Auth_header = [ "token" : token ]

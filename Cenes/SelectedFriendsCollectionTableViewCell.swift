@@ -40,26 +40,26 @@ class SelectedFriendsCollectionTableViewCell: UITableViewCell {
 
 extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return createGatheringDelegate.event.eventMembers.count;
+        return createGatheringDelegate.event.eventMembers!.count;
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: FriendCollectionViewCell = selectedFriendsColView.dequeueReusableCell(withReuseIdentifier: "FriendCollectionViewCell", for: indexPath) as! FriendCollectionViewCell;
         
-        let eventMember = createGatheringDelegate.event.eventMembers[indexPath.row];
+        let eventMember = EventMemberModel().convertNSSetToNSArray(eventMembers: createGatheringDelegate.event.eventMembers!)[indexPath.row];
         
         if (eventMember.user != nil) {
-            cell.name.text = String(eventMember.user.name.split(separator: " ")[0]);
+            cell.name.text = String(eventMember.user!.name!.split(separator: " ")[0]);
         } else if (eventMember.name != nil) {
-            cell.name.text = String(eventMember.name);
+            cell.name.text = String(eventMember.name!);
         } else {
             cell.name.text = "Unknown";
         }
         
-        if (eventMember.user != nil && eventMember.user.photo != nil) {
+        if (eventMember.user != nil && eventMember.user!.photo != nil) {
             cell.profilePic.isHidden = false;
             cell.nonCenesUserView.isHidden = true;
-            cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+            cell.profilePic.sd_setImage(with: URL(string: eventMember.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
         } else {
             
             //Here we will check. If user is cenes member and has image then we will set it.
@@ -71,9 +71,9 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
             var nonCenesUserName: String = "";
             var nameSplitArr : [ArraySlice<Character>]!;
             if (eventMember.user != nil) {
-               nameSplitArr =  eventMember.user.name.split(separator: " ");
+                nameSplitArr =  eventMember.user!.name!.split(separator: " ");
             } else if (eventMember.name != nil) {
-                nameSplitArr = eventMember.name.split(separator: " ");
+                nameSplitArr = eventMember.name!.split(separator: " ");
             }
             nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
             if (nameSplitArr.count > 1) {

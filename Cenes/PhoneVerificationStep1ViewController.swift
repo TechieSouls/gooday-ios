@@ -24,6 +24,8 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
     
     @IBOutlet weak var termsAndConditionsLabel: UILabel!
     
+    @IBOutlet weak var privacyPolicyLabel: UILabel!
+
     var countryCodeService: CountryCodeService!
     
     class func MainViewController() -> UINavigationController {
@@ -37,6 +39,9 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         let tandctapGesture = UITapGestureRecognizer.init(target: self, action: #selector(tandcPressed));
         termsAndConditionsLabel.addGestureRecognizer(tandctapGesture);
         
+        let privacypolicyGesture = UITapGestureRecognizer.init(target: self, action: #selector(privacyPolicyPressed));
+        privacyPolicyLabel.addGestureRecognizer(privacypolicyGesture);
+
         let countryDropdownBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryDropdownBarPressed))
         countryDropdownBar.addGestureRecognizer(countryDropdownBarTap);
         
@@ -129,20 +134,30 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
     }
     
     @objc func tandcPressed() {
-        if let url = URL(string: privacyPolicyLink) {
+        if let url = URL(string: termsandconditionsLink) {
             UIApplication.shared.open(url)
         }
     }
     
+    @objc func privacyPolicyPressed() {
+        if let url = URL(string: privacyPolicyLink) {
+            UIApplication.shared.open(url)
+        }
+    }
+
     @IBAction func getAccessButtonPressed(_ sender: Any) {
         
         
+        self.getAccessButton.isUserInteractionEnabled = false;
         var postData = [String: Any]();
         postData["countryCode"] = "\(self.countryCodeService.getPhoneCode())";
         postData["phone"] = "\(self.phoneNumberTextField.text!)";
         
+        setting.setValue("\(self.countryCodeService.nameCode)", forKey: "countryCode")
+
         UserService().postVerificationCodeWithoutToken(postData: postData, complete: {(response) in
-            
+            self.getAccessButton.isUserInteractionEnabled = true;
+
             let success = response.value(forKey: "success") as! Bool;
             if (success == true) {
                 

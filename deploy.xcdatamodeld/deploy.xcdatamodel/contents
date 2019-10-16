@@ -1,19 +1,84 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Notification" representedClassName="Notification" syncable="YES" codeGenerationType="class">
-        <attribute name="action" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="createdAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="notificationId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="notificationTypeId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="notificationTypeStatus" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="readStatus" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="recepientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="senderId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14903" systemVersion="18G103" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CenesUserContactMO" representedClassName=".CenesUserContactMO" syncable="YES">
+        <attribute name="cenesMember" optional="YES" attributeType="String"/>
+        <attribute name="friendId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="phone" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="userContactId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CenesUserMO"/>
+    </entity>
+    <entity name="CenesUserMO" representedClassName=".CenesUserMO" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="EventMemberMO" representedClassName=".EventMemberMO" parentEntity="EventMO" syncable="YES">
+        <attribute name="alreadyInvited" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="cenesMember" optional="YES" attributeType="String"/>
+        <attribute name="eventMemberId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="owner" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="userContactId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="CenesUserMO"/>
+        <relationship name="userContact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CenesUserContactMO"/>
+    </entity>
+    <entity name="EventMO" representedClassName=".EventMO" syncable="YES">
+        <attribute name="createdById" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="desc" optional="YES" attributeType="String"/>
+        <attribute name="endTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="eventClickedFrom" optional="YES" attributeType="String"/>
+        <attribute name="eventId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="eventPicture" optional="YES" attributeType="String"/>
+        <attribute name="eventSource" optional="YES" attributeType="String"/>
+        <attribute name="expired" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="fullDayStartTime" optional="YES" attributeType="String"/>
+        <attribute name="isEditMode" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isFullDay" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isPredictiveOn" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="key" optional="YES" attributeType="String"/>
+        <attribute name="latitude" optional="YES" attributeType="String"/>
+        <attribute name="location" optional="YES" attributeType="String"/>
+        <attribute name="longitude" optional="YES" attributeType="String"/>
+        <attribute name="placeId" optional="YES" attributeType="String"/>
+        <attribute name="predictiveData" optional="YES" attributeType="String"/>
+        <attribute name="requestType" optional="YES" attributeType="String"/>
+        <attribute name="scheduleAs" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="sourceEventId" optional="YES" attributeType="String"/>
+        <attribute name="startTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="synced" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="eventMembers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EventMemberMO"/>
+    </entity>
+    <entity name="NotificationMO" representedClassName=".NotificationMO" syncable="YES">
+        <attribute name="action" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="message" optional="YES" attributeType="String"/>
+        <attribute name="notificationId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="notificationTypeId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="notificationTypeStatus" optional="YES" attributeType="String"/>
+        <attribute name="readStatus" optional="YES" attributeType="String"/>
+        <attribute name="recepientId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="senderId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EventMO"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="CenesUserMO"/>
     </entity>
     <elements>
-        <element name="Notification" positionX="-63" positionY="-18" width="128" height="208"/>
+        <element name="CenesUserContactMO" positionX="-162" positionY="54" width="128" height="178"/>
+        <element name="CenesUserMO" positionX="-321.19921875" positionY="323.09765625" width="128" height="28"/>
+        <element name="EventMemberMO" positionX="72.96484375" positionY="239.2734375" width="128" height="223"/>
+        <element name="EventMO" positionX="449.234375" positionY="143.57421875" width="128" height="448"/>
+        <element name="NotificationMO" positionX="-357.9296875" positionY="-111.3203125" width="128" height="28"/>
     </elements>
 </model>

@@ -362,6 +362,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         actionSheetController.addAction(cancelAction)
         
         // present an actionSheet...
+        addActionSheetForiPad(actionSheet: actionSheetController)
         present(actionSheetController, animated: true, completion: nil)
     }
     

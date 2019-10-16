@@ -59,9 +59,11 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] = false
             startBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             createGatheringDelegate.timePickerView.isHidden = true;
+            createGatheringDelegate.showHidePreviewGatheringButton(show: true);
 
             if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
                 
+                createGatheringDelegate.showHidePreviewGatheringButton(show: false);
                 createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
                 
                 createGatheringDelegate.createGathTableView.reloadData();
@@ -70,13 +72,14 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //If StartBar Closed
             if (createGatheringDelegate.event.eventId != nil) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
-                createGatheringDelegate.showHidePreviewGatheringButton();
+                //createGatheringDelegate.showHidePreviewGatheringButton();
             }
         } else {
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] = true
             startBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
             createGatheringDelegate.timePickerView.isHidden = false;
-            
+            createGatheringDelegate.showHidePreviewGatheringButton(show: false);
+
             if (createGatheringDelegate.event.startTime != 0) {
                 createGatheringDelegate.timePicker.date = Date(milliseconds: Int(createGatheringDelegate.event.startTime));
             }
@@ -86,12 +89,12 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 createGatheringDelegate.addBlurBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
                 createGatheringDelegate.createGathTableView.reloadData();
             }
-            createGatheringDelegate.showHidePreviewGatheringButton();
+            //createGatheringDelegate.showHidePreviewGatheringButton();
             
             //If StartBar Closed
             if (createGatheringDelegate.event.eventId != nil) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = false;
-                createGatheringDelegate.showHidePreviewGatheringButton();
+                //createGatheringDelegate.showHidePreviewGatheringButton();
             }
 
         }
@@ -113,9 +116,17 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] = false
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             createGatheringDelegate.timePickerView.isHidden = true;
+            createGatheringDelegate.showHidePreviewGatheringButton(show: true);
+
             
+            //If Predictive Calendar was opened and
+            //The end time picker is also opened.
+            //user closed the end time bar by clicking on it.
+            //Then we will hide preview button in this case.
             if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
                 
+                createGatheringDelegate.showHidePreviewGatheringButton(show: false);
+
                 createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
                 
                 createGatheringDelegate.createGathTableView.reloadData();
@@ -124,13 +135,17 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //If EndBar Closed
             if (createGatheringDelegate.event.eventId != nil) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
-                createGatheringDelegate.showHidePreviewGatheringButton();
+                //createGatheringDelegate.showHidePreviewGatheringButton(show: true);
             }
         } else {
+            
+            //This is the case when end time bar was close and user
+            //clicked on it to open it.
             createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] = true
             endBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
             createGatheringDelegate.timePickerView.isHidden = false;
-            
+            createGatheringDelegate.showHidePreviewGatheringButton(show: false);
+
             //Showing already selected dat in time picker.
             if (createGatheringDelegate.event.endTime != 0) {
                 createGatheringDelegate.timePicker.date = Date(milliseconds: Int(createGatheringDelegate.event.endTime));
@@ -146,7 +161,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //If EndBar Opened
             if (createGatheringDelegate.event.eventId != nil) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = false;
-                createGatheringDelegate.showHidePreviewGatheringButton();
+                //createGatheringDelegate.showHidePreviewGatheringButton(show: false);
             }
         }
 
@@ -161,7 +176,10 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == false && createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == false) {
             
+            //Date Bar is already Press and Predivitve Calendar is visible
             if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] == true) {
+                
+                createGatheringDelegate.showHidePreviewGatheringButton(show: true);
                 
                 dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
                 createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = false
@@ -175,9 +193,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 //If EndBar Opened
                 if (createGatheringDelegate.event.eventId != nil) {
                     createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
-                    createGatheringDelegate.showHidePreviewGatheringButton();
+                    //createGatheringDelegate.showHidePreviewGatheringButton();
                 }
             } else {
+                
+                createGatheringDelegate.showHidePreviewGatheringButton(show: false);
+
+                //Date Bar is closed and user pressed it to choose date from Calendar
                 createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = false;
@@ -191,7 +213,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 //If EndBar Opened
                 if (createGatheringDelegate.event.eventId != nil) {
                     createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = false;
-                    createGatheringDelegate.showHidePreviewGatheringButton();
+                    //createGatheringDelegate.showHidePreviewGatheringButton();
                 }
             }
             createGatheringDelegate.createGathTableView.reloadData();
@@ -233,7 +255,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
-            createGatheringDelegate.showHidePreviewGatheringButton();
+            //createGatheringDelegate.showHidePreviewGatheringButton();
             
         }
         
@@ -264,14 +286,18 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
 
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
-            createGatheringDelegate.showHidePreviewGatheringButton();
+            //createGatheringDelegate.showHidePreviewGatheringButton();
         }
         
+        //This is the case if Predictive calendar is also opened behind Date Picker.
         if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
             
+            createGatheringDelegate.showHidePreviewGatheringButton(show: false);
             createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
             
             createGatheringDelegate.createGathTableView.reloadData();
+        } else {
+            createGatheringDelegate.showHidePreviewGatheringButton(show: true);
         }
     
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] =  false
@@ -281,6 +307,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         if (createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate != nil && createGatheringDelegate.event.isPredictiveOn == true) {
             createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate.showPredictions();
         }
+        
     }
     
     func timePickerCancelButtonPressed() {
@@ -288,30 +315,34 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             startBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             
             //If StartBar Closed
-            if (createGatheringDelegate.event.eventId != nil) {
+            if (createGatheringDelegate.event.eventId != 0) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
-                createGatheringDelegate.showHidePreviewGatheringButton();
+                //createGatheringDelegate.showHidePreviewGatheringButton();
             }
         }
         if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow");
             
             //If StartBar Closed
-            if (createGatheringDelegate.event.eventId != nil) {
+            if (createGatheringDelegate.event.eventId != 0) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
-                createGatheringDelegate.showHidePreviewGatheringButton();
+                //createGatheringDelegate.showHidePreviewGatheringButton();
             }
         }
         
         if (createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] == true) {
             
+            createGatheringDelegate.showHidePreviewGatheringButton(show: false);
             createGatheringDelegate.removeBlurredBackgroundView(viewToBlur:  createGatheringDelegate.predictiveCalendarViewTableViewCellDelegate)
             
             createGatheringDelegate.createGathTableView.reloadData();
+        } else {
+            createGatheringDelegate.showHidePreviewGatheringButton(show: true);
         }
         
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] =  false
         createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] =  false
+
     }
     
     func predictiveCalendarDatePressed(date: Date) {
@@ -340,6 +371,9 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         let calendar = Calendar.current;
         var startComponents = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.startTime)));
         startComponents.day = selectedDateComponents.day
+        startComponents.month = selectedDateComponents.month
+        startComponents.year = selectedDateComponents.year
+
         let startDate = calendar.date(from: startComponents);
         createGatheringDelegate.event.startTime = startDate!.millisecondsSince1970;
         print(createGatheringDelegate.event.startTime);
@@ -347,21 +381,26 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         let endCalendar = Calendar.current;
         var endComponents = endCalendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.endTime)));
         endComponents.day = selectedDateComponents.day
+        endComponents.month = selectedDateComponents.month
+        endComponents.year = selectedDateComponents.year
+
         let endDate = endCalendar.date(from: endComponents);
         createGatheringDelegate.event.endTime = endDate!.millisecondsSince1970;
         print(createGatheringDelegate.event.endTime);
         
         //Code to show hide Event Preview Button.
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
-        createGatheringDelegate.showHidePreviewGatheringButton();
+        //createGatheringDelegate.showHidePreviewGatheringButton();
         
         createGatheringDelegate.createGathTableView.reloadData();
         
         
         //If StartBar Closed
-        if (createGatheringDelegate.event.eventId != nil) {
+        if (createGatheringDelegate.event.eventId != 0) {
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
-            createGatheringDelegate.showHidePreviewGatheringButton();
+            //createGatheringDelegate.showHidePreviewGatheringButton();
         }
+        
+        createGatheringDelegate.showHidePreviewGatheringButton(show: true);
     }
 }
