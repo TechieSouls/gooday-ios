@@ -9,9 +9,7 @@
 import UIKit
 import MobileCoreServices
 import NVActivityIndicatorView
-import FacebookCore
 import FBSDKLoginKit
-import FacebookLogin
 
 class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate  {
 

@@ -62,6 +62,9 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
                     nearByLocObje.latitudeDouble = latLong!["lat"] as! Double
                     nearByLocObje.longitudeDouble = latLong!["lng"] as! Double
                 }
+                if (nearByLocObje.placeId == nil) {
+                    nearByLocObje.placeId = data["place_id"] as! String;
+                }
                 self.selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
 
             }

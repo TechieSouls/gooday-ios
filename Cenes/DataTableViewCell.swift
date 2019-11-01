@@ -427,19 +427,19 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     
                     event.eventClickedFrom = EventClickedFrom.Gathering;
                     
-                    if (event.expired == true) {
+                    /*if (event.expired == true) {
                         
                         let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringExpiredViewController") as! GatheringExpiredViewController;
                         self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
                         //self.newHomeViewControllerDelegate.present(viewController, animated: true, completion: nil);
                         
-                    } else {
+                    } else {*/
                         let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
                         
                         viewController.event = Event().copyDataToNewEventObject(event: event);
                         viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate;
                         self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
-                    }
+                    //}
                     
                 }
             }
@@ -510,7 +510,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         
-        if (newHomeViewControllerDelegate.homeDtoList.count != 0) {
+        if (newHomeViewControllerDelegate.homeDtoList.count != 0 && Connectivity.isConnectedToInternet) {
             
             let event = newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             

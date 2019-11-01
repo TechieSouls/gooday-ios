@@ -53,3 +53,8 @@ class CreateGatheringPredictiveColors {
     static var GRAYCOLOR = UIColor(red:0.86, green:0.87, blue:0.87, alpha:1);
 
 }
+
+class FSCalendarElements {
+    var month: Int = 0;
+    var year: Int = 0;
+}

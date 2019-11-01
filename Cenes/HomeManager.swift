@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import CoreData
 
 class HomeManager {
     
     var dataObjectArray = [HomeData]()
 
-    func parseResultsForHomeEvents(homescreenDto: HomeDto, resultArray: NSArray) -> HomeScreenDataHolder {
+    func parseResultsForHomeEvents(homescreenDto: HomeDto, events: [Event]) -> HomeScreenDataHolder {
         
         let homescreenDto = homescreenDto;
         let homeScreenDataHolder = HomeScreenDataHolder();
@@ -26,13 +27,13 @@ class HomeManager {
         
         let dict = NSMutableDictionary()
         
-        for i : Int in (0..<resultArray.count) {
+        //for i : Int in (0..<resultArray.count) {
+        for event in events {
+            //let outerDict = resultArray[i] as! NSDictionary
             
-            let outerDict = resultArray[i] as! NSDictionary
-            
-            let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
-            if dataType == "Event" {
-                let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
+            //let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
+            //if dataType == "Event" {
+               // let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
                 
                 if (totalEvents.contains(event.eventId)) {
                     continue;
@@ -90,7 +91,7 @@ class HomeManager {
                     cenesEvent.sectionObjects = array;
                     dataObjectArray.append(cenesEvent)
                 }
-            }
+            //}
         }
         
         for homedata in dataObjectArray {
@@ -252,9 +253,10 @@ class HomeManager {
         
         homeScreenDataHolder.homescreenDto = homescreenDto;
         homeScreenDataHolder.homeDataList = homeDataArrayToReturn;
+        
+        
         return homeScreenDataHolder;
     }
-    
     
     func parseResults(resultArray: NSArray) -> [HomeData]{
         
@@ -618,5 +620,33 @@ class HomeManager {
         }
         
         return eventIdList;
+    }
+    
+    func populateOfflineData(context: NSManagedObjectContext, events: [Event]) {
+    
+        for event in events {
+            
+            EventModel().saveEventModel(event: event, context: context);
+            
+        }
+    }
+    
+    func fetchOfflineData(context: NSManagedObjectContext) -> [Event] {
+        
+        var events = [Event]();
+        let eventsMo = EventModel().fetchOfflineEvents(context: context);
+        for eventMo in eventsMo {
+            let members = eventMo.mutableSetValue(forKey: "eventMembers");
+            print(members.count)
+            for eventMemberMo in members.allObjects as! [EventMemberMO] {
+                print(eventMemberMo);
+            }
+            if (eventMo.title == nil) {
+                continue;
+            }
+            events.append(EventModel().copyDataToEventBo(eventMo: eventMo));
+        }
+        
+        return events;
     }
 }

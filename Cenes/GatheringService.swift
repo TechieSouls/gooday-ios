@@ -16,7 +16,7 @@ class GatheringService {
     let get_delete_event_api: String = "/api/event/delete";//event_id
     let get_update_invitation_api: String = "/api/event/memberStatusUpdate";
     let get_predictive_api: String = "api/predictive/calendar/v2";
-    
+    let get_event_by_key: String = "/api/event/invitation/";
     var requestArray = NSMutableArray()
     
     //Function to get User Gatherings
@@ -295,4 +295,14 @@ class GatheringService {
             complete(response);
         });
     }
+
+    func getEventInfoByKey(pathVariable: String, token: String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(get_event_by_key)\(pathVariable)";
+        print("API Url : \(url)")
+        HttpService().getMethod(url: url, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+
 }

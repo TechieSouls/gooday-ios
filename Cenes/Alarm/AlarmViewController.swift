@@ -98,7 +98,7 @@ class AlarmViewController: UIViewController {
         
         configureNavigationBar()
         
-        persistentContainer = appDelegate!.cenesPersistentContainer
+        //persistentContainer = appDelegate!.cenesPersistentContainer
         
         do {
             try self.fetchedResultsController.performFetch()

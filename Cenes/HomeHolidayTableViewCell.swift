@@ -17,7 +17,7 @@ class HomeHolidayTableViewCell: UITableViewCell {
         // Initialization code
         
         contentView.backgroundColor = themeColor;
-        holidayLabel.textColor = UIColor.black;
+        //holidayLabel.textColor = UIColor.black;
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

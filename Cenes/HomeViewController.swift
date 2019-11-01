@@ -13,7 +13,6 @@ import ActionButton
 import NVActivityIndicatorView
 import GoogleSignIn
 import FBSDKLoginKit
-import FacebookCore
 import SideMenu
 import CoreData
 
@@ -99,7 +98,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         
         if appDelegate?.storeLoaded == false {
             appDelegate?.storeLoaded = true
-            appDelegate?.loadPersistentContainer()
+            //appDelegate?.loadPersistentContainer()
         }
         
         //let calendar = FSCalendar(frame: CGRect(x: 0, y: 64, width: self.view.frame.size.width, height: 300))

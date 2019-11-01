@@ -206,8 +206,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 
                 let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
                 
-                let userid = setting.value(forKey: "userId") as! NSNumber
-                let uid = "\(userid)"
                 let eventArray = eventStore.events(matching: predicate)
                 
                 if eventArray.count > 0 {
@@ -225,21 +223,29 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         }
                         let title = event.title
                         
-                        let location = event.location
+                        var location = "";
+                        if let locationTemp = event.location {
+                            location = locationTemp
+                        }
                         
                         var description = ""
                         if let desc = event.notes{
                             description = desc
                         }
+                        var startTime = "\(Date().millisecondsSince1970)";
+                        if let startDateTemp = event.startDate {
+                            startTime = "\(startDateTemp.millisecondsSince1970)"
+                        }
                         
-                        let startTime = "\(event.startDate.millisecondsSince1970)"
-                        let endTime = "\(event.endDate.millisecondsSince1970)"
-                       
+                        var endTime = "\(Date().millisecondsSince1970)";
+                        if let endDateTemp = event.endDate {
+                            endTime = "\(endDateTemp.millisecondsSince1970)"
+                        }
                         
                         let nowDateMillis = Date().millisecondsSince1970
                         
                         
-                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                        let postData: NSMutableDictionary = ["title":title!,"description":description,"location":location,"source":"Apple","createdById":self.loggedInUser.userId,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
 
                         if (event.startDate.millisecondsSince1970 < nowDateMillis) {
                             

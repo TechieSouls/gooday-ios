@@ -17,10 +17,14 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.2</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>fbauth2</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb603197326738059</string>
@@ -46,7 +50,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -86,15 +90,15 @@
 	<key>NSCameraUsageDescription</key>
 	<string>If not allowed, you will be unable to send photos clicked from camera to friends on Cenes</string>
 	<key>NSContactsUsageDescription</key>
-	<string>This app helps you find mobile contacts who also use Cenes. This data won't be used for other purposes</string>
+	<string>Cenes will upload your address book to our server to help you find mobile contacts using Cenes. This data won't be saved or used for other purposes. Match mobile contacts?</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Turn on location services to find nearby search results</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Turn on location services to find nearby search results</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSLocationUsageDescription</key>
-	<string>Turn on location services to find nearby search results</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Turn on location services to find nearby search results</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app will use microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -133,6 +137,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>privacy - location usage description</key>
-	<string>Turn on location services to find nearby search results</string>
+	<string>Turn on location services to find nearby places where you can plan your event</string>
 </dict>
 </plist>

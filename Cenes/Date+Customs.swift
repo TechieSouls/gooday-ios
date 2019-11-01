@@ -124,7 +124,9 @@ extension Date {
 
         let currentMon = currentDateCal.component(.month, from: Date());
         let pastMon = currentDateCal.component(.month, from: self);
-        let monthDiff = currentMon - pastMon;
+        //let monthDiff = currentMon - pastMon;
+        print(millisDifference);
+        let monthDiff = millisDifference/(1000*60*60*24*12);
         
         let daysDiff = millisDifference/(1000*60*60*24);
         

@@ -59,11 +59,29 @@ class Location {
         locationObj.latitudeDouble = location.value(forKey: "lat") as? Double;
         locationObj.longitudeDouble = location.value(forKey: "lng") as? Double;
         locationObj.placeId = locationDict.value(forKey: "place_id") as? String;
-        //locationObj.photo = locationDict.value(forKey: "photo") as? String;
-        //locationObj.kilometers = locationDict.value(forKey: "kilometers") as? String;
+        locationObj.photo = locationDict.value(forKey: "photo") as? String;
+        locationObj.kilometers = locationDict.value(forKey: "kilometers") as? String;
         
         return locationObj;
         
         
     }
+    
+    
+    func loadLocationDataFromPreviousLocations(prevLocDict: NSDictionary) -> Location {
+        let locationObj = Location();
+        
+        locationObj.location = prevLocDict.value(forKey: "location") as? String;
+        locationObj.latitude = prevLocDict.value(forKey: "latitude") as? String;
+        locationObj.longitude = prevLocDict.value(forKey: "longitude") as? String;
+        locationObj.placeId = prevLocDict.value(forKey: "placeId") as? String;
+        locationObj.latitudeDouble = Double(prevLocDict.value(forKey: "latitude") as! String);
+        locationObj.longitudeDouble = Double(prevLocDict.value(forKey: "longitude") as! String);
+
+        //locationObj.photo = prevLocDict.value(forKey: "photo") as? String;
+        //locationObj.kilometers = prevLocDict.value(forKey: "kilometers") as? String;
+        
+        return locationObj;
+    }
+
 }

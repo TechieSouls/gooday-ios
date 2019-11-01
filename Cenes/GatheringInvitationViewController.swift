@@ -156,13 +156,56 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                     }
                 }
             });
+        } else if (event.key != nil) {
+            
+            
+            GatheringService().getEventInfoByKey(pathVariable: event.key!, token: loggedInUser.token!, complete: {(response) in
+                
+                let success = response.value(forKey: "success") as! Bool;
+                if (success == true) {
+                    if (response.value(forKey: "data") != nil) {
+                        let data = response.value(forKey: "data") as! NSDictionary;
+                        let eventTemp = Event().loadEventData(eventDict: data);
+                        
+                        if (self.fromPushNotificaiton == true) {
+                            self.isLoggedInUserAsOwner = false;
+                            self.leftToRightGestureEnabled = true;
+                            self.rightToLeftGestureEnabled = true;
+                            
+                            self.event = eventTemp;
+                            
+                        } else {
+                            if (self.event.requestType != EventRequestType.EditEvent) {
+                                self.event.eventPicture = eventTemp.eventPicture;
+                            }
+                            
+                            
+                            for eventMemFromDb in eventTemp.eventMembers {
+                                
+                                var editMembersIndex = 0;
+                                for eveMemFromEdit in self.event.eventMembers {
+                                    
+                                    if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
+                                        self.event.eventMembers[editMembersIndex] = eventMemFromDb;
+                                        break;
+                                    }
+                                    editMembersIndex  = editMembersIndex + 1;
+                                }
+                            }
+                            self.event.thumbnail = eventTemp.thumbnail;
+                        }
+                        self.invitationCardTableView.reloadData();
+                    }
+                }
+            });
+
         }
         
-        if (event != nil && event.imageToUpload != nil) {
+        /*if (event != nil && event.imageToUpload != nil) {
             print("Uploading Startsss")
             self.uploadImageAndGetUrl();
             print("Uploading Endss")
-        }
+        }*/
     }
     
     @objc func panRecognizer(_ sender: UIPanGestureRecognizer) {
@@ -308,16 +351,20 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         self.navigationController?.popViewController(animated: true);
                                         
                                     } else {
-                                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                            
-                                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                            homeViewController?.refershDataFromOtherScreens();
-                                            self.navigationController?.popViewController(animated: true);
-                                            
+                                        if (self.tabBarController != nil) {
+
+                                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                
+                                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                homeViewController?.refershDataFromOtherScreens();
+                                                self.navigationController?.popViewController(animated: true);
+                                                
+                                            }
+
                                         }
                                     }
                                 }
-                                                            }
+                            }
                         } else {
                             
                             //If owner is looking at the event and,
@@ -571,12 +618,16 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         self.navigationController?.popViewController(animated: true);
                                         
                                     } else {
-                                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                        if (self.tabBarController != nil) {
                                             
-                                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                            homeViewController?.refershDataFromOtherScreens();
-                                            self.navigationController?.popViewController(animated: true);
-                                            
+                                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                
+                                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                homeViewController?.refershDataFromOtherScreens();
+                                                self.navigationController?.popViewController(animated: true);
+                                                
+                                            }
+
                                         }
                                     }
                                 }
@@ -816,6 +867,12 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             let cell : InvitationCardTableViewCell = tableView.dequeueReusableCell(withIdentifier: "InvitationCardTableViewCell") as! InvitationCardTableViewCell;
             cell.gatheringInvitaionViewControllerDelegate = self;
             
+            if (event.eventId == nil && event.key == nil) {
+                cell.shareView.isHidden = true;
+            } else {
+                cell.shareView.isHidden = false;
+            }
+            
             if (event.eventMembers != nil) {
                 for eventMember in self.event.eventMembers {
                     //We have to check user id, because there may be users which are non cenes users
@@ -944,6 +1001,11 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     } else if (loggedInUserEventMemObj.status == "NotGoing") {
                         rightToLeftGestureEnabled = false;
                     }
+                }
+                
+                if (self.event.expired == true || !Connectivity.isConnectedToInternet) {
+                    leftToRightGestureEnabled = false;
+                    rightToLeftGestureEnabled = false;
                 }
             } else {
                 

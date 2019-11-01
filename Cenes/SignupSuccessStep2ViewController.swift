@@ -269,32 +269,44 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                         
                         let event = event as EKEvent
                         
+                        if (event.isAllDay == true) {
+                            continue;
+                        }
                         let title = event.title
                         
-                        let location = event.location
+                        var location = "";
+                        if let locationTemp = event.location {
+                            location = locationTemp
+                        }
                         
                         var description = ""
                         if let desc = event.notes{
                             description = desc
                         }
+                        var startTime = "\(Date().millisecondsSince1970)";
+                        if let startDateTemp = event.startDate {
+                            startTime = "\(startDateTemp.millisecondsSince1970)"
+                        }
                         
-                        let startTime = "\(event.startDate.millisecondsSince1970)"
-                        let endTime = "\(event.endDate.millisecondsSince1970)"
+                        var endTime = "\(Date().millisecondsSince1970)";
+                        if let endDateTemp = event.endDate {
+                            endTime = "\(endDateTemp.millisecondsSince1970)"
+                        }
                         
                         let nowDateMillis = Date().millisecondsSince1970
-
-                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
                         
+                        
+                        let postData: NSMutableDictionary = ["title":title!,"description":description,"location":location,"source":"Apple","createdById":self.loggedInUser.userId,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+
                         if (event.startDate.millisecondsSince1970 < nowDateMillis) {
                             
                             postData["processed"] = "\(1)";
                             arrayDict.append(postData)
                         } else {
-                            
+                           
                             postData["processed"] = "\(0)";
                             arrayDict.append(postData)
                         }
-                        
                     }
                     params = ["data":arrayDict]
                     params["userId"] = self.loggedInUser.userId;

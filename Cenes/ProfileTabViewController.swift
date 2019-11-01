@@ -111,6 +111,13 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         profileDto.title = "Need Help?";
         profileDto.desc = "FAQ, Help & Feedback";
         profileDtos.append(profileDto);
+        
+        profileDto = ProfileDto();
+        profileDto.img = "version_update_icon";
+        profileDto.title = "About";
+        profileDto.desc = "Update to latest version";
+        profileDtos.append(profileDto);
+
 
     }
     

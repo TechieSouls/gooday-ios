@@ -19,7 +19,7 @@ class Event {
     var latitude: String!;
     var longitude: String!;
     var createdById: Int32 = User().loadUserDataFromUserDefaults(userDataDict: setting).userId;
-    var source: String = "Cenes";
+    var source: String? = "Cenes";
     var scheduleAs: String? = "Gathering";
     var thumbnail: String!;
     var isPredictiveOn: Bool = false;

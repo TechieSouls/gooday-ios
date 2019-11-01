@@ -24,9 +24,7 @@ class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorVi
     var countryDataArray = [NSMutableDictionary]()
     
     var selectedCountry = ""
-    
-    var baseView : BaseOnboardingViewController!
-    
+        
     var fromSideMenu = false
     var loggedInUser: User!;
     var profileImage = UIImage(named: "profile icon");

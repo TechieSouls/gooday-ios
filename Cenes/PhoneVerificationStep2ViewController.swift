@@ -78,6 +78,8 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         if (textField.text?.count == 4) {
             textField.resignFirstResponder();
             
+            setting.setValue("\(self.countryCode)\(self.phoneNumberStr)", forKey: "verifiedPhone")
+
             var postData = [String: Any]();
             postData["countryCode"] = self.countryCode;
             postData["code"] = textField.text!;

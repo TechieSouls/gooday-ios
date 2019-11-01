@@ -9,7 +9,6 @@
 import UIKit
 import GoogleSignIn
 import FBSDKLoginKit
-import FacebookCore
 import NVActivityIndicatorView
 import SideMenu
 

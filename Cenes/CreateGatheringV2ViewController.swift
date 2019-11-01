@@ -19,6 +19,8 @@ protocol TimePickerDoneProtocol : class {
 }
 protocol GatheringInfoCellProtocol {
     func imageSelected()
+    func uploadImageAndGetUrl(imageToUpload: UIImage
+    );
 }
 class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerProtocal {
 
@@ -59,6 +61,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     var imageSelectedOption = "";
     
     var loggedInUser: User!;
+    
+    var fsCalendarElements: FSCalendarElements!
         
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, padding: 0.0);
 
@@ -98,6 +102,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             showAllFields();
         }
         self.setupNavigationBar();
+        self.fsCalendarElements = FSCalendarElements();
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -466,6 +471,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func imageAfterCrop(cropperdImage: UIImage) {
         gatheringInfoCellDelegate.imageSelected();
         event.imageToUpload = cropperdImage.fixedOrientation().imageRotatedByDegrees(degrees: 90);
+        gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: event.imageToUpload);
     }
     
     func didGetCroppedImage(image: UIImage) {
@@ -474,6 +480,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             self.gatheringInfoCellDelegate.imageSelected();
             //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
             event.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue))
+            gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: event.imageToUpload);
+
         } else {
             self.showAlert(title: "Error", message: "Cannot upload from screenshot")
         }

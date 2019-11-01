@@ -20,6 +20,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     
     @IBOutlet weak var customLocationButton: UIButton!
     
+    @IBOutlet weak var previousSearchLabel: UILabel!
     
     var selectedLocationProtocolDelegate: SelectedLocationProtocol!;
     
@@ -31,6 +32,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     var locationDtos = [LocationDto]();
     var nearByLocations = [Location]();
     var worldWideLocations = [Location]();
+    var previousLoactions = [Location]();
+    
     var typedText: String = "";
 
     override func viewDidLoad() {
@@ -72,6 +75,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
             }
         }
         setupNaigationBar();
+        self.loadPreviousLocations();
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -125,8 +129,10 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
             
         case .authorizedWhenInUse:
             manager.startUpdatingLocation();
-            currentLatitude = (manager.location?.coordinate.latitude)!;
-            currentLongitude = (manager.location?.coordinate.longitude)!;
+            if (manager.location?.coordinate.latitude != nil) {
+                currentLatitude = (manager.location?.coordinate.latitude)!;
+                currentLongitude = (manager.location?.coordinate.longitude)!;
+            }
             break
             
         case .authorizedAlways:
@@ -194,7 +200,9 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         
         print(url);
         HttpService().getMethod(url: url, token: "", complete: {(response) in
-            
+
+            self.previousSearchLabel.isHidden = true;
+
             self.locationDtos = [LocationDto]();
             self.nearByLocations = [Location]();
             if let statusStr = response.value(forKey: "status") as? String {
@@ -321,9 +329,22 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         typedText = searchText;
         locationDtos = [LocationDto]();
         if (searchText == "") {
-            locationTableView.isHidden = true
+            
+            self.previousSearchLabel.isHidden = true;
+
+            if (self.previousLoactions.count > 0) {
+                
+                self.previousSearchLabel.isHidden = false;
+
+                self.nearByLocations = self.previousLoactions;
+                locationTableView.isHidden = false;
+                self.locationTableView.reloadData();
+            } else {
+                locationTableView.isHidden = true
+            }
             customLocationButton.isHidden = true;
         } else {
+            
             locationTableView.isHidden = false
             customLocationButton.isHidden = false;
             //loadWorldWideLocations(searchText: searchText);
@@ -331,6 +352,44 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         }
     }
     
+    func loadPreviousLocations() -> Void {
+        
+        self.previousSearchLabel.isHidden = true;
+        var loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        let queryStr = "userId=\(String(loggedInUser.userId))";
+        LocationService().findPreviousLocations(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
+            
+            print(response);
+            let success = response.value(forKey: "success") as! Bool
+            if (success == true) {
+                self.previousLoactions = [Location]();
+                let prevLocArray = response.value(forKey: "data") as! NSArray;
+                if (prevLocArray.count > 0) {
+                    
+                    self.previousSearchLabel.isHidden = false;
+
+                    for prevLocDict in prevLocArray {
+                        
+                        let prevLoc = Location().loadLocationDataFromPreviousLocations(prevLocDict: prevLocDict as! NSDictionary);
+                        
+                        let destinationLat = Double(prevLoc.latitude) as! CLLocationDegrees
+                        let destinationLong = Double(prevLoc.longitude) as! CLLocationDegrees
+
+                        let coordinateUser = CLLocation(latitude: self.currentLatitude, longitude: self.currentLongitude);
+                        let coordinateDestination = CLLocation(latitude: destinationLat, longitude: destinationLong);
+                        let distanceInMeters = coordinateUser.distance(from: coordinateDestination);
+                        print("distanceInMeters : ", distanceInMeters/1000, String(format: "%.1f", distanceInMeters/1000))
+                        prevLoc.kilometers = "\(String(format: "%.1f", distanceInMeters/1000))Km";
+                        self.previousLoactions.append(prevLoc);
+                    }
+                    
+                    self.nearByLocations = self.previousLoactions;
+                    self.locationTableView.isHidden = false;
+                    self.locationTableView.reloadData();
+                }
+            }
+        });
+    }
     @objc func backButtonPressed() {
         self.navigationController?.popViewController(animated: false)
         

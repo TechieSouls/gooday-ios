@@ -56,7 +56,7 @@ class PhonebookService {
                 if let fulMobNumVar  = ContctNumVar.value as? CNPhoneNumber {
                     //let countryCode = fulMobNumVar.value(forKey: "countryCode") get country code
                     MccNamVar = (fulMobNumVar.value(forKey: "digits") as? String)!
-            print(MccNamVar+"  "+contact.givenName+"  #"+contact.middleName+" *"+contact.familyName+"\n");
+            //print(MccNamVar+"  "+contact.givenName+"  #"+contact.middleName+" *"+contact.familyName+"\n");
                     if(!MccNamVar.contains("#") && MccNamVar.count > 8){
                         var phoneNumberObj = [String:String]();
                         let givenNameVar = contact.givenName+" "+contact.familyName
@@ -79,7 +79,7 @@ class PhonebookService {
             }*/
             
         }
-        print(arrPhoneNumbers);
+        //print(arrPhoneNumbers);
         return arrPhoneNumbers ; // here array has all contact numbers.
     }
     

@@ -86,6 +86,11 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
         self.tabBarController?.setTabBarDotVisible(visible: false);
         // Do any additional setup after loading the view.
         
+        if (allNotifications.count > 0) {
+            self.notificationTableView.isHidden = false
+            self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+            
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -164,7 +169,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable 
                     
                     self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
                     
-                    self.notificationTableView.layer.removeAllAnimations();
+                    //self.notificationTableView.layer.removeAllAnimations();
                     self.notificationTableView.reloadData();
                     
                 }

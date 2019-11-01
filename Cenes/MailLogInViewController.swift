@@ -8,9 +8,9 @@
 
 import UIKit
 import FBSDKCoreKit
-import FacebookCore
 import FBSDKLoginKit
 import NVActivityIndicatorView
+import Alamofire
 
 class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
     
@@ -203,15 +203,19 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
     func getFBUserInfo() {
         startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
 
-        let request = GraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"], accessToken: AccessToken.current, httpMethod: .GET, apiVersion: FacebookCore.GraphAPIVersion.defaultVersion)
-        request.start { (response, result) in
-            switch result {
-            case .success(let value):
-                let dictValue = value.dictionaryValue
+        let request = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"]);
+        request!.start(completionHandler: { (connection, result, error) -> Void in
+            
+            if ((error) != nil) {
+                print(error)
+                self.stopAnimating()
+
+            } else {
+                let dictValue = result as! [String: Any];
                 let tokenStr = FBSDKAccessToken.current().tokenString
-                imageFacebookURL = ((dictValue?["picture"] as? [String: Any])?["data"] as? [String: Any])?["url"] as? String
+                imageFacebookURL = ((dictValue["picture"] as! [String: Any])["data"] as! [String: Any])["url"] as! String;
                 let webServ = WebService()
-                webServ.facebookSignUp(facebookAuthToken:tokenStr!, facebookID: dictValue?["id"]! as! String , complete: { (returnedDict) in
+                webServ.facebookSignUp(facebookAuthToken:tokenStr!, facebookID: dictValue["id"]! as! String , complete: { (returnedDict) in
                     
                     self.stopAnimating()
 
@@ -230,7 +234,7 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
                                 
                                 self.stopAnimating()
                                 
-                                self.moveToBoardingStepsOnFbLogin(webServ: webServ,returnedDict: returnedDict,tokenStr: tokenStr!,dictValue :dictValue!)
+                                //self.moveToBoardingStepsOnFbLogin(webServ: webServ,returnedDict: returnedDict,tokenStr: tokenStr!,dictValue :dictValue!)
                             });
                             
                            
@@ -239,18 +243,14 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
                         refreshAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
                             //print("Handle Cancel Logic here")
                             
-                            self.moveToBoardingStepsOnFbLogin(webServ: webServ,returnedDict: returnedDict,tokenStr: tokenStr!,dictValue :dictValue!)
+                            //self.moveToBoardingStepsOnFbLogin(webServ: webServ,returnedDict: returnedDict,tokenStr: tokenStr!,dictValue :dictValue!)
                         }))
                         self.present(refreshAlert, animated: true, completion: nil)
                     }
                     
                 })
-                
-            case .failed(let error):
-                print(error)
-                self.stopAnimating()
             }
-        }
+        });
     }
     
     func moveToBoardingStepsOnFbLogin(webServ: WebService,returnedDict: NSMutableDictionary,tokenStr: String,dictValue :[String: Any]) {

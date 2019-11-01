@@ -62,6 +62,10 @@
                                 <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="sjQ-eV-ILC">
+                                <rect key="frame" x="250" y="10" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
@@ -98,6 +102,7 @@
                 <outlet property="locationLabel" destination="oRO-lt-VfD" id="4cu-gS-yxc"/>
                 <outlet property="messageBar" destination="f07-t0-Fiv" id="e56-I2-w9s"/>
                 <outlet property="messageLabel" destination="u0R-Xn-ceW" id="QfG-0M-Soa"/>
+                <outlet property="uploadingImageSpinner" destination="sjQ-eV-ILC" id="XO4-Za-d3B"/>
             </connections>
             <point key="canvasLocation" x="137.68115942028987" y="155.35714285714286"/>
         </tableViewCell>

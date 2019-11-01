@@ -55,9 +55,37 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 tapGestureRecognizer.notificationId = notification.notificationId;
             }
             
-            cell.happen.text = Date(milliseconds: Int(notification.createdAt)).getDateStingInSecMinHourDayMonYear();
+            let pastDateInMillis = Date().millisecondsSince1970 - Date(milliseconds: Int(notification.createdAt)).millisecondsSince1970
+
+            let days = pastDateInMillis/(1000*3600*24);
+            if (days == 0) {
+                let hours = pastDateInMillis/(1000*3600);
+                
+                if (hours < 1) {
+                    let minutes = hours/(1000*60);
+                    if (minutes < 1) {
+                        
+                        let sec = minutes/1000;
+                        cell.happen.text = "\(sec)s";
+
+                    } else {
+                        cell.happen.text = "\(minutes)m";
+                    }
+                    
+                } else {
+                    cell.happen.text = "\(hours)h";
+                }
+            } else {
+                
+                if (days < 31) {
+                    cell.happen.text = "\(days)d";
+                } else {
+                    let months = days/30;
+                    cell.happen.text = "\(months)mo";
+                }
+            }
             
-            tableView.beginUpdates();
+            //tableView.beginUpdates();
         }
         
         return cell

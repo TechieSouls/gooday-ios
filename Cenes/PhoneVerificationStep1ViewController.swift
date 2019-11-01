@@ -152,6 +152,8 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         postData["countryCode"] = "\(self.countryCodeService.getPhoneCode())";
         postData["phone"] = "\(self.phoneNumberTextField.text!)";
         
+        setting.setValue("\(self.countryCodeService.nameCode)", forKey: "countryCode")
+
         UserService().postVerificationCodeWithoutToken(postData: postData, complete: {(response) in
             
             let success = response.value(forKey: "success") as! Bool;

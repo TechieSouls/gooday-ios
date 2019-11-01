@@ -27,18 +27,18 @@ let setting = UserDefaults.standard
     
     var cenesTabBar : UITabBarController?
     
-    let cenesPersistentContainer = NSPersistentContainer(name: "Cenes")
+    //let cenesPersistentContainer = NSPersistentContainer(name: "cenesapp01")
     
     var storeLoaded = false
     
     
-    func loadPersistentContainer() {
+    /*func loadPersistentContainer() {
         cenesPersistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("  Unresolved error \(error), \(error.userInfo)")
             }
         })
-    }
+    }*/
         
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -206,7 +206,7 @@ let setting = UserDefaults.standard
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
         */
-        let container = NSPersistentContainer(name: "deploy")
+        let container = NSPersistentContainer(name: "cenesapp01")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -260,19 +260,19 @@ let setting = UserDefaults.standard
         if isFacebookOpenUrl {
             return true
         }
-        if url.scheme == "cenesbeta" {
+        if url.scheme == "cenesapp01" {
             
             if (url.host != nil && url.host == "event") {
                 
                 let queryStr = url.query;
                 let params = queryStr?.split(separator: "=");
-                let eventId = params![1];
+                let eventKey = params![1];
                 
                 let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
                 let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
                 viewContro.fromPushNotificaiton = true;
                 viewContro.event = Event();
-                viewContro.event.eventId = eventId as! Int32;
+                viewContro.event.key = String(eventKey);
                 self.window?.rootViewController = viewContro
                 self.window?.makeKeyAndVisible()
             } else {

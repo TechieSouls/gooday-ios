@@ -17,6 +17,7 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var imageLabel: UILabel!
+    @IBOutlet weak var uploadingImageSpinner: UIActivityIndicatorView!
     
     var createGatheringDelegate: CreateGatheringV2ViewController!;
     
@@ -32,6 +33,7 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         let imageBarTap = UITapGestureRecognizer.init(target: self, action: #selector(imageBarPressed));
         imageBar.addGestureRecognizer(imageBarTap);
 
+        uploadingImageSpinner.isHidden = true;
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -89,7 +91,6 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
     }
     
     func imageSelected() {
-        imageLabel.isHidden = false;
         
         if (createGatheringDelegate != nil) {
             //Code to show hide Event Preview Button.
@@ -101,4 +102,42 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
         }
     }
     
+    
+    func uploadImageAndGetUrl(imageToUpload: UIImage) {
+        
+        self.createGatheringDelegate.previewGatheirngButton.isUserInteractionEnabled = false;
+        self.imageLabel.isHidden = true;
+        self.uploadingImageSpinner.isHidden = false;
+        self.uploadingImageSpinner.startAnimating();
+        GatheringService().uploadEventImageV3(image: imageToUpload, loggedInUser: createGatheringDelegate.loggedInUser, complete: {(response) in
+            
+            self.uploadingImageSpinner.isHidden
+                = true;
+            self.uploadingImageSpinner.stopAnimating();
+            self.imageLabel.isHidden = false;
+            self.createGatheringDelegate.previewGatheirngButton.isUserInteractionEnabled = true;
+
+            let success = response.value(forKey: "success") as! Bool;
+            if (success == true) {
+                if (response.value(forKey: "data") != nil) {
+                    
+                    print(images);
+                    let images = response.value(forKey: "data") as! NSDictionary;
+                    
+                    if (images.value(forKey: "large") != nil) {
+                        self.createGatheringDelegate.event.eventPicture = images.value(forKey: "large") as! String;
+                    }
+                    
+                    if (images.value(forKey: "thumbnail") != nil) {
+                        self.createGatheringDelegate.event.thumbnail = images.value(forKey: "thumbnail") as! String;
+                    } else {
+                        self.createGatheringDelegate.event.thumbnail = images.value(forKey: "large") as! String;
+                    }
+                    
+                }
+                
+            }
+            
+        });
+    }
 }

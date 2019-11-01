@@ -260,18 +260,21 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        let sectionTitle = friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionName;
-        
-        let identifier = "InnerTableHeaderTableViewCell"
-        let cell: InnerTableHeaderTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? InnerTableHeaderTableViewCell
-        
-        if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
-            cell.header.text = sectionTitle
-        } else {
-            cell.header.text = "";
+        if (friendViewControllerDelegate.inviteFriendsDto.allContacts.count > 0) {
+            let sectionTitle = friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionName;
+            
+            let identifier = "InnerTableHeaderTableViewCell"
+            let cell: InnerTableHeaderTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? InnerTableHeaderTableViewCell
+            
+            if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
+                cell.header.text = sectionTitle
+            } else {
+                cell.header.text = "";
+            }
+            
+            return cell
         }
-        
-        return cell
+        return nil;
     }
     
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {

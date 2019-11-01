@@ -58,10 +58,11 @@ extension ProfileTabViewController: UITableViewDelegate, UITableViewDataSource {
             // create an action
             let faqAction: UIAlertAction = UIAlertAction(title: "FAQ", style: .default) { action -> Void in
                 //self.selectPicture();
-                if let requestUrl = NSURL(string: "\(faqLink)") {
-                    UIApplication.shared.openURL(requestUrl as URL)
+                //if let requestUrl = NSURL(string: "\(faqLink)") {
+                    //UIApplication.shared.openURL(requestUrl as URL)
+                    UIApplication.shared.open(URL.init(string: faqLink)!, options: [String:Any](), completionHandler: nil);
                 }
-            }
+            
             let handfAction: UIAlertAction = UIAlertAction(title: "Help & Feedback", style: .default) { action -> Void in
                 
                 let iphoneDetails = "\(UIDevice.modelName) \(UIDevice.current.systemVersion)";
@@ -88,6 +89,11 @@ extension ProfileTabViewController: UITableViewDelegate, UITableViewDataSource {
             // present an actionSheet...
             addActionSheetForiPad(actionSheet: actionSheetController)
             self.present(actionSheetController, animated: true, completion: nil)
+            break;
+            
+        case 4:
+            let navViewController = storyboard?.instantiateViewController(withIdentifier: "VersionUpdateViewController") as! VersionUpdateViewController;
+            navigationController?.pushViewController(navViewController, animated: true);
             break;
         default:
             print("Default")

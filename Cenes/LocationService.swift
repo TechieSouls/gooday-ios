@@ -13,7 +13,8 @@ class LocationService {
     
     //static let searchPlacesString: String = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&input=";
     
-    
+    let get_previuos_locations = "api/event/locations";
+
 static let searchPlacesString: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=3.1893164,101.7383723&radius=100&name=Irama"
 
     func getLocationLatLong(id :String ,complete: @escaping([String: Any])->Void ) {
@@ -41,5 +42,13 @@ static let searchPlacesString: String = "https://maps.googleapis.com/maps/api/pl
             }
             complete(returnedDict)
         }
+    }
+    
+    func findPreviousLocations(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
+        let url = "\(apiUrl)\(get_previuos_locations)?\(queryStr)";
+        print("Url : \(url)")
+        HttpService().getMethodForList(url: url, token: token, complete: {(response) in
+            complete(response)
+        });
     }
 }
