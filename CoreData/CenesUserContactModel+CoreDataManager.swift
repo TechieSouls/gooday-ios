@@ -23,109 +23,132 @@ class CenesUserContactModel {
         return cenesUserContactMO;
     }
     
-    func saveUserContacMOFromDictionary(cenesUserContact: NSDictionary, context: NSManagedObjectContext) -> CenesUserContactMO {
+    func saveUserContacMOFromDictionary(cenesUserContact: NSDictionary) -> UserContact {
         
         let userContactId = cenesUserContact.value(forKey: "userContactId") as! Int32;
         var eventMemberAlreadyExists = false;
-        let cenesUserContactMO = fetchUserContactsByUserContactId(context: context, userContactId: userContactId);
         
-        if (cenesUserContactMO.userContactId == userContactId) {
+        let cenesUserContactBO = fetchUserContactsByUserContactId(userContactId: userContactId);
+        
+        if (cenesUserContactBO.userContactId != nil && cenesUserContactBO.userContactId == userContactId) {
             eventMemberAlreadyExists = true;
-            return cenesUserContactMO;
+            return cenesUserContactBO;
         }
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+
         if (eventMemberAlreadyExists == false) {
             
-            let entity = NSEntityDescription.entity(forEntityName: "CenesUserContactMO", in: context)
-            let userContactManagedObject = NSManagedObject(entity: entity!, insertInto: context) as! CenesUserContactMO
+            let userContactManagedObject = CenesUserContactMO(context: context);
             
             userContactManagedObject.userContactId = cenesUserContact.value(forKey: "userContactId") as! Int32;
+            
             if let userId = cenesUserContact.value(forKey: "userId") as? Int32 {
                 userContactManagedObject.userId = userId;
             }
             userContactManagedObject.name = (cenesUserContact.value(forKey: "name") as! String);
+            
             if let photo = cenesUserContact.value(forKey: "photo") as? String {
                 userContactManagedObject.photo = photo;
             }
-            if let friendId = cenesUserContact.value(forKey: "phone") as? Int32 {
+            if let friendId = cenesUserContact.value(forKey: "friendId") as? Int32 {
                 userContactManagedObject.friendId = friendId;
             }
             userContactManagedObject.phone = (cenesUserContact.value(forKey: "phone") as! String);
-            userContactManagedObject.cenesMember = (cenesUserContact.value(forKey: "cenesMember") as! String);
+            
+            userContactManagedObject.cenesMember = String(cenesUserContact.value(forKey: "cenesMember") as! String);
+            
+            if let user = cenesUserContact.value(forKey: "user") as? NSDictionary {
+                userContactManagedObject.user = CenesUserModel().saveCenesUserModel(cenesUserDict: user);
+            }
+            
             do {
                 try context.save()
-                return userContactManagedObject;
+                return copyCenesUserContactMOtoUserContactBO(cenesUserContactMO: userContactManagedObject);
             } catch {
                 print("Failed saving")
             }
         }
-        let entity = NSEntityDescription.entity(forEntityName: "CenesUserContactMO", in: context)
-        return  NSManagedObject(entity: entity!, insertInto: context) as! CenesUserContactMO
+        return  UserContact();
     }
     
-    func fetchAllUserContacts(context: NSManagedObjectContext, user: User) -> [CenesUserContactMO] {
+    func fetchAllUserContacts(user: User) -> [UserContact] {
         
-        var userContactsList = [CenesUserContactMO]();
-        
-        let entity = NSEntityDescription.entity(forEntityName: "CenesUserContactMO", in: context)
-        var userContact = NSManagedObject(entity: entity!, insertInto: context) as! CenesUserContactMO
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+
+        var userContacts = [UserContact]();
+        var userContactsList = [CenesUserContactMO]();        
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
-        
-        // Create Entity Description
-        let entityDescription = NSEntityDescription.entity(forEntityName: "CenesUserContactMO", in: context)
-        
-        // Configure Fetch Request
-        fetchRequest.entity = entityDescription
+        let fetchRequest: NSFetchRequest<CenesUserContactMO> = CenesUserContactMO.fetchRequest();
         fetchRequest.predicate = NSPredicate(format: "friendId != %i", user.userId)
 
         do {
-            let cenesContacts = try context.fetch(fetchRequest) as! [CenesUserContactMO]
-            for userContact in cenesContacts {
-                if (userContact.name != nil) {
-                    userContactsList.append(userContact);
+            let cenesContactsMO = try context.fetch(fetchRequest) as! [CenesUserContactMO]
+            for userContactMO in cenesContactsMO {
+                if (userContactMO.name != nil) {
+                    userContactsList.append(userContactMO);
                 }
             }
-            return userContactsList;
+            
+            for cenesContact in userContactsList {
+                userContacts.append(copyCenesUserContactMOtoUserContactBO(cenesUserContactMO: cenesContact));
+            }
+            return userContacts;
         } catch {
             let fetchError = error as NSError
             print(fetchError)
         }
         
-        return [CenesUserContactMO]();
+        return userContacts;
     }
 
     
-    func fetchUserContactsByUserContactId(context: NSManagedObjectContext, userContactId: Int32) -> CenesUserContactMO {
+    func fetchUserContactsByUserContactId(userContactId: Int32) -> UserContact {
         
-        let entity = NSEntityDescription.entity(forEntityName: "CenesUserContactMO", in: context)
-        let userContact = NSManagedObject(entity: entity!, insertInto: context) as! CenesUserContactMO
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
-        
-        // Create Entity Description
-        let entityDescription = NSEntityDescription.entity(forEntityName: "CenesUserContactMO", in: context)
+        let fetchRequest: NSFetchRequest<CenesUserContactMO> = CenesUserContactMO.fetchRequest();
         
         // Configure Fetch Request
-        fetchRequest.entity = entityDescription
         fetchRequest.predicate = NSPredicate(format: "userContactId == %i", userContactId)
         do {
             let userContacts = try context.fetch(fetchRequest) as! [CenesUserContactMO]
             if (userContacts.count > 0) {
                 for userCon in userContacts {
                     if (userCon.name != nil) {
-                        return userCon;
+                        return copyCenesUserContactMOtoUserContactBO(cenesUserContactMO: userCon);
                     }
                 }
-                return userContacts[0];
             }
-            return userContact;
         } catch {
             let fetchError = error as NSError
             print(fetchError)
         }
         
-        return userContact;
+        return UserContact();
     }
+    
+    func loadUserContactsMO(eventMemberArray: NSArray) -> [UserContact] {
+        
+        let user = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        var cenesUserContacts = [UserContact]();
+        
+        for cenesUserContactDict in eventMemberArray {
+            
+            let userContact = CenesUserContactModel().saveUserContacMOFromDictionary(cenesUserContact: cenesUserContactDict as! NSDictionary);
+            if (userContact.friendId != nil && userContact.friendId != 0 && userContact.friendId == user.userId) {
+                continue;
+            }
+            cenesUserContacts.append(userContact);
+        }
+        return cenesUserContacts;
+    }
+
+
     
     func loggedInUserAsEventMember(context: NSManagedObjectContext, user: User) -> CenesUserContactMO {
         
@@ -143,16 +166,36 @@ class CenesUserContactModel {
 
     }
     
-    func deleteAllCenesUserContactMO(context: NSManagedObjectContext) {
+    func deleteAllCenesUserContactMO() {
         
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "CenesUserContactMO")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
         do {
             try context.execute(deleteRequest)
-            try context.save()
         } catch {
             print ("There was an error")
         }
     }
 
+    func copyCenesUserContactMOtoUserContactBO(cenesUserContactMO: CenesUserContactMO) -> UserContact {
+        
+        let userContact = UserContact();
+        userContact.cenesMember = cenesUserContactMO.cenesMember;
+        userContact.friendId = Int(cenesUserContactMO.friendId);
+        userContact.name = cenesUserContactMO.name;
+        userContact.phone = cenesUserContactMO.phone;
+        userContact.photo = cenesUserContactMO.photo;
+        userContact.status = cenesUserContactMO.status;
+        userContact.userContactId = Int(cenesUserContactMO.userContactId);
+        userContact.userId = Int(cenesUserContactMO.userId);
+        
+        if let cenesUserMO = cenesUserContactMO.user {
+            userContact.user = CenesUserModel().copyManagedObjectToBO(cenesUserMO: cenesUserMO);
+        }
+        
+        return userContact;
+    }
 }

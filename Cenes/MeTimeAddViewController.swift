@@ -10,6 +10,7 @@ import UIKit
 import NVActivityIndicatorView
 import MobileCoreServices
 import Photos
+import CoreData
 
 class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate {
 
@@ -51,7 +52,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     @IBOutlet weak var friday: UIButton!
     @IBOutlet weak var saturday: UIButton!
     
-    var metimeRecurringEvent = MetimeRecurringEvent();
+    var metimeRecurringEvent: MetimeRecurringEvent!;
     
     var dateSelected = "";
     var daySelectUnselectMap:[String: Bool] = [:];
@@ -61,9 +62,13 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     var newMeTimeViewControllerDelegate: NewMeTimeViewController!;
     
     var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView();
-
+    var context: NSManagedObjectContext!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        self.context = appDelegate.persistentContainer.viewContext;
 
         self.hideKeyboardWhenTappedAround();
         
@@ -134,8 +139,10 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         self.setupDayButtons(button: friday);
         self.setupDayButtons(button: saturday);
         
+        if (metimeRecurringEvent == nil) {
+            metimeRecurringEvent = MetimeRecurringEvent();
+        }
         self.showMeTimeCardView();
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -170,21 +177,25 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     @IBAction func doneTimePickerBtnPressed(_ sender: Any) {
         self.hideTimePicker();
-        print(self.timePicker.clampedDate.millisecondsSince1970)
-        print(self.timePicker.clampedDate.millisecondsSince1970)
+      //  print(self.timePicker.clampedDate.millisecondsSince1970)
+      //  print(self.timePicker.clampedDate.millisecondsSince1970)
         if (self.dateSelected == "startTime") {
+          //  print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.metimeRecurringEvent.startTime = self.timePicker.clampedDate.millisecondsSince1970;
+           // print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.startTimeLabel.text = "START  \(self.timePicker.clampedDate.hmma())";
         } else if (self.dateSelected == "endTime") {
+          //  print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.metimeRecurringEvent.endTime = self.timePicker.clampedDate.millisecondsSince1970;
             self.endTimeLabel.text = "FINISH  \(self.timePicker.clampedDate.hmma())";
+          //  print("FINISH  \(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count)");
 
         }
     }
     
     @IBAction func btnDeletePressed(_ sender: Any) {
 
-        if (self.metimeRecurringEvent.recurringEventId != nil) {
+        if (self.metimeRecurringEvent.recurringEventId != 0) {
             
             self.startLoading();
             
@@ -192,6 +203,9 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             MeTimeService().deleteMeTimeByRecurringEventId(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
                 
                 self.stopLoading();
+                
+                MetimeRecurringEventModel().deleteMetimeEventByMetimeRecurringId(recurringEventId: self.metimeRecurringEvent.recurringEventId);
+                
                 self.newMeTimeViewControllerDelegate.loadMeTimeData();
                 self.hideMetimeCardView();
                 
@@ -203,22 +217,23 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     @IBAction func btnSavePressed(_ sender: Any) {
         
+        self.metimeRecurringEvent.createdById = self.loggedInUser.userId;
+
+        if (daySelectUnselectMap.count > 0) {
+            self.metimeRecurringEvent.patterns = [MeTimeRecurringPattern]();
+            for (day, bool) in daySelectUnselectMap {
+                let pattern = MeTimeRecurringPattern();
+                pattern.dayOfWeek = Int(MeTimeManager().dayNameAndKeyMap(dayName: day));
+                self.metimeRecurringEvent.patterns.append(pattern);
+            }
+        }
         if (self.titletextField.text != nil && self.titletextField.text != "") {
-            self.metimeRecurringEvent.title = self.titletextField.text;
+            self.metimeRecurringEvent.title = self.titletextField.text!;
+
         } else {
             self.metimeRecurringEvent.title = nil;
         }
-        
-        if (daySelectUnselectMap.count > 0) {
-            
-            var meTimeRecurringPatterns = [MeTimeRecurringPattern]();
-            for (day, bool) in daySelectUnselectMap {
-                let pattern = MeTimeRecurringPattern();
-                pattern.dayOfWeek = MeTimeManager().dayNameAndKeyMap(dayName: day);
-                meTimeRecurringPatterns.append(pattern);
-            }
-            self.metimeRecurringEvent.patterns = meTimeRecurringPatterns;
-        }
+    
         let validationResponse = MeTimeManager().validateMeTimeSave(meTimeRecurringEvent: metimeRecurringEvent);
         
         if (validationResponse != "") {
@@ -226,13 +241,13 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(alert, animated: true)
         } else {
-            print(self.metimeRecurringEvent.toString());
-            self.metimeRecurringEvent.createdById = self.loggedInUser.userId;
             
             if Connectivity.isConnectedToInternet {
                 self.startLoading();
                 
-                MeTimeService().saveMeTime(postData: self.metimeRecurringEvent.toDictionary(), token: self.loggedInUser.token, complete: {(response) in
+                let meTimerecurringPatternDict = self.metimeRecurringEvent.toDictionary();
+                print(meTimerecurringPatternDict);
+                MeTimeService().saveMeTime(postData: meTimerecurringPatternDict, token: self.loggedInUser.token, complete: {(response) in
                     
                     self.stopLoading();
                     
@@ -242,7 +257,13 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                             
                             if (response.value(forKey: "recurringEvent") != nil) {
                                 let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;
-                                self.metimeRecurringEvent.recurringEventId = recurringEvent.value(forKey: "recurringEventId") as! Int32;
+                                    
+                                if (self.metimeRecurringEvent.recurringEventId != nil) {
+                                    MetimeRecurringEventModel().deleteMetimeEventByMetimeRecurringId(recurringEventId: recurringEvent.value(forKey: "recurringEventId") as! Int32);
+                                }
+
+                                self.metimeRecurringEvent = MetimeRecurringEventModel().saveMetimeRecurringEventMOFromDictionary(metimeRecurringEventDict: recurringEvent);
+                                
                                 self.uploadMeTimeImage();
                             } else {
                                 self.showAlert(title: "Alert", message: "There is some error while saving MeTime.");
@@ -408,6 +429,20 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         
         if (self.imageToUpload != nil) {
             MeTimeService().uploadMeTimeImage(image: self.imageToUpload, recurringEventId: metimeRecurringEvent.recurringEventId, token: self.loggedInUser.token, complete: {(response) in
+                
+                if (response.value(forKey: "status") != nil) {
+                    let status = response.value(forKey: "status") as! String;
+                    if (status == "success") {
+                        
+                        if (response.value(forKey: "recurringEvent") != nil) {
+                            let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;
+                            
+                            self.metimeRecurringEvent.photo = recurringEvent.value(forKey: "photo") as! String;
+                            MetimeRecurringEventModel().updatePhoto(recurringEventId: self.metimeRecurringEvent.recurringEventId, photoUrl: self.metimeRecurringEvent.photo);
+                        }
+                    }
+                }
+                
                 self.newMeTimeViewControllerDelegate.loadMeTimeData();
                 self.hideMetimeCardView();
             })
@@ -419,8 +454,11 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     func populateMeTimeCard() -> Void {
         
-        self.titletextField.text = self.metimeRecurringEvent.title;
-        self.lblMeTimeTitle.text =  self.metimeRecurringEvent.title;
+        if (self.metimeRecurringEvent.title != nil ) {
+            
+            self.titletextField.text = self.metimeRecurringEvent.title;
+            self.lblMeTimeTitle.text =  self.metimeRecurringEvent.title;
+        }
         
         if (self.metimeRecurringEvent.photo != nil) {
             let imageUrl = "\(apiUrl)\(self.metimeRecurringEvent.photo!)";
@@ -495,7 +533,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                         self.meTimeCard.layoutIfNeeded()
         }, completion: nil)
         self.meTimeCard.isHidden = false;
-        if (self.metimeRecurringEvent.recurringEventId != nil) {
+        if (self.metimeRecurringEvent != nil && self.metimeRecurringEvent.recurringEventId != nil) {
             self.lblMeTimeTitle.isHidden = false;
             self.titletextField.isHidden = true;
             self.populateMeTimeCard();

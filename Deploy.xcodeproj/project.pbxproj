@@ -86,6 +86,8 @@
 		5E51FDAC226982AA00A86994 /* PredictiveCalendarCellTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E51FDAA226982AA00A86994 /* PredictiveCalendarCellTableViewCell.xib */; };
 		5E51FDAF2269AD9200A86994 /* PredictiveInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E51FDAD2269AD9200A86994 /* PredictiveInfoTableViewCell.swift */; };
 		5E51FDB02269AD9200A86994 /* PredictiveInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E51FDAE2269AD9200A86994 /* PredictiveInfoTableViewCell.xib */; };
+		5E52B7F223615A9B00740B52 /* WelcomeCardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E52B7F023615A9B00740B52 /* WelcomeCardTableViewCell.swift */; };
+		5E52B7F323615A9B00740B52 /* WelcomeCardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E52B7F123615A9B00740B52 /* WelcomeCardTableViewCell.xib */; };
 		5E5408AC2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5408AB2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift */; };
 		5E57873D224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873B224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift */; };
 		5E57873E224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */; };
@@ -172,6 +174,12 @@
 		5ED747B82226BAC800C3458A /* EventMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B72226BAC800C3458A /* EventMember.swift */; };
 		5ED747BA2226BAE900C3458A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B92226BAE900C3458A /* User.swift */; };
 		5ED747BC2226CF3C00C3458A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747BB2226CF3C00C3458A /* Location.swift */; };
+		5ED7FD242359793B0089364B /* MetimeRecurringEventMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED7FD202359793B0089364B /* MetimeRecurringEventMO+CoreDataClass.swift */; };
+		5ED7FD252359793B0089364B /* MetimeRecurringEventMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED7FD212359793B0089364B /* MetimeRecurringEventMO+CoreDataProperties.swift */; };
+		5ED7FD262359793B0089364B /* MeTimeRecurringPatternMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED7FD222359793B0089364B /* MeTimeRecurringPatternMO+CoreDataClass.swift */; };
+		5ED7FD272359793B0089364B /* MeTimeRecurringPatternMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED7FD232359793B0089364B /* MeTimeRecurringPatternMO+CoreDataProperties.swift */; };
+		5ED7FD2923597B650089364B /* MetimeRecurringEventModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED7FD2823597B650089364B /* MetimeRecurringEventModel+CoreDataManager.swift */; };
+		5ED7FD2B23597CEA0089364B /* MetimeRecurringPatternModel+CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED7FD2A23597CEA0089364B /* MetimeRecurringPatternModel+CoreDataManager.swift */; };
 		5EDEE1E82240A42300330F47 /* MeTimeDescTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1E62240A42300330F47 /* MeTimeDescTableViewCell.swift */; };
 		5EDEE1E92240A42300330F47 /* MeTimeDescTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EDEE1E72240A42300330F47 /* MeTimeDescTableViewCell.xib */; };
 		5EDEE1EC2240A56800330F47 /* MeTimeItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDEE1EA2240A56800330F47 /* MeTimeItemTableViewCell.swift */; };
@@ -494,6 +502,8 @@
 		5E51FDAA226982AA00A86994 /* PredictiveCalendarCellTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PredictiveCalendarCellTableViewCell.xib; sourceTree = "<group>"; };
 		5E51FDAD2269AD9200A86994 /* PredictiveInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveInfoTableViewCell.swift; sourceTree = "<group>"; };
 		5E51FDAE2269AD9200A86994 /* PredictiveInfoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PredictiveInfoTableViewCell.xib; sourceTree = "<group>"; };
+		5E52B7F023615A9B00740B52 /* WelcomeCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeCardTableViewCell.swift; sourceTree = "<group>"; };
+		5E52B7F123615A9B00740B52 /* WelcomeCardTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WelcomeCardTableViewCell.xib; sourceTree = "<group>"; };
 		5E5408AB2346420300BC9BB5 /* NotificationModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationModel+CoreDataManager.swift"; sourceTree = "<group>"; };
 		5E57873B224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeTwoLineTitleTableViewCell.swift; sourceTree = "<group>"; };
 		5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeTwoLineTitleTableViewCell.xib; sourceTree = "<group>"; };
@@ -580,6 +590,12 @@
 		5ED747B72226BAC800C3458A /* EventMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMember.swift; sourceTree = "<group>"; };
 		5ED747B92226BAE900C3458A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5ED747BB2226CF3C00C3458A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		5ED7FD202359793B0089364B /* MetimeRecurringEventMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetimeRecurringEventMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5ED7FD212359793B0089364B /* MetimeRecurringEventMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetimeRecurringEventMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5ED7FD222359793B0089364B /* MeTimeRecurringPatternMO+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeTimeRecurringPatternMO+CoreDataClass.swift"; sourceTree = "<group>"; };
+		5ED7FD232359793B0089364B /* MeTimeRecurringPatternMO+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MeTimeRecurringPatternMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5ED7FD2823597B650089364B /* MetimeRecurringEventModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetimeRecurringEventModel+CoreDataManager.swift"; sourceTree = "<group>"; };
+		5ED7FD2A23597CEA0089364B /* MetimeRecurringPatternModel+CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetimeRecurringPatternModel+CoreDataManager.swift"; sourceTree = "<group>"; };
 		5EDEE1E62240A42300330F47 /* MeTimeDescTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeDescTableViewCell.swift; sourceTree = "<group>"; };
 		5EDEE1E72240A42300330F47 /* MeTimeDescTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeDescTableViewCell.xib; sourceTree = "<group>"; };
 		5EDEE1EA2240A56800330F47 /* MeTimeItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeItemTableViewCell.swift; sourceTree = "<group>"; };
@@ -756,7 +772,7 @@
 		F48F49C01F24DC2200825EAE /* HomeCenesEventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCenesEventTableViewCell.swift; sourceTree = "<group>"; };
 		F48F49C11F24DC2200825EAE /* HomeCenesEventTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeCenesEventTableViewCell.xib; sourceTree = "<group>"; };
 		F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
-		F4B871EF1F0DDEF1001A9963 /* Deploy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deploy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.24.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Deploy 2.0.24.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B871F21F0DDEF1001A9963 /* AppDelegate.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; tabWidth = 4; };
 		F4B871F41F0DDEF1001A9963 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F4B871F71F0DDEF1001A9963 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -897,6 +913,8 @@
 				5E1217C0229807F00075961A /* InvitationCardTableViewCell.xib */,
 				5E1217C322981C260075961A /* NextCardTableViewCell.swift */,
 				5E1217C422981C260075961A /* NextCardTableViewCell.xib */,
+				5E52B7F023615A9B00740B52 /* WelcomeCardTableViewCell.swift */,
+				5E52B7F123615A9B00740B52 /* WelcomeCardTableViewCell.xib */,
 			);
 			name = invitation;
 			sourceTree = "<group>";
@@ -1414,6 +1432,10 @@
 		B9E8A78B1FC3F3D8000DE506 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				5ED7FD202359793B0089364B /* MetimeRecurringEventMO+CoreDataClass.swift */,
+				5ED7FD212359793B0089364B /* MetimeRecurringEventMO+CoreDataProperties.swift */,
+				5ED7FD222359793B0089364B /* MeTimeRecurringPatternMO+CoreDataClass.swift */,
+				5ED7FD232359793B0089364B /* MeTimeRecurringPatternMO+CoreDataProperties.swift */,
 				5E5D500A234C844E0093AE8A /* CenesUserContactMO+CoreDataClass.swift */,
 				5E5D500B234C844E0093AE8A /* CenesUserContactMO+CoreDataProperties.swift */,
 				5ED3E01A234703DE00C720F4 /* CenesUserMO+CoreDataClass.swift */,
@@ -1437,6 +1459,8 @@
 				5ED3E022234791AC00C720F4 /* CenesUserModel+CoreDataManager.swift */,
 				5ED3E02423479C1000C720F4 /* EventMemberModel+CoreDataManager.swift */,
 				5E5D500E234C84670093AE8A /* CenesUserContactModel+CoreDataManager.swift */,
+				5ED7FD2823597B650089364B /* MetimeRecurringEventModel+CoreDataManager.swift */,
+				5ED7FD2A23597CEA0089364B /* MetimeRecurringPatternModel+CoreDataManager.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1475,7 +1499,7 @@
 		F4B871F01F0DDEF1001A9963 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F4B871EF1F0DDEF1001A9963 /* Deploy.app */,
+				F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.24.app */,
 				F4B872061F0DDEF1001A9963 /* DeployTests.xctest */,
 				F4B872111F0DDEF2001A9963 /* DeployUITests.xctest */,
 			);
@@ -1714,7 +1738,7 @@
 			);
 			name = Deploy;
 			productName = Cenes;
-			productReference = F4B871EF1F0DDEF1001A9963 /* Deploy.app */;
+			productReference = F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.24.app */;
 			productType = "com.apple.product-type.application";
 		};
 		F4B872051F0DDEF1001A9963 /* DeployTests */ = {
@@ -1946,6 +1970,7 @@
 				5E51FD952265FD5100A86994 /* SelectedFriendCollectionViewCell.xib in Resources */,
 				AE4647931F6FE03E00B5CB67 /* flag_ie.png in Resources */,
 				FA3429F821FB663800205876 /* HomeHolidayTableViewCell.xib in Resources */,
+				5E52B7F323615A9B00740B52 /* WelcomeCardTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2032,11 +2057,8 @@
 				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FSCalendar/FSCalendar.framework",
-				"${BUILT_PRODUCTS_DIR}/FacebookCore/FacebookCore.framework",
-				"${BUILT_PRODUCTS_DIR}/FacebookLogin/FacebookLogin.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/Groot/Groot.framework",
 				"${BUILT_PRODUCTS_DIR}/IoniconsSwift/IoniconsSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Mantis/Mantis.framework",
 				"${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework",
@@ -2057,11 +2079,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSCalendar.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FacebookLogin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Groot.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IoniconsSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mantis.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NVActivityIndicatorView.framework",
@@ -2092,6 +2111,7 @@
 				5ED3E01F234703DE00C720F4 /* CenesUserMO+CoreDataProperties.swift in Sources */,
 				5ED747BA2226BAE900C3458A /* User.swift in Sources */,
 				5E51FD982268277400A86994 /* InnerTableHeaderTableViewCell.swift in Sources */,
+				5ED7FD272359793B0089364B /* MeTimeRecurringPatternMO+CoreDataProperties.swift in Sources */,
 				F4D2C1241F37C6E6005638D8 /* HomeTableViewCellTwo.swift in Sources */,
 				5E078D212236A6760082A013 /* GatheringManager.swift in Sources */,
 				B94B39941FA7D1AE00A806FE /* ReminderDetailTableViewCell.swift in Sources */,
@@ -2099,6 +2119,7 @@
 				FA00904821F73E910038BF3D /* MemberCountCollectionViewCell.swift in Sources */,
 				FAC5314A21CBE63E00E033BB /* UIDatePicker+Customs.swift in Sources */,
 				5EDEE1F82240C75A00330F47 /* MetimeRecurringEvent.swift in Sources */,
+				5ED7FD262359793B0089364B /* MeTimeRecurringPatternMO+CoreDataClass.swift in Sources */,
 				FA110EC0215F8AD8007DB7EA /* CountryCodeTableViewCell.swift in Sources */,
 				5EEE364D1F549C1C0095517C /* AddCalendarViewController.swift in Sources */,
 				5EF8409022375EA50046E68D /* UIButton+Custom.swift in Sources */,
@@ -2108,6 +2129,7 @@
 				5E046C0B23139A1800183EB4 /* EventModel+CoreDataProp.swift in Sources */,
 				5E40954922531DCE00CA9700 /* NotificationManager.swift in Sources */,
 				5E69990A2221182600A275B6 /* GatheringPreviewController+UITableView.swift in Sources */,
+				5ED7FD252359793B0089364B /* MetimeRecurringEventMO+CoreDataProperties.swift in Sources */,
 				5E51FD9F2268736E00A86994 /* CreateGatheringV2ViewController.swift in Sources */,
 				5E64C10922927CE1000F2629 /* ChoiceViewController+Facebook.swift in Sources */,
 				5E20A4AB226F21B800F1DBC6 /* LocationItemsHeaderViewCell.swift in Sources */,
@@ -2173,11 +2195,14 @@
 				5EC7A171227DF0FE0010E804 /* PersonalDetailsViewController.swift in Sources */,
 				B9710C961FA6748A000A45B3 /* LocationTableViewController.swift in Sources */,
 				5E9DBBF02261B592000F9AA4 /* deploy.xcdatamodeld in Sources */,
+				5E52B7F223615A9B00740B52 /* WelcomeCardTableViewCell.swift in Sources */,
 				5E20A4A5226ED83900F1DBC6 /* LocationItemTableViewCell.swift in Sources */,
 				5EF8409C2237C14C0046E68D /* HomeViewController+extension.swift in Sources */,
+				5ED7FD242359793B0089364B /* MetimeRecurringEventMO+CoreDataClass.swift in Sources */,
 				FA025A3321F5FD9000240E08 /* NSMutableAttributedString.swift in Sources */,
 				5EEE36431F50D78E0095517C /* BaseViewController.swift in Sources */,
 				AE8294D31FBACE2F000D381F /* PhotosCell.swift in Sources */,
+				5ED7FD2923597B650089364B /* MetimeRecurringEventModel+CoreDataManager.swift in Sources */,
 				F48F49C21F24DC2200825EAE /* HomeCenesEventTableViewCell.swift in Sources */,
 				F4B871FB1F0DDEF1001A9963 /* Cenes.xcdatamodeld in Sources */,
 				F45626AF1F32407A00B68761 /* ReminderData.swift in Sources */,
@@ -2210,6 +2235,7 @@
 				5EF840932237646B0046E68D /* HolidayCalendarListViewController.swift in Sources */,
 				5E20A498226B797A00F1DBC6 /* CreateGatheringMessageViewController.swift in Sources */,
 				5E1217C92299A7640075961A /* VerticalCropView.swift in Sources */,
+				5ED7FD2B23597CEA0089364B /* MetimeRecurringPatternModel+CoreDataManager.swift in Sources */,
 				B956ADB11FB04E00005B13CA /* RemindersModel+CoreDataClass.swift in Sources */,
 				5EDEE1F62240BEE100330F47 /* HttpService.swift in Sources */,
 				944A7B571F980AA0001491D3 /* AlarmDetailTableViewCell.swift in Sources */,
@@ -2519,12 +2545,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 2.0.24;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.DeployApp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Deploy 2.0.24";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";
@@ -2545,12 +2573,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 2.0.24;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.DeployApp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Deploy 2.0.24";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";

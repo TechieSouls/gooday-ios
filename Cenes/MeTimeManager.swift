@@ -46,10 +46,10 @@ class MeTimeManager {
         
         patternStr = getCountinousDaysStr(recurringPatterns: recurringPatternsSorted);
         
-        if (patternStr == "") {
+        if (patternStr == "" && recurringPatternsSorted.count > 0) {
             for pattern in recurringPatternsSorted {
-                
-                let dayOfweek = Calendar.current.component(.weekday, from: Date(milliseconds: Int(pattern.dayOfWeekTimestamp)));
+                let dayOfweek = Calendar.current.component(.weekday, from: Date(milliseconds: Int(pattern
+                    .dayOfWeekTimestamp)));
                 patternStr = "\(patternStr)\(dayKeyAndNameMap(dayKey: dayOfweek)),"
             }
             patternStr = String(patternStr.prefix(patternStr.count-1));
@@ -104,7 +104,7 @@ class MeTimeManager {
             message = "Please select Start Time.";
         } else if (meTimeRecurringEvent.endTime == nil) {
             message = "Please select End Time.";
-        } else if (meTimeRecurringEvent.patterns == nil) {
+        } else if (meTimeRecurringEvent.patterns.count == 0) {
             message = "Please choose from Days.";
         }
         

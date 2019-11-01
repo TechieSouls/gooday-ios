@@ -32,13 +32,13 @@ class GatheringManager {
             
             //var event = Event().loadEventData(eventDict: outerDict)
             
-            var event = EventMO();
+            var event = Event();
             var eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict);
-            event = eventMO;
+            event = EventModel().copyDataToEventBo(eventMo: eventMO);
             if dict.value(forKey: key) != nil {
                 
                 //var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                var array = dict.value(forKey: key) as! [EventMO]
+                var array = dict.value(forKey: key) as! [Event]
                 array.append(event)
                 dict.setValue(array, forKey: key)
                 
@@ -48,7 +48,7 @@ class GatheringManager {
                     }
                 }
             }else{
-                var array = [EventMO]()
+                var array = [Event]()
                 array.append(event)
                 dict.setValue(array, forKey: key)
                 
@@ -67,9 +67,9 @@ class GatheringManager {
         return dataObjectArray;
     }
     
-    func parseFriendsListResults(friendList: [CenesUserContactMO]) -> [FriendListDto] {
+    func parseFriendsListResults(friendList: [UserContact]) -> [FriendListDto] {
         
-        var nonAlphabeticFriends = [CenesUserContactMO]();
+        var nonAlphabeticFriends = [UserContact]();
         var dataObjectArray = [FriendListDto]();
         var friendListMapDto = [String: FriendListDto]();
         for userContact in friendList {
@@ -113,13 +113,13 @@ class GatheringManager {
         return dataObjectArray;
     }
     
-    func getCenesContacts(friendList: [EventMember]) -> [EventMember] {
+    func getCenesContacts(friendList: [UserContact]) -> [UserContact] {
         
-        var cenesMembers = [EventMember]();
-        for eventMember in friendList {
+        var cenesMembers = [UserContact]();
+        for cenesContact in friendList {
             
-            if (eventMember.user != nil) {
-                cenesMembers.append(eventMember);
+            if (cenesContact.user != nil || cenesContact.cenesMember == "yes") {
+                cenesMembers.append(cenesContact);
 
             }
         }
@@ -131,7 +131,7 @@ class GatheringManager {
         var cenesMembers = [CenesUserContactMO]();
         for eventMember in friendList {
             
-            if let user = eventMember.user as? CenesUserMO {
+            if eventMember.cenesMember == "yes" {
                 print(eventMember.description);
                 cenesMembers.append(eventMember);
             }

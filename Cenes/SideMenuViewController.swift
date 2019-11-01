@@ -9,11 +9,8 @@
 import UIKit
 import GoogleSignIn
 import FBSDKLoginKit
-import FacebookCore
 import NVActivityIndicatorView
 import SideMenu
-
-
 
 class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var notificationCount_label: UILabel!

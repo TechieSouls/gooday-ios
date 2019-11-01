@@ -154,15 +154,15 @@ class InvitationCardTableViewCell: UITableViewCell {
         self.descriptionView.backgroundColor = UIColor.white;
         self.descViewMessageIcon.image = UIImage.init(named: "message_on_icon");
         
-        if (gatheringInvitaionViewControllerDelegate.event.desc != nil && gatheringInvitaionViewControllerDelegate.event.desc != "") {
+        if (gatheringInvitaionViewControllerDelegate.event.description != nil && gatheringInvitaionViewControllerDelegate.event.description != "") {
             gatheringInvitaionViewControllerDelegate.trackCheckdeBubble = "description";
             
             self.descriptionView.backgroundColor = UIColor.white;
-            self.descriptionUILabel.text = gatheringInvitaionViewControllerDelegate.event.desc;
+            self.descriptionUILabel.text = gatheringInvitaionViewControllerDelegate.event.description;
             if (self.descriptionUILabelHolder.isHidden) {
                 
                 self.descriptionUILabelHolder.isHidden = false;
-                let height = self.heightForView(text:gatheringInvitaionViewControllerDelegate.event.desc!, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
+                let height = self.heightForView(text:gatheringInvitaionViewControllerDelegate.event.description!, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
                 
                 
                 //160 is the destance from bottom
@@ -196,7 +196,7 @@ class InvitationCardTableViewCell: UITableViewCell {
         self.processAlreadyCheckedBubble(selectedBubble: "share");
         gatheringInvitaionViewControllerDelegate.trackCheckdeBubble = "share";
         
-        if (gatheringInvitaionViewControllerDelegate.event.eventId == 0) {
+        if (gatheringInvitaionViewControllerDelegate.event.eventId == nil || gatheringInvitaionViewControllerDelegate.event.eventId == 0) {
             let alert = UIAlertController(title: "Alert!", message: "Event cannot be shared this time.", preferredStyle: .alert);
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil));
             gatheringInvitaionViewControllerDelegate.present(alert, animated: true)
@@ -269,16 +269,15 @@ class InvitationCardTableViewCell: UITableViewCell {
         
         for eventMember in gatheringInvitaionViewControllerDelegate.event.eventMembers! {
             
-            var eventMemberMO = eventMember as! EventMemberMO;
             //We have to check user id, because there may be users which are non cenes users
-            if (eventMemberMO.userId != 0 && gatheringInvitaionViewControllerDelegate.event.createdById == eventMemberMO.userId) {
-                gatheringInvitaionViewControllerDelegate.eventOwner = eventMemberMO;
+            if (eventMember.userId != 0 && gatheringInvitaionViewControllerDelegate.event.createdById == eventMember.userId) {
+                gatheringInvitaionViewControllerDelegate.eventOwner = eventMember;
                 break;
             }
         }
         
         if (gatheringInvitaionViewControllerDelegate.eventOwner == nil) {
-            gatheringInvitaionViewControllerDelegate.eventOwner = EventMemberModel().loggedInUserAsEventMember(user: gatheringInvitaionViewControllerDelegate.loggedInUser)
+            gatheringInvitaionViewControllerDelegate.eventOwner = Event().getLoggedInUserAsEventMember();
         }
         
         if (gatheringInvitaionViewControllerDelegate.eventOwner != nil) {
@@ -293,7 +292,7 @@ class InvitationCardTableViewCell: UITableViewCell {
             
         }
         
-        if (gatheringInvitaionViewControllerDelegate.event.eventId != 0) {
+        if (gatheringInvitaionViewControllerDelegate.event.eventId != nil && gatheringInvitaionViewControllerDelegate.event.eventId != 0) {
             if (gatheringInvitaionViewControllerDelegate.event.eventPicture != nil) {
                 eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail!));
 

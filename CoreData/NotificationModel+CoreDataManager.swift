@@ -57,7 +57,7 @@ class NotificationModel {
             var notificationMO = findNotificationByNotifcationId(notificationId: notificationDict.value(forKey: "notificationId") as! Int32);
             
             if (notificationMO.notificationId == 0) {
-                notificationMO = saveNotificationModel(notificationDataDict: notificationArrItem as! NSDictionary);
+                notificationMO = saveNotificationModel(notificationDataDict: notificationDict);
                 //print(notificationMO.notificationId)
                 if (notificationMO.notificationId != 0) {
                     notificationMOs.append(notificationMO);
@@ -135,6 +135,7 @@ class NotificationModel {
             
             for notificationMoTemp in notificationMosTemp {
                 if (notificationMoTemp.notificationId != 0) {
+                    print(notificationMoTemp.notificationTypeId, notificationMoTemp.event?.title);
                     notificationMos.append(notificationMoTemp);
                 }
             }
@@ -196,7 +197,7 @@ class NotificationModel {
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "NotificationMO")
-        deleteFetch.predicate = NSPredicate(format: "eventId == %i", eventId);
+        deleteFetch.predicate = NSPredicate(format: "notificationTypeId == %i", eventId);
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
         do {
             try context.execute(deleteRequest)
@@ -234,6 +235,30 @@ class NotificationModel {
         } catch {
             print(error)
         }
+    }
+    
+    func copyNotificationMOToNotificationDataBO(notificationMO: NotificationMO) -> NotificationData {
+        
+        let notificationData = NotificationData();
+        notificationData.notificationId = notificationMO.notificationId
+        notificationData.notificationTypeId = notificationMO.notificationTypeId
+        notificationData.readStatus = notificationMO.readStatus
+        notificationData.action = notificationMO.action
+        notificationData.readStatus = notificationMO.readStatus
+        notificationData.createdAt = notificationMO.createdAt
+        notificationData.message = notificationMO.message
+        notificationData.senderId = notificationMO.senderId
+        notificationData.title = notificationMO.title
+        notificationData.type = notificationMO.type;
+        
+        if let event = notificationMO.event {
+            notificationData.event = EventModel().copyDataToEventBo(eventMo: event);
+        }
+        
+        if let user = notificationMO.user {
+            notificationData.user = CenesUserModel().copyManagedObjectToBO(cenesUserMO: user);
+        }
 
+        return notificationData;
     }
 }

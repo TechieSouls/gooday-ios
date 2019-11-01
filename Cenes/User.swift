@@ -42,17 +42,20 @@ class User {
     func loadUserDataFromUserDefaults(userDataDict: UserDefaults) -> User {
         
         let user = User();
-        user.userId = userDataDict.value(forKey: "userId") as? Int32;
-        user.name = userDataDict.value(forKey: "name") as? String;
-        user.email = userDataDict.value(forKey: "email") as? String;
-        user.photo = userDataDict.value(forKey: "photo") as? String;
-        user.password = userDataDict.value(forKey: "password") as? String;
-        user.gender = userDataDict.value(forKey: "gender") as? String;
-        user.phone = userDataDict.value(forKey: "phone") as? String;
-        user.country = userDataDict.value(forKey: "country") as? String;
-        user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
-        user.token = userDataDict.value(forKey: "token") as? String;
-        user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
+        
+        if (userDataDict != nil && userDataDict.value(forKey: "userId") != nil) {
+            user.userId = userDataDict.value(forKey: "userId") as? Int32;
+            user.name = userDataDict.value(forKey: "name") as? String;
+            user.email = userDataDict.value(forKey: "email") as? String;
+            user.photo = userDataDict.value(forKey: "photo") as? String;
+            user.password = userDataDict.value(forKey: "password") as? String;
+            user.gender = userDataDict.value(forKey: "gender") as? String;
+            user.phone = userDataDict.value(forKey: "phone") as? String;
+            user.country = userDataDict.value(forKey: "country") as? String;
+            user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
+            user.token = userDataDict.value(forKey: "token") as? String;
+            user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
+        }
         
         //user.token = "1562138386037eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcmVlZC5jaG9uZzE1NjIwNTE5ODYwMzcifQ.tHSYqDdJLdFHDyJetHX78hOrr3Uyt8dk4G_XbjU-pmkkGrVbp81r8RyvOZLsn_CAgjMYue62B8EEOfp_bAvhww"
         //user.userId = 384;

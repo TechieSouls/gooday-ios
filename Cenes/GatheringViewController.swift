@@ -12,7 +12,6 @@ import IoniconsSwift
 import NVActivityIndicatorView
 import GoogleSignIn
 import FBSDKLoginKit
-import FacebookCore
 import SideMenu
 import CoreData
 
@@ -490,9 +489,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         let eventUsers = obj.eventMembers!;
         var eventMemberCounts: Int = 0;
         for eventUser in eventUsers {
-            
-            let eventUserMO = eventUser as! EventMemberMO;
-            if loggedInUser.userId != eventUserMO.userId  {
+            if eventUser.userId != nil && loggedInUser.userId != eventUser.userId  {
                 eventMemberCounts = eventMemberCounts + 1;
             }
         }
@@ -533,10 +530,10 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         
         cell.title.text = event.title
         //cell.startTime.text = Util.hhmma(timeStamp: event.startTime);
-        let eventMembers: [EventMemberMO] = event.eventMembers as! [EventMemberMO];
+        let eventMembers: [EventMember] = event.eventMembers as! [EventMember];
         var memebrId : NSNumber;
         
-        var eventMembersExceptOwner: [EventMemberMO] = [];
+        var eventMembersExceptOwner: [EventMember] = [];
         
         var counter: Int = 0;
         for eventMember in eventMembers {

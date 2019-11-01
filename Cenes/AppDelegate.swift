@@ -9,7 +9,6 @@
 import UIKit
 import CoreData
 import FBSDKLoginKit
-import FacebookCore
 import UserNotifications
 import Fabric
 import Crashlytics
@@ -105,7 +104,7 @@ let reachability = Reachability()!
         
         
         let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        if (loggedInUser.userId != nil) {
+        if (loggedInUser.userId != nil && loggedInUser.token != nil) {
             let queryStr = "userId=\(String(loggedInUser.userId))";
             NotificationService().findNotificationBadgeCounts(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
                 
@@ -259,17 +258,20 @@ let reachability = Reachability()!
             
             if (url.host != nil && url.host == "event") {
                 
-                let queryStr = url.query;
-                let params = queryStr?.split(separator: "=");
-                let eventKey = params![1];
-                
-                let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
-                let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-                viewContro.fromPushNotificaiton = true;
-                viewContro.event = EventMO();
-                viewContro.event.key = String(eventKey);
-                self.window?.rootViewController = viewContro
-                self.window?.makeKeyAndVisible()
+                let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+                if (loggedInUser.userId != nil) {
+                    let queryStr = url.query;
+                    let params = queryStr?.split(separator: "=");
+                    let eventKey = params![1];
+                    
+                    let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+                    let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                    viewContro.fromPushNotificaiton = true;
+                    viewContro.event = Event();
+                    viewContro.event.key = String(eventKey);
+                    self.window?.rootViewController = viewContro
+                    self.window?.makeKeyAndVisible()
+                }
             } else {
                 let service = OutlookService.shared()
                 service.handleOAuthCallback(url: url);
@@ -321,6 +323,8 @@ let reachability = Reachability()!
         print("RECIEVE PUSH ********** \(userInfo["aps"])")
         var dict = userInfo["aps"] as! NSDictionary;
         
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+
         //Conditio for silent push notification
         if (dict.value(forKey: "content-available") as! Int == 1) {
             let type = dict.value(forKey: "type") as! String;
@@ -513,7 +517,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
             let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
             viewContro.fromPushNotificaiton = true;
-            viewContro.event = EventMO();
+            viewContro.event = Event();
             viewContro.event.eventId = userInfo!["id"] as! Int32;
             self.window?.rootViewController = viewContro
             self.window?.makeKeyAndVisible()

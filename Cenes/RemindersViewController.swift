@@ -395,7 +395,7 @@ class RemindersViewController: BaseViewController,NVActivityIndicatorViewable {
                     }
                     
                     if let memberID = friend["memberId"] as? NSNumber {
-                        cenesUser.userId = String(describing: memberID as NSNumber)
+                        cenesUser.userId = Int(exactly: memberID as NSNumber)
                     }
                     reminderModel.friends.append(cenesUser)
                 }

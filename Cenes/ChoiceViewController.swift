@@ -8,8 +8,6 @@
 
 import UIKit
 import FBSDKLoginKit
-import FacebookCore
-import FacebookLogin
 import GoogleSignIn
 
 class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate {
@@ -138,19 +136,21 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         fbLoginBtn = FBSDKLoginButton();
         fbLoginBtn.delegate = self;
         
-        let loginManager = LoginManager()
+        let loginManager = FBSDKLoginManager()
         loginManager.logOut()
-        loginManager.logIn(readPermissions: [ .publicProfile , .email, .userGender, .userBirthday], viewController: self) { loginResult in
-            switch loginResult {
-            case .failed(let error):
-                print(error)
-            case .cancelled:
-                print("User cancelled login.")
-            case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-                print("Logged in!")
-                print(accessToken.authenticationToken);
-                print(accessToken.userId)
-                self.getFBUserData(facebookId: accessToken.userId!, accessToken: accessToken.authenticationToken);
+        loginManager.logIn(withReadPermissions: [ "public_profile" , "email"], from: nil) {
+            (result, error) -> Void in
+            //if we have an error display it and abort
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            //make sure we have a result, otherwise abort
+            guard let result = result else { return }
+            //if cancelled nothing todo
+            if result.isCancelled { return }
+            else {
+                self.getFBUserData(facebookId: result.token.userID , accessToken: result.token.tokenString);
             }
         }
     }
@@ -267,10 +267,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 let loggedInUserDict = response.value(forKey: "data") as! NSDictionary;
                 setting.setValue(loggedInUserDict.value(forKey: "name"), forKey: "name");
                 setting.setValue(loggedInUserDict.value(forKey: "userId"), forKey: "userId");
-                setting.setValue(loggedInUserDict.value(forKey: "photo"), forKey: "photo");
                 
-                if loggedInUserDict.value(forKey: "photo") as? String != nil {
-                    setting.setValue(loggedInUserDict.value(forKey: "photo"), forKey: "photo");
+                if let photo = loggedInUserDict.value(forKey: "photo") as? String {
+                    setting.setValue(photo, forKey: "photo");
                 }
                 
                 if loggedInUserDict.value(forKey: "email") as? String != nil {

@@ -121,7 +121,6 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
         } else {
             //This is the case where user views all the contacts in its contact list.
             let userContact = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
-            print(userContact.description);
             
             let cell: FriendAllContactsTableViewCell = (tableView.dequeueReusableCell(withIdentifier: "FriendAllContactsTableViewCell") as? FriendAllContactsTableViewCell)!
             
@@ -207,7 +206,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        var friendObj = CenesUserContactMO();
+        var friendObj = UserContact();
         
         //Fetch User Contact based on the type of the screen user at.
         //If he is at all contacts screen then we will fetch all the contacts.

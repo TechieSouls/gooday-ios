@@ -72,22 +72,53 @@ class EventModel {
         }
     }
     
-    func saveNewEventModelOffline(eventMO: EventMO, user: User) {
+    func saveNewEventModelOffline(event: Event, user: User) {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
         
-        let entity = NSEntityDescription.entity(forEntityName: "EventMO", in: context)
-        var entityModel = NSManagedObject(entity: entity!, insertInto: context) as! EventMO
-        entityModel = eventMO;
+        let entityModel = EventMO(context: context);
+
         entityModel.eventId = Int32(Date().timeIntervalSince1970);
         entityModel.synced = false;
         entityModel.expired = false;
         entityModel.scheduleAs = "Gathering";
         entityModel.source = "Cenes";
+        entityModel.createdById = event.createdById;
 
-        let eventMemberMO = EventMemberModel().loggedInUserAsEventMember(user: user);
-        entityModel.addToEventMembers(eventMemberMO);
+        entityModel.title = event.title;
+        entityModel.startTime = event.startTime;
+        entityModel.endTime = event.endTime;
+        
+        if let description = event.description {
+            entityModel.desc = description;
+        }
+        if let location = event.location {
+            entityModel.location = location;
+        }
+        if let latitude = event.latitude {
+           entityModel.latitude = latitude;
+        }
+        if let longitude = event.longitude {
+           entityModel.longitude = longitude;
+        }
+        if let placeId = event.placeId {
+           entityModel.placeId = placeId;
+        }
+        if let photo = event.eventPicture {
+           entityModel.eventPicture = photo;
+        }
+        if let thumbnail = event.thumbnail {
+           entityModel.thumbnail = thumbnail;
+        }
+        
+        entityModel.eventPictureBinary = event.eventPictureBinary;
+
+        for eventMem in event.eventMembers {
+            entityModel.addToEventMembers(EventMemberModel().copyBOToManagedObject(eventMember: eventMem));
+        }
+        //let eventMemberMO = EventMemberModel().loggedInUserAsEventMember(user: user);
+        //entityModel.addToEventMembers(eventMemberMO);
         
         print(entityModel.description);
         do {
@@ -99,24 +130,12 @@ class EventModel {
     
     func saveEventModelByEventDictnory(eventDict: NSDictionary) -> EventMO {
         
+        print(eventDict.value(forKey: "title") as! String)
         let eventId = eventDict.value(forKey: "eventId") as! Int32;
         var eventAlreadyExists = false;
         let eventMo = fetchOfflineEventByEventId(eventId: eventId);
         if eventMo.eventId != 0 && eventMo.title != nil {
             eventAlreadyExists = true;
-            
-            /*eventMo.eventMembers = nil;
-            let eventMembersArr = eventDict.value(forKey: "eventMembers") as! NSArray;
-            for eventMemberArrItem in eventMembersArr {
-                
-                let eventMemberDict = eventMemberArrItem as! NSDictionary;
-                
-                //print("Event Title : ", eventMo.title, " Event : ",eventId);
-                eventMo.addToEventMembers(EventMemberModel().saveIfNotPresent(eventMemDict: eventMemberDict));
-                /*if (eventMemMO.userId != 0) {
-                    eventMemMO.user = CenesUserModel().fetchOfflineCenesUserByUserId(context: context, cenesUserId: eventMemMO.userId);
-                }*/
-            }*/
             return eventMo;
         }
         
@@ -169,7 +188,6 @@ class EventModel {
             // Create Mutable Set
             
             do {
-                try context.save();
                 //print(entityModel.description)
                 if let eventMembersArray = eventDict.value(forKey: "eventMembers") as? NSArray {
                     
@@ -184,7 +202,9 @@ class EventModel {
                         }
                     }
                 }
-                print(entityModel.description)
+                //print(entityModel.description)
+                try context.save();
+                
                 return entityModel;
             } catch {
                 print("Failed saving Event Managed Object func : saveEventModelByEventDictnory")
@@ -227,20 +247,16 @@ class EventModel {
         }
     }
 
-    func fetchOfflineEvents() -> [EventMO] {
+    func fetchOfflineEvents() -> [Event] {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
+        var events = [Event]();
         var eventsMo = [EventMO]();
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
+        let fetchRequest: NSFetchRequest<EventMO> = EventMO.fetchRequest();
         
-        // Create Entity Description
-        let entityDescription = NSEntityDescription.entity(forEntityName: "EventMO", in: context)
-        
-        // Configure Fetch Request
-        fetchRequest.entity = entityDescription
         let sortDescriptors = [NSSortDescriptor(key:"startTime" ,
                                                 ascending:true )]
         fetchRequest.sortDescriptors = sortDescriptors;
@@ -249,48 +265,50 @@ class EventModel {
             if (eventsMOTemp.count > 0) {
                 for eventMoTemp in eventsMOTemp {
                     if (eventMoTemp.eventId != 0 && eventMoTemp.title != nil) {
-                        print(eventMoTemp.description)
                         eventsMo.append(eventMoTemp);
                     }
                 }
             }
-            return eventsMo;
+            
+            for eventMO in eventsMo {
+                let eventBO = copyDataToEventBo(eventMo: eventMO);
+                events.append(eventBO);
+            }
+            
+            return events;
             //print("Offline Event Counts : \(eventsMo.count)")
         } catch {
             let fetchError = error as NSError
             print(fetchError)
         }
-        return eventsMo;
+        return events;
     }
 
-    func fetchEventsByEventMemberStatus(context: NSManagedObjectContext, loggedInUserId: Int32, eventMemberStatus: String) -> [EventMO] {
+    func fetchEventsByEventMemberStatus(loggedInUserId: Int32, eventMemberStatus: String) -> [Event] {
         
-        var invitationTabEventMOs = [EventMO]();
-        let eventMos = fetchOfflineEvents();
-        
-        for eventMo in eventMos {
+        var invitationTabEvents = [Event]();
+        let events = fetchOfflineEvents();
+        for event in events {
             
-            if (eventMo.title == nil) {
+            if (event.title == nil && event.scheduleAs != "Gathering") {
                 continue;
             }
-            
-            for eventMemer in eventMo.eventMembers! {
-                let eventMemerMO = eventMemer as! EventMemberMO;
-            
-                if (eventMemberStatus == "GOING" && eventMemerMO.userId == loggedInUserId && eventMemerMO.status == "Going") {
-                    invitationTabEventMOs.append(eventMo);
+            for eventMemer in event.eventMembers {
+                
+                if (eventMemberStatus == "GOING" && eventMemer.userId == loggedInUserId && eventMemer.status == "Going") {
+                    invitationTabEvents.append(event);
                     break;
-                } else if (eventMemberStatus == "NOTGOING" && eventMemerMO.userId == loggedInUserId && eventMemerMO.status == "NotGoing") {
-                    invitationTabEventMOs.append(eventMo);
+                } else if (eventMemberStatus == "NOTGOING" && eventMemer.userId == loggedInUserId && eventMemer.status == "NotGoing") {
+                    invitationTabEvents.append(event);
                     break;
-                }  else if (eventMemberStatus == "PENDING" && eventMemerMO.userId == loggedInUserId && eventMemerMO.status == nil) {
-                   invitationTabEventMOs.append(eventMo);
+                }  else if (eventMemberStatus == "PENDING" && eventMemer.userId == loggedInUserId && eventMemer.status == nil && event.createdById != loggedInUserId) {
+                   invitationTabEvents.append(event);
                    break;
                }
             }
         }
         
-        return invitationTabEventMOs;
+        return invitationTabEvents;
     }
     
     func fetchOfflineEventByEventId(eventId: Int32) -> EventMO {
@@ -324,7 +342,7 @@ class EventModel {
         return EventMO(context: context);
     }
     
-    func updateEventManagedObjectFromDictionary(eventDict: NSDictionary) -> EventMO {
+    func updateEventManagedObjectFromDictionary(eventDict: NSDictionary) -> Event {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
@@ -379,7 +397,7 @@ class EventModel {
                             eventM.addToEventMembers(EventMemberModel().updateEventMemberFromDictionary(eventMemberDict: eventMemDict));
                         }
                         
-                        return eventM;
+                        return copyDataToEventBo(eventMo: eventM);
                     } catch {
                         print(error);
                     }
@@ -390,7 +408,7 @@ class EventModel {
             print(fetchError)
         }
         
-        return EventMO(context: context);
+        return Event();
     }
     
     func updateEventManagedObjectSyncedStatus(eventMO: EventMO) {
@@ -518,24 +536,29 @@ class EventModel {
         event.thumbnail = eventMo.thumbnail;
         event.expired = eventMo.expired;
 
-        let members = eventMo.mutableSetValue(forKey: "eventMembers");
-        //print(members.count)
         event.eventMembers = [EventMember]();
-        for eventMemberMo in members.allObjects as! [EventMemberMO] {
-            event.eventMembers.append(copyDataToEventMemberBo(eventMemberMO: eventMemberMo));
+        for eventMember in eventMo.eventMembers!{
+            let eventMemberMo = eventMember as! EventMemberMO;
+            event.eventMembers.append(copyDataToEventMemberBo(eventMo: eventMo, eventMemberMO: eventMemberMo));
         }
 
         return event;
     }
     
-     func copyDataToEventMemberBo(eventMemberMO: EventMemberMO) -> EventMember {
+     func copyDataToEventMemberBo(eventMo: EventMO, eventMemberMO: EventMemberMO) -> EventMember {
         
         let eventMember = EventMember();
         eventMember.eventMemberId = eventMemberMO.eventMemberId;
-        eventMember.eventId = eventMemberMO.eventId;
+        eventMember.eventId = eventMo.eventId;
         eventMember.name = eventMemberMO.name;
         eventMember.userId = eventMemberMO.userId;
         
+        if let status = eventMemberMO.status {
+            eventMember.status = status;
+        }
+        if let user = eventMemberMO.user {
+            eventMember.user = CenesUserModel().copyManagedObjectToBO(cenesUserMO: user);
+        }
         return eventMember;
     }
     

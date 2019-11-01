@@ -33,15 +33,15 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
             
             let meTimeEventObj = self.metimeEvents[indexPath.row - 1];
             
-            if (meTimeEventObj.startTime == nil) {
+            if (meTimeEventObj.startTime == 0) {
                 
                 let identifier = "MeTimeUnscheduleTableViewCell"
                 let cell: MeTimeUnscheduleTableViewCell  = (tableView.dequeueReusableCell(withIdentifier: identifier) as? MeTimeUnscheduleTableViewCell)!
                 
-                let twoDigitlabel = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title);
+                let twoDigitlabel = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title!);
                 
                 cell.meTimeViewLabel.text = twoDigitlabel.uppercased();
-                cell.title.text = "\(String(meTimeEventObj.title))";
+                cell.title.text = "\(String(meTimeEventObj.title!))";
                 return cell;
                 
             } else {
@@ -59,7 +59,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                 
                        finalCell.meTimeTitle.text = meTimeEventObj.title;
                     
-                        finalCell.meTimeDays.text = MeTimeManager().getDaysStr(recurringPatterns: meTimeEventObj.patterns);
+                    finalCell.meTimeDays.text = MeTimeManager().getDaysStr(recurringPatterns: meTimeEventObj.patterns);
                         //Setting Hours
                         let hoursStr = "\(Date(milliseconds: Int(meTimeEventObj.startTime) ).hmma()) - \(Date(milliseconds: Int(meTimeEventObj.endTime) ).hmma())";
                         finalCell.meTimeHours.text = hoursStr;
@@ -69,7 +69,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                             finalCell.meTimeImage.isHidden = true;
                             finalCell.meTimeViewNoImage.isHidden = false;
                             
-                            let noImageLbl = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title);
+                            let noImageLbl = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title!);
                             finalCell.meTimeNoImageLabel.text = noImageLbl.uppercased();
                         } else {
                             finalCell.meTimeViewNoImage.isHidden = true;
@@ -97,7 +97,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         finalCell.meTimeImage.isHidden = true;
                         finalCell.meTimeViewNoImage.isHidden = false;
                         
-                        let noImageLbl = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title);
+                        let noImageLbl = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title!);
                         finalCell.meTimeNoImageLabel.text = noImageLbl.uppercased();
                     } else {
                         finalCell.meTimeViewNoImage.isHidden = true;
@@ -124,7 +124,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         finalCell.meTimeImage.isHidden = true;
                         finalCell.meTimeViewNoImage.isHidden = false;
                         
-                        let noImageLbl = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title);
+                        let noImageLbl = MeTimeManager().getTwoDigitInitialsOfTitle(title: meTimeEventObj.title!);
                         finalCell.meTimeNoImageLabel.text = noImageLbl.uppercased();
                     } else {
                         finalCell.meTimeViewNoImage.isHidden = true;

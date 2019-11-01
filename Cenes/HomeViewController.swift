@@ -13,7 +13,6 @@ import ActionButton
 import NVActivityIndicatorView
 import GoogleSignIn
 import FBSDKLoginKit
-import FacebookCore
 import SideMenu
 import CoreData
 

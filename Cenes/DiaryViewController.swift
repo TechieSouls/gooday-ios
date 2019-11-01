@@ -10,7 +10,6 @@ import UIKit
 import NVActivityIndicatorView
 import GoogleSignIn
 import FBSDKLoginKit
-import FacebookCore
 import SideMenu
 
 
@@ -196,7 +195,7 @@ class DiaryViewController: UIViewController,NVActivityIndicatorViewable {
                 
                 let uid =  userDict.value(forKey: "userId") as? NSNumber
                 if uid != nil{
-                    cenesUser.userId = "\((uid)!)"
+                    cenesUser.userId = Int("\((uid)!)")
                 }
                 
                 cenesUser.userName = userDict.value(forKey: "username") as? String

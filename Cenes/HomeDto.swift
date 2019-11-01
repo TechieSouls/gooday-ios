@@ -87,7 +87,7 @@ class HomeData {
     var sectionKeyInMillis: Int64!;
     var sectionName: String!;
     var sectionNameWithYear: String!;
-    var sectionObjects = [EventMO]();
+    var sectionObjects = [Event]();
 }
 
 class HomeScreenDataHolder {

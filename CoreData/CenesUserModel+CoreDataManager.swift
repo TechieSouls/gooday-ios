@@ -14,11 +14,13 @@ class CenesUserModel {
     func saveCenesUserModel(cenesUserDict: NSDictionary) -> CenesUserMO {
         
         var userAlreadyExists = false;
-        let cenesUserMo = fetchOfflineCenesUserByUserId(cenesUserId: cenesUserDict.value(forKey: "userId") as! Int32);
-        
-        if (cenesUserMo.userId == cenesUserDict.value(forKey: "userId") as! Int32) {
-            userAlreadyExists = true;
-            return cenesUserMo;
+        if let userId = cenesUserDict.value(forKey: "userId") as? Int32 {
+            
+            let cenesUserMo = fetchOfflineCenesUserByUserId(cenesUserId: userId);
+            if (cenesUserMo.userId == userId) {
+                userAlreadyExists = true;
+                return cenesUserMo;
+            }
         }
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -29,7 +31,9 @@ class CenesUserModel {
             let entity = NSEntityDescription.entity(forEntityName: "CenesUserMO", in: context)
             let entityModel = NSManagedObject(entity: entity!, insertInto: context) as! CenesUserMO
 
-            entityModel.userId = Int32(cenesUserDict.value(forKey: "userId") as! Int64);
+            if let userId = cenesUserDict.value(forKey: "userId") as? Int32 {
+                entityModel.userId = Int32(userId);
+            }
             
             //This condition is necessary if user deletes his account and he will not be available inside any event
             if let name = cenesUserDict.value(forKey: "name") as? String {
@@ -57,8 +61,6 @@ class CenesUserModel {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
-        let entity = NSEntityDescription.entity(forEntityName: "CenesUserMO", in: context)
-        let entityModel = NSManagedObject(entity: entity!, insertInto: context) as! CenesUserMO
         // Initialize Fetch Request
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
         
@@ -120,4 +122,28 @@ class CenesUserModel {
         return entityModel;
 
     }
+    
+    func copyManagedObjectToBO(cenesUserMO: CenesUserMO) -> User {
+        
+        let cenesUser = User();
+        cenesUser.name = cenesUserMO.name;
+        cenesUser.photo = cenesUserMO.photo
+        cenesUser.userId = cenesUserMO.userId;
+        
+        return cenesUser;
+    }
+    
+    func copyBOToCenesUser(user: User) -> CenesUserMO {
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+
+        let cenesUserMO = CenesUserMO(context: context);
+        cenesUserMO.name = user.name;
+        cenesUserMO.photo = user.photo
+        cenesUserMO.userId = user.userId;
+        
+        return cenesUserMO;
+    }
+
 }

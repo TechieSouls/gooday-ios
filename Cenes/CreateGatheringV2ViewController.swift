@@ -22,6 +22,7 @@ protocol GatheringInfoCellProtocol {
     func imageSelected()
     func uploadImageAndGetUrl(imageToUpload: UIImage
     );
+    func uploadImageLabelOnly();
 }
 class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerProtocal {
 
@@ -53,9 +54,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
 
     var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
     
-    var event: EventMO!;
+    var event: Event!;
     
-    var eventHost: EventMemberMO!;
+    var eventHost: EventMember!;
     
     var textfield = UITextField();
     
@@ -92,25 +93,26 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         createGathTableView.register(UINib(nibName: "SelectedFriendsCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "SelectedFriendsCollectionTableViewCell")
         
-        if (event.eventId == 0) {
+        if (event.eventId == nil || event.eventId == 0) {
             event.endTime = 0;
+            event.createdById = self.loggedInUser.userId;
         } else {
-            var eventMembers: [EventMemberMO] = [EventMemberMO]();
+            var eventMembers: [EventMember] = [EventMember]();
             for eventMem in event.eventMembers! {
                 
-                let eventMemMO = eventMem as! EventMemberMO;
-                if (eventMemMO.userId != self.loggedInUser.userId) {
-                    eventMembers.append(eventMemMO);
+                if (eventMem.userId != self.loggedInUser.userId) {
+                    eventMembers.append(eventMem);
                 } else {
-                    eventHost = eventMemMO;
+                    eventHost = eventMem;
                 }
             }
             
-            var cenesUserContacts = [CenesUserContactMO]();
+            var cenesUserContacts = [UserContact]();
             for eventMem in event.eventMembers! {
-                let eventMemMo = eventMem as! EventMemberMO;
-                let cenesUserContact = CenesUserContactModel().fetchUserContactsByUserContactId(context: context!, userContactId: eventMemMo.userContactId);
-                cenesUserContacts.append(cenesUserContact);
+                if (eventMem.userContactId != nil) {
+                    let cenesUserContact = CenesUserContactModel().fetchUserContactsByUserContactId(userContactId: eventMem.userContactId);
+                    cenesUserContacts.append(cenesUserContact);
+                }
                 
             }
             inviteFriendsDto.selectedFriendCollectionViewList = cenesUserContacts;
@@ -147,7 +149,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         ];
         textfield.defaultTextAttributes = attributes // call in viewDidLoad
 
-        if (event.eventId != 0) {
+        if (event.eventId != nil && event.eventId != 0) {
             let attributes = [
                 NSAttributedStringKey.foregroundColor: UIColor.black,
                 NSAttributedStringKey.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
@@ -308,13 +310,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         self.navigationController?.pushViewController(viewController, animated: true);
     }
     
-    func friendsDonePressed(eventMembers: [EventMemberMO]) {
-        self.event.eventMembers = nil;
+    func friendsDonePressed(eventMembers: [EventMember]) {
+        self.event.eventMembers = [EventMember]();
         for eventMem in eventMembers {
-            
-            let eventMemMO = eventMem as! EventMemberMO;
-            self.event.addToEventMembers(eventMemMO);
-
+            self.event.eventMembers.append(eventMem);
         }
         self.createGathTableView.reloadData();
         //If Predictive was on then, we would have to refesh the predictive calendar
@@ -417,20 +416,19 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         }
         
         if (isValid == true) {
-            if (self.event.eventId != 0) {
+            if (self.event.eventId != nil && self.event.eventId != 0) {
                 var hostExists = false;
                 for eve in self.event.eventMembers! {
-                    let eveMO = eve as! EventMemberMO;
-                    if (eveMO.eventMemberId == eventHost.eventMemberId) {
+                    if (eve.eventMemberId == eventHost.eventMemberId) {
                         hostExists = true;
                     }
                 }
                 if (hostExists == false) {
-                    self.event.addToEventMembers(eventHost);
+                    self.event.eventMembers.append(eventHost);
                 }
             }
             
-            if (event.createdById == 0) {
+            if (event.createdById == nil || event.createdById == 0) {
                 event.createdById = self.loggedInUser.userId;
             }
             
@@ -465,8 +463,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "createGathMessageSeague") {
             let destinationVC = segue.destination as! CreateGatheringMessageViewController;
-            if (event.desc != nil) {
-                destinationVC.descriptionMsg = event.desc!;
+            if (event.description != nil) {
+                destinationVC.descriptionMsg = event.description;
             }
             destinationVC.messageProtocolDelete = gatheringInfoTableViewCellDelegate;
         } else if (segue.identifier == "createGatheringLocationSeague") {
@@ -504,12 +502,17 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         if (self.gatheringInfoCellDelegate != nil) {
             self.gatheringInfoCellDelegate.imageSelected();
             //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
-            self.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue))
-            gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
-
+            self.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
+            
+            if (Connectivity.isConnectedToInternet) {
+                gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
+            } else {
+                
+                self.event.eventPictureBinary = UIImagePNGRepresentation(image)!;
+                gatheringInfoCellDelegate.uploadImageLabelOnly();
+            }
         } else {
             self.showAlert(title: "Error", message: "Cannot upload from screenshot")
         }
-        
     }
 }

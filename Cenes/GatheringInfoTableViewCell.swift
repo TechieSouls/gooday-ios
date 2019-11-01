@@ -56,7 +56,7 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
     }
     
     func messageDonePressed(message: String) {
-        createGatheringDelegate.event.desc = message;
+        createGatheringDelegate.event.description = message;
         messageLabel.isHidden = false;
         
         //Code to show hide Event Preview Button.
@@ -137,7 +137,10 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
                 }
                 
             }
-            
         });
+    }
+    
+    func uploadImageLabelOnly() {
+        self.imageLabel.isHidden = false;
     }
 }

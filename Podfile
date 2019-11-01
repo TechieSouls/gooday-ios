@@ -5,8 +5,8 @@ target 'Deploy' do
 use_frameworks!
 
 # Pods for Project
-pod 'FacebookCore'
-pod 'FacebookLogin'
+pod 'FBSDKCoreKit', '~> 4.38.0'
+pod 'FBSDKLoginKit', '~> 4.38.0'
 pod 'IoniconsSwift'
 pod 'FSCalendar'
 pod 'Alamofire', '~> 4.4'

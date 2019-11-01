@@ -52,7 +52,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
         
         if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
             //let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
-            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! CenesUserContactMO;
+            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! UserContact;
             print("Array : \(userContact)")
             
             if (userContact.user != nil || userContact.cenesMember == "yes") {

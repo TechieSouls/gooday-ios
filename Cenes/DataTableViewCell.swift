@@ -236,13 +236,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     cell.location.text = event.location;
                     cell.time.text = String(Date(milliseconds: Int(event.startTime)).hmma());
                     
-                    var host = EventMemberMO(context: newHomeViewControllerDelegate.context!);
+                    var host = EventMember();
                     print("Event Member Counts : ",event.eventMembers!.count);
-                    for eventMem in event.eventMembers! {
-                        let eventMemMO = eventMem as! EventMemberMO;
-                        print(eventMemMO);
-                        if (eventMemMO.userId != 0 && eventMemMO.userId == event.createdById) {
-                            host = eventMemMO;
+                    for eventMem in event.eventMembers {
+                        if (eventMem.userId != nil && eventMem.userId == event.createdById) {
+                            host = eventMem;
                             break;
                         }
                     }
@@ -320,12 +318,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 cell.title.text = event.title;
                 cell.location.text = event.location;
                 
-                var host: EventMemberMO!;
+                var host: EventMember!;
                 if (event.eventMembers != nil) {
                     for eventMem in event.eventMembers! {
-                        let eventMemMO = eventMem as! EventMemberMO;
-                        if (eventMemMO.userId != 0 && eventMemMO.userId == event.createdById) {
-                            host = eventMemMO;
+                        if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.userId == event.createdById) {
+                            host = eventMem;
                             break;
                         }
                     }
@@ -353,35 +350,31 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 let timeLabel = "\(String(Date(milliseconds: Int(event.startTime)).hmma()))-\(String(Date(milliseconds: Int(event.endTime)).hmma()))"
                 cell.timeLabel.text = timeLabel;
                 
-                var eventMembersWithoutHost: [EventMemberMO] = [EventMemberMO]();
+                var eventMembersWithoutHost: [EventMember] = [EventMember]();
                 if (event.eventMembers != nil) {
                     for eventMem in event.eventMembers! {
                         
-                        let eventMemMO = eventMem as! EventMemberMO;
-                        if (eventMemMO.userId != 0 && eventMemMO.userId != event.createdById) {
-                            eventMembersWithoutHost.append(eventMemMO);
+                        if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.userId != event.createdById) {
+                            eventMembersWithoutHost.append(eventMem);
                         }
                     }
 
                 }
                 cell.members = eventMembersWithoutHost;
                 
-                var acceptedMembers = [EventMemberMO]();
+                var acceptedMembers = [EventMember]();
                 //Addding all event members without logged in user
                 if (event.eventMembers != nil) {
                     for eventMem in event.eventMembers! {
-                        let eventMemMO = eventMem as! EventMemberMO;
-                        if (eventMemMO.userId != 0 && eventMemMO.userId != event.createdById && eventMemMO.userId != newHomeViewControllerDelegate.loggedInUser.userId && eventMemMO.status == "Going") {
-                            acceptedMembers.append(eventMemMO);
+                        if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.userId != event.createdById && eventMem.userId != newHomeViewControllerDelegate.loggedInUser.userId && eventMem.status == "Going") {
+                            acceptedMembers.append(eventMem);
                         }
                     }
                     
                     //Adding Logged in event member at last
                     for eventMem in event.eventMembers! {
-                        let eventMemMO = eventMem as! EventMemberMO;
-
-                        if (eventMemMO.userId != 0 && eventMemMO.userId != event.createdById && eventMemMO.userId == newHomeViewControllerDelegate.loggedInUser.userId && eventMemMO.status == "Going") {
-                            acceptedMembers.append(eventMemMO);
+                        if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.userId != event.createdById && eventMem.userId == newHomeViewControllerDelegate.loggedInUser.userId && eventMem.status == "Going") {
+                            acceptedMembers.append(eventMem);
                         }
                     }
                 }
@@ -449,18 +442,15 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
             let eventObjectSelected = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             
-            var pendingEvents = [EventMO]();
+            var pendingEvents = [Event]();
             var isEventFound = false;
             for homeData in self.newHomeViewControllerDelegate.homeDtoList {
                 for event in homeData.sectionObjects {
-                    
-                    let eventMO = event as! EventMO;
-
-                    if (eventMO.eventId == eventObjectSelected.eventId) {
+                    if (event.eventId == eventObjectSelected.eventId) {
                         isEventFound = true
                     }
                     if (isEventFound == true) {
-                        pendingEvents.append(eventMO);
+                        pendingEvents.append(event);
                     }
                 }
             }
@@ -468,14 +458,13 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             isEventFound = false;
             for homeData in self.newHomeViewControllerDelegate.homeDtoList {
                 for event in homeData.sectionObjects {
-                    let eventMO = event as! EventMO;
-                    if (eventMO.eventId == eventObjectSelected.eventId) {
+                    if (event.eventId == eventObjectSelected.eventId) {
                         isEventFound = true
                         break;
                     }
                     if (isEventFound == false) {
-                        eventMO.eventClickedFrom = EventClickedFrom.Gathering;
-                        pendingEvents.append(eventMO);
+                        event.eventClickedFrom = EventClickedFrom.Gathering;
+                        pendingEvents.append(event);
                     }
                 }
             }
@@ -500,8 +489,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     } else {*/
                         let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
                         
-                        //viewController.event = Event().copyDataToNewEventObject(event: event);
-                    viewController.event = EventModel().copyDataToNewEventObject(event: event, context: self.newHomeViewControllerDelegate.context!);
+                        viewController.event = Event().copyDataToNewEventObject(event: event);
+                        for eventMem in viewController.event.eventMembers {
+                            print(eventMem.name);
+                        }
+                    //viewController.event = EventModel().copyDataToNewEventObject(event: event, context: self.newHomeViewControllerDelegate.context!);
                         viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate;
                         self.newHomeViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
                     //}
@@ -595,8 +587,8 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                                 self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects = sectionEvents;
                             }
                             
-                            EventModel().deleteEventByEventId(eventId: eventId);                      EventMemberModel().deleteEventMemberMOModelByEventId(eventId: eventId);
-                            NotificationModel().deleteNotificationByNotificationId(eventId: eventId);
+                            EventModel().deleteEventByEventId(eventId: eventId!);                      EventMemberModel().deleteEventMemberMOModelByEventId(eventId: eventId!);
+                            NotificationModel().deleteNotificationByNotificationId(eventId: eventId!);
 
                             self.newHomeViewControllerDelegate.homeTableView.reloadData();
                             

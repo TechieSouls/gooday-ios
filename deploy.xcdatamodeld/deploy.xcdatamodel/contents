@@ -37,6 +37,7 @@
         <attribute name="eventClickedFrom" optional="YES" attributeType="String"/>
         <attribute name="eventId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="eventPicture" optional="YES" attributeType="String"/>
+        <attribute name="eventPictureBinary" optional="YES" attributeType="Binary"/>
         <attribute name="eventSource" optional="YES" attributeType="String"/>
         <attribute name="expired" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="fullDayStartTime" optional="YES" attributeType="String"/>
@@ -59,6 +60,26 @@
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="eventMembers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EventMemberMO"/>
     </entity>
+    <entity name="MetimeRecurringEventMO" representedClassName=".MetimeRecurringEventMO" isAbstract="YES" syncable="YES">
+        <attribute name="createdById" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="photoBInary" optional="YES" attributeType="Binary"/>
+        <attribute name="processed" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recurringEventId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="startTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="timezone" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="patterns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MeTimeRecurringPatternMO"/>
+    </entity>
+    <entity name="MeTimeRecurringPatternMO" representedClassName=".MeTimeRecurringPatternMO" parentEntity="MetimeRecurringEventMO" syncable="YES">
+        <attribute name="dayOfWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dayOfWeekTimestamp" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recurringPatternId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="slotsGeneratedUpto" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="NotificationMO" representedClassName=".NotificationMO" syncable="YES">
         <attribute name="action" optional="YES" attributeType="String"/>
         <attribute name="createdAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -78,7 +99,9 @@
         <element name="CenesUserContactMO" positionX="-162" positionY="54" width="128" height="178"/>
         <element name="CenesUserMO" positionX="-321.19921875" positionY="323.09765625" width="128" height="28"/>
         <element name="EventMemberMO" positionX="72.96484375" positionY="239.2734375" width="128" height="223"/>
-        <element name="EventMO" positionX="449.234375" positionY="143.57421875" width="128" height="448"/>
+        <element name="EventMO" positionX="449.234375" positionY="143.57421875" width="128" height="463"/>
+        <element name="MetimeRecurringEventMO" positionX="-153" positionY="45" width="128" height="223"/>
+        <element name="MeTimeRecurringPatternMO" positionX="-144" positionY="54" width="128" height="103"/>
         <element name="NotificationMO" positionX="-357.9296875" positionY="-111.3203125" width="128" height="28"/>
     </elements>
 </model>

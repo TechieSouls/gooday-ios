@@ -20,7 +20,7 @@ class MetimeRecurringEvent {
     var source: String!;
     var processed: Int!;
     var photo: String!;
-    var patterns: [MeTimeRecurringPattern]!;
+    var patterns: [MeTimeRecurringPattern] = [MeTimeRecurringPattern]();
     
     func loadMetimeRecurringEvents(meTimeArray: NSArray) -> [MetimeRecurringEvent] {
         var recurringEvents = [MetimeRecurringEvent]();

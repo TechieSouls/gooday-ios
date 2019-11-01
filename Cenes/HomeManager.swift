@@ -13,7 +13,7 @@ class HomeManager {
     
     var dataObjectArray = [HomeData]()
 
-    func parseResultsForHomeEvents(homescreenDto: HomeDto, events: [EventMO]) -> HomeScreenDataHolder {
+    func parseResultsForHomeEvents(homescreenDto: HomeDto, events: [Event]) -> HomeScreenDataHolder {
         
         let homescreenDto = homescreenDto;
         let homeScreenDataHolder = HomeScreenDataHolder();
@@ -47,7 +47,7 @@ class HomeManager {
                 
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                    var array = dict.value(forKey: key) as! [EventMO]
+                    var array = dict.value(forKey: key) as! [Event]
                     
                     var eventAlreadyExists = false;
                     for eventObj in array {
@@ -74,7 +74,7 @@ class HomeManager {
                         }
                     }
                 } else {
-                    var array = [EventMO]()
+                    var array = [Event]()
                     
                     let previousDateMonth = Calendar.current.component(.month, from: previousDate);
                     
@@ -147,13 +147,13 @@ class HomeManager {
                             let appDelegate = UIApplication.shared.delegate as! AppDelegate
                             let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
-                            let monthEvent = EventMO(context: context);
+                            let monthEvent = Event();
                             monthEvent.title = monthSeparatorTitle;
                             monthEvent.scheduleAs = "MonthSeparator";
                             
                             monthEvent.startTime = currentDateEvent.startTime;
                             
-                            var monthSeaparatorArra = [EventMO]();
+                            var monthSeaparatorArra = [Event]();
                             monthSeaparatorArra.append(monthEvent);
                             
                             let cenesEvent: HomeData = HomeData();
@@ -204,13 +204,13 @@ class HomeManager {
                         let appDelegate = UIApplication.shared.delegate as! AppDelegate
                         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
-                        let monthEvent = EventMO(context: context);
+                        let monthEvent = Event();
                         monthEvent.title = monthSeparatorTitle;
                             monthEvent.scheduleAs = "MonthSeparator";
                         
                         monthEvent.startTime = homeData.sectionKeyInMillis;
                         
-                        var monthSeaparatorArra = [EventMO]();
+                        var monthSeaparatorArra = [Event]();
                         monthSeaparatorArra.append(monthEvent);
                         
                         let cenesEvent: HomeData = HomeData();
@@ -288,7 +288,7 @@ class HomeManager {
             if dataType == "Event" {
                 //let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
             
-                var event = EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
+                var event = EventModel().copyDataToEventBo(eventMo: EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary));
 
                 let key = getMonthKeyForScrollIndex(startTime: Int(event.startTime));
                 let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(event.startTime));
@@ -297,7 +297,7 @@ class HomeManager {
                 
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                    var array = dict.value(forKey: key) as! [EventMO]
+                    var array = dict.value(forKey: key) as! [Event]
                     
                     var eventAlreadyExists = false;
                     for eventObj in array {
@@ -317,7 +317,7 @@ class HomeManager {
                         }
                     }
                 } else {
-                    var array = [EventMO]()
+                    var array = [Event]()
 
                     let previousDateMonth = Calendar.current.component(.month, from: previousDate);
                     
@@ -381,13 +381,13 @@ class HomeManager {
                     
                     if (previousDateComponent.month != currentDateComponent.month) {
                         
-                        let monthEvent = EventMO();
+                        let monthEvent = Event();
                         monthEvent.title = Date(milliseconds: Int(currentDateEvent.startTime)).MMMMsyyyy()!;
                         monthEvent.scheduleAs = "MonthSeparator";
                         
                         monthEvent.startTime = currentDateEvent.startTime;
                         
-                        var monthSeaparatorArra = [EventMO]();
+                        var monthSeaparatorArra = [Event]();
                         monthSeaparatorArra.append(monthEvent);
                         
                         let cenesEvent: HomeData = HomeData();
@@ -425,8 +425,8 @@ class HomeManager {
             
             
             //let event = Event().loadEventData(eventDict: outerDict)
-            let event = EventModel().saveEventModelByEventDictnory(eventDict: outerDict);
-            if (event.eventId == 0 || event.title == nil) {
+            let event = EventModel().copyDataToEventBo(eventMo: EventModel().saveEventModelByEventDictnory(eventDict: outerDict));
+            if (event.eventId == 0 || event.title == nil || event.scheduleAs == "Gathering") {
                 continue;
             }
             var key: String = Date(milliseconds: Int(event.startTime)).EMMMd()!;
@@ -441,7 +441,7 @@ class HomeManager {
             }
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                    var array = dict.value(forKey: key) as! [EventMO]
+                    var array = dict.value(forKey: key) as! [Event]
                     array.append(event)
                     dict.setValue(array, forKey: key)
                     
@@ -451,7 +451,7 @@ class HomeManager {
                         }
                     }
                 } else {
-                    var array = [EventMO]()
+                    var array = [Event]()
                     array.append(event)
                     dict.setValue(array, forKey: key)
                     
@@ -473,17 +473,17 @@ class HomeManager {
     }
     
     
-    func parseInvitationResultsForEventManagedObject(eventMOs: [EventMO], context: NSManagedObjectContext) -> [HomeData]{
+    func parseInvitationResultsForEventManagedObject(eventBOs: [Event]) -> [HomeData]{
         
         let dict = NSMutableDictionary()
         
-        for eventMO in eventMOs {
+        for eventBO in eventBOs {
 
-            var key: String = Date(milliseconds: Int(eventMO.startTime)).EMMMd()!;
-            let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(eventMO.startTime));
+            var key: String = Date(milliseconds: Int(eventBO.startTime)).EMMMd()!;
+            let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(eventBO.startTime));
 
             let components =  Calendar.current.dateComponents(in: TimeZone.current, from: Date())
-            let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(eventMO.startTime)) )
+            let componentStart = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(eventBO.startTime)) )
             if(components.day == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
                 key = "Today";
             }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
@@ -491,8 +491,8 @@ class HomeManager {
             }
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                    var array = dict.value(forKey: key) as! [EventMO]
-                    array.append(eventMO)
+                    var array = dict.value(forKey: key) as! [Event]
+                    array.append(eventBO)
                     dict.setValue(array, forKey: key)
                     
                     for cenesEvent in dataObjectArray {
@@ -501,15 +501,15 @@ class HomeManager {
                         }
                     }
                 } else {
-                    var array = [EventMO]()
-                    array.append(eventMO)
+                    var array = [Event]()
+                    array.append(eventBO)
                     dict.setValue(array, forKey: key)
                     
                     let cenesEvent: HomeData = HomeData();
                     cenesEvent.sectionName = key;
-                    cenesEvent.year = Date(milliseconds: Int(eventMO.startTime)).yyyy()
-                    cenesEvent.month = Date(milliseconds: Int(eventMO.startTime)).MMMM()
-                    cenesEvent.sectionKeyInMillis = eventMO.startTime
+                    cenesEvent.year = Date(milliseconds: Int(eventBO.startTime)).yyyy()
+                    cenesEvent.month = Date(milliseconds: Int(eventBO.startTime)).MMMM()
+                    cenesEvent.sectionKeyInMillis = eventBO.startTime
                     cenesEvent.sectionNameWithYear = keyWithYear;
                     cenesEvent.sectionObjects = array;
 
@@ -697,24 +697,5 @@ class HomeManager {
             EventModel().saveEventModel(event: event);
             
         }
-    }
-    
-    func fetchOfflineData() -> [Event] {
-        
-        var events = [Event]();
-        let eventsMo = EventModel().fetchOfflineEvents();
-        for eventMo in eventsMo {
-            let members = eventMo.mutableSetValue(forKey: "eventMembers");
-            print(members.count)
-            for eventMemberMo in members.allObjects as! [EventMemberMO] {
-                print(eventMemberMo);
-            }
-            if (eventMo.title == nil) {
-                continue;
-            }
-            events.append(EventModel().copyDataToEventBo(eventMo: eventMo));
-        }
-        
-        return events;
     }
 }

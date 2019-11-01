@@ -9,5 +9,5 @@
 import Foundation
 class FriendListDto {
     var sectionName: String!;
-    var sectionObjects = [CenesUserContactMO]();
+    var sectionObjects = [UserContact]();
 }

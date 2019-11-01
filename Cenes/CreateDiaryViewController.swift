@@ -218,7 +218,7 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
             dict["name"] = result.name
             dict["userId"] = result.userId
             let id = "\((setting.value(forKey: "userId") as? NSNumber)!)"
-            if result.userId == id {
+            if result.userId == Int(id) {
                 continue
             }
             if result.photoUrl != nil {

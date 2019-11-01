@@ -53,7 +53,6 @@ class EventMemberModel {
             }
 
             do {
-                try context.save()
                 if let userDict = eventMemberDict.value(forKey: "user") as? NSDictionary {
                     let user = CenesUserModel().saveCenesUserModel(cenesUserDict: userDict);
                     if (user.userId != 0) {
@@ -61,6 +60,7 @@ class EventMemberModel {
                         eventMemberModel.user = user;
                     }
                 }
+                try context.save()
                 return eventMemberModel;
             } catch {
                 print("Failed saving Event member mo, func : saveEventMemberModel")
@@ -269,5 +269,20 @@ class EventMemberModel {
         }
         
         return eventMembersToReturn;
-    }    
+    }
+    
+    func copyBOToManagedObject(eventMember: EventMember) -> EventMemberMO {
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+        let eventMemberMO = EventMemberMO(context: context);
+        eventMemberMO.userId = eventMember.userId;
+        eventMemberMO.name = eventMember.name;
+        eventMemberMO.photo = eventMember.photo;
+        
+        if let user = eventMember.user {
+            eventMemberMO.user = CenesUserModel().copyBOToCenesUser(user: user);
+        }
+        return eventMemberMO;
+    }
 }

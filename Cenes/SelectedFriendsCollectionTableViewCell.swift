@@ -46,7 +46,7 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: FriendCollectionViewCell = selectedFriendsColView.dequeueReusableCell(withReuseIdentifier: "FriendCollectionViewCell", for: indexPath) as! FriendCollectionViewCell;
         
-        let eventMember = EventMemberModel().convertNSSetToNSArray(eventMembers: createGatheringDelegate.event.eventMembers!)[indexPath.row];
+        let eventMember = createGatheringDelegate.event.eventMembers[indexPath.row];
         
         if (eventMember.user != nil) {
             cell.name.text = String(eventMember.user!.name!.split(separator: " ")[0]);

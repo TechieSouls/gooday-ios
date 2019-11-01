@@ -8,8 +8,8 @@
 
 import Foundation
 import FBSDKLoginKit
-import FacebookCore
-
+import FBSDKCoreKit
+import NVActivityIndicatorView
 
 extension ChoiceViewController {
     
@@ -20,15 +20,22 @@ extension ChoiceViewController {
     
     
     func getFBUserInfo() {
-        let request = GraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"], accessToken: AccessToken.current, httpMethod: .GET, apiVersion: FacebookCore.GraphAPIVersion.defaultVersion)
-        request.start { (response, result) in
-            switch result {
-            case .success(let value):
-                let dictValue = value.dictionaryValue
+        
+        //startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
+
+        let request = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"]);
+        request!.start(completionHandler: { (connection, result, error) -> Void in
+            
+            if ((error) != nil) {
+                print(error)
+                //self.stopAnimating()
+
+            } else {
+                let dictValue = result as! [String: Any];
                 let tokenStr = FBSDKAccessToken.current().tokenString
-                imageFacebookURL = ((dictValue?["picture"] as? [String: Any])?["data"] as? [String: Any])?["url"] as? String
+                imageFacebookURL = ((dictValue["picture"] as? [String: Any])?["data"] as? [String: Any])?["url"] as? String
                 let webServ = WebService()
-                webServ.facebookSignUp(facebookAuthToken:tokenStr!, facebookID: dictValue?["id"]! as! String , complete: { (returnedDict) in
+                webServ.facebookSignUp(facebookAuthToken:tokenStr!, facebookID: dictValue["id"]! as! String , complete: { (returnedDict) in
                     
                     if returnedDict.value(forKey: "Error") as? Bool == true {
                         self.showAlert(title: "Error", message:(returnedDict["ErrorMsg"] as? String)!)
@@ -40,7 +47,7 @@ extension ChoiceViewController {
                         setting.setValue(2, forKey: "onboarding")
                         
                         
-                        webServ.facebookEvent(facebookAuthToken: tokenStr!,cenesToken: setting.value(forKey: "token") as! String, facebookID: dictValue?["id"]! as! String, complete: { (returnedDict) in
+                        webServ.facebookEvent(facebookAuthToken: tokenStr!,cenesToken: setting.value(forKey: "token") as! String, facebookID: dictValue["id"]! as! String, complete: { (returnedDict) in
                             
                             if returnedDict.value(forKey: "Error") as? Bool == true {
                                 
@@ -82,12 +89,8 @@ extension ChoiceViewController {
                         }
                     }
                     
-                })
-                break
-            case .failed(let error):
-                print(error)
+                });
             }
-        }
+        });
     }
-
 }

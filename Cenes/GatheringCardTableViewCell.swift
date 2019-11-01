@@ -27,11 +27,11 @@ class GatheringCardTableViewCell: UITableViewCell {
     
     var bubbleNumbers: Int = 0
     
-    var members: [EventMemberMO] = [];
+    var members: [EventMember] = [];
     
     var newHomeViewControllerDelegate: NewHomeViewController!
     
-    var acceptedMembers: [EventMemberMO] = [];
+    var acceptedMembers: [EventMember] = [];
     
     override func awakeFromNib() {
         super.awakeFromNib()

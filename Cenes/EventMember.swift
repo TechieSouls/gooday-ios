@@ -139,25 +139,7 @@ class EventMember {
         return eventMembers;
         
     }
-    
-    func loadUserContactsMO(eventMemberArray: NSArray, context: NSManagedObjectContext) -> [CenesUserContactMO] {
         
-        let user = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        var cenesUserContactMOs = [CenesUserContactMO]();
-        
-        for cenesUserContactDict in eventMemberArray {
-            
-            let userContact = CenesUserContactModel().saveUserContacMOFromDictionary(cenesUserContact: cenesUserContactDict as! NSDictionary, context: context);
-            print(userContact.friendId, user.userId);
-            if (userContact.friendId != 0 && userContact.friendId == user.userId) {
-                continue;
-            }
-            cenesUserContactMOs.append(userContact);
-        }
-        return cenesUserContactMOs;
-    }
-
-    
     func toDictionary(eventMember: EventMember) -> [String: Any] {
         
         var eventMemberJson: [String: Any] = [:];

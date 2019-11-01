@@ -39,7 +39,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     @IBOutlet weak var gatheringTableView: UITableView!
     
-    var event: EventMO = EventMO();
+    var event: Event = Event();
     var loggedInUser: User = User();
     
     var gatheringImage : UIImage!
@@ -871,7 +871,7 @@ extension CreateGatheringViewController: SelectedLocationDelegate {
 }
 
 extension CreateGatheringViewController: CollectionFriendsProtocol {
-    func collectionFriendsList(selectedFriendHolder: [EventMemberMO]) {
+    func collectionFriendsList(selectedFriendHolder: [EventMember]) {
         
         print("Callback Function Called....")
         
@@ -881,7 +881,7 @@ extension CreateGatheringViewController: CollectionFriendsProtocol {
             
             if (eventMembers == nil) {
                 for selctedFriendMO in selectedFriendHolder {
-                    self.event.addToEventMembers(selctedFriendMO);
+                    self.event.eventMembers.append(selctedFriendMO);
                 }
             
             } else {
@@ -889,14 +889,13 @@ extension CreateGatheringViewController: CollectionFriendsProtocol {
                     
                     var userAlreadyExists = false;
                     for eventMem in eventMembers! {
-                        let eventMemMO = eventMem as! EventMemberMO;
-                        if (eventMemMO.userContactId == selectedMem.userContactId) {
+                        if (eventMem.userContactId == selectedMem.userContactId) {
                             userAlreadyExists = true;
                             break;
                         }
                     }
                     if (!userAlreadyExists) {
-                        self.event.addToEventMembers(selectedMem);
+                        self.event.eventMembers.append(selectedMem);
                     }
                 }
             }
