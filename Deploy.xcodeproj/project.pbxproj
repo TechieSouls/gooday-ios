@@ -772,7 +772,7 @@
 		F48F49C01F24DC2200825EAE /* HomeCenesEventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCenesEventTableViewCell.swift; sourceTree = "<group>"; };
 		F48F49C11F24DC2200825EAE /* HomeCenesEventTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeCenesEventTableViewCell.xib; sourceTree = "<group>"; };
 		F4B1C72E1F2E94EC00174414 /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
-		F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.24.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Deploy 2.0.24.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.28.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Deploy 2.0.28.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4B871F21F0DDEF1001A9963 /* AppDelegate.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; tabWidth = 4; };
 		F4B871F41F0DDEF1001A9963 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F4B871F71F0DDEF1001A9963 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -1499,7 +1499,7 @@
 		F4B871F01F0DDEF1001A9963 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.24.app */,
+				F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.28.app */,
 				F4B872061F0DDEF1001A9963 /* DeployTests.xctest */,
 				F4B872111F0DDEF2001A9963 /* DeployUITests.xctest */,
 			);
@@ -1738,7 +1738,7 @@
 			);
 			name = Deploy;
 			productName = Cenes;
-			productReference = F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.24.app */;
+			productReference = F4B871EF1F0DDEF1001A9963 /* Deploy 2.0.28.app */;
 			productType = "com.apple.product-type.application";
 		};
 		F4B872051F0DDEF1001A9963 /* DeployTests */ = {
@@ -2545,14 +2545,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.0.24;
+				MARKETING_VERSION = 2.0.28;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.DeployApp;
-				PRODUCT_NAME = "Deploy 2.0.24";
+				PRODUCT_NAME = "Deploy 2.0.28";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";
@@ -2573,14 +2573,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.0.24;
+				MARKETING_VERSION = 2.0.28;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.DeployApp;
-				PRODUCT_NAME = "Deploy 2.0.24";
+				PRODUCT_NAME = "Deploy 2.0.28";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";

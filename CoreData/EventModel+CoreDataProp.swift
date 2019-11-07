@@ -359,47 +359,49 @@ class EventModel {
         fetchRequest.relationshipKeyPathsForPrefetching = ["eventMembers"];
         do {
             let eventMos = try context.fetch(fetchRequest) as! [EventMO];
-            for eventM in eventMos {
-                //print(eventM.eventId, eventM.description)
-                if (eventM.title != nil) {
+            if (eventMos.count > 0) {
+                for eventM in eventMos {
+                    //print(eventM.eventId, eventM.description)
+                    if (eventM.title != nil) {
+                            
+                        eventM.title = (eventDict.value(forKey: "title") as! String);
                         
-                    eventM.title = (eventDict.value(forKey: "title") as! String);
-                    
-                    if let desc = eventDict.value(forKey: "description") as? String {
-                        eventM.desc = desc;
-                    }
-                    if let location = eventDict.value(forKey: "location") as? String {
-                        eventM.location = location;
-                    }
-                    if let latitude = eventDict.value(forKey: "latitude") as? String {
-                        eventM.latitude = latitude;
-                    }
-                    if let longitude = eventDict.value(forKey: "longitude") as? String {
-                        eventM.longitude = longitude;
-                    }
+                        if let desc = eventDict.value(forKey: "description") as? String {
+                            eventM.desc = desc;
+                        }
+                        if let location = eventDict.value(forKey: "location") as? String {
+                            eventM.location = location;
+                        }
+                        if let latitude = eventDict.value(forKey: "latitude") as? String {
+                            eventM.latitude = latitude;
+                        }
+                        if let longitude = eventDict.value(forKey: "longitude") as? String {
+                            eventM.longitude = longitude;
+                        }
 
-                    eventM.startTime = eventDict.value(forKey: "startTime") as! Int64;
-                    eventM.endTime = eventDict.value(forKey: "endTime") as! Int64;
-                    
-                    if let eventPicture = eventDict.value(forKey: "eventPicture") as? String {
-                        eventM.eventPicture = eventPicture;
-                    }
-                    if let thumbnail = eventDict.value(forKey: "thumbnail") as? String {
-                        eventM.thumbnail = thumbnail;
-                    }
-                    
-                    do {
-                        try context.save();
+                        eventM.startTime = eventDict.value(forKey: "startTime") as! Int64;
+                        eventM.endTime = eventDict.value(forKey: "endTime") as! Int64;
                         
-                        eventM.eventMembers = nil;
-                        for eventMem in eventDict.value(forKey: "eventMembers") as! NSArray {
-                            let eventMemDict = eventMem as! NSDictionary;
-                            eventM.addToEventMembers(EventMemberModel().updateEventMemberFromDictionary(eventMemberDict: eventMemDict));
+                        if let eventPicture = eventDict.value(forKey: "eventPicture") as? String {
+                            eventM.eventPicture = eventPicture;
+                        }
+                        if let thumbnail = eventDict.value(forKey: "thumbnail") as? String {
+                            eventM.thumbnail = thumbnail;
                         }
                         
-                        return copyDataToEventBo(eventMo: eventM);
-                    } catch {
-                        print(error);
+                        do {
+                            try context.save();
+                            
+                            eventM.eventMembers = nil;
+                            for eventMem in eventDict.value(forKey: "eventMembers") as! NSArray {
+                                let eventMemDict = eventMem as! NSDictionary;
+                                eventM.addToEventMembers(EventMemberModel().updateEventMemberFromDictionary(eventMemberDict: eventMemDict));
+                            }
+                            
+                            return copyDataToEventBo(eventMo: eventM);
+                        } catch {
+                            print(error);
+                        }
                     }
                 }
             }
@@ -408,7 +410,7 @@ class EventModel {
             print(fetchError)
         }
         
-        return Event();
+        return copyDataToEventBo(eventMo: saveEventModelByEventDictnory(eventDict: eventDict));
     }
     
     func updateEventManagedObjectSyncedStatus(eventMO: EventMO) {

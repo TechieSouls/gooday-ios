@@ -426,7 +426,7 @@ class HomeManager {
             
             //let event = Event().loadEventData(eventDict: outerDict)
             let event = EventModel().copyDataToEventBo(eventMo: EventModel().saveEventModelByEventDictnory(eventDict: outerDict));
-            if (event.eventId == 0 || event.title == nil || event.scheduleAs == "Gathering") {
+            if (event.eventId == 0 || event.title == nil || event.scheduleAs != "Gathering") {
                 continue;
             }
             var key: String = Date(milliseconds: Int(event.startTime)).EMMMd()!;

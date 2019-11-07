@@ -1,8 +1,8 @@
 //
 //  WelcomeCardTableViewCell.swift
-//  Deploy
+
 //
-//  Created by Cenes_Dev on 24/10/2019.
+//  Created by Cenes_Dev on 06/11/2019.
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 

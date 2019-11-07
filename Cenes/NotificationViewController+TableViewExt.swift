@@ -206,7 +206,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
             }*/
             
             // print("this is the last cell")
-            if (self.allNotificationModels.count < self.totalNotificationCounts) {
+            if (self.allNotifications.count < self.totalNotificationCounts) {
                 self.spinner.startAnimating()
                 self.spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
                 

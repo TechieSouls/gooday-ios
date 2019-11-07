@@ -113,7 +113,7 @@ class GatheringManager {
         return dataObjectArray;
     }
     
-    func getCenesContacts(friendList: [UserContact]) -> [UserContact] {
+    func getCenesContacts(friendList: [UserContact]) -> [FriendListDto] {
         
         var cenesMembers = [UserContact]();
         for cenesContact in friendList {
@@ -123,7 +123,49 @@ class GatheringManager {
 
             }
         }
-        return cenesMembers;
+        
+        var nonAlphabeticFriends = [UserContact]();
+        var dataObjectArray = [FriendListDto]();
+        var friendListMapDto = [String: FriendListDto]();
+        for userContact in cenesMembers {
+            
+            var nameInitial = "";
+            if (userContact.user != nil && userContact.user!.name != nil) {
+                nameInitial = userContact.user!.name!.prefix(1).uppercased();
+                print(nameInitial)
+            } else if (userContact.name != nil) {
+                nameInitial = userContact.name!.prefix(1).uppercased();
+                print(nameInitial)
+            }
+            var friendListDtoTemp = FriendListDto();
+            
+            if (!InviteFriendsDto().alphabetStrip.contains(nameInitial.uppercased())) {
+                nonAlphabeticFriends.append(userContact);
+            } else {
+                if (friendListMapDto.index(forKey: nameInitial) != nil) {
+                    friendListDtoTemp = friendListMapDto[nameInitial]!;
+                }
+                
+                friendListDtoTemp.sectionName = nameInitial;
+                var members = friendListDtoTemp.sectionObjects;
+                members.append(userContact);
+                friendListDtoTemp.sectionObjects = members;
+                
+                friendListMapDto[nameInitial] = friendListDtoTemp;
+            }
+        }
+        
+        for (k,value) in Array(friendListMapDto).sorted(by: {$0.0 < $1.0}) {
+            dataObjectArray.append(value);
+        }
+        
+        if (nonAlphabeticFriends.count > 0) {
+            var nonAlphabeticFriendDto = FriendListDto();
+            nonAlphabeticFriendDto.sectionName = "#";
+            nonAlphabeticFriendDto.sectionObjects = nonAlphabeticFriends;
+            dataObjectArray.append(nonAlphabeticFriendDto);
+        }
+        return dataObjectArray;
     }
     
     func getCenesContactsMO(friendList: [CenesUserContactMO]) -> [CenesUserContactMO] {

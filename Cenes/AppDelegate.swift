@@ -324,9 +324,10 @@ let reachability = Reachability()!
         var dict = userInfo["aps"] as! NSDictionary;
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         //Conditio for silent push notification
-        if (dict.value(forKey: "content-available") as! Int == 1) {
+        /*if (dict.value(forKey: "content-available") as! Int == 1) {
             let type = dict.value(forKey: "type") as! String;
             if (type == "HomeRefresh") {
                 if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
@@ -336,7 +337,7 @@ let reachability = Reachability()!
                     homeViewController?.refreshHomeScreenData();
                 }
             }
-        }
+        }*/
         completionHandler(.newData)
     }
 
@@ -464,7 +465,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         let userInfo = notification.request.content.userInfo["aps"]! as? NSDictionary
         let alertDict = userInfo!["alert"] as! NSDictionary
-            
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
         if alertDict["type"] as? String == "HomeRefresh" {
                 if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                     self.cenesTabBar?.selectedIndex = 0
@@ -496,6 +499,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
@@ -508,11 +512,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 homeViewController?.refreshHomeScreenData();
             }*/
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         } else if userInfo!["type"] as? String == "Gathering" {
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
             
             let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
             let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;

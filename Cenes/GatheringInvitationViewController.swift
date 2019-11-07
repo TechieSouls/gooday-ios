@@ -135,8 +135,9 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                             self.leftToRightGestureEnabled = true;
                             self.rightToLeftGestureEnabled = true;
                             
-                            self.event = eventTemp;
-                            
+                            if (eventTemp.eventId != nil && eventTemp.eventId != 0) {
+                                self.event = eventTemp;
+                            }
                         } else {
                             if (self.event.requestType != EventRequestType.EditEvent) {
                                 self.event.eventPicture = eventTemp.eventPicture;

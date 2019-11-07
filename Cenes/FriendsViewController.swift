@@ -171,7 +171,7 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
         
         for userContact in self.inviteFriendsDto.allEventMembers {
-            if (userContact.userContactId != 0) {
+            if (userContact.userContactId != nil && userContact.userContactId != 0) {
                 self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
             }
         }

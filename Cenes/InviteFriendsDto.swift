@@ -9,9 +9,9 @@
 import Foundation
 
 class InviteFriendsDto {
-    var userContactIdMapList: [Int: UserContact] = [:];
-    var eventMemberMapList: [Int: EventMember] = [:];
-    var cenesContacts = [UserContact]();
+    var userContactIdMapList: [Int: UserContact] = [Int: UserContact]();
+    var eventMemberMapList: [Int: EventMember] = [Int: EventMember]();
+    var cenesContacts = [FriendListDto]();
     var allEventMembers: [UserContact] = [UserContact]();
     var allContacts = [FriendListDto]();
     var filteredEventMembers = [UserContact]();
