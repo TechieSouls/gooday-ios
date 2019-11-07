@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class GuestListViewController: UIViewController {
 
@@ -45,7 +46,9 @@ class GuestListViewController: UIViewController {
     var loggedInUser: User!;
     
     var isLoggedInUserAsOwner: Bool = false;
-    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var context: NSManagedObjectContext? = nil;
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -85,13 +88,14 @@ class GuestListViewController: UIViewController {
         declinedUIView.layer.borderWidth = 5
         declinedUIView.layer.borderColor = UIColor.white.cgColor
         
-        invitedUIViewUILabel.text = String(self.event.eventMembers.count);
+        invitedUIViewUILabel.text = String(self.event.eventMembers!.count);
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        
+        context = self.appDelegate.persistentContainer.viewContext
+
         var acceptedCount = 0;
         var declinedCount = 0;
-        for eventMem in self.event.eventMembers {
+        for eventMem in self.event.eventMembers! {
             if (eventMem.status == "Going") {
                 acceptedCount = acceptedCount + 1;
             } else if (eventMem.status == "NotGoing") {
@@ -101,11 +105,13 @@ class GuestListViewController: UIViewController {
         acceptedUIViewUILabel.text = String(acceptedCount);
         declinedUIViewUILabel.text = String(declinedCount);
         
-        if (self.event.eventId != nil) {
+        if (self.event.eventId != 0) {
             //For Loop to fetch the host of the event
             //Host should be at the top of the list
-            for evemem in self.event.eventMembers {
-                if (evemem.userId != nil && evemem.userId == self.event.createdById) {
+            for evemem in self.event.eventMembers! {
+                            
+                if (evemem.userId != nil && evemem.userId != 0
+                    && evemem.userId == self.event.createdById) {
                     evemem.owner = true;
                     
                     if (loggedInUser.userId ==  evemem.userId) {
@@ -119,24 +125,26 @@ class GuestListViewController: UIViewController {
             
             //We will again iterate the loop to fetch all other guests
             //except owner and they should be below host
-            for evemem in self.event.eventMembers {
-                if (evemem.userId != nil && evemem.userId != self.event.createdById) {
+            for evemem in self.event.eventMembers! {
+
+                if (evemem.userId != nil && evemem.userId != 0 && evemem.userId != self.event.createdById) {
                     evemem.owner = false;
                     self.filteredEventMembers.append(evemem);
                 }
             }
             
             if (self.isLoggedInUserAsOwner == true) {
-                for evemem in self.event.eventMembers {
-                    if (evemem.userId == nil) {
+                for evemem in self.event.eventMembers! {
+
+                    if (evemem.userId != nil && evemem.userId == 0) {
                         self.filteredEventMembers.append(evemem);
                     }
                 }
             } else {
                 //We will again iterate the loop to fetch all non cenes users
                 var nonCenesUserCount = 0;
-                for evemem in self.event.eventMembers {
-                    if (evemem.userId == nil) {
+                for evemem in self.event.eventMembers! {
+                    if (evemem.userId != nil && evemem.userId == 0) {
                         nonCenesUserCount = nonCenesUserCount + 1;
                     }
                 }
@@ -149,7 +157,13 @@ class GuestListViewController: UIViewController {
             
             
         } else {
-            self.filteredEventMembers = self.event.eventMembers;
+            
+            self.filteredEventMembers = [EventMember]();
+            
+            for eventMem in self.event.eventMembers! {
+                self.filteredEventMembers.append(eventMem);
+            }
+            
         }
     }
     
@@ -177,11 +191,12 @@ class GuestListViewController: UIViewController {
         
         
         self.filteredEventMembers = [EventMember]();
-        if (self.event.eventId != nil) {
+        if (self.event.eventId != 0) {
             //For Loop to fetch the host of the event
             //Host should be at the top of the list
-            for evemem in self.event.eventMembers {
-                if (evemem.userId != nil && evemem.userId == self.event.createdById) {
+            for evemem in self.event.eventMembers! {
+                
+                if (evemem.userId != nil  && evemem.userId != 0 && evemem.userId == self.event.createdById) {
                     evemem.owner = true;
                     self.filteredEventMembers.append(evemem);
                     break;
@@ -190,24 +205,27 @@ class GuestListViewController: UIViewController {
             
             //We will again iterate the loop to fetch all other guests
             //except owner and they should be below host
-            for evemem in self.event.eventMembers {
-                if (evemem.userId != nil && evemem.userId != self.event.createdById) {
+            for evemem in self.event.eventMembers! {
+                
+                if (evemem.userId != nil && evemem.userId != 0 && evemem.userId != self.event.createdById) {
                     evemem.owner = false;
                     self.filteredEventMembers.append(evemem);
                 }
             }
             
             if (self.isLoggedInUserAsOwner == true) {
-                for evemem in self.event.eventMembers {
-                    if (evemem.userId == nil) {
+                for evemem in self.event.eventMembers! {
+
+                    if (evemem.userId != nil && evemem.userId == 0) {
                         self.filteredEventMembers.append(evemem);
                     }
                 }
             } else {
                 //We will again iterate the loop to fetch all non cenes users
                 var nonCenesUserCount = 0;
-                for evemem in self.event.eventMembers {
-                    if (evemem.userId == nil) {
+                for evemem in self.event.eventMembers! {
+                    
+                    if (evemem.userId != nil && evemem.userId == 0) {
                         nonCenesUserCount = nonCenesUserCount + 1;
                     }
                 }
@@ -219,7 +237,10 @@ class GuestListViewController: UIViewController {
             }
 
         } else {
-            self.filteredEventMembers = self.event.eventMembers;
+            self.filteredEventMembers = [EventMember]();
+            for eventMem in self.event.eventMembers {
+                self.filteredEventMembers.append(eventMem);
+            }
         }
 
         self.guestListTableView.isHidden = false;
@@ -235,9 +256,24 @@ class GuestListViewController: UIViewController {
         
         self.filteredEventMembers = [EventMember]();
 
-        for eventMem in self.event.eventMembers {
-            if (eventMem.status == "Going") {
-                filteredEventMembers.append(eventMem);
+        //Lets first find the host
+        for evemem in self.event.eventMembers! {
+            
+            if (evemem.userId != nil && evemem.userId != 0
+                && evemem.userId == self.event.createdById) {
+                evemem.owner = true;
+                self.filteredEventMembers.append(evemem);
+                break;
+            }
+        }
+
+        //We will again iterate the loop to fetch all other guests
+        //except owner and they should be below host
+        for evemem in self.event.eventMembers! {
+
+            if (evemem.userId != nil && evemem.userId != 0 && evemem.userId != self.event.createdById && evemem.status == "Going") {
+                evemem.owner = false;
+                self.filteredEventMembers.append(evemem);
             }
         }
         
@@ -260,7 +296,8 @@ class GuestListViewController: UIViewController {
         
         self.filteredEventMembers = [EventMember]();
 
-        for eventMem in self.event.eventMembers {
+        for eventMem in self.event.eventMembers! {
+
             if (eventMem.status == "NotGoing") {
                 filteredEventMembers.append(eventMem);
             }
@@ -372,17 +409,18 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell: GuestListTableViewCell =  tableView.dequeueReusableCell(withIdentifier: "GuestListTableViewCell", for: indexPath) as! GuestListTableViewCell;
         
         var hostPrefix = "";
-        if (eventMember.owner == true) {
+
+        if (eventMember.userId == event.createdById) {
             hostPrefix = " (Host)";
         }
         if (eventMember.user != nil) {
-            if (eventMember.user.name != nil) {
-                cell.cenesName.text = eventMember.user.name + hostPrefix;
+            if (eventMember.user!.name != nil) {
+                cell.cenesName.text = eventMember.user!.name! + hostPrefix;
             } else {
                 cell.cenesName.text = "Unknown \(String(eventMember.eventMemberId))" + hostPrefix;
             }
-            if (eventMember.user.photo != nil) {
-                cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+            if (eventMember.user!.photo != nil) {
+                cell.profilePic.sd_setImage(with: URL(string: eventMember.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
             } else {
                 cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
             }
@@ -395,7 +433,7 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
         
         if (eventMember.userContact != nil) {
             cell.contactName.isHidden = false;
-            cell.contactName.text = eventMember.userContact.name;
+            cell.contactName.text = eventMember.userContact!.name;
         } else {
             cell.contactName.isHidden = true;
         }

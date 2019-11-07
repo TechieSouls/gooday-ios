@@ -13,6 +13,7 @@ import NVActivityIndicatorView
 import GoogleSignIn
 import FBSDKLoginKit
 import SideMenu
+import CoreData
 
 class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
 
@@ -32,8 +33,8 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var gatheringTableView: UITableView!
     
     @IBOutlet weak var inviteTitleLabel: UILabel!
-    var isNewInvite : Bool = false
     
+    var isNewInvite : Bool = false
     
     var invitationData : CenesCalendarData!
     var invitationLocationModel : LocationModel!
@@ -63,6 +64,8 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     var selectedTab : Int = 0
     var badgeCount: String? = "0"
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var context: NSManagedObjectContext? = nil;
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,7 +102,8 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         gatheringTableView.estimatedSectionHeaderHeight = 42
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        
+        context = self.appDelegate.persistentContainer.viewContext
+
         // Do any additional setup after loading the view.
     }
     
@@ -119,7 +123,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
    override func viewWillAppear(_ animated: Bool) {
     
     
-    self.profileImage = appDelegate?.getProfileImage()
+    self.profileImage = appDelegate.getProfileImage()
     
     self.setUpNavBar()
     
@@ -246,7 +250,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     func setUpNavBar(){
         let profileButton = SSBadgeButton()//UIButton.init(type: .custom) //
         
-        self.profileImage = appDelegate?.getProfileImage()
+        self.profileImage = appDelegate.getProfileImage()
         
         profileButton.imageView?.contentMode = .scaleAspectFill
         
@@ -482,10 +486,10 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         //    height = height - 20;
         //}
         
-        let eventUsers = obj.eventMembers;
+        let eventUsers = obj.eventMembers!;
         var eventMemberCounts: Int = 0;
-        for eventUser in eventUsers! {
-            if loggedInUser.userId != eventUser.userId  {
+        for eventUser in eventUsers {
+            if eventUser.userId != nil && loggedInUser.userId != eventUser.userId  {
                 eventMemberCounts = eventMemberCounts + 1;
             }
         }
@@ -519,15 +523,14 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         
        // var obj : CenesCalendarData!
        
-        var event : Event!;
-        event = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
+        var event = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         
         let identifier = "GatheringCardTableViewCell";
         let cell: GatheringCardTableViewCell! = self.gatheringTableView.dequeueReusableCell(withIdentifier: identifier) as? GatheringCardTableViewCell
         
         cell.title.text = event.title
         //cell.startTime.text = Util.hhmma(timeStamp: event.startTime);
-        let eventMembers: [EventMember] = event.eventMembers;
+        let eventMembers: [EventMember] = event.eventMembers as! [EventMember];
         var memebrId : NSNumber;
         
         var eventMembersExceptOwner: [EventMember] = [];
@@ -545,8 +548,28 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         }
         cell.bubbleNumbers = eventMembers.count - 1;
         
-        let owner = GatheringManager().getHost(event: event);
-
+        //let owner = GatheringManager().getHost(event: event);
+        var owner: EventMemberMO = EventMemberMO();
+        if (event != nil && event.eventId != 0 && event.eventMembers != nil) {
+            for eventMem in (event.eventMembers)! {
+                
+                let eventMemMO = eventMem as! EventMemberMO;
+                if (eventMemMO.userId != 0 && eventMemMO.userId == event.createdById) {
+                    owner = eventMemMO
+                    owner.photo = eventMemMO.user!.photo;
+                    break;
+                }
+            }
+        }
+        
+        if (owner.userId == 0) {
+            var loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+            owner.name = loggedInUser.name;
+            owner.photo = loggedInUser.photo;
+            owner.userId = loggedInUser.userId;
+        }
+        
+        
         let formattedText = NSMutableAttributedString();
         formattedText.bold((owner.name)!).normal(" is hosting");
         cell.ownerLabel.attributedText = formattedText;

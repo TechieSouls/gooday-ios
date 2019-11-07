@@ -197,7 +197,7 @@ class GatheringPreviewController: UIViewController,NVActivityIndicatorViewable, 
             
             let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let viewController = storyBoard.instantiateViewController(withIdentifier: "createGathering") as! CreateGatheringViewController
-            viewController.event = self.event!;
+            //viewController.event = self.event!;
             self.navigationController?.pushViewController(viewController, animated: true);
         }
         editAction.setValue(cenesLabelBlue, forKey: "titleTextColor")

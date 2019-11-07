@@ -314,7 +314,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         var predictiveString : String!
         
         
-        print("EVENT JSON : \(Event().toDictionary(event: event))")
+        print("EVENT JSON : \(event.description)")
         
         return;
 		
@@ -358,26 +358,27 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             var eventMembers = [NSMutableDictionary]()
             
-            for userContact in self.event.eventMembers {
+            for userContact in self.event.eventMembers! {
                
-                if (userContact.cenesMember == "no") {
+                let eventMemMO = userContact as! EventMemberMO;
+                if (eventMemMO.cenesMember == "no") {
                     continue;
                 }
                 let dict = NSMutableDictionary()
                 
-                dict["name"] = userContact.name
-                dict["userId"] = userContact.userId
+                dict["name"] = eventMemMO.name
+                dict["userId"] = eventMemMO.userId
                 
-                if let status = userContact.status {
+                if let status = eventMemMO.status {
                     dict["status"] = status
                 }
                 
                 let id = "\((setting.value(forKey: "userId") as? NSNumber)!)"
-                if "\(userContact.userId)" == id {
+                if "\(eventMemMO.userId)" == id {
                     continue
                 }
-                if userContact.user != nil {
-                    dict["picture"] = userContact.user.photo;
+                if eventMemMO.user != nil {
+                    dict["picture"] = eventMemMO.user!.photo;
                 }
                 eventMembers.append(dict)
             }
@@ -738,7 +739,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         } else if(segue.identifier == "showGatheringPreview"){
             let eventPreview = self.event;
             let gatheringPreviewController = segue.destination as! GatheringPreviewController
-            gatheringPreviewController.event = eventPreview;
+            //gatheringPreviewController.event = eventPreview;
         }
     }
     
@@ -879,7 +880,10 @@ extension CreateGatheringViewController: CollectionFriendsProtocol {
         if (selectedFriendHolder.count > 0) {
             
             if (eventMembers == nil) {
-                self.event.eventMembers = selectedFriendHolder;
+                for selctedFriendMO in selectedFriendHolder {
+                    self.event.eventMembers.append(selctedFriendMO);
+                }
+            
             } else {
                 for selectedMem in selectedFriendHolder {
                     

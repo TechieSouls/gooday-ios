@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 
 class GatheringManager {
     
@@ -29,11 +30,12 @@ class GatheringManager {
             let time = self.gethhmmAATimeStr(timeStamp: key)
             key = self.getddMMMEEEE(timeStamp: key)
             
-            var event = Event().loadEventData(eventDict: outerDict)
+            //var event = Event().loadEventData(eventDict: outerDict)
             
-            
+            var event = Event();
+            var eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict);
+            event = EventModel().copyDataToEventBo(eventMo: eventMO);
             if dict.value(forKey: key) != nil {
-                
                 
                 //var array = dict.value(forKey: key) as! [CenesCalendarData]!
                 var array = dict.value(forKey: key) as! [Event]
@@ -65,28 +67,25 @@ class GatheringManager {
         return dataObjectArray;
     }
     
-    func parseFriendsListResults(friendList: [EventMember]) -> [FriendListDto] {
+    func parseFriendsListResults(friendList: [UserContact]) -> [FriendListDto] {
         
-        var nonAlphabeticFriends = [EventMember]();
+        var nonAlphabeticFriends = [UserContact]();
         var dataObjectArray = [FriendListDto]();
         var friendListMapDto = [String: FriendListDto]();
-        for eventMember in friendList {
+        for userContact in friendList {
             
             var nameInitial = "";
-            if (eventMember.user != nil && eventMember.user.name != nil) {
-                nameInitial = eventMember.user.name.prefix(1).uppercased();
+            if (userContact.user != nil && userContact.user!.name != nil) {
+                nameInitial = userContact.user!.name!.prefix(1).uppercased();
                 print(nameInitial)
-            } else if (eventMember.userContact != nil) {
-                nameInitial = eventMember.userContact.name.prefix(1).uppercased();
-                print(nameInitial)
-            } else if (eventMember.name != nil) {
-                nameInitial = eventMember.name.prefix(1).uppercased();
+            } else if (userContact.name != nil) {
+                nameInitial = userContact.name!.prefix(1).uppercased();
                 print(nameInitial)
             }
             var friendListDtoTemp = FriendListDto();
             
             if (!InviteFriendsDto().alphabetStrip.contains(nameInitial.uppercased())) {
-                nonAlphabeticFriends.append(eventMember);
+                nonAlphabeticFriends.append(userContact);
             } else {
                 if (friendListMapDto.index(forKey: nameInitial) != nil) {
                     friendListDtoTemp = friendListMapDto[nameInitial]!;
@@ -94,7 +93,7 @@ class GatheringManager {
                 
                 friendListDtoTemp.sectionName = nameInitial;
                 var members = friendListDtoTemp.sectionObjects;
-                members.append(eventMember);
+                members.append(userContact);
                 friendListDtoTemp.sectionObjects = members;
                 
                 friendListMapDto[nameInitial] = friendListDtoTemp;
@@ -114,14 +113,69 @@ class GatheringManager {
         return dataObjectArray;
     }
     
-    func getCenesContacts(friendList: [EventMember]) -> [EventMember] {
+    func getCenesContacts(friendList: [UserContact]) -> [FriendListDto] {
         
-        var cenesMembers = [EventMember]();
+        var cenesMembers = [UserContact]();
+        for cenesContact in friendList {
+            
+            if (cenesContact.user != nil || cenesContact.cenesMember == "yes") {
+                cenesMembers.append(cenesContact);
+
+            }
+        }
+        
+        var nonAlphabeticFriends = [UserContact]();
+        var dataObjectArray = [FriendListDto]();
+        var friendListMapDto = [String: FriendListDto]();
+        for userContact in cenesMembers {
+            
+            var nameInitial = "";
+            if (userContact.user != nil && userContact.user!.name != nil) {
+                nameInitial = userContact.user!.name!.prefix(1).uppercased();
+                print(nameInitial)
+            } else if (userContact.name != nil) {
+                nameInitial = userContact.name!.prefix(1).uppercased();
+                print(nameInitial)
+            }
+            var friendListDtoTemp = FriendListDto();
+            
+            if (!InviteFriendsDto().alphabetStrip.contains(nameInitial.uppercased())) {
+                nonAlphabeticFriends.append(userContact);
+            } else {
+                if (friendListMapDto.index(forKey: nameInitial) != nil) {
+                    friendListDtoTemp = friendListMapDto[nameInitial]!;
+                }
+                
+                friendListDtoTemp.sectionName = nameInitial;
+                var members = friendListDtoTemp.sectionObjects;
+                members.append(userContact);
+                friendListDtoTemp.sectionObjects = members;
+                
+                friendListMapDto[nameInitial] = friendListDtoTemp;
+            }
+        }
+        
+        for (k,value) in Array(friendListMapDto).sorted(by: {$0.0 < $1.0}) {
+            dataObjectArray.append(value);
+        }
+        
+        if (nonAlphabeticFriends.count > 0) {
+            var nonAlphabeticFriendDto = FriendListDto();
+            nonAlphabeticFriendDto.sectionName = "#";
+            nonAlphabeticFriendDto.sectionObjects = nonAlphabeticFriends;
+            dataObjectArray.append(nonAlphabeticFriendDto);
+        }
+        return dataObjectArray;
+    }
+    
+    func getCenesContactsMO(friendList: [CenesUserContactMO]) -> [CenesUserContactMO] {
+        
+        var cenesMembers = [CenesUserContactMO]();
         for eventMember in friendList {
             
-            if (eventMember.user != nil) {
+            if eventMember.cenesMember == "yes" {
+                print(eventMember.description);
                 cenesMembers.append(eventMember);
-
             }
         }
         return cenesMembers;
@@ -269,5 +323,68 @@ class GatheringManager {
         }
         
         return currentMonthDates;
+    }
+    
+    func fetchEventDictionaryFromEventManagedObject(eventMO: EventMO) -> [String: Any] {
+        
+        var eventJson: [String: Any] = [:];
+        eventJson["title"] = eventMO.title;
+        eventJson["description"] = eventMO.desc;
+        eventJson["eventPicture"] = eventMO.eventPicture;
+        if (eventMO.eventId != 0) {
+            eventJson["eventId"] = eventMO.eventId;
+        }
+        eventJson["createdById"] = eventMO.createdById;
+        eventJson["startTime"] = eventMO.startTime;
+        eventJson["endTime"] = eventMO.endTime;
+        eventJson["location"] = eventMO.location;
+        eventJson["scheduleAs"] = eventMO.scheduleAs;
+        eventJson["latitude"] = eventMO.latitude;
+        eventJson["longitude"] = eventMO.longitude;
+        eventJson["createdById"] = eventMO.createdById;
+        eventJson["source"] = eventMO.source;
+        eventJson["sourceEventId"] = eventMO.sourceEventId;
+        eventJson["thumbnail"] = eventMO.thumbnail;
+        eventJson["isPredictiveOn"] = eventMO.isPredictiveOn;
+        eventJson["isFullDay"] = eventMO.isFullDay;
+        eventJson["placeId"] = eventMO.placeId;
+        eventJson["predictiveData"] = eventMO.predictiveData;
+        eventJson["fullDayStartTime"] = eventMO.fullDayStartTime;
+        eventJson["key"] = eventMO.key;
+        if (eventMO.eventMembers != nil && eventMO.eventMembers!.count > 0) {
+            var eveMembers: [[String: Any]] = [];
+            for evenMem in eventMO.eventMembers! {
+                
+                let evenMemMO = evenMem as! EventMemberMO;
+                eveMembers.append(fetchEventMemberDictionaryFromEventMemberManagedObject(eventMO: eventMO, eventMemberMO: evenMemMO));
+            }
+            eventJson["eventMembers"] = eveMembers;
+        }
+        return eventJson;
+
+    }
+    
+    func fetchEventMemberDictionaryFromEventMemberManagedObject(eventMO: EventMO, eventMemberMO: EventMemberMO) -> [String: Any] {
+        
+        var eventMemberJson: [String: Any] = [:];
+        
+        if (eventMO.eventId != 0) {
+            eventMemberJson["eventId"] = eventMO.eventId;
+        }
+        if (eventMemberMO.eventMemberId != 0) {
+            eventMemberJson["eventMemberId"] = eventMemberMO.eventMemberId;
+        }
+        eventMemberJson["name"] = eventMemberMO.name;
+        eventMemberJson["userContactId"] = eventMemberMO.userContactId;
+        
+        if (eventMemberMO.userId != 0) {
+            eventMemberJson["userId"] = eventMemberMO.userId;
+        }
+        
+        if (eventMemberMO.status != nil) {
+            eventMemberJson["status"] = eventMemberMO.status;
+        }
+        return eventMemberJson;
+
     }
 }

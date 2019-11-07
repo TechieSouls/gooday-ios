@@ -9,6 +9,7 @@
 import UIKit
 import NVActivityIndicatorView
 import VisualEffectView
+import CoreData
 
 class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
 
@@ -84,23 +85,32 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     }
     
     func loadMeTimeData() -> Void {
-        
-        let queryStr = "userId=\(String(self.loggedInUser.userId))";
-        
-        MeTimeService().getMeTimes(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
+
+        self.metimeEvents = MetimeRecurringEventModel().findAllMetimeRecurringEvents();
+       // print(self.metimeEvents.count);
+        self.meTimeItemsTableView.reloadData();
+
+        if (self.metimeEvents.count == 0) {
             
-            if (response["success"] as! Bool == true) {
+            let queryStr = "userId=\(String(self.loggedInUser.userId))";
+            
+            MeTimeService().getMeTimes(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
                 
-                let meTimeArray = response["data"] as! NSArray;
-                
-                self.metimeEvents = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
-                self.meTimeItemsTableView.reloadData();
-            } else {
-                let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true)
-            }
-        });
+                if (response["success"] as! Bool == true) {
+                    
+                    let meTimeArray = response["data"] as! NSArray;
+                    
+                    print(meTimeArray);
+                    //self.metimeEvents = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
+                    self.metimeEvents = MetimeRecurringEventModel().saveMetimeRecurringEventsMOFromNSArray(recurringEvents: meTimeArray);
+                    self.meTimeItemsTableView.reloadData();
+                } else {
+                    let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true)
+                }
+            });
+        }
     }
     
     
@@ -135,6 +145,7 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showAddMetimeModal"{
             let destinationVC = segue.destination as! MeTimeAddViewController;
+            //destinationVC.metimeRecurringEventMO = MetimeRecurringEventMO(context: context);
             destinationVC.newMeTimeViewControllerDelegate  = self;
         }
     }

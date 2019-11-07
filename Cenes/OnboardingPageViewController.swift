@@ -14,6 +14,7 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
     @IBOutlet weak var getStartedBtn: UIButton!
     @IBOutlet weak var pageControlBox: UIPageControl!
     
+    
     var itemIndex = 0;
     var pageIndex = 0;
     var pageViewController : UIPageViewController!;
@@ -150,6 +151,7 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
     
     @IBAction func getStartedPressed(_ sender: Any) {
         
+        getStartedBtn.isUserInteractionEnabled = false;
         setting.setValue(UserSteps.OnBoardingScreens, forKey: "footprints")
         UIApplication.shared.keyWindow?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
 

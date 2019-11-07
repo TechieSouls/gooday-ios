@@ -2,7 +2,7 @@
 //  NotificationMO+CoreDataProperties.swift
 //  Cenes
 //
-//  Created by Cenes_Dev on 14/10/2019.
+//  Created by Cenes_Dev on 06/11/2019.
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 //
@@ -28,7 +28,7 @@ extension NotificationMO {
     @NSManaged public var senderId: Int32
     @NSManaged public var title: String?
     @NSManaged public var type: String?
-    @NSManaged public var event: NotificationMO?
+    @NSManaged public var event: EventMO?
     @NSManaged public var user: CenesUserMO?
 
 }

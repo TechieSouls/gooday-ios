@@ -12,6 +12,7 @@ import EventKitUI
 import Crashlytics
 import CoreTelephony
 import CoreData
+import Reachability
 
 protocol DataTableViewCellProtocol {
     func reloadTableToTop();
@@ -47,8 +48,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     var homeFSCalendarCellProtocol: HomeFSCalendarCellProtocol!;
     var activityIndicator = UIActivityIndicatorView();
     let telephonyNetworkInfo = CTTelephonyNetworkInfo()
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var context: NSManagedObjectContext? = nil;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +60,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         calendrStatusToast.clipsToBounds  =  true
 
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);        
-        context = self.appDelegate.persistentContainer.viewContext
 
         var dateComponets = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
         dateComponets.hour = 0;
@@ -86,6 +84,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.createGathButton.isUserInteractionEnabled = false;
         self.setUpNavBarImages();
 
+        //EventModel().emtpyEventModel(context: context!);
         //Calling Funcitons
         //Load Home Screen Data on user load
         self.registerTableCells()
@@ -106,6 +105,13 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             self.homeTableView.reloadData()
         }
         //self.checkSimCardDetails();
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
+        do{
+          try reachability.startNotifier()
+        }catch{
+          print("could not start reachability notifier")
+        }
+
     }
     
     override func viewDidAppear(_ animated:
@@ -220,10 +226,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
     }
     
-    func loafOfflineData() {
-        
-    }
-    
     func syncDeviceContacts() {
         UserService().syncDevicePhoneNumbers(complete: {(response)  in
             
@@ -240,7 +242,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.loadCalendarEventsData();
         
         //This method is to load the invitation tabs data.
-        self.initilizeInvitationTabsData();
+        //self.initilizeInvitationTabsData();
     }
 
     
@@ -254,7 +256,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.loadCalendarEventsData();
         
         //This method is to load the invitation tabs data.
-        self.initilizeInvitationTabsData();
+        //self.initilizeInvitationTabsData();
     }
     
     /**
@@ -376,8 +378,10 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         
                         let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
                         if dataType == "Event" {
-                            let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
-                            events.append(event);
+                            //let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                            
+                            let eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                            events.append(EventModel().copyDataToEventBo(eventMo: eventMO));
                         }
                     }
                     
@@ -385,7 +389,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 
                     let homeScreenDataHolder = HomeManager().parseResultsForHomeEvents(homescreenDto: self.homescreenDto, events: events);
                     
-                    var calendarData = homeScreenDataHolder.homeDataList!;
+                    let calendarData = homeScreenDataHolder.homeDataList!;
                     self.homescreenDto = homeScreenDataHolder.homescreenDto;
 
                     if (calendarData.count > 0) {
@@ -427,7 +431,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         
                         
                         self.homescreenDto.pageable.totalCalendarCounts = self.homescreenDto.pageable.totalCalendarCounts + Int(response["totalCounts"]  as! Int);
-                        
                         
                         let currentMonth = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
                         
@@ -472,6 +475,10 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     
     func loadPastEvents() -> Void {
         
+        //EventModel().emtpyEventModel();
+        //EventMemberModel().emtpyEventMemberMOModel();
+        //CenesUserModel().deleteAllCenesUserModel();
+        
         self.homescreenDto.calendarData = [HomeData]();
         //let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(self.homescreenDto.currentMonthStartDateTimeStamp))&pageNumber=\(String(0))&offSet=\(String(20))";
         
@@ -483,29 +490,32 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         let queryStr = "userId=\(String(loggedInUser.userId))&startimeStamp=\(String(self.homescreenDto.currentMonthStartDateTimeStamp))&endtimeStamp=\(String(endDateCompo))";
         
         
-        let events = HomeManager().fetchOfflineData(context: self.context!);
+        let events = EventModel().fetchOfflineEvents();
+        print("Total Offline Events Present : ",events.count)
         self.showOfflineData(events: events, totalCountsParam: events.count);
-        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+            self.scrollToCurrentDateAtHomeScreen();
+        });
         if Connectivity.isConnectedToInternet {
+            
             //self.homescreenDto = HomeDto();
-            self.homescreenDto.pageable.calendarDataPageNumber = 0;
-            self.homescreenDto.calendarData = [HomeData]();
-            self.homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
-            self.homescreenDto.pageableMonthToAdd = 0;
-            self.homescreenDto.pageableMonthTimestamp = Int(Date().millisecondsSince1970);
-            self.homescreenDto.pageable.totalCalendarCounts = 0;
-            self.homescreenDto.topHeaderDateIndex = [String: MonthScrollDto]();
-            self.homescreenDto.monthTrackerForDataLoad = [String]();
-            self.homescreenDto.monthScrollIndex = [String: MonthScrollDto]();
-            self.homescreenDto.totalEventsList = [Int32]();
-            self.homescreenDto.monthSeparatorList = [String]();
-
             ///If Connected To Internet. Then show online data.
             HomeService().getMonthWiseEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
                 
-                EventModel().emtpyEventModel(context: self.context!);
-                EventModel().emtpyEventMemberMOModel(context: self.context!);
-
+                EventModel().emtpyEventModel();
+                EventMemberModel().emtpyEventMemberMOModel();
+                
+                self.homescreenDto.pageable.calendarDataPageNumber = 0;
+                self.homescreenDto.calendarData = [HomeData]();
+                self.homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
+                self.homescreenDto.pageableMonthToAdd = 0;
+                self.homescreenDto.pageableMonthTimestamp = Int(Date().millisecondsSince1970);
+                self.homescreenDto.pageable.totalCalendarCounts = 0;
+                self.homescreenDto.topHeaderDateIndex = [String: MonthScrollDto]();
+                self.homescreenDto.monthTrackerForDataLoad = [String]();
+                self.homescreenDto.monthScrollIndex = [String: MonthScrollDto]();
+                self.homescreenDto.totalEventsList = [Int32]();
+                self.homescreenDto.monthSeparatorList = [String]();
 
                 //No Error then populate the table
                 if (returnedDict["success"] as? Bool == true) {
@@ -517,13 +527,19 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         
                         let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
                         if dataType == "Event" {
-                            let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
-                            events.append(event);
+                            //let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                            //events.append(event);
+                            let eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                            if (eventMO.eventId != 0 && eventMO.title != nil) {
+                                //print(eventBO.)
+                                events.append(EventModel().copyDataToEventBo(eventMo: eventMO));
+                            }
                         }
                     }
                     
+                    print("Event Counts : ",events.count)
                     let totalCounts = returnedDict["totalCounts"]  as! Int;
-                    HomeManager().populateOfflineData(context: self.context!, events: events);
+                    //HomeManager().populateOfflineData(context: self.context!, events: events);
                     self.handleMonthWizeEventResponse(events: events, totalCountsParam: totalCounts);
                     //}
                 } else {
@@ -534,6 +550,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             //Show Offline Data
             //let events = HomeManager().fetchOfflineData(context: self.context!);
             //self.handleMonthWizeEventResponse(events: events, totalCountsParam: events.count);
+            initilizeInvitationTabsData();
         }
         
     }
@@ -560,11 +577,18 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     
                     let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
                     if dataType == "Event" {
-                        let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
-                        events.append(event);
+                        //let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                        //events.append(event);
+                        let eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                        if (eventMO.eventId != 0 && eventMO.title != nil) {
+                            events.append(EventModel().copyDataToEventBo(eventMo: eventMO));
+                        }
                     }
                 }
-                HomeManager().populateOfflineData(context: self.context!, events: events);
+                
+                
+                
+                //HomeManager().populateOfflineData(context: self.context!, events: events);
                 
                 let homeScreenDataHolder = HomeManager().parseResultsForHomeEvents(homescreenDto: self.homescreenDto, events: events)
 
@@ -660,7 +684,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             //print(returnedDict)
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
-                var homeDataList = HomeManager().parseInvitationResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                let homeDataList = HomeManager().parseInvitationResults(resultArray: (returnedDict["data"] as? NSArray)!);
                 
                 if (status == "Going") {
                     self.homescreenDto.acceptedGatherings = HomeManager().mergeCurrentAndFutureList(currentList: self.homescreenDto.acceptedGatherings, futureList: homeDataList);
@@ -696,7 +720,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         
                     }
                 }
-                
             } else {
                 //Show Empty Screen
             }
@@ -712,7 +735,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             print(returnedDict)
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
-                var homeDataList = HomeManager().parseInvitationResults(resultArray: (returnedDict["data"] as? NSArray)!)
+                let homeDataList = HomeManager().parseInvitationResults(resultArray: (returnedDict["data"] as? NSArray)!)
                 
                 if (status == "Going") {
                     self.homescreenDto.pageable.acceptedGathetingPageNumber = 0;
@@ -883,9 +906,26 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         homescreenDto.pendingGatherings = [HomeData]();
         homescreenDto.declinedGatherings = [HomeData]();
         
-        self.loadGatheringDataByStatus(status: "Going", pageNumber: homescreenDto.pageable.acceptedGathetingPageNumber, offSet: homescreenDto.pageable.acceptedGatheringOffset);
-        self.loadGatheringDataByStatus(status: "Pending", pageNumber: homescreenDto.pageable.pendingGathetingPageNumber, offSet: homescreenDto.pageable.pendingGatheringOffset);
-        self.loadGatheringDataByStatus(status: "NotGoing", pageNumber: homescreenDto.pageable.declinedGathetingPageNumber, offSet: homescreenDto.pageable.declinedGatheringOffset);
+        let acceptedEvents = EventModel().fetchEventsByEventMemberStatus(loggedInUserId: self.loggedInUser.userId, eventMemberStatus: "GOING");
+        homescreenDto.acceptedGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: acceptedEvents);
+        
+        let declinedEvents = EventModel().fetchEventsByEventMemberStatus(loggedInUserId: self.loggedInUser.userId, eventMemberStatus: "NOTGOING");
+        homescreenDto.declinedGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: declinedEvents);
+
+        let pendingEvents = EventModel().fetchEventsByEventMemberStatus(loggedInUserId: self.loggedInUser.userId, eventMemberStatus: "PENDING");
+        homescreenDto.pendingGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: pendingEvents);
+
+        if (Connectivity.isConnectedToInternet) {
+            
+            self.homescreenDto.acceptedGatherings = [HomeData]();
+            self.homescreenDto.pendingGatherings = [HomeData]();
+            self.homescreenDto.declinedGatherings = [HomeData]();
+            
+            self.loadGatheringDataByStatus(status: "Going", pageNumber: homescreenDto.pageable.acceptedGathetingPageNumber, offSet: homescreenDto.pageable.acceptedGatheringOffset);
+            self.loadGatheringDataByStatus(status: "Pending", pageNumber: homescreenDto.pageable.pendingGathetingPageNumber, offSet: homescreenDto.pageable.pendingGatheringOffset);
+            self.loadGatheringDataByStatus(status: "NotGoing", pageNumber: homescreenDto.pageable.declinedGathetingPageNumber, offSet: homescreenDto.pageable.declinedGatheringOffset);
+
+        }
     }
     
     func handleMonthWizeEventResponse(events: [Event], totalCountsParam: Int) {
@@ -895,7 +935,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         let calendarData = homeScreenDataHolder.homeDataList!;
         self.homescreenDto = homeScreenDataHolder.homescreenDto;
-        
         self.homescreenDto.pageable.totalCalendarCounts = totalCountsParam;
         
         if (calendarData.count > 0) {
@@ -928,8 +967,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 firstHomeData = homeDataForCuurentMonthFutureEvent;
             }
             
-            
-            
             let monthScrollDto = MonthScrollDto();
             monthScrollDto.indexKey = firstHomeData.sectionName;
             monthScrollDto.year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime))).year!;
@@ -949,7 +986,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         let previousDate = Calendar.current.date(byAdding: .month, value: -12, to: Date(milliseconds: Int(self.homescreenDto.startTimeStampToFetchPageableData)))!
         
         let queryStr = "userId=\(String(self.loggedInUser.userId))&startTime=\(String(describing: previousDate.millisecondsSince1970))&endTime=\(String(describing: self.homescreenDto.currentMonthStartDateTimeStamp))";
-        self.homeTableView.reloadData();
+            
+            //self.homeTableView.reloadData();
 
             HomeService().getHomePastEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
                 //print(returnedDict)
@@ -967,12 +1005,17 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         
                         let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
                         if dataType == "Event" {
-                            let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
-                            events.append(event);
+                            //let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                            //events.append(event);
+                            let eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary);
+                            if (eventMO.eventId != 0 && eventMO.title != nil) {
+                                //print(eventBo.description);
+                                events.append(EventModel().copyDataToEventBo(eventMo: eventMO));
+                            }
                         }
                     }
                     
-                    HomeManager().populateOfflineData(context: self.context!, events: events);
+                    //HomeManager().populateOfflineData(context: self.context!, events: events);
                     
                     //Let calculate headers for past events
                     let pastCalendarData = HomeManager().parseResults(resultArray: returnedDict["data"] as! NSArray);
@@ -1023,23 +1066,35 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         self.homescreenDto.calendarData = HomeManager().mergePreviousDataAtTop(currentList: self.homescreenDto.calendarData, previous: calendarData);
                     }
                     
-                    if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
-                        
-                        self.homeDtoList = self.homescreenDto.calendarData;
-                        self.totalPageCounts =  self.homescreenDto.pageable.totalCalendarCounts;
-                        self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-                        
-                        if (self.homescreenDto.scrollToMonthStartSectionAtHomeButton.count > 0) {
-                            self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
-                        }
-                    }
+                    self.scrollToCurrentDateAtHomeScreen();
                 }
                 
-                
+                self.initilizeInvitationTabsData();
+
                 DispatchQueue.global(qos: .background).async {
                     self.syncDeviceContacts();
                 }
             }
+    }
+    
+    func scrollToCurrentDateAtHomeScreen() {
+        
+        if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+            
+            self.homeDtoList = self.homescreenDto.calendarData;
+            self.totalPageCounts =  self.homescreenDto.pageable.totalCalendarCounts;
+            
+            if (self.dataTableViewCellProtocolDelegate != nil) {
+                
+                self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+                
+                if (self.homescreenDto.scrollToMonthStartSectionAtHomeButton.count > 0) {
+                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
+                }
+
+            }
+        }
+
     }
     
     @objc func calendarTabPressed() {
@@ -1191,39 +1246,30 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         }
                         let title = event.title
                         
-                        var location = "";
-                        if let locationTemp = event.location {
-                            location = locationTemp
-                        }
+                        let location = event.location
                         
                         var description = ""
                         if let desc = event.notes{
                             description = desc
                         }
-                        var startTime = "\(Date().millisecondsSince1970)";
-                        if let startDateTemp = event.startDate {
-                            startTime = "\(startDateTemp.millisecondsSince1970)"
-                        }
                         
-                        var endTime = "\(Date().millisecondsSince1970)";
-                        if let endDateTemp = event.endDate {
-                            endTime = "\(endDateTemp.millisecondsSince1970)"
-                        }
+                        let startTime = "\(event.startDate.millisecondsSince1970)"
+                        let endTime = "\(event.endDate.millisecondsSince1970)"
                         
                         let nowDateMillis = Date().millisecondsSince1970
                         
+                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
                         
-                        let postData: NSMutableDictionary = ["title":title!,"description":description,"location":location,"source":"Apple","createdById":self.loggedInUser.userId,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
-
                         if (event.startDate.millisecondsSince1970 < nowDateMillis) {
                             
                             postData["processed"] = "\(1)";
                             arrayDict.append(postData)
                         } else {
-                           
+                            
                             postData["processed"] = "\(0)";
                             arrayDict.append(postData)
                         }
+                        
                     }
                     
                     var params =  [String:Any]();
@@ -1267,6 +1313,80 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
         })*/
  
+    @objc func reachabilityChanged(note: Notification) {
+
+      let reachability = note.object as! Reachability
+
+      switch reachability.connection {
+      case .wifi:
+        print("Reachable via WiFi");
+        createGatheringForOfflineCreatedEvents();
+
+      case .cellular:
+        print("Reachable via Cellular");
+        createGatheringForOfflineCreatedEvents();
+
+      case .none:
+        print("Network not reachable")
+      }
+    }
+
+    func createGatheringForOfflineCreatedEvents() {
+        let offlineUnSyncedEvents = EventModel().findAllUnSyncedEvents();
+        if (offlineUnSyncedEvents.count > 0) {
+            
+            
+            let eventMO = offlineUnSyncedEvents[0];
+            EventModel().updateEventManagedObjectSyncedStatus(eventMO: eventMO);
+
+            if (eventMO.eventPictureBinary != nil) {
+                let imageToUpload = UIImage.init(data: eventMO.eventPictureBinary!);
+                GatheringService().uploadEventImageV3(image: imageToUpload, loggedInUser: self.loggedInUser, complete: {(response) in
+                    let success = response.value(forKey: "success") as! Bool;
+                    if (success == true) {
+                        if (response.value(forKey: "data") != nil) {
+                            
+                            print("Uplaoding Starts")
+                            let images = response.value(forKey: "data") as! NSDictionary;
+                            
+                            if (images.value(forKey: "large") != nil) {
+                                eventMO.eventPicture = images.value(forKey: "large") as! String;
+                            }
+                            
+                            if (images.value(forKey: "thumbnail") != nil) {
+                                eventMO.thumbnail = images.value(forKey: "thumbnail") as! String;
+                            }
+                        }
+                        eventMO.eventId = 0;
+                        let eventDict = GatheringManager().fetchEventDictionaryFromEventManagedObject(eventMO: eventMO);
+                        print(eventDict);
+                        GatheringService().createGathering(uploadDict: eventDict, complete: {(response) in
+
+                            print("Saved Successfully...")
+                            self.refreshHomeScreenData();
+                            self.createGatheringForOfflineCreatedEvents();
+                        });
+
+                    }
+                });
+                
+            } else {
+                
+                EventModel().updateEventManagedObjectSyncedStatus(eventMO: eventMO);
+                eventMO.eventId = 0;
+                let eventDict = GatheringManager().fetchEventDictionaryFromEventManagedObject(eventMO: eventMO);
+                print(eventDict);
+                GatheringService().createGathering(uploadDict: eventDict, complete: {(response) in
+
+                    print("Saved Successfully...")
+                    self.refreshHomeScreenData();
+                    self.createGatheringForOfflineCreatedEvents();
+                });
+
+            }
+ 
+        }
+    }
  
     func showOfflineData(events: [Event], totalCountsParam: Int) {
         
@@ -1295,7 +1415,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         break;
                     }
                 }
-                
+
                 if (isGreaterDateFound == true) {
                     break;
                 }
@@ -1306,8 +1426,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             if (homeDataForCuurentMonthFutureEvent != nil) {
                 firstHomeData = homeDataForCuurentMonthFutureEvent;
             }
-            
-            
             
             let monthScrollDto = MonthScrollDto();
             monthScrollDto.indexKey = firstHomeData.sectionName;
@@ -1325,47 +1443,46 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         //self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts
         //self.homeTableView.reloadData();
         
-        let previousDate = Calendar.current.date(byAdding: .month, value: -12, to: Date(milliseconds: Int(self.homescreenDto.startTimeStampToFetchPageableData)))!
-        
-        let queryStr = "userId=\(String(self.loggedInUser.userId))&startTime=\(String(describing: previousDate.millisecondsSince1970))&endTime=\(String(describing: self.homescreenDto.currentMonthStartDateTimeStamp))";
-        self.homeTableView.reloadData();
-        
-        
         if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
             self.homeDtoList = self.homescreenDto.calendarData;
             self.totalPageCounts =  self.homescreenDto.pageable.totalCalendarCounts;
             
             self.createGathButton.isUserInteractionEnabled = true;
-            
+            self.homescreenDto.homeRowsVisibility[HomeRows.TableRow] = true;
             self.homeTableView.reloadData();
         }
+
     }
     
     // UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if (self.homeDtoList.count > 0) {
-            if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
-                
-                
-                self.homescreenDto.timeStamp = Int(Date().millisecondsSince1970);
-                self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0].timestamp);
-                if (self.homeFSCalendarCellProtocol != nil) {
-                    self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
-                }
-                /*if (currentDateSectionIndex != 0) {
-                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: self.currentDateSectionIndex)
+        if (self.homeDtoList.count > 0 ) {
+            
+            if (self.dataTableViewCellProtocolDelegate != nil) {
+                if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                    
+                    self.homescreenDto.timeStamp = Int(Date().millisecondsSince1970);
+                    self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0].timestamp);
+                    if (self.homeFSCalendarCellProtocol != nil) {
+                        self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
+                    }
+                    /*if (currentDateSectionIndex != 0) {
+                        self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: self.currentDateSectionIndex)
+                    } else {
+                        self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: self.homescreenDto.scrollToSectionIndex)
+                    }*/
+                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
+                    
+                    
                 } else {
-                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: self.homescreenDto.scrollToSectionIndex)
-                }*/
-                self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
-                
-                
-            } else {
-                self.dataTableViewCellProtocolDelegate.reloadTableToTop();
+                    self.dataTableViewCellProtocolDelegate.reloadTableToTop();
+                }
             }
         } else {
             self.homescreenDto.timeStamp = Int(Date().millisecondsSince1970);
-            self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: Int(Date().millisecondsSince1970));
+            if (self.dateDroDownCellProtocolDelegate != nil) {
+                self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: Int(Date().millisecondsSince1970));
+            }
             if (self.homeFSCalendarCellProtocol != nil) {
                 self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
             }

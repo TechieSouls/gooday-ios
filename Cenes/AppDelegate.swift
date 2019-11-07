@@ -9,18 +9,18 @@
 import UIKit
 import CoreData
 import FBSDKLoginKit
-import FacebookCore
 import UserNotifications
 import Fabric
 import Crashlytics
 import GoogleSignIn
 import Google
 import SideMenu
+import Reachability
  
 let setting = UserDefaults.standard
+let reachability = Reachability()!
 
 @UIApplicationMain
-
  class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
@@ -105,7 +105,7 @@ let setting = UserDefaults.standard
         
         
         let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        if (loggedInUser.userId != nil) {
+        if (loggedInUser.userId != nil && loggedInUser.token != nil) {
             let queryStr = "userId=\(String(loggedInUser.userId))";
             NotificationService().findNotificationBadgeCounts(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
                 
@@ -117,11 +117,6 @@ let setting = UserDefaults.standard
                 }
             })
         }
-        
-        //DispatchQueue.main.async {
-            //PhonebookService().phoneNumberWithContryCode();
-        //}
-        
         return true
     }
     
@@ -264,17 +259,20 @@ let setting = UserDefaults.standard
             
             if (url.host != nil && url.host == "event") {
                 
-                let queryStr = url.query;
-                let params = queryStr?.split(separator: "=");
-                let eventKey = params![1];
-                
-                let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
-                let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-                viewContro.fromPushNotificaiton = true;
-                viewContro.event = Event();
-                viewContro.event.key = String(eventKey);
-                self.window?.rootViewController = viewContro
-                self.window?.makeKeyAndVisible()
+                let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+                if (loggedInUser.userId != nil) {
+                    let queryStr = url.query;
+                    let params = queryStr?.split(separator: "=");
+                    let eventKey = params![1];
+                    
+                    let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+                    let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                    viewContro.fromPushNotificaiton = true;
+                    viewContro.event = Event();
+                    viewContro.event.key = String(eventKey);
+                    self.window?.rootViewController = viewContro
+                    self.window?.makeKeyAndVisible()
+                }
             } else {
                 let service = OutlookService.shared()
                 service.handleOAuthCallback(url: url);
@@ -326,8 +324,11 @@ let setting = UserDefaults.standard
         print("RECIEVE PUSH ********** \(userInfo["aps"])")
         var dict = userInfo["aps"] as! NSDictionary;
         
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
         //Conditio for silent push notification
-        if (dict.value(forKey: "content-available") as! Int == 1) {
+        /*if (dict.value(forKey: "content-available") as! Int == 1) {
             let type = dict.value(forKey: "type") as! String;
             if (type == "HomeRefresh") {
                 if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
@@ -337,7 +338,7 @@ let setting = UserDefaults.standard
                     homeViewController?.refreshHomeScreenData();
                 }
             }
-        }
+        }*/
         completionHandler(.newData)
     }
 
@@ -465,7 +466,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         let userInfo = notification.request.content.userInfo["aps"]! as? NSDictionary
         let alertDict = userInfo!["alert"] as! NSDictionary
-            
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
         if alertDict["type"] as? String == "HomeRefresh" {
                 if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                     self.cenesTabBar?.selectedIndex = 0
@@ -496,6 +499,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             return
         }
         
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
         if userInfo!["type"] as? String == "HomeRefresh" {
@@ -507,11 +513,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 homeViewController?.refreshHomeScreenData();
             }*/
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         } else if userInfo!["type"] as? String == "Gathering" {
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
             
             let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
             let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;

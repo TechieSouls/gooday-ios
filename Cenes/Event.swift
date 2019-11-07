@@ -18,7 +18,7 @@ class Event {
     var location: String!;
     var latitude: String!;
     var longitude: String!;
-    var createdById: Int32 = User().loadUserDataFromUserDefaults(userDataDict: setting).userId;
+    var createdById: Int32!;
     var source: String? = "Cenes";
     var scheduleAs: String? = "Gathering";
     var thumbnail: String!;
@@ -35,8 +35,18 @@ class Event {
     var expired: Bool = false;
     var imageToUpload: UIImage!;
     var requestType = EventRequestType.NewEvent;
+    var eventPictureBinary: Data = Data();
     
     var eventMembers: [EventMember]!;
+    
+    func createdByUserId() -> Int32 {
+        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        if (loggedInUser.userId != nil) {
+            return loggedInUser.userId;
+        }
+        
+        return 0;
+    }
     
     func loadEventData(eventDict: NSDictionary) -> Event {
         
@@ -148,11 +158,26 @@ class Event {
         let eventMember = EventMember();
         eventMember.userId = loggedInUser.userId;
         eventMember.user = loggedInUser;
+        eventMember.name = loggedInUser.name;
         eventMember.cenesMember = "yes";
         eventMember.status = "Going";
-        
         return eventMember;
     }
+    
+    func getLoggedInUserAsUserContact() -> UserContact {
+        
+        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        
+        let userContact = UserContact();
+        userContact.userId = Int(loggedInUser.userId);
+        userContact.user = loggedInUser;
+        userContact.name = loggedInUser.name;
+        userContact.friendId = Int(loggedInUser.userId);
+        userContact.cenesMember = "yes";
+        userContact.status = "Going";
+        return userContact;
+    }
+
     
     func getEventHostFromMembers() -> EventMember {
         
@@ -220,4 +245,14 @@ class EventClickedFrom {
     static let Home = "HOME";
     static let Gathering = "GATHERING";
     static let Notification = "NOTIFICATION";
+}
+
+
+class EventScheduleAs {
+    //Event,MeTime,Holiday,Gathering, Notification
+    static let EVENT = "Event";
+    static let METIME = "MeTime";
+    static let HOLIDAY = "Holiday";
+    static let GATHERING = "Gathering";
+    static let NOTIFICATION = "Notification";
 }

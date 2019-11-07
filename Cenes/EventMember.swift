@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import CoreData
+
 class EventMember {
     
     var eventMemberId: Int32!;
@@ -80,6 +82,36 @@ class EventMember {
         return eventMember;
     }
     
+    func loadUserContactDataInEventMemberMO(eventMemberDict: NSDictionary) -> EventMemberMO {
+        let eventMember = EventMemberMO();
+        
+        eventMember.eventMemberId = (eventMemberDict.value(forKey: "eventMemberId") as? Int32)!;
+        eventMember.eventId = (eventMemberDict.value(forKey: "eventId") as? Int32)!;
+        eventMember.source = eventMemberDict.value(forKey: "source") as? String;
+        //eventMember.sourceEmail = eventMemberDict.value(forKey: "sourceEmail") as? String;
+        //eventMember.sourceId = eventMemberDict.value(forKey: "sourceId") as? String;
+        eventMember.cenesMember = eventMemberDict.value(forKey: "cenesMember") as? String;
+        eventMember.name = eventMemberDict.value(forKey: "name") as? String;
+        eventMember.status = eventMemberDict.value(forKey: "status") as? String;
+        eventMember.userId = (eventMemberDict.value(forKey: "friendId") as? Int32)!;
+        eventMember.userContactId = (eventMemberDict.value(forKey: "userContactId") as? Int32)!;
+        eventMember.owner = (eventMemberDict.value(forKey: "owner") as? Bool)!;
+        eventMember.phone = eventMemberDict.value(forKey: "phone") as? String;
+        
+        if let user = eventMemberDict.value(forKey: "user") as? NSDictionary {
+            let cenesUserMO = CenesUserModel().saveCenesUserModel(cenesUserDict: user);
+            eventMember.user = cenesUserMO;
+        }
+        
+        if let userContact = eventMemberDict.value(forKey: "userContact") as? NSDictionary {
+            
+            eventMember.userContact = CenesUserContactModel().parseUserContactFromDict(userContactDict: userContact);
+        }
+        
+        return eventMember;
+    }
+
+    
     func loadEventMembers(eventMemberArray: NSArray) -> [EventMember] {
         
         var eventMembers = [EventMember]();
@@ -107,7 +139,7 @@ class EventMember {
         return eventMembers;
         
     }
-    
+        
     func toDictionary(eventMember: EventMember) -> [String: Any] {
         
         var eventMemberJson: [String: Any] = [:];
@@ -133,4 +165,17 @@ class EventMember {
         }
         return userContactsToReturn;
     }
+    
+    func filteredEventMemberMO(eventMembers: [CenesUserContactMO], predicate: String) -> [CenesUserContactMO] {
+        
+        var userContactsToReturn: [CenesUserContactMO] = [];
+        for eventMember in eventMembers {
+            
+            if (eventMember.name!.starts(with: predicate)) {
+                userContactsToReturn.append(eventMember);
+            }
+        }
+        return userContactsToReturn;
+    }
+
 }

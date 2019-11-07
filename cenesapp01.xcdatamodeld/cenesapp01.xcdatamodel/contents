@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14903" systemVersion="18G103" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CenesUserContactMO" representedClassName=".CenesUserContactMO" syncable="YES">
+        <attribute name="cenesMember" optional="YES" attributeType="String"/>
+        <attribute name="friendId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="phone" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="userContactId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CenesUserMO"/>
+    </entity>
     <entity name="CenesUserMO" representedClassName=".CenesUserMO" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="photo" optional="YES" attributeType="String"/>
@@ -16,25 +27,58 @@
         <attribute name="status" optional="YES" attributeType="String"/>
         <attribute name="userContactId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CenesUserMO"/>
+        <relationship name="userContact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CenesUserContactMO"/>
     </entity>
     <entity name="EventMO" representedClassName=".EventMO" syncable="YES">
         <attribute name="createdById" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="desc" optional="YES" attributeType="String"/>
         <attribute name="endTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="eventClickedFrom" optional="YES" attributeType="String"/>
         <attribute name="eventId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="eventPicture" optional="YES" attributeType="String"/>
+        <attribute name="eventPictureBinary" optional="YES" attributeType="Binary"/>
         <attribute name="eventSource" optional="YES" attributeType="String"/>
         <attribute name="expired" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="fullDayStartTime" optional="YES" attributeType="String"/>
+        <attribute name="isEditMode" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isFullDay" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isPredictiveOn" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="key" optional="YES" attributeType="String"/>
         <attribute name="latitude" optional="YES" attributeType="String"/>
         <attribute name="location" optional="YES" attributeType="String"/>
         <attribute name="longitude" optional="YES" attributeType="String"/>
+        <attribute name="placeId" optional="YES" attributeType="String"/>
+        <attribute name="predictiveData" optional="YES" attributeType="String"/>
+        <attribute name="requestType" optional="YES" attributeType="String"/>
         <attribute name="scheduleAs" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="sourceEventId" optional="YES" attributeType="String"/>
         <attribute name="startTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="synced" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="eventMembers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EventMO"/>
+    </entity>
+    <entity name="MetimeRecurringEventMO" representedClassName=".MetimeRecurringEventMO" syncable="YES">
+        <attribute name="createdById" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="photoBinary" optional="YES" attributeType="Binary"/>
+        <attribute name="processed" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recurringEventId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="startTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="timezone" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="patterns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MeTimeRecurringPatternMO"/>
+    </entity>
+    <entity name="MeTimeRecurringPatternMO" representedClassName=".MeTimeRecurringPatternMO" syncable="YES">
+        <attribute name="dayOfWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dayOfWeekTimestamp" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recurringPatternId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="slotsGeneratedUpto" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="NotificationMO" representedClassName=".NotificationMO" syncable="YES">
         <attribute name="action" optional="YES" attributeType="String"/>
@@ -48,13 +92,16 @@
         <attribute name="senderId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NotificationMO"/>
-        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CenesUserMO"/>
+        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EventMO"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="CenesUserMO"/>
     </entity>
     <elements>
         <element name="CenesUserMO" positionX="-144" positionY="63" width="128" height="88"/>
-        <element name="EventMemberMO" positionX="37.53125" positionY="151.421875" width="128" height="195"/>
-        <element name="EventMO" positionX="-196.69140625" positionY="-110.421875" width="128" height="300"/>
+        <element name="EventMemberMO" positionX="37.53125" positionY="151.421875" width="128" height="223"/>
+        <element name="EventMO" positionX="-196.69140625" positionY="-110.421875" width="128" height="463"/>
         <element name="NotificationMO" positionX="-357.9296875" positionY="-111.3203125" width="128" height="238"/>
+        <element name="CenesUserContactMO" positionX="-162" positionY="45" width="128" height="178"/>
+        <element name="MeTimeRecurringPatternMO" positionX="-153" positionY="54" width="128" height="103"/>
+        <element name="MetimeRecurringEventMO" positionX="-144" positionY="63" width="128" height="223"/>
     </elements>
 </model>

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol CollectionFriendsProtocol {
     func collectionFriendsList(selectedFriendHolder: [EventMember])
@@ -24,6 +25,7 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
     var isFirstTime: Bool = true;
     var createGatheringProtocolDelegate: CreateGatheringProtocol!;
     var eventId: Int32!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,18 +40,21 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
         
-        //if (eventId == nil && inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
-        var userExistsInList = false;
-        for eventMem in inviteFriendsDto.selectedFriendCollectionViewList {
-            if (eventMem.user != nil && (eventMem.user.userId == self.loggedInUser.userId)) {
-                userExistsInList = true;
-                break;
+        if (eventId == nil && inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
+            var userExistsInList = false;
+            for userContact in inviteFriendsDto.selectedFriendCollectionViewList {
+                if (userContact.user != nil && (userContact.user.userId == self.loggedInUser.userId)) {
+                    userExistsInList = true;
+                    break;
+                }
+            }
+            if (userExistsInList == false) {
+
+                let loggedInUserContact = Event().getLoggedInUserAsUserContact();
+                //print(loggedInUserContact.description);
+                inviteFriendsDto.selectedFriendCollectionViewList.append(loggedInUserContact);
             }
         }
-        if (userExistsInList == false) {
-            inviteFriendsDto.selectedFriendCollectionViewList.append(Event().getLoggedInUserAsEventMember());
-        }
-        //}
         
         if (isFirstTime == true || eventId != nil) {
             self.getFriendsWithName(nameStartsWith: "")
@@ -138,53 +143,74 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         //Call api for friends
         WebService().cancelAll()
         
-        let queryStr = "userId=\(String(self.loggedInUser.userId))"
-        UserService().findUserFriendsByUserId(queryStr: queryStr, token: self.loggedInUser.token, complete: { (returnedDict) in
-            if returnedDict.value(forKey: "success") as? Bool == false {
-                self.showAlert(title: "Error", message: (returnedDict["message"] as? String)!)
-            }else{
-                
-                self.inviteFriendsDto.allEventMembers = EventMember().loadUserContacts(eventMemberArray: returnedDict["data"] as! NSArray);
-                self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
-                
-                for userContact in self.inviteFriendsDto.allEventMembers {
-                    self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
+        self.inviteFriendsDto.allEventMembers = CenesUserContactModel().fetchAllUserContacts(user: loggedInUser);
+        self.processFriendsList();
+        //self.friendTableView.reloadData();
+
+        if (Connectivity.isConnectedToInternet == true) {
+            let queryStr = "userId=\(String(self.loggedInUser.userId))"
+            UserService().findUserFriendsByUserId(queryStr: queryStr, token: self.loggedInUser.token, complete: { (returnedDict) in
+                if returnedDict.value(forKey: "success") as? Bool == false {
+                    self.showAlert(title: "Error", message: (returnedDict["message"] as? String)!)
+                }else{
+                    
+                    CenesUserContactModel().deleteAllCenesUserContactMO();
+                    self.inviteFriendsDto.allEventMembers = CenesUserContactModel().loadUserContactsMO(eventMemberArray: returnedDict["data"] as! NSArray);
+                        self.processFriendsList();
+                    self.friendTableView.reloadData();
+
                 }
-                
-                //Setting list to All Contacts, whether they are cenes or not.
-                var friendListDtos = self.inviteFriendsDto.allContacts;
-                friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.allEventMembers);
-                self.inviteFriendsDto.allContacts = friendListDtos;
-                
-                //Setting list to cenes contacts, that is, those are cenes members.a
-                self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.allEventMembers);
-                
-                //Let check, if user has cenes contacts then we will show cenes contacts first,
-                //Otherwise all contacts.
-                if (self.inviteFriendsDto.cenesContacts.count != 0) {
-                    self.inviteFriendsDto.isAllContactsView = false;
-                }
-            }
-            self.friendTableView.reloadData();
-        });
+                self.friendTableView.reloadData();
+            });
+        }
+        
     }
     
+    func processFriendsList() {
+        
+        self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
+        
+        for userContact in self.inviteFriendsDto.allEventMembers {
+            if (userContact.userContactId != nil && userContact.userContactId != 0) {
+                self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
+            }
+        }
+        
+        //Setting list to All Contacts, whether they are cenes or not.
+        var friendListDtos = self.inviteFriendsDto.allContacts;
+        friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.allEventMembers);
+        
+        self.inviteFriendsDto.allContacts = friendListDtos;
+        
+        //Setting list to cenes contacts, that is, those are cenes members.a
+        self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.allEventMembers);
+        
+        //self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContactsMO(friendList: self.inviteFriendsDto.allEventMembers);
+
+        
+        //Let check, if user has cenes contacts then we will show cenes contacts first,
+        //Otherwise all contacts.
+        if (self.inviteFriendsDto.cenesContacts.count != 0) {
+            self.inviteFriendsDto.isAllContactsView = false;
+        }
+    }
     func getfilterArray(str:String) {
         self.inviteFriendsDto.filteredEventMembers = [];
         
         if (str == "") {
             self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
         } else {
-            //let predicate : NSPredicate = NSPredicate(format: "name BEGINSWITH [cd] %@" ,str)
-            self.inviteFriendsDto.filteredEventMembers = EventMember().filtered(eventMembers: self.inviteFriendsDto.allEventMembers, predicate: str);
+            self.inviteFriendsDto.filteredEventMembers = UserContact().filtered(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
+            
+            //self.inviteFriendsDto.filteredEventMembers = EventMember().filteredEventMemberMO(eventMembers: self.inviteFriendsDto.allEventMembers, predicate: str);
         }
         
-        self.inviteFriendsDto.userContactIdMapList = [Int: EventMember]();
+        self.inviteFriendsDto.userContactIdMapList = [Int: UserContact]();
         for userContact in self.inviteFriendsDto.filteredEventMembers {
             self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
         }
         
-        var friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
+        let friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
         self.inviteFriendsDto.allContacts = friendListDtos;
         self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.filteredEventMembers);
         
@@ -201,7 +227,21 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         
         var userContacts: [EventMember] = [];
         for selectedFriend in self.inviteFriendsDto.selectedFriendCollectionViewList {
-            userContacts.append(selectedFriend);
+            
+            let eventMember = EventMember();
+            if let userContactId = selectedFriend.userContactId {
+                eventMember.userContactId = Int32(userContactId);
+            }
+            if let friendId = selectedFriend.friendId {
+                eventMember.userId = Int32(friendId);
+            }
+            if let user = selectedFriend.user {
+                eventMember.user = user;
+            }
+            if let name = selectedFriend.name {
+                eventMember.name = name;
+            }
+            userContacts.append(eventMember);
         }
         
         //if self.collectionFriendsProtocol != nil {
@@ -211,18 +251,55 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         if (isFirstTime == true) {
             let viewController: CreateGatheringV2ViewController = storyboard?.instantiateViewController(withIdentifier: "CreateGatheringV2ViewController") as! CreateGatheringV2ViewController;
             
-            var eventMembers = [EventMember]();
-            for eventMem in self.inviteFriendsDto.selectedFriendCollectionViewList {
-                eventMembers.append(eventMem);
+            //var eventMembers = [EventMemberMO]();
+            for userContact in self.inviteFriendsDto.selectedFriendCollectionViewList {
+                //eventMembers.append(eventMem);
+                
+                //print(userContact.name);
+                let eventMember = EventMember();
+                if let userContactId = userContact.userContactId {
+                    eventMember.userContactId = Int32(userContactId);
+                }
+                if let friendId = userContact.friendId {
+                    eventMember.userId = Int32(friendId);
+                }
+                if let user = userContact.user {
+                    eventMember.user = user;
+                }
+                if let name = userContact.name {
+                    eventMember.name = name;
+                }
+                if let cenesMember = userContact.cenesMember {
+                    eventMember.cenesMember = cenesMember;
+                }
+
+                if (viewController.event != nil) {
+                    viewController.event.eventMembers.append(eventMember)
+                } else {
+                    viewController.event = Event();
+                    if (viewController.event.eventMembers == nil) {
+                        viewController.event.eventMembers = [EventMember]();
+                    }
+                    viewController.event.eventMembers.append(eventMember);
+                }
             }
-            viewController.event.eventMembers = eventMembers;
             viewController.inviteFriendsDto = self.inviteFriendsDto;
             //self.navigationController?.popViewController(animated: true)
             self.navigationController?.pushViewController(viewController, animated: true);
         } else {
             var eventMembers = [EventMember]();
-            for eventMem in self.inviteFriendsDto.selectedFriendCollectionViewList {
-                eventMembers.append(eventMem);
+            for userContact in self.inviteFriendsDto.selectedFriendCollectionViewList {
+                
+                //print(userContact.name);
+                
+                let eventMember = EventMember();
+                eventMember.userContactId = Int32(userContact.userContactId);
+                eventMember.userId = Int32(userContact.friendId);
+                eventMember.user = userContact.user;
+                eventMember.name = userContact.name;
+                eventMember.cenesMember = userContact.cenesMember;
+
+                eventMembers.append(eventMember);
             }
             createGatheringProtocolDelegate.friendsDonePressed(eventMembers: eventMembers);
             

@@ -177,7 +177,7 @@ extension CreateGatheringViewController :UITableViewDataSource,UITableViewDelega
         case 1:
             return 60
         case 2:
-            if self.event.eventMembers != nil && self.event.eventMembers.count > 0 {
+            if self.event.eventMembers != nil && self.event.eventMembers!.count > 0 {
                 return 146
             }else{
                 return 64

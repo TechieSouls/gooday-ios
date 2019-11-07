@@ -12,5 +12,6 @@ class NotificationDto {
     
     var header: String!;
     var notifications: [NotificationData]!
-    
+    var notificationModels: [NotificationMO]!
+
 }

@@ -288,8 +288,7 @@ func showPredictions() {
     
     var friendIds = "";
     for eventMem in createGatheringDelegate.event.eventMembers {
-        
-        if (eventMem.userId != nil && eventMem.userId != createGatheringDelegate.loggedInUser.userId) {
+        if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.userId != createGatheringDelegate.loggedInUser.userId) {
             friendIds = friendIds + "\(String(eventMem.userId)),";
         }
     }

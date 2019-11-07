@@ -9,12 +9,13 @@
 import Foundation
 
 class InviteFriendsDto {
-    var userContactIdMapList: [Int: EventMember] = [:];
-    var cenesContacts = [EventMember]();
-    var allEventMembers: [EventMember] = [EventMember]();
+    var userContactIdMapList: [Int: UserContact] = [Int: UserContact]();
+    var eventMemberMapList: [Int: EventMember] = [Int: EventMember]();
+    var cenesContacts = [FriendListDto]();
+    var allEventMembers: [UserContact] = [UserContact]();
     var allContacts = [FriendListDto]();
-    var filteredEventMembers = [EventMember]();
-    var selectedFriendCollectionViewList: [EventMember] = [EventMember]()
+    var filteredEventMembers = [UserContact]();
+    var selectedFriendCollectionViewList: [UserContact] = [UserContact]()
     var isAllContactsView: Bool = true;
     var checkboxStateHolder: [Int: Bool] = [:];
     var friendCollectionViewCell: CGFloat = InviteFriendsCellHeight.friendsCollectionViewheight;

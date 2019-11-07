@@ -52,15 +52,15 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
         
         if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
             //let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
-            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! EventMember;
+            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! UserContact;
             print("Array : \(userContact)")
             
             if (userContact.user != nil || userContact.cenesMember == "yes") {
                 
                 cell.nonCenesUiViewLabel.isHidden = true;
                 cell.profilePic.isHidden = false;
-                if (userContact.user != nil && userContact.user.photo != nil) {
-                    cell.profilePic.sd_setImage(with: URL(string: userContact.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+                if (userContact.user != nil && userContact.user!.photo != nil) {
+                    cell.profilePic.sd_setImage(with: URL(string: userContact.user!.photo!), placeholderImage: UIImage(named: "profile_pic_no_image"))
                 } else{
                     cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
                 }
@@ -69,7 +69,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.profilePic.isHidden = true;
 
                 var nonCenesUserName: String = "";
-                let nameSplitArr = userContact.name.split(separator: " ");
+                let nameSplitArr = userContact.name!.split(separator: " ");
                 nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
                 if (nameSplitArr.count > 1) {
                     nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
@@ -77,12 +77,12 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.nonCenesUiViewLabel.text = nonCenesUserName;
             }
             
-            if (userContact.user != nil && userContact.user.name != nil) {
+            if (userContact.user != nil && userContact.user!.name != nil) {
                 
-                cell.name.text = String(userContact.user.name);
+                cell.name.text = String(userContact.user!.name!);
 
             } else if (userContact.name != nil && userContact.name != "") {
-                let firstName = userContact.name.split(separator: " ")[0];
+                let firstName = userContact.name!.split(separator: " ")[0];
                 cell.name.text = String(firstName);
 
             } else {
@@ -90,7 +90,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.name.text = String(firstName);
             }
             
-            if (userContact.user != nil && (userContact.user.userId == self.friendsViewControllerDelegate.loggedInUser.userId)) {
+            if (userContact.user != nil && (userContact.user?.userId == self.friendsViewControllerDelegate.loggedInUser.userId)) {
                 cell.removeFriendIcon.isHidden = true;
             } else {
                 cell.removeFriendIcon.isHidden = false;

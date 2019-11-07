@@ -13,7 +13,7 @@ class CenesUser: NSObject {
      var isNew : Bool!
      var name : String!
      var photoUrl : String!
-     var userId : String!
+     var userId : Int!
      var userName : String!
      var token : String!
      var profileImage : UIImage!

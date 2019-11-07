@@ -42,20 +42,23 @@ class User {
     func loadUserDataFromUserDefaults(userDataDict: UserDefaults) -> User {
         
         let user = User();
-        user.userId = userDataDict.value(forKey: "userId") as? Int32;
-        user.name = userDataDict.value(forKey: "name") as? String;
-        user.email = userDataDict.value(forKey: "email") as? String;
-        user.photo = userDataDict.value(forKey: "photo") as? String;
-        user.password = userDataDict.value(forKey: "password") as? String;
-        user.gender = userDataDict.value(forKey: "gender") as? String;
-        user.phone = userDataDict.value(forKey: "phone") as? String;
-        user.country = userDataDict.value(forKey: "country") as? String;
-        user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
-        user.token = userDataDict.value(forKey: "token") as? String;
-        user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
         
-        //user.token = "1565940663935eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcmVlZC5jaG9uZzE1NjU4NTQyNjM5MzUifQ.KYX3H1ObMA_W8mZuYfHx21g7AcXSpAK53DXwOsPOsR3b4E_1zVL2l794HAGicG33_SJk5x5tquQ3Dz0kFgLmUQ"
-        //user.userId = 74;
+        if (userDataDict != nil && userDataDict.value(forKey: "userId") != nil) {
+            user.userId = userDataDict.value(forKey: "userId") as? Int32;
+            user.name = userDataDict.value(forKey: "name") as? String;
+            user.email = userDataDict.value(forKey: "email") as? String;
+            user.photo = userDataDict.value(forKey: "photo") as? String;
+            user.password = userDataDict.value(forKey: "password") as? String;
+            user.gender = userDataDict.value(forKey: "gender") as? String;
+            user.phone = userDataDict.value(forKey: "phone") as? String;
+            user.country = userDataDict.value(forKey: "country") as? String;
+            user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
+            user.token = userDataDict.value(forKey: "token") as? String;
+            user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
+        }
+        
+        //user.token = "1572598392173eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcmVlZDEzMzcxNTcyNTExOTkyMTczIn0.UXV_9a5S3lisJYv76k4rFLxY6awm2zWE98Xkjg0OL4CYN3wgChLUlxTwY_J0_6FQ2R8t4V4L80H9J82xXXn4tQ"
+        //user.userId = 431;
         //user.phone = "";
 
         return user;

@@ -21,6 +21,7 @@ class NotificationData: NSObject {
     var action: String!
     var notificationTypeId : Int32!
     var notificationId : Int32!
+    var senderId : Int32!
     var createdAt : Int64!
     var user: User!
     var event: Event!
@@ -39,6 +40,7 @@ class NotificationData: NSObject {
         notification.readStatus = notificationDict.value(forKey: "readStatus") as? String
         notification.createdAt = notificationDict.value(forKey: "createdAt") as? Int64
         notification.action = notificationDict.value(forKey: "action") as? String
+        notification.senderId = notificationDict.value(forKey: "senderId") as? Int32
 
         if (notificationDict.value(forKey: "user") != nil) {
             let user = User().loadUserData(userDataDict: (notificationDict.value(forKey: "user") as? NSDictionary)!);

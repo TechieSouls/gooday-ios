@@ -12,6 +12,7 @@ import MobileCoreServices
 import VisualEffectView
 import NVActivityIndicatorView
 import Mantis
+import CoreData
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -21,6 +22,7 @@ protocol GatheringInfoCellProtocol {
     func imageSelected()
     func uploadImageAndGetUrl(imageToUpload: UIImage
     );
+    func uploadImageLabelOnly();
 }
 class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerProtocal {
 
@@ -52,7 +54,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
 
     var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
     
-    var event = Event();
+    var event: Event!;
     
     var eventHost: EventMember!;
     
@@ -63,6 +65,11 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     var loggedInUser: User!;
     
     var fsCalendarElements: FSCalendarElements!
+    
+    var imageToUpload: UIImage!;
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var context: NSManagedObjectContext? = nil;
+
         
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.ballRotateChase, color: UIColor.white, padding: 0.0);
 
@@ -70,12 +77,12 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-       
         self.tabBarController?.tabBar.isHidden = true;
         timePickerView.backgroundColor = themeColor;
         timePicker.backgroundColor = UIColor.white;
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        
+        context = self.appDelegate.persistentContainer.viewContext
+
         createGathTableView.register(UINib(nibName: "DatePanelTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "DatePanelTableViewCell")
 
         createGathTableView.register(UINib(nibName: "GatheringInfoTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringInfoTableViewCell")
@@ -86,11 +93,13 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         createGathTableView.register(UINib(nibName: "SelectedFriendsCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "SelectedFriendsCollectionTableViewCell")
         
-        if (event.eventId == nil) {
+        if (event.eventId == nil || event.eventId == 0) {
             event.endTime = 0;
+            event.createdById = self.loggedInUser.userId;
         } else {
             var eventMembers: [EventMember] = [EventMember]();
-            for eventMem in event.eventMembers {
+            for eventMem in event.eventMembers! {
+                
                 if (eventMem.userId != self.loggedInUser.userId) {
                     eventMembers.append(eventMem);
                 } else {
@@ -98,7 +107,15 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
                 }
             }
             
-            inviteFriendsDto.selectedFriendCollectionViewList = eventMembers;
+            var cenesUserContacts = [UserContact]();
+            for eventMem in event.eventMembers! {
+                if (eventMem.userContactId != nil) {
+                    let cenesUserContact = CenesUserContactModel().fetchUserContactsByUserContactId(userContactId: eventMem.userContactId);
+                    cenesUserContacts.append(cenesUserContact);
+                }
+                
+            }
+            inviteFriendsDto.selectedFriendCollectionViewList = cenesUserContacts;
             showAllFields();
         }
         self.setupNavigationBar();
@@ -132,7 +149,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         ];
         textfield.defaultTextAttributes = attributes // call in viewDidLoad
 
-        if (event.eventId != nil) {
+        if (event.eventId != nil && event.eventId != 0) {
             let attributes = [
                 NSAttributedStringKey.foregroundColor: UIColor.black,
                 NSAttributedStringKey.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
@@ -170,7 +187,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         
         event.title = updatedTextString as! String;
         
-        if (event.title.count != 0) {
+        if (event.title!.count != 0) {
             //Code to show hide Event Preview Button.
             createGathDto.trackGatheringDataFilled[CreateGatheringFields.titleField] = true;
             //showHidePreviewGatheringButton();
@@ -294,7 +311,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     }
     
     func friendsDonePressed(eventMembers: [EventMember]) {
-        self.event.eventMembers = eventMembers;
+        self.event.eventMembers = [EventMember]();
+        for eventMem in eventMembers {
+            self.event.eventMembers.append(eventMem);
+        }
         self.createGathTableView.reloadData();
         //If Predictive was on then, we would have to refesh the predictive calendar
         if (self.predictiveCalendarViewTableViewCellDelegate != nil && self.event.isPredictiveOn == true) {
@@ -376,7 +396,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             
             isValid = false;
             self.showAlert(title: "Alert", message: "Please select event date");
-        } else if (event.eventMembers.count > 1) {
+        } else if (event.eventMembers!.count > 1) {
             
             if (self.createGathDto.trackGatheringDataFilled[CreateGatheringFields.locationField] == false) {
                 
@@ -396,9 +416,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         }
         
         if (isValid == true) {
-            if (self.event.eventId != nil) {
+            if (self.event.eventId != nil && self.event.eventId != 0) {
                 var hostExists = false;
-                for eve in self.event.eventMembers {
+                for eve in self.event.eventMembers! {
                     if (eve.eventMemberId == eventHost.eventMemberId) {
                         hostExists = true;
                     }
@@ -408,10 +428,13 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
                 }
             }
             
+            if (event.createdById == nil || event.createdById == 0) {
+                event.createdById = self.loggedInUser.userId;
+            }
             
             let viewController: GatheringInvitationViewController = storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
             viewController.event = self.event;
-            if (viewController.event.eventId != nil) {
+            if (viewController.event != nil && viewController.event.eventId != 0) {
                 viewController.event.requestType = EventRequestType.EditEvent;
             }
             self.navigationController?.pushViewController(viewController, animated: true);
@@ -453,10 +476,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func didCropImage(originalImage: UIImage?, croppedImage: UIImage?) {
         gatheringInfoCellDelegate.imageSelected();
         if (imageSelectedOption == "Gallery") {
-            event.imageToUpload = croppedImage!.fixedOrientation();
+            self.imageToUpload = croppedImage!.fixedOrientation();
 
         } else if (imageSelectedOption == "Camera") {
-            event.imageToUpload = croppedImage!.fixedOrientation().imageRotatedByDegrees(degrees: 90);
+            self.imageToUpload = croppedImage!.fixedOrientation().imageRotatedByDegrees(degrees: 90);
         }
          //let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
         
@@ -470,8 +493,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     func imageAfterCrop(cropperdImage: UIImage) {
         gatheringInfoCellDelegate.imageSelected();
-        event.imageToUpload = cropperdImage.fixedOrientation().imageRotatedByDegrees(degrees: 90);
-        gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: event.imageToUpload);
+        self.imageToUpload = cropperdImage.fixedOrientation().imageRotatedByDegrees(degrees: 90);
+        gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
     }
     
     func didGetCroppedImage(image: UIImage) {
@@ -479,12 +502,17 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         if (self.gatheringInfoCellDelegate != nil) {
             self.gatheringInfoCellDelegate.imageSelected();
             //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
-            event.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue))
-            gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: event.imageToUpload);
-
+            self.imageToUpload = image.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
+            
+            if (Connectivity.isConnectedToInternet) {
+                gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
+            } else {
+                
+                self.event.eventPictureBinary = UIImagePNGRepresentation(image)!;
+                gatheringInfoCellDelegate.uploadImageLabelOnly();
+            }
         } else {
             self.showAlert(title: "Error", message: "Cannot upload from screenshot")
         }
-        
     }
 }

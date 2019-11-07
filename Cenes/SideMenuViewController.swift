@@ -12,8 +12,6 @@ import FBSDKLoginKit
 import NVActivityIndicatorView
 import SideMenu
 
-
-
 class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
     @IBOutlet weak var notificationCount_label: UILabel!
     

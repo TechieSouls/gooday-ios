@@ -23,6 +23,7 @@ pod 'SwipeCellKit'
 pod 'Mantis', '~> 0.27'
 pod 'Fabric'
 pod 'Crashlytics'
+pod 'ReachabilitySwift'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

@@ -14,9 +14,11 @@ class UserContact {
     var userContactId: Int!;
     var photo: String!
     var userId: Int!;
+    var friendId: Int!;
     var cenesMember: String!;
     var status: String!;
     var phone: String!;
+    var user: User!;
     
     func loadUserContact(userContactDic: NSDictionary) -> UserContact {
         let userContact = UserContact();

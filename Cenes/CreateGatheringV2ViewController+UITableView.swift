@@ -49,7 +49,7 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                     timePickerDoneDelegate = cell;
                     datePanelTableViewCellDelegate = cell;
                 
-                    if (event.eventId != nil) {
+                    if (event.eventId != nil && event.eventId != 0) {
                         cell.startTimeLabel.isHidden = false;
                         cell.startTimeLabel.text = Date(milliseconds: Int(event.startTime)).hmma();
                         
@@ -94,7 +94,7 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                     gatheringInfoCellDelegate = cell
                     gatheringInfoTableViewCellDelegate = cell;
                     
-                    if (event.eventId != nil) {
+                    if (event.eventId != nil && event.eventId != 0) {
                         
                         cell.locationLabel.isHidden = false;
                         cell.locationLabel.text = event.location;

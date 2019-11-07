@@ -113,7 +113,7 @@ class InvitationCardTableViewCell: UITableViewCell {
                     NSLog("Can't use com.google.maps://");
                     if (UIApplication.shared.canOpenURL(NSURL(string:"https://maps.google.com")! as URL))  {
                         
-                        let url: String = String("https://maps.google.com?daddr=\(String(self.gatheringInvitaionViewControllerDelegate.event.location).replacingOccurrences(of: " ", with: "+"))&center=\(String(self.gatheringInvitaionViewControllerDelegate.event.latitude)),\(String(self.gatheringInvitaionViewControllerDelegate.event.longitude))&zoom=15");
+                        let url: String = String("https://maps.google.com?daddr=\(String(self.gatheringInvitaionViewControllerDelegate.event.location!).replacingOccurrences(of: " ", with: "+"))&center=\(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!)),\(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!))&zoom=15");
                         
                         print(url)
                         let finalURL: URL = NSURL(string: url)! as URL;
@@ -130,7 +130,7 @@ class InvitationCardTableViewCell: UITableViewCell {
             
             var location = "No Location Selected";
             if (gatheringInvitaionViewControllerDelegate.event.location != nil) {
-                location = gatheringInvitaionViewControllerDelegate.event.location;
+                location = gatheringInvitaionViewControllerDelegate.event.location!;
             }
             let alert = UIAlertController(title: "Location", message: "\(String(location))", preferredStyle: .alert);
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(resp) in
@@ -162,7 +162,7 @@ class InvitationCardTableViewCell: UITableViewCell {
             if (self.descriptionUILabelHolder.isHidden) {
                 
                 self.descriptionUILabelHolder.isHidden = false;
-                let height = self.heightForView(text:gatheringInvitaionViewControllerDelegate.event.description, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
+                let height = self.heightForView(text:gatheringInvitaionViewControllerDelegate.event.description!, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
                 
                 
                 //160 is the destance from bottom
@@ -196,14 +196,14 @@ class InvitationCardTableViewCell: UITableViewCell {
         self.processAlreadyCheckedBubble(selectedBubble: "share");
         gatheringInvitaionViewControllerDelegate.trackCheckdeBubble = "share";
         
-        if (gatheringInvitaionViewControllerDelegate.event.eventId == nil) {
+        if (gatheringInvitaionViewControllerDelegate.event.eventId == nil || gatheringInvitaionViewControllerDelegate.event.eventId == 0) {
             let alert = UIAlertController(title: "Alert!", message: "Event cannot be shared this time.", preferredStyle: .alert);
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil));
             gatheringInvitaionViewControllerDelegate.present(alert, animated: true)
         } else {
             
-            var text: String = "\(gatheringInvitaionViewControllerDelegate.eventOwner.user.name!) invites you to \(gatheringInvitaionViewControllerDelegate.event.title!). RSVP through the Cenes app. Link below: \n";
-            text = text + String("\(shareEventUrl)\(String(gatheringInvitaionViewControllerDelegate.event.key))");
+            var text: String = "\(gatheringInvitaionViewControllerDelegate.eventOwner.user!.name!) invites you to \(gatheringInvitaionViewControllerDelegate.event.title!). RSVP through the Cenes app. Link below: \n";
+            text = text + String("\(shareEventUrl)\(String(gatheringInvitaionViewControllerDelegate.event.key!))");
             
             // set up activity view controller
             let textToShare = [ text ]
@@ -267,9 +267,10 @@ class InvitationCardTableViewCell: UITableViewCell {
     
     func populateCardDetails () {
         
-        for eventMember in gatheringInvitaionViewControllerDelegate.event.eventMembers {
+        for eventMember in gatheringInvitaionViewControllerDelegate.event.eventMembers! {
+            
             //We have to check user id, because there may be users which are non cenes users
-            if (eventMember.userId != nil && gatheringInvitaionViewControllerDelegate.event.createdById == eventMember.userId) {
+            if (eventMember.userId != 0 && gatheringInvitaionViewControllerDelegate.event.createdById == eventMember.userId) {
                 gatheringInvitaionViewControllerDelegate.eventOwner = eventMember;
                 break;
             }
@@ -280,9 +281,9 @@ class InvitationCardTableViewCell: UITableViewCell {
         }
         
         if (gatheringInvitaionViewControllerDelegate.eventOwner != nil) {
-            if (gatheringInvitaionViewControllerDelegate.eventOwner.user != nil && gatheringInvitaionViewControllerDelegate.eventOwner.user.photo != nil) {
-                chatProfilePic.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.eventOwner.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
-                profilePic.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.eventOwner.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+            if (gatheringInvitaionViewControllerDelegate.eventOwner.user != nil && gatheringInvitaionViewControllerDelegate.eventOwner.user!.photo != nil) {
+                chatProfilePic.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.eventOwner.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+                profilePic.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.eventOwner.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
             }
             
             if (gatheringInvitaionViewControllerDelegate.eventOwner.userId == gatheringInvitaionViewControllerDelegate.loggedInUser.userId) {
@@ -291,19 +292,22 @@ class InvitationCardTableViewCell: UITableViewCell {
             
         }
         
-        if (gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
+        if (gatheringInvitaionViewControllerDelegate.event.eventId != nil && gatheringInvitaionViewControllerDelegate.event.eventId != 0) {
             if (gatheringInvitaionViewControllerDelegate.event.eventPicture != nil) {
-                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail));
+                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail!));
 
-                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.eventPicture), placeholderImage: UIImage(url: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail)));
-            } else if (gatheringInvitaionViewControllerDelegate.event.imageToUpload != nil) {
+                eventPicture.sd_setImage(with: URL(string: gatheringInvitaionViewControllerDelegate.event.eventPicture!), placeholderImage: UIImage(url: URL(string: gatheringInvitaionViewControllerDelegate.event.thumbnail!)));
+                
+            }/* else if (gatheringInvitaionViewControllerDelegate.event.imageToUpload != nil) {
+                
                 eventPicture.image = gatheringInvitaionViewControllerDelegate.event.imageToUpload;
-            }
-        } else {
+            }*/
+        } /*else {
             if (gatheringInvitaionViewControllerDelegate.event.imageToUpload != nil) {
+                
                 eventPicture.image = gatheringInvitaionViewControllerDelegate.event.imageToUpload;
             }
-        }
+        }*/
         
         evntTitle.text = gatheringInvitaionViewControllerDelegate.event.title;
         

@@ -149,18 +149,18 @@ extension GatheringCardTableViewCell: UICollectionViewDelegate, UICollectionView
             
             if eventMember.user != nil {
                 
-                if (eventMember.user.photo != nil) {
-                    cell.profilePic.sd_setImage(with: URL(string: (eventMember.user.photo)!), placeholderImage: UIImage(named: "profile_pic_no_image"));
+                if (eventMember.user!.photo != nil) {
+                    cell.profilePic.sd_setImage(with: URL(string: (eventMember.user!.photo)!), placeholderImage: UIImage(named: "profile_pic_no_image"));
                 } else {
                     
                     cell.profilePic.image = UIImage(named: "profile_pic_no_image");
                 }
                 
                 if (newHomeViewControllerDelegate.loggedInUser.userId != eventMember.userId) {
-                    if (eventMember.user != nil && eventMember.user.name != nil) {
-                        cell.name.text = String(eventMember.user.name.split(separator: " ")[0]);
+                    if (eventMember.user != nil && eventMember.user!.name != nil) {
+                        cell.name.text = String(eventMember.user!.name!.split(separator: " ")[0]);
                     } else {
-                        cell.name.text = String(eventMember.name.split(separator: " ")[0]);
+                        cell.name.text = String(eventMember.name!.split(separator: " ")[0]);
                     }
                 } else {
                     cell.name.text = "Me";

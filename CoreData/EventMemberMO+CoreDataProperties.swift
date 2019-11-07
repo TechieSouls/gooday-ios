@@ -1,8 +1,8 @@
 //
 //  EventMemberMO+CoreDataProperties.swift
-//  Deploy
+//  Cenes
 //
-//  Created by Cenes_Dev on 29/08/2019.
+//  Created by Cenes_Dev on 06/11/2019.
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 //
@@ -27,5 +27,7 @@ extension EventMemberMO {
     @NSManaged public var status: String?
     @NSManaged public var userContactId: Int32
     @NSManaged public var userId: Int32
+    @NSManaged public var userContact: CenesUserContactMO?
+    @NSManaged public var user: CenesUserMO?
 
 }

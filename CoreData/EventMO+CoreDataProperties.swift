@@ -1,8 +1,8 @@
 //
 //  EventMO+CoreDataProperties.swift
-//  Deploy
+//  Cenes
 //
-//  Created by Cenes_Dev on 29/08/2019.
+//  Created by Cenes_Dev on 06/11/2019.
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 //
@@ -33,6 +33,17 @@ extension EventMO {
     @NSManaged public var startTime: Int64
     @NSManaged public var thumbnail: String?
     @NSManaged public var title: String?
+    @NSManaged public var eventClickedFrom: String?
+    @NSManaged public var eventPictureBinary: Data?
+    @NSManaged public var fullDayStartTime: String?
+    @NSManaged public var isEditMode: Bool
+    @NSManaged public var placeId: String?
+    @NSManaged public var predictiveData: String?
+    @NSManaged public var requestType: String?
+    @NSManaged public var source: String?
+    @NSManaged public var sourceEventId: String?
+    @NSManaged public var synced: Bool
+    @NSManaged public var isPredictiveOn: Bool
     @NSManaged public var eventMembers: NSSet?
 
 }

@@ -18,18 +18,34 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
         if (self.notificationDtos.count != 0) {
             let notification = self.notificationDtos[indexPath.section].notifications[indexPath.row]
             
-            if let user = notification.user {
-                if (user.photo != nil) {
-                    cell.profileImage.sd_setImage(with: URL(string: user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"));
+            //print(notification.event?.title);
+            if (notification.type == "Welcome") {
+                
+                cell.profileImage.image = UIImage.init(named: "notification_alert_icon");
+                
+            } else {
+                
+                if let user = notification.user {
+                    //print(user.photo);
+                    if (user.photo != nil) {
+                        cell.profileImage.sd_setImage(with: URL(string: user.photo!), placeholderImage: UIImage(named: "profile_pic_no_image"));
+                    } else {
+                        cell.profileImage.image = #imageLiteral(resourceName: "profile_pic_no_image")
+                    }
                 } else {
                     cell.profileImage.image = #imageLiteral(resourceName: "profile_pic_no_image")
                 }
-            } else {
-                cell.profileImage.image = #imageLiteral(resourceName: "profile_pic_no_image")
             }
             
+            
+            //print("Message : ", notification.message);
             cell.message.text = notification.message;
-            cell.title.text = "(\(String(notification.title)))";
+            
+            if (notification.type != "Welcome") {
+                cell.title.text = "(\(String(notification.title!)))";
+            } else {
+                cell.title.text = "";
+            }
             if (notification.readStatus == "Read") {
                 cell.title.textColor = UIColor.darkGray;
                 cell.message.textColor = UIColor.darkGray;
@@ -40,10 +56,10 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 
                 if (notification.action == "AcceptDecline") {
                     let searchString = "accepted|declined"
-                    let attributed = NSMutableAttributedString(string: notification.message)
+                    let attributed = NSMutableAttributedString(string: notification.message!)
                     do {
                         let regex = try! NSRegularExpression(pattern: searchString,options: .caseInsensitive)
-                        for match in regex.matches(in: notification.message, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message.characters.count)) as [NSTextCheckingResult] {
+                        for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.characters.count)) as [NSTextCheckingResult] {
                             attributed.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: match.range)
                         }
                         cell.message.attributedText = attributed
@@ -71,7 +87,6 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                     } else {
                         cell.happen.text = "\(minutes)m";
                     }
-                    
                 } else {
                     cell.happen.text = "\(hours)h";
                 }
@@ -80,12 +95,12 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 if (days < 31) {
                     cell.happen.text = "\(days)d";
                 } else {
-                    let months = days/30;
-                    cell.happen.text = "\(months)mo";
+                    let months = days / 30;
+                    if (months != 0) {
+                        cell.happen.text = "\(months)mo";
+                    }
                 }
             }
-            
-            //tableView.beginUpdates();
         }
         
         return cell
@@ -96,15 +111,15 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print(self.notificationDtos[section].notifications.count);
         return self.notificationDtos[section].notifications.count;
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        var notification : NotificationData!
-        notification = self.notificationDtos[indexPath.section].notifications[indexPath.row]
+        let notification : NotificationData = self.notificationDtos[indexPath.section].notifications[indexPath.row]
         
-        let notificationId = notification?.notificationId as! Int32;
+        let notificationId = Int(notification.notificationId);
         
         if (notification.readStatus != "Read") {
             let queryStr = "notificationId=\(String(notificationId))";
@@ -112,21 +127,24 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 for notification in self.allNotifications {
                     if (notification.notificationId == notificationId) {
                         notification.readStatus = "Read";
+                        
+                        NotificationModel().updateNotificationReadStatus(readStatus: "Read", notificationId: Int32(notificationId));
                     }
                 }
+                
                 self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
                 self.notificationTableView.reloadData();
             });
         }
+        
+        print(notification.description);
         if (notification.event != nil) {
-            let event = notification.event;
-            event!.eventClickedFrom = "Notification";
+            //event!.eventClickedFrom = "Notification";
             /*let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newViewController = storyBoard.instantiateViewController(withIdentifier: "GatheringExpiredViewController") as! GatheringExpiredViewController
             self.navigationController?.pushViewController(newViewController, animated: true);*/
-            let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newViewController = storyboard!.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController
-            newViewController.event = event;
+            newViewController.event = notification.event;
             self.navigationController?.pushViewController(newViewController, animated: true)
         }
     }
@@ -172,9 +190,8 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             
         var notificationsDtoPerPage = [NotificationDto]();
-        notificationsDtoPerPage = NotificationManager().parseNotificationData(notifications: self.notificationPerPage, notificationDtos: notificationsDtoPerPage)
-        
-                
+        self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+
         //if (indexPath.section < notificationsDtoPerPage.count && indexPath.row == notificationsDtoPerPage[indexPath.section].notifications.count - 1) {
         
         let lastSectionIndex = tableView.numberOfSections - 1
@@ -200,11 +217,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
             }
         }
     }
-    
-    @objc func loadTable() {
-        self.notificationTableView.reloadData();
-    }
-    
+        
     @objc func connected(_ sender:MyTapGesture){
         print(sender.notificationId)
         let queryStr = "notificationId=\(String(sender.notificationId))";

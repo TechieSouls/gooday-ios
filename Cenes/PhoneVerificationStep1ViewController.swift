@@ -147,27 +147,32 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
 
     @IBAction func getAccessButtonPressed(_ sender: Any) {
         
-        
-        var postData = [String: Any]();
-        postData["countryCode"] = "\(self.countryCodeService.getPhoneCode())";
-        postData["phone"] = "\(self.phoneNumberTextField.text!)";
-        
-        setting.setValue("\(self.countryCodeService.nameCode)", forKey: "countryCode")
-
-        UserService().postVerificationCodeWithoutToken(postData: postData, complete: {(response) in
+        if (self.countryCodeService != nil) {
             
-            let success = response.value(forKey: "success") as! Bool;
-            if (success == true) {
-                
-                let viewController = self.storyboard?.instantiateViewController(withIdentifier: "PhoneVerificationStep2ViewController") as! PhoneVerificationStep2ViewController;
-                viewController.countryCode = "\(self.countryCodeService.getPhoneCode())";
-                viewController.phoneNumberStr =  "\(self.phoneNumberTextField.text!)";
-                self.navigationController?.pushViewController(viewController, animated: true);
-                
-            } else {
-                let message = response.value(forKey: "message") as! String;
-                self.showAlert(title: "Alert", message: message)
-            }
-        });
+            self.getAccessButton.isUserInteractionEnabled = false;
+            var postData = [String: Any]();
+            postData["countryCode"] = "\(self.countryCodeService.getPhoneCode())";
+            postData["phone"] = "\(self.phoneNumberTextField.text!)";
+            
+            setting.setValue("\(self.countryCodeService.nameCode)", forKey: "countryCode")
+
+            UserService().postVerificationCodeWithoutToken(postData: postData, complete: {(response) in
+                self.getAccessButton.isUserInteractionEnabled = true;
+
+                let success = response.value(forKey: "success") as! Bool;
+                if (success == true) {
+                    
+                    let viewController = self.storyboard?.instantiateViewController(withIdentifier: "PhoneVerificationStep2ViewController") as! PhoneVerificationStep2ViewController;
+                    viewController.countryCode = "\(self.countryCodeService.getPhoneCode())";
+                    viewController.phoneNumberStr =  "\(self.phoneNumberTextField.text!)";
+                    self.navigationController?.pushViewController(viewController, animated: true);
+                    
+                } else {
+                    let message = response.value(forKey: "message") as! String;
+                    self.showAlert(title: "Alert", message: message)
+                }
+            });
+        }
+        
     }
 }

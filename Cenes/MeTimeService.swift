@@ -34,7 +34,7 @@ class MeTimeService {
     
     func saveMeTime(postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void){
         let url = "\(apiUrl)\(post_metimeData)";
-        
+        print(postData)
         HttpService().postMethod(url: url, postData: postData, token: token, complete: { (response) in
             complete(response)
         });

@@ -9,13 +9,13 @@
 import UIKit
 import MessageUI
 import Messages
+import CoreData
 
 protocol NewHomeViewControllerDeglegate {
     func refershDataFromOtherScreens();
 }
 class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate {
 
-    
     @IBOutlet weak var acceptedImageView: UIImageView!
     
     @IBOutlet weak var acceptedSendInvitationLoaderView: UIView!
@@ -52,13 +52,18 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var rightToLeftGestureEnabled = true;
     var newHomeViewControllerDeglegate: NewHomeViewController!;
     var fromPushNotificaiton = false;
-    
+    var isLoggedInUserInMemberList = false;
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var context: NSManagedObjectContext? = nil;
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor(red:0.94, green:0.94, blue:0.94, alpha:1);
         self.invitationCardTableView.backgroundColor = themeColor;
-        self.invitationCardTableView.register(UINib.init(nibName: "InvitationCardTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InvitationCardTableViewCell")
+        self.invitationCardTableView.register(UINib.init(nibName: "InvitationCardTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InvitationCardTableViewCell");
+        self.invitationCardTableView.register(UINib.init(nibName: "WelcomeCardTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "WelcomeCardTableViewCell");
+        
         self.invitationCardTableView.register(UINib.init(nibName: "NextCardTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NextCardTableViewCell")
 
         self.invitationCardTableView.frame = self.view.bounds;
@@ -80,6 +85,8 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         // Do any additional setup after loading the view.
         
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        context = self.appDelegate.persistentContainer.viewContext
+
         let swipeleftGesture = UIPanGestureRecognizer.init(target: self, action: #selector(panRecognizer))
         swipeCardView.addGestureRecognizer(swipeleftGesture)
     
@@ -92,10 +99,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         if (pendingEvents.count > 0) {
             event = pendingEvents[pendingEventIndex];
         }
-        
         //populateCardDetails();
-        
-        
         /*if (isLoggedInUserAsOwner == true) {
             acceptedImageView.isHidden = true;
             rejectedImageiew.isHidden = true;
@@ -115,41 +119,49 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false;
         navigationController?.navigationBar.isHidden = true;
         tabBarController?.tabBar.isHidden = true;
-        
-        if (event.eventId != nil) {
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+
+        if (event.eventId != nil && event.eventId != 0) {
             GatheringService().eventInfoTask(eventId: Int64(event!.eventId), complete: {(response) in
                 
                 let success = response.value(forKey: "success") as! Bool;
                 if (success == true) {
                     if (response.value(forKey: "data") != nil) {
                         let data = response.value(forKey: "data") as! NSDictionary;
-                        let eventTemp = Event().loadEventData(eventDict: data);
+                        let eventTemp = EventModel().updateEventManagedObjectFromDictionary(eventDict: data);
                         
                         if (self.fromPushNotificaiton == true) {
                             self.isLoggedInUserAsOwner = false;
                             self.leftToRightGestureEnabled = true;
                             self.rightToLeftGestureEnabled = true;
                             
-                            self.event = eventTemp;
-                            
+                            if (eventTemp.eventId != nil && eventTemp.eventId != 0) {
+                                self.event = eventTemp;
+                            }
                         } else {
                             if (self.event.requestType != EventRequestType.EditEvent) {
                                 self.event.eventPicture = eventTemp.eventPicture;
                             }
-                            
-                            
-                            for eventMemFromDb in eventTemp.eventMembers {
+                            if (eventTemp.eventMembers != nil) {
                                 
-                                var editMembersIndex = 0;
-                                for eveMemFromEdit in self.event.eventMembers {
+                                for eventMemFromDb in eventTemp.eventMembers! {
                                     
-                                    if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
-                                        self.event.eventMembers[editMembersIndex] = eventMemFromDb;
-                                        break;
+                                    var editMembersIndex = 0;
+                                    for eveMemFromEdit in self.event.eventMembers! {
+                                        
+                                        if (eventMemFromDb.userContactId != nil && eventMemFromDb.userContactId != 0 && eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
+                                            
+                                            self.event.eventMembers[editMembersIndex] = eventMemFromDb;
+                                            //self.event.removeFromEventMembers(eveMemFromEditMO);
+                                            //self.event.addToEventMembers(eventMemFromDbMO);
+                                            break;
+                                            
+                                        }
+                                        editMembersIndex  = editMembersIndex + 1;
                                     }
-                                    editMembersIndex  = editMembersIndex + 1;
                                 }
                             }
+                            
                             self.event.thumbnail = eventTemp.thumbnail;
                         }
                         self.invitationCardTableView.reloadData();
@@ -165,7 +177,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 if (success == true) {
                     if (response.value(forKey: "data") != nil) {
                         let data = response.value(forKey: "data") as! NSDictionary;
-                        let eventTemp = Event().loadEventData(eventDict: data);
+                        let eventTemp = EventModel().updateEventManagedObjectFromDictionary(eventDict: data);
                         
                         if (self.fromPushNotificaiton == true) {
                             self.isLoggedInUserAsOwner = false;
@@ -179,28 +191,34 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 self.event.eventPicture = eventTemp.eventPicture;
                             }
                             
-                            
-                            for eventMemFromDb in eventTemp.eventMembers {
+                            if (eventTemp.eventMembers != nil) {
                                 
-                                var editMembersIndex = 0;
-                                for eveMemFromEdit in self.event.eventMembers {
+                                for eventMemFromDb in eventTemp.eventMembers! {
                                     
-                                    if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
-                                        self.event.eventMembers[editMembersIndex] = eventMemFromDb;
-                                        break;
+                                    //var eventMemFromDbMO = eventMemFromDb as! EventMemberMO;
+                                    var editMembersIndex = 0;
+                                    for eveMemFromEdit in self.event.eventMembers! {
+                                        
+                                        //var eveMemFromEditMO = eveMemFromEdit as! EventMemberMO;
+                                        if (eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
+                                            self.event.eventMembers[editMembersIndex] = eventMemFromDb;
+                                            //self.event.removeFromEventMembers(eveMemFromEditMO);
+                                            //self.event.addToEventMembers(eventMemFromDbMO);
+
+                                            break;
+                                        }
+                                        editMembersIndex  = editMembersIndex + 1;
                                     }
-                                    editMembersIndex  = editMembersIndex + 1;
                                 }
                             }
+                            
                             self.event.thumbnail = eventTemp.thumbnail;
                         }
                         self.invitationCardTableView.reloadData();
                     }
                 }
             });
-
         }
-        
         /*if (event != nil && event.imageToUpload != nil) {
             print("Uploading Startsss")
             self.uploadImageAndGetUrl();
@@ -309,61 +327,69 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         
                         //For other users accept gathering
                         if (self.isLoggedInUserAsOwner == false) {
-                            let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=Going";
-                            GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
-                                
-                                self.loggedInUser.token, complete: {(response) in
-                                    
-                            });
-                            self.pendingEventIndex = self.pendingEventIndex + 1;
-                            if (self.pendingEventIndex < self.pendingEvents.count) {
-                                self.event = self.pendingEvents[self.pendingEventIndex]
-                                //self.populateCardDetails();
-                                self.resetScreenToDefaultPosition();
-                                self.swipeCardView.alpha = 1
-                                
-                                self.invitationCardTableView.reloadData();
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                                    self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
-                                });
-                                
-                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                            
+                            if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
+                                self.navigationController?.popViewController(animated: true);
                             } else {
                                 
-                                /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
-                                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                                 } else {
-                                 self.navigationController?.popViewController(animated: false);
-                                 }*/
-                                //This is called when the user is from home screen
+                                //Update EventMEmber status in CoreData EventMember table
+                                EventMemberModel().updateEventMemberStatus(eventId: self.event.eventId, userId: self.loggedInUser.userId, status: "Going");
                                 
-                                //This is needed when user clciked on push notification.
-                                if (self.fromPushNotificaiton == true) {
-                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                    });
-                                } else {
-                                    if (self.newHomeViewControllerDeglegate != nil) {
-                                        self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                        self.navigationController?.popViewController(animated: true);
+                                let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=Going";
+                                GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
+                                    
+                                    self.loggedInUser.token, complete: {(response) in
                                         
+                                });
+                                self.pendingEventIndex = self.pendingEventIndex + 1;
+                                if (self.pendingEventIndex < self.pendingEvents.count) {
+                                    self.event = self.pendingEvents[self.pendingEventIndex]
+                                    //self.populateCardDetails();
+                                    self.resetScreenToDefaultPosition();
+                                    self.swipeCardView.alpha = 1
+                                    
+                                    self.invitationCardTableView.reloadData();
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                        self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+                                    });
+                                    
+                                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                } else {
+                                    
+                                    /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
+                                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                                     } else {
+                                     self.navigationController?.popViewController(animated: false);
+                                     }*/
+                                    //This is called when the user is from home screen
+                                    
+                                    //This is needed when user clciked on push notification.
+                                    if (self.fromPushNotificaiton == true) {
+                                        UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                    
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                        });
                                     } else {
-                                        if (self.tabBarController != nil) {
+                                        if (self.newHomeViewControllerDeglegate != nil) {
+                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                            self.navigationController?.popViewController(animated: true);
+                                            
+                                        } else {
+                                            if (self.tabBarController != nil) {
 
-                                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                
-                                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                homeViewController?.refershDataFromOtherScreens();
-                                                self.navigationController?.popViewController(animated: true);
-                                                
+                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                    
+                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                    homeViewController?.refershDataFromOtherScreens();
+                                                    self.navigationController?.popViewController(animated: true);
+                                                }
                                             }
-
                                         }
                                     }
                                 }
+
                             }
                         } else {
                             
@@ -378,16 +404,17 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     //And we will open sms composer to send invitation link to non
                                     //cenes memebers.
                                     var nonCenesMembers = [EventMember]();
-                                    for mem in self.event.eventMembers {
+                                    for mem in self.event.eventMembers! {
                                         if (mem.userId == nil && mem.eventMemberId == nil) {
+                                            
                                             nonCenesMembers.append(mem);
                                         }
                                     }
                                     if (nonCenesMembers.count > 0) {
                                         if MFMessageComposeViewController.canSendText() {
-                                            var shareLinkActualtext = String(shareLinkText).replacingOccurrences(of: "[Host]", with: self.eventOwner.user.name)
+                                            var shareLinkActualtext = String(shareLinkText).replacingOccurrences(of: "[Host]", with: String(self.eventOwner.user!.name!));
                                             
-                                            shareLinkActualtext = shareLinkActualtext.replacingOccurrences(of: "[Title]", with: self.event.title);
+                                            shareLinkActualtext = shareLinkActualtext.replacingOccurrences(of: "[Title]", with: self.event.title!);
                                             
                                             let composeVC = MFMessageComposeViewController()
                                             composeVC.messageComposeDelegate = self
@@ -408,20 +435,22 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     }
                                     
                                     DispatchQueue.global(qos: .background).async {
-                                        let imageToUpload = self.event.imageToUpload;
-                                        GatheringService().createGathering(uploadDict: self.event.toDictionary(event: self.event), complete: {(response) in
+                                        
+                                        let eventDict = self.event.toDictionary(event: self.event);
+                                        print(eventDict);
+                                        GatheringService().createGathering(uploadDict: eventDict, complete: {(response) in
                                             print("Saved Successfully...")
                                             let error = response.value(forKey: "Error") as! Bool;
                                             if (error == false) {
                                                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                                                 
-                                                if (imageToUpload != nil) {
+                                                /*if (imageToUpload != nil) {
                                                     let eventId = dataDict.value(forKey: "eventId") as! Int32
                                                     GatheringService().uploadEventImageV2(image: imageToUpload, eventId: eventId, loggedInUser: self.loggedInUser, complete: {(resp) in
                                                         print("Saved Uploaded...")
                                                         
                                                     });
-                                                }
+                                                }*/
                                                 
                                             }
                                         });
@@ -460,15 +489,14 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     self.navigationController?.popViewController(animated: false);
                                 }
                             } else {
-                                
                                 //Lets check.
                                 //If event has non cenes members.
                                 //Then we will create an event key from app and send it to server.
                                 //And we will open sms composer to send invitation link to non
                                 //cenes memebers.
                                 var nonCenesMembers = [EventMember]();
-                                for mem in self.event.eventMembers {
-                                    if (mem.userId == nil) {
+                                for mem in self.event.eventMembers! {
+                                    if (mem.userId == nil || mem.userId == 0) {
                                         nonCenesMembers.append(mem);
                                     }
                                 }
@@ -477,9 +505,9 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     let eventKey = String((0..<32).map{ _ in letters.randomElement()! })
                                     
                                     if MFMessageComposeViewController.canSendText() {
-                                        var shareLinkActualtext = String(shareLinkText).replacingOccurrences(of: "[Host]", with: self.eventOwner.user.name)
+                                        var shareLinkActualtext = String(shareLinkText).replacingOccurrences(of: "[Host]", with: String(self.eventOwner.user!.name!));
                                         
-                                        shareLinkActualtext = shareLinkActualtext.replacingOccurrences(of: "[Title]", with: self.event.title);
+                                        shareLinkActualtext = shareLinkActualtext.replacingOccurrences(of: "[Title]", with: self.event.title!);
                                         
                                         let composeVC = MFMessageComposeViewController()
                                         composeVC.messageComposeDelegate = self
@@ -503,21 +531,39 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 
                                 //For owner, if its a new event, create new event
                                 DispatchQueue.global(qos: .background).async {
-                                    let imageToUpload = self.event.imageToUpload;
-                                    GatheringService().createGathering(uploadDict: self.event.toDictionary(event: self.event), complete: {(response) in
-                                        print("Saved Successfully...")
+                                    
+                                    //If its the first time. Lets take out the owner from event and let the backend handle it.
+                                    var index = 0;
+                                    for eventmem in self.event.eventMembers! {
+                                        if (eventmem.userId == self.loggedInUser.userId) {
+                                            self.event.eventMembers.remove(at: index);
+                                            index = index + 1;
+                                        }
+                                    }
+                                    
+                                    if (Connectivity.isConnectedToInternet) {
                                         
-                                        /*let error = response.value(forKey: "Error") as! Bool;
-                                        if (error == false && imageToUpload != nil) {
-                                            let dataDict = response.value(forKey: "data") as! NSDictionary;
-                                            let eventId = dataDict.value(forKey: "eventId") as! Int32
-                                            GatheringService().uploadEventImageV2(image: imageToUpload, eventId: eventId, loggedInUser: self.loggedInUser, complete: {(resp) in
-                                                print("Saved Uploaded...")
-                                                
-                                            });
-                                        }*/
-                                        
-                                    });
+                                        let eventDict = self.event.toDictionary(event: self.event);
+                                        print(eventDict);
+                                        GatheringService().createGathering(uploadDict: eventDict, complete: {(response) in
+
+                                            print("Saved Successfully...")
+                                            
+                                            /*let error = response.value(forKey: "Error") as! Bool;
+                                            if (error == false && imageToUpload != nil) {
+                                                let dataDict = response.value(forKey: "data") as! NSDictionary;
+                                                let eventId = dataDict.value(forKey: "eventId") as! Int32
+                                                GatheringService().uploadEventImageV2(image: imageToUpload, eventId: eventId, loggedInUser: self.loggedInUser, complete: {(resp) in
+                                                    print("Saved Uploaded...")
+                                                    
+                                                });
+                                            }*/
+                                            
+                                        });
+
+                                    } else {
+                                        EventModel().saveNewEventModelOffline(event: self.event, user: self.loggedInUser);
+                                    }
                                     
                                 }
                                 
@@ -557,7 +603,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 UIView.animate(withDuration: 0.3, animations: {
                     //Decline invitation
                     
-                    if (self.isLoggedInUserAsOwner == true && self.event.eventId != nil) {
+                    if (self.isLoggedInUserAsOwner == true && self.event.eventId != nil && self.event.eventId != 0) {
                         self.rejectedInvitationLoaderView.isHidden = true;
                     } else {
                         self.rejectedInvitationLoaderView.isHidden = false;
@@ -570,71 +616,77 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         // your code here
                         self.rejectedInvitationLoaderView.stopRotatingView();
 
-
                         if (self.isLoggedInUserAsOwner == false) {
-                            self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x - 200, y: self.swipeCardView.center.y);
                             
+                            self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x - 200, y: self.swipeCardView.center.y);
                             
                             self.swipeCardView.alpha = 0
                             
-                            let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=NotGoing";
-                            GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
+                            if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
+                                self.navigationController?.popViewController(animated: true);
+                            } else {
                                 
-                            });
-                            
-                            self.pendingEventIndex = self.pendingEventIndex + 1;
-                            if (self.pendingEventIndex < self.pendingEvents.count) {
-                                self.event = self.pendingEvents[self.pendingEventIndex]
-                                self.resetScreenToDefaultPosition();
-                                self.swipeCardView.alpha = 1;
-                                //self.populateCardDetails();
-                                self.invitationCardTableView.reloadData();
+                                //Update EventMEmber status in CoreData EventMember table
+                                EventMemberModel().updateEventMemberStatus(eventId: self.event.eventId, userId: self.loggedInUser.userId, status: "NotGoing");
                                 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                                    self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+                                let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=NotGoing";
+                                GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
+                                    
                                 });
                                 
-                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-
-                                
-                            } else {
-                                /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
-                                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                                 } else {
-                                 self.navigationController?.popViewController(animated: false);
-                                 }*/
-                                
-                                
-                                if (self.fromPushNotificaiton == true) {
+                                self.pendingEventIndex = self.pendingEventIndex + 1;
+                                if (self.pendingEventIndex < self.pendingEvents.count) {
+                                    self.event = self.pendingEvents[self.pendingEventIndex]
+                                    self.resetScreenToDefaultPosition();
+                                    self.swipeCardView.alpha = 1;
+                                    //self.populateCardDetails();
+                                    self.invitationCardTableView.reloadData();
                                     
-                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                        self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
                                     });
-                                } else {
-                                    //This is called when the user is from home screen
-                                    if (self.newHomeViewControllerDeglegate != nil) {
-                                        self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                        self.navigationController?.popViewController(animated: true);
-                                        
-                                    } else {
-                                        if (self.tabBarController != nil) {
-                                            
-                                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                
-                                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                homeViewController?.refershDataFromOtherScreens();
-                                                self.navigationController?.popViewController(animated: true);
-                                                
-                                            }
+                                    
+                                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
+                                    
+                                } else {
+                                    /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
+                                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                                     } else {
+                                     self.navigationController?.popViewController(animated: false);
+                                     }*/
+                                    
+                                    
+                                    if (self.fromPushNotificaiton == true) {
+                                        
+                                        UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                        });
+                                    } else {
+                                        //This is called when the user is from home screen
+                                        if (self.newHomeViewControllerDeglegate != nil) {
+                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                            self.navigationController?.popViewController(animated: true);
+                                            
+                                        } else {
+                                            if (self.tabBarController != nil) {
+                                                
+                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                    
+                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                    homeViewController?.refershDataFromOtherScreens();
+                                                    self.navigationController?.popViewController(animated: true);
+                                                    
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
                             }
-                            
                         } else {
-                            if (self.event.eventId != nil) {
+                            if (self.event.eventId != nil && self.event.eventId != 0) {
                                 
                                 if (self.event.requestType == EventRequestType.EditEvent) {
                                     //self.navigationController?.popViewController(animated: true);
@@ -710,48 +762,6 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         self.navigationController?.pushViewController(viewController, animated: true);
     }
     
-    /*@IBAction func panToImageView(_ sender: UIPanGestureRecognizer) {
-        
-        imageCard = sender.view!;
-        
-        let point = sender.translation(in: view);
-        let xFromCenter = imageCard.center.x - self.view.center.x;
-        let yFromCenter = imageCard.center.y - self.view.center.y;
-        //print("Image Card Y - height of screen ", (imageCard.frame.origin.y))
-        
-        //print("X From Center : ",xFromCenter, "y From Center : ", imageCard.center.y - self.view.center.y)
-        
-        imageCard.center = CGPoint(x: view.center.x+point.x, y: view.center.y+point.y);
-        
-        
-        //If the card is moved more that 50 y axis upwards, then we will show the up arrow
-        if (imageCard.frame.origin.y < -50) {
-            let rejectedAlpha = abs(imageCard.frame.origin.y) / 100;
-            print("Alpha : ",rejectedAlpha);
-            nextScreenArrow.alpha = rejectedAlpha;
-        } else if (yFromCenter > -30) { // 180 degree = 3.14 radian. We want 35 decree inclinition
-            if (xFromCenter < 0) {
-                imageCard.transform = CGAffineTransform(rotationAngle: xFromCenter/divisor);
-                let rejectedAlpha = abs(xFromCenter) / self.view.center.x;
-                rejectedImageiew.alpha = rejectedAlpha;
-            } else {
-                imageCard.transform = CGAffineTransform(rotationAngle:xFromCenter/divisor);
-                let acceptedAlpha = abs(xFromCenter) / self.view.center.x;
-                acceptedImageView.alpha = acceptedAlpha;
-            }
-        } else {
-            imageCard.transform = .identity;
-        }
-
-        //The inviation card will move to center when the finger is up
-        if (sender.state == UIGestureRecognizerState.ended) {
-            
-            self.resetScreenToDefaultPosition();
-            
-        }
-       
-    }*/
-    
     /*
     // MARK: - Navigation
 
@@ -777,6 +787,22 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             });
             swipeCardView.center = self.view.center;
         } else {
+            
+            if (self.isLoggedInUserInMemberList == false) {
+                
+                let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=pending]";
+                GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
+                    
+                    self.loggedInUser.token, complete: {(response) in
+                        
+                });
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                    self.navigationController?.popViewController(animated: false);
+
+                })
+            }
             
             if (fromPushNotificaiton == true) {
                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
@@ -814,7 +840,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
     }
     
-    func uploadImageAndGetUrl() {
+    /*func uploadImageAndGetUrl() {
         
         GatheringService().uploadEventImageV3(image: event.imageToUpload!, loggedInUser: self.loggedInUser, complete: {(response) in
             
@@ -841,7 +867,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             }
             
         });
-    }
+    }*/
 }
 
 extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDataSource {
@@ -864,19 +890,53 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if (indexPath.row == 0) {
+            
+            if (event.scheduleAs == EventScheduleAs.NOTIFICATION) {
+                    
+                let cell : WelcomeCardTableViewCell = tableView.dequeueReusableCell(withIdentifier: "WelcomeCardTableViewCell") as! WelcomeCardTableViewCell;
+                
+                return cell;
+                
+            }
             let cell : InvitationCardTableViewCell = tableView.dequeueReusableCell(withIdentifier: "InvitationCardTableViewCell") as! InvitationCardTableViewCell;
             cell.gatheringInvitaionViewControllerDelegate = self;
             
-            if (event.eventId == nil && event.key == nil) {
+            if ((event.eventId == nil || event.eventId == 0) && event.key == nil) {
                 cell.shareView.isHidden = true;
             } else {
                 cell.shareView.isHidden = false;
             }
             
             if (event.eventMembers != nil) {
+                
+                print("Event Id : ",event.eventId,  "Event Members Count : ",self.event.eventMembers!.count)
+                for eventMember in self.event.eventMembers {
+                    print(eventMember.name);
+                }
+                
+                for eventMember in self.event.eventMembers {
+                    
+                    //We have to check user id, because there may be users which are non cenes users
+                    if (eventMember.userId != nil && eventMember.userId != 0 && eventMember.userId == loggedInUser.userId) {
+                        isLoggedInUserInMemberList = true;
+                        break;
+                    }
+                }
+                
+                if (self.isLoggedInUserInMemberList == false) {
+                    let eventMember = EventMember()
+                    eventMember.eventId = event.eventId;
+                    eventMember.userId = loggedInUser.userId;
+                    eventMember.user = loggedInUser;
+                    eventMember.cenesMember = "yes";
+                    eventMember.name = loggedInUser.name;
+                    event.eventMembers.append(eventMember);
+                }
+
+                
                 for eventMember in self.event.eventMembers {
                     //We have to check user id, because there may be users which are non cenes users
-                    if (eventMember.userId != nil && self.event.createdById == eventMember.userId) {
+                    if (eventMember.userId != nil && eventMember.userId != 0 && self.event.createdById == eventMember.userId) {
                         self.eventOwner = eventMember;
                         break;
                     }
@@ -888,9 +948,9 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             }
             
             if (self.eventOwner != nil) {
-                if (self.eventOwner.user != nil && self.eventOwner.user.photo != nil) {
-                    cell.chatProfilePic.sd_setImage(with: URL(string: self.eventOwner.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
-                    cell.profilePic.sd_setImage(with: URL(string: self.eventOwner.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+                if (self.eventOwner.user != nil && self.eventOwner.user!.photo != nil) {
+                    cell.chatProfilePic.sd_setImage(with: URL(string: self.eventOwner.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+                    cell.profilePic.sd_setImage(with: URL(string: self.eventOwner.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                 } else {
                     cell.chatProfilePic.image = UIImage.init(named: "profile_pic_no_image");
                     cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
@@ -900,7 +960,25 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                 }
             }
             
-            if (self.event.eventId != nil) {
+            if Connectivity.isConnectedToInternet {
+                
+                if (self.event.eventPicture != nil) {
+                                      
+                      if (self.event.thumbnail != nil) {
+                       cell.eventPicture.sd_setImage(with: URL(string: self.event.eventPicture!), placeholderImage: UIImage.init(url: URL(string: self.event.thumbnail!)));
+                      } else {
+                       cell.eventPicture.sd_setImage(with: URL(string: self.event.eventPicture!));
+                       }
+                }
+
+            } else {
+                
+                if (event.eventPictureBinary != nil) {
+                    cell.eventPicture.image = UIImage.init(data: event.eventPictureBinary);
+                }
+            }
+            
+            /*if (self.event.eventId != nil) {
                 
                 if (self.event.imageToUpload != nil) {
                     cell.eventPicture.image = self.event.imageToUpload;
@@ -927,7 +1005,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                 if (self.event.imageToUpload != nil) {
                     cell.eventPicture.image = self.event.imageToUpload;
                 }
-            }
+            }*/
             
             cell.evntTitle.text = self.event.title;
             
@@ -938,7 +1016,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             cell.eventTime.text = "\(dateOfEvent), \(timeOfEvent)";
             
             //This is the case when user view the existing invitation card.
-            if (event.eventId != nil) {
+            if (event.eventId != nil && event.eventId != 0) {
                 
                 //IF the owner if lookingt at the card
                 if (isLoggedInUserAsOwner == true) {
@@ -983,9 +1061,9 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     //If the event is not owner of event
                     //And guest is viewing the card.
                     var loggedInUserEventMemObj = EventMember();
-                    for eventMember in self.event.eventMembers {
+                    for eventMember in self.event.eventMembers! {
                         //We have to check user id, because there may be users which are non cenes users
-                        if (eventMember.userId != nil && self.loggedInUser.userId == eventMember.userId) {
+                        if (eventMember.userId != nil && eventMember.userId != 0 && self.loggedInUser!.userId == eventMember.userId) {
                             loggedInUserEventMemObj = eventMember;
                             break;
                         }
@@ -1003,6 +1081,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     }
                 }
                 
+                print(self.event.description);
                 if (self.event.expired == true || !Connectivity.isConnectedToInternet) {
                     leftToRightGestureEnabled = false;
                     rightToLeftGestureEnabled = false;

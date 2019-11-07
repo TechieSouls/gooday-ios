@@ -231,7 +231,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             createGatheringDelegate.event.startTime = Int64(timeInMillis);
             
             //If user has not set end time then we will set default time to 1 hour next to start time
-            if (createGatheringDelegate.event.endTime == 0) {
+            if (createGatheringDelegate.event.endTime == nil || createGatheringDelegate.event.endTime == 0) {
                 //Incrementing End Date to next hour from current hour
                 let calendar = Calendar.current;
                 var components = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: timeInMillis));
@@ -315,7 +315,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             startBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
             
             //If StartBar Closed
-            if (createGatheringDelegate.event.eventId != nil) {
+            if (createGatheringDelegate.event.eventId != nil && createGatheringDelegate.event.eventId != 0) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] = true;
                 //createGatheringDelegate.showHidePreviewGatheringButton();
             }
@@ -324,7 +324,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             endBarArrow.image = UIImage.init(named: "date_panel_right_arrow");
             
             //If StartBar Closed
-            if (createGatheringDelegate.event.eventId != nil) {
+            if (createGatheringDelegate.event.eventId != nil && createGatheringDelegate.event.eventId != 0) {
                 createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
                 //createGatheringDelegate.showHidePreviewGatheringButton();
             }
@@ -371,6 +371,9 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         let calendar = Calendar.current;
         var startComponents = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.startTime)));
         startComponents.day = selectedDateComponents.day
+        startComponents.month = selectedDateComponents.month
+        startComponents.year = selectedDateComponents.year
+
         let startDate = calendar.date(from: startComponents);
         createGatheringDelegate.event.startTime = startDate!.millisecondsSince1970;
         print(createGatheringDelegate.event.startTime);
@@ -378,6 +381,9 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         let endCalendar = Calendar.current;
         var endComponents = endCalendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.endTime)));
         endComponents.day = selectedDateComponents.day
+        endComponents.month = selectedDateComponents.month
+        endComponents.year = selectedDateComponents.year
+
         let endDate = endCalendar.date(from: endComponents);
         createGatheringDelegate.event.endTime = endDate!.millisecondsSince1970;
         print(createGatheringDelegate.event.endTime);
@@ -390,7 +396,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         
         
         //If StartBar Closed
-        if (createGatheringDelegate.event.eventId != nil) {
+        if (createGatheringDelegate.event.eventId != nil && createGatheringDelegate.event.eventId != 0) {
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
             //createGatheringDelegate.showHidePreviewGatheringButton();
         }

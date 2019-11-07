@@ -48,7 +48,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         if (self.friendViewControllerDelegate != nil) {
             if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
-                return 1;
+                return self.friendViewControllerDelegate.inviteFriendsDto.cenesContacts.count;
             } else {
                 return friendViewControllerDelegate.inviteFriendsDto.allContacts.count;
             }
@@ -59,7 +59,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (self.friendViewControllerDelegate != nil) {
             if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
-                return self.friendViewControllerDelegate.inviteFriendsDto.cenesContacts.count;
+                return self.friendViewControllerDelegate.inviteFriendsDto.cenesContacts[section].sectionObjects.count;
             } else {
                 return self.friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionObjects.count;
             }
@@ -78,18 +78,19 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
         //This is the case when user is at the wehere he can see only cenes contacts
         if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
             
-            let eventMember = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[indexPath.row];
+            let eventMember = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[indexPath.section].sectionObjects[indexPath.row];
+
             if (eventMember.user != nil) {
-                cell.nameLabel.text = eventMember.user.name;
+                cell.nameLabel.text = eventMember.user!.name;
             } else {
                 cell.nameLabel.text = eventMember.name;
             }
             
             cell.phoneBookName.text = eventMember.name;
             
-            if eventMember.user != nil && eventMember.user.photo != nil {
-                cell.profileImageView.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
-                cell.unselectedProfilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+            if eventMember.user != nil && eventMember.user!.photo != nil {
+                cell.profileImageView.sd_setImage(with: URL(string: eventMember.user!.photo!), placeholderImage: UIImage(named: "profile_pic_no_image"))
+                cell.unselectedProfilePic.sd_setImage(with: URL(string: eventMember.user!.photo!), placeholderImage: UIImage(named: "profile_pic_no_image"))
             } else {
                 cell.profileImageView.image = UIImage(named: "profile_pic_no_image");
                 cell.unselectedProfilePic.image = UIImage(named: "profile_pic_no_image");
@@ -120,60 +121,65 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             return cell;
         } else {
             //This is the case where user views all the contacts in its contact list.
-            let eventMember = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
+            let userContact = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
             
             let cell: FriendAllContactsTableViewCell = (tableView.dequeueReusableCell(withIdentifier: "FriendAllContactsTableViewCell") as? FriendAllContactsTableViewCell)!
             
             //If user is not nil then we will show cenes user name.
-            if (eventMember.user != nil) {
-                cell.name.text = eventMember.user.name;
+            if (userContact.user != nil) {
+                cell.name.text = userContact.user!.name;
             } else {
-                cell.name.text = eventMember.name;
+                cell.name.text = userContact.name;
             }
-            cell.phone.text = eventMember.phone;
+            cell.phone.text = userContact.phone;
             
             //Here we will check. If user is cenes member and has image then we will set it.
             //If user is not a cenes member yet, then we will show first two letters
             //of name as its label.
-            if (eventMember.cenesMember == "yes") {
+            if (userContact.cenesMember == "yes") {
                 cell.nonCenesUserView.isHidden = true;
-                if eventMember.user != nil && eventMember.user.photo != nil {
-                    cell.profilePic.sd_setImage(with: URL(string: eventMember.user.photo), placeholderImage: UIImage(named: "profile_pic_no_image"))
+                if userContact.user != nil && userContact.user!.photo != nil {
+                    cell.profilePic.sd_setImage(with: URL(string: userContact.user!.photo!), placeholderImage: UIImage(named: "profile_pic_no_image"))
                 }
             } else {
                 cell.nonCenesUserView.isHidden = false;
                 var nonCenesUserName: String = "";
-                let nameSplitArr = eventMember.name.split(separator: " ");
-                nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
-                if (nameSplitArr.count > 1) {
+                print(userContact.name)
+                if let name = userContact.name {
                     
-                    let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-                    //If string contains valid characters, then goes in if loop
-                    if String(nameSplitArr[1]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
-                        nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
-                    } else {
-                        //If string containts speacial character, then we will check if there is anymore strnig
-                        //available, If yes then we will chekc for third string.
-                        if (nameSplitArr.count > 2) {
-                            if String(nameSplitArr[2]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
-                                nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
-                            } else {
-                                nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
-                            }
-                        } else {
+                    let nameSplitArr = name.split(separator: " ");
+                    nonCenesUserName = String(nameSplitArr[0]).prefix(1).capitalized
+                    if (nameSplitArr.count > 1) {
+                        
+                        let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+                        //If string contains valid characters, then goes in if loop
+                        if String(nameSplitArr[1]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
                             nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
+                        } else {
+                            //If string containts speacial character, then we will check if there is anymore strnig
+                            //available, If yes then we will chekc for third string.
+                            if (nameSplitArr.count > 2) {
+                                if String(nameSplitArr[2]).prefix(1).rangeOfCharacter(from: characterset.inverted) == nil {
+                                    nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
+                                } else {
+                                    nonCenesUserName.append(String(nameSplitArr[2]).prefix(1).capitalized);
+                                }
+                            } else {
+                                nonCenesUserName.append(String(nameSplitArr[1]).prefix(1).capitalized);
+                            }
                         }
                     }
+                    cell.nonCenesUserNameLabel.text = nonCenesUserName;
                 }
-                cell.nonCenesUserNameLabel.text = nonCenesUserName;
+                
             }
             
             
-            let userContactId: Int = Int(eventMember.userContactId);
+            let userContactId: Int = Int(userContact.userContactId);
             let keyExists = friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] != nil
             if (keyExists && friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
                 cell.hostGradientImage.isHidden = false;
-                if (eventMember.cenesMember == "yes") {
+                if (userContact.cenesMember == "yes") {
                     cell.profilePic.isHidden = false;
                     cell.nonCenesUserView.isHidden = true;
                 } else {
@@ -184,7 +190,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             } else {
                 cell.hostGradientImage.isHidden = true;
                 
-                if (eventMember.cenesMember == "yes") {
+                if (userContact.cenesMember == "yes") {
                     cell.profilePic.isHidden = false;
                     cell.nonCenesUserView.isHidden = true;
                 } else {
@@ -201,12 +207,12 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        var friendObj = EventMember();
+        var friendObj = UserContact();
         
         //Fetch User Contact based on the type of the screen user at.
         //If he is at all contacts screen then we will fetch all the contacts.
         if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == false) {
-            friendObj = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[indexPath.row];
+            friendObj = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[indexPath.section].sectionObjects[indexPath.row];
         } else {
             friendObj = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
         }
@@ -250,6 +256,8 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
             return friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionName;
+        } else {
+            return friendViewControllerDelegate.inviteFriendsDto.cenesContacts[section].sectionName;
         }
         return "";
     }
@@ -269,10 +277,24 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
                 cell.header.text = sectionTitle
             } else {
-                cell.header.text = "";
+                cell.header.text = sectionTitle;
             }
             
             return cell
+        } else if (friendViewControllerDelegate.inviteFriendsDto.cenesContacts.count  > 0) {
+            let sectionTitle = friendViewControllerDelegate.inviteFriendsDto.cenesContacts[section].sectionName;
+            
+            let identifier = "InnerTableHeaderTableViewCell"
+            let cell: InnerTableHeaderTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? InnerTableHeaderTableViewCell
+            
+            if (self.friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true) {
+                cell.header.text = sectionTitle
+            } else {
+                cell.header.text = sectionTitle;
+            }
+            
+            return cell
+
         }
         return nil;
     }

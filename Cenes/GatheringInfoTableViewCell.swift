@@ -137,7 +137,10 @@ class GatheringInfoTableViewCell: UITableViewCell, MessageProtocol, SelectedLoca
                 }
                 
             }
-            
         });
+    }
+    
+    func uploadImageLabelOnly() {
+        self.imageLabel.isHidden = false;
     }
 }

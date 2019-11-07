@@ -267,10 +267,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 let loggedInUserDict = response.value(forKey: "data") as! NSDictionary;
                 setting.setValue(loggedInUserDict.value(forKey: "name"), forKey: "name");
                 setting.setValue(loggedInUserDict.value(forKey: "userId"), forKey: "userId");
-                setting.setValue(loggedInUserDict.value(forKey: "photo"), forKey: "photo");
                 
-                if loggedInUserDict.value(forKey: "photo") as? String != nil {
-                    setting.setValue(loggedInUserDict.value(forKey: "photo"), forKey: "photo");
+                if let photo = loggedInUserDict.value(forKey: "photo") as? String {
+                    setting.setValue(photo, forKey: "photo");
                 }
                 
                 if loggedInUserDict.value(forKey: "email") as? String != nil {
