@@ -368,11 +368,13 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         self.activityIndicator.stopAnimating();
                         self.showAlert(title: "Account Synced", message: "");
                         
-                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
+                        /*if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                             
                             let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
                             homeViewController?.refershDataFromOtherScreens();
-                        }
+                            
+                        }*/
                     });
 
                 });

@@ -100,9 +100,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             var eventMembers: [EventMember] = [EventMember]();
             for eventMem in event.eventMembers! {
                 
-                if (eventMem.userId != self.loggedInUser.userId) {
-                    eventMembers.append(eventMem);
-                } else {
+                eventMembers.append(eventMem);
+
+                if (eventMem.userId == self.loggedInUser.userId) {
                     eventHost = eventMem;
                 }
             }
@@ -115,7 +115,45 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
                 }
                 
             }
-            inviteFriendsDto.selectedFriendCollectionViewList = cenesUserContacts;
+            
+            //Converting Event Member into User Contacts
+            var userContacts = [UserContact]();
+            for eveMem in eventMembers {
+                     
+                let userContact = UserContact();
+                if (eveMem.eventMemberId != nil) {
+                    userContact.eventMemberId = eveMem.eventMemberId;
+                }
+                if let name = eveMem.name {
+                    userContact.name = name;
+                }
+                
+                if let userContactId = eveMem.userContactId {
+                    userContact.userContactId = Int(userContactId);
+                }
+                
+                if let userId = eveMem.userId {
+                    userContact.userId = Int(userId);
+                    userContact.friendId = Int(userId);
+                }
+                
+                if let user = eveMem.user {
+                    userContact.user = user;
+                }
+                
+                if let photo = eveMem.photo {
+                    userContact.photo = photo;
+                }
+                if let cenesMember = eveMem.cenesMember {
+                    userContact.cenesMember = cenesMember;
+                }
+                
+                if let status = eveMem.status {
+                    userContact.status = status;
+                }
+                userContacts.append(userContact);
+            }
+            inviteFriendsDto.selectedFriendCollectionViewList = userContacts;
             showAllFields();
         }
         self.setupNavigationBar();
@@ -301,6 +339,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         previewGatheringBtnView.isHidden = false;
     }
     
+    
+    /** This is when user click on +  button to choose or edit the guests. */
     func openGuestListViewController() {
         let viewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController;
         viewController.inviteFriendsDto = self.inviteFriendsDto;
@@ -313,6 +353,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func friendsDonePressed(eventMembers: [EventMember]) {
         self.event.eventMembers = [EventMember]();
         for eventMem in eventMembers {
+            if (eventMem.eventId == nil && self.event.eventId != nil && self.event.eventId != 0 && eventMem.eventMemberId != nil) {
+                eventMem.eventId = self.event.eventId;
+            }
             self.event.eventMembers.append(eventMem);
         }
         self.createGathTableView.reloadData();
@@ -419,7 +462,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             if (self.event.eventId != nil && self.event.eventId != 0) {
                 var hostExists = false;
                 for eve in self.event.eventMembers! {
-                    if (eve.eventMemberId == eventHost.eventMemberId) {
+                    if ((eve.eventMemberId != nil && eve.eventMemberId == eventHost.eventMemberId) || (eve.userId != nil && eve.userId == eventHost.userId)) {
                         hostExists = true;
                     }
                 }

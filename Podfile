@@ -24,6 +24,7 @@ pod 'Mantis', '~> 0.27'
 pod 'Fabric'
 pod 'Crashlytics'
 pod 'ReachabilitySwift'
+pod 'SQLite.swift', '~> 0.12.0'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

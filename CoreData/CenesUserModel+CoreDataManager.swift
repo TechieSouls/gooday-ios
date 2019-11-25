@@ -28,6 +28,7 @@ class CenesUserModel {
 
         if (userAlreadyExists == false) {
             
+            context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
             let entity = NSEntityDescription.entity(forEntityName: "CenesUserMO", in: context)
             let entityModel = NSManagedObject(entity: entity!, insertInto: context) as! CenesUserMO
 

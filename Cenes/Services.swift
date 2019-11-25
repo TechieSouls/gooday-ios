@@ -13,7 +13,8 @@ var imageFacebookURL :String?
 // Live Server
 //let apiUrl = "http://ec2-18-216-7-227.us-east-2.compute.amazonaws.com/"
 
-let apiUrl = "https://beta.cenesgroup.com/"
+let apiUrl = "https://api.cenesgroup.com/"
+let imageUploadDomain = "https://images.cenesgroup.com/"
 //let apiUrl = "http://192.168.1.102:8181/"
 //let apiUrl = "http://localhost:8181/"
 //let apiUrl = "http://172.20.10.2:8181/";
@@ -105,7 +106,7 @@ class WebService
             MultipartFormData.append(imgData, withName: "mediaFile", fileName: "file.jpg", mimeType: "image/jpg")
             MultipartFormData.append( "\(id)".data(using: .utf8)!, withName: "userId")
 
-        }, usingThreshold: UInt64.init(), to: "\(apiUrl)api/profile/upload/", method: .post, headers:Auth_header) { (result) in
+        }, usingThreshold: UInt64.init(), to: "\(imageUploadDomain)api/profile/upload/", method: .post, headers:Auth_header) { (result) in
             switch result {
             case .success(let upload,_,_):
                 

@@ -50,6 +50,7 @@ class NotificationModel {
     
     func saveNotificationModelArray(notificationDataArray: NSArray) -> [NotificationMO] {
     
+        print("Start Time to Save Notifications : ", Date().millisecondsSince1970)
         var notificationMOs = [NotificationMO]();
         for notificationArrItem in notificationDataArray {
             
@@ -65,6 +66,8 @@ class NotificationModel {
             }
 
         }
+        print("End Time to Save Notifications : ", Date().millisecondsSince1970)
+
         return notificationMOs;
     }
 
@@ -72,10 +75,9 @@ class NotificationModel {
             
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
-
-            
-        let entity = NSEntityDescription.entity(forEntityName: "NotificationMO", in: context)
-        let entityModel = NSManagedObject(entity: entity!, insertInto: context) as! NotificationMO
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
+        
+        let entityModel = NotificationMO(context: context);
 
         entityModel.notificationId = notificationDataDict.value(forKey: "notificationId") as! Int32;
         entityModel.title = (notificationDataDict.value(forKey: "title") as! String);
@@ -89,6 +91,9 @@ class NotificationModel {
         entityModel.recepientId = notificationDataDict.value(forKey: "recepientId") as! Int32;
 
         do {
+            
+            try context.save();
+
             //Lets Save the event also if its there.
             if let eventDict = notificationDataDict.value(forKey: "event") as? NSDictionary {
                 let eventMO = EventModel().saveEventModelByEventDictnory(eventDict: eventDict);
@@ -100,12 +105,9 @@ class NotificationModel {
                 let cenesUser = CenesUserModel().saveCenesUserModel(cenesUserDict: userDict);
                 entityModel.user = cenesUser;
             }
-            
-            try context.save();
-
             return entityModel;
         } catch {
-            print("Failed saving")
+            print("Failed saving", error)
         }
         
         return NotificationMO(context: context);
@@ -169,7 +171,7 @@ class NotificationModel {
             }
             
         } catch {
-            print(error)
+            print("Error in finding notification : ",error)
         }
         return NotificationMO(context: context);
     }
@@ -185,7 +187,6 @@ class NotificationModel {
         
         do {
             try context.execute(deleteRequest)
-            try context.save()
         } catch {
             print ("There was an error")
         }
@@ -198,10 +199,16 @@ class NotificationModel {
 
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "NotificationMO")
         deleteFetch.predicate = NSPredicate(format: "notificationTypeId == %i", eventId);
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
         do {
-            try context.execute(deleteRequest)
-            try context.save()
+            let arrUsrObj = try context.fetch(deleteFetch)
+             for usrObj in arrUsrObj as! [NSManagedObject] { // Fetching Object
+                 context.delete(usrObj) // Deleting Object
+            }
+            do {
+                try context.save()
+            } catch {
+                print("Failed saving")
+            }
         } catch {
             print ("There was an error")
         }

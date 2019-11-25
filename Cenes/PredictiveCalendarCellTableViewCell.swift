@@ -41,6 +41,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
         unselectedDates = GatheringManager().getCurrentMonthDatesWithColor(selectedDate: predictiveCalendar.currentPage);
         
         predictiveCalendar.appearance.borderRadius = 0.5
+        predictiveCalendar.appearance.titleFont = UIFont.init(name: "Avenir-Heavy", size: 20)
         formatter.dateFormat = "yyyy/MM/dd";
         //selectedDates = ["2019/04/08", "2019/04/09", "2019/04/10"]
         

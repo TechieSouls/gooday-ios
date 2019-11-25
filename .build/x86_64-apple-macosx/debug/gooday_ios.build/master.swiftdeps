@@ -1,0 +1,5 @@
+version: "Apple Swift version 5.1 (swiftlang-1100.0.270.13 clang-1100.0.33.7)"
+options: "a6ed71547e1697812e4cd76618c16f17"
+build_time: [1574349066, 91389000]
+inputs:
+  "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/Sources/gooday-ios/gooday_ios.swift": [1574349008, 227318065]

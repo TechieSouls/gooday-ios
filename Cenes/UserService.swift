@@ -385,7 +385,7 @@ class UserService {
     
     func uploadUserProfilePic(postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void) {
         
-        let url = "\(apiUrl)\(post_upload_profile_pic)";
+        let url = "\(imageUploadDomain)\(post_upload_profile_pic)";
         
         HttpService().postMultipartImageProfilePic(url: url, image: postData["uploadImage"] as! UIImage, userId: postData["userId"] as! Int32, token: token, complete: {(response) in
             complete(response);

@@ -253,6 +253,11 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
             if let phone = setting.value(forKey: "verifiedPhone") {
                 postData["phone"] = phone;
             }
+            
+            if let country = setting.value(forKey: "countryCode") {
+                postData["country"] = country;
+            }
+	
             loginSocialRequest(postData: postData);
         }
     }

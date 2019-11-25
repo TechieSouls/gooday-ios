@@ -273,8 +273,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         User().updateUserValuesInUserDefaults(user: self.loggedInUser);
         DispatchQueue.main.async {
             self.profilePic.image = UIImage.init(named: "profile_pic_no_image");
-            self.profilePic.setNeedsDisplay()
-            
+            self.profilePic.setNeedsDisplay();
         }
 
         DispatchQueue.global(qos: .background).async {

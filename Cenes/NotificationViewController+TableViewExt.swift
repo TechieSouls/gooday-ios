@@ -128,7 +128,8 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                     if (notification.notificationId == notificationId) {
                         notification.readStatus = "Read";
                         
-                        NotificationModel().updateNotificationReadStatus(readStatus: "Read", notificationId: Int32(notificationId));
+                        sqlDatabaseManager.updateNotificationReadStatusByNotificationId(readStatus: "Read", notification: notification)
+                        //NotificationModel().updateNotificationReadStatus(readStatus: "Read", notificationId: Int32(notificationId));
                     }
                 }
                 
@@ -137,7 +138,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
             });
         }
         
-        print(notification.description);
+        //print(notification.description);
         if (notification.event != nil) {
             //event!.eventClickedFrom = "Notification";
             /*let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -189,7 +190,6 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             
-        var notificationsDtoPerPage = [NotificationDto]();
         self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
 
         //if (indexPath.section < notificationsDtoPerPage.count && indexPath.row == notificationsDtoPerPage[indexPath.section].notifications.count - 1) {
@@ -215,11 +215,13 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 
                 self.loadNotification();
             }
+        } else {
+            self.notificationTableView.tableFooterView?.isHidden = true
         }
     }
         
     @objc func connected(_ sender:MyTapGesture){
-        print(sender.notificationId)
+        //print(sender.notificationId)
         let queryStr = "notificationId=\(String(sender.notificationId))";
 
         //NotificationService().markNotificationReadByNotificationId(queryStr: queryStr, token: self.loggedInUser.token, complete: {(returnedDict) in

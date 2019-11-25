@@ -160,7 +160,7 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
                         
                         let alertController = UIAlertController(title: "Reset Successful", message: "", preferredStyle: UIAlertControllerStyle.alert)
                         
-                        let okAction = UIAlertAction(title: "LOGIN", style: .default) { (UIAlertAction) in
+                    let okAction = UIAlertAction(title: "LOGIN", style: .default) { (UIAlertAction) in
                             print ("Ok")
                             self.navigationController?.popViewController(animated: false)
                         }

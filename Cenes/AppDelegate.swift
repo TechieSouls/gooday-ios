@@ -19,7 +19,8 @@ import Reachability
  
 let setting = UserDefaults.standard
 let reachability = Reachability()!
-
+var sqlDatabaseManager = SqlliteDbManager();
+ 
 @UIApplicationMain
  class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -47,6 +48,12 @@ let reachability = Reachability()!
         Fabric.with([Crashlytics.self])
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
+        
+        sqlDatabaseManager.createEventTable();
+        sqlDatabaseManager.createEventMemberTable();
+        sqlDatabaseManager.createTableCenesUser();
+        sqlDatabaseManager.createTableCenesContact();
+        sqlDatabaseManager.createTableNotifications();
         
         // Override point for customization after application launch.
         let footprints = setting.string(forKey: "footprints")

@@ -42,7 +42,7 @@ class MeTimeService {
     
     func uploadMeTimeImage(image: UIImage, recurringEventId: Int32, token: String, complete: @escaping(NSDictionary) -> Void) {
     
-        let url = "\(apiUrl)\(post_metimePhoto)";
+        let url = "\(imageUploadDomain)\(post_metimePhoto)";
         
         HttpService().postMultipartImage(url: url, image: image, recurringEventId: recurringEventId, token: token, complete: { (response) in
             

@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/.build/x86_64-apple-macosx/debug/gooday_ios.build/master.swiftdeps"
+  },
+  "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/Sources/gooday-ios/gooday_ios.swift": {
+    "dependencies": "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/.build/x86_64-apple-macosx/debug/gooday_ios.build/gooday_ios.d",
+    "object": "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/.build/x86_64-apple-macosx/debug/gooday_ios.build/gooday_ios.swift.o",
+    "swiftmodule": "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/.build/x86_64-apple-macosx/debug/gooday_ios.build/gooday_ios~partial.swiftmodule",
+    "swift-dependencies": "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/.build/x86_64-apple-macosx/debug/gooday_ios.build/gooday_ios.swiftdeps"
+  }
+}

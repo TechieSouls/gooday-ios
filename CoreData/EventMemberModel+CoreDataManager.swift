@@ -86,7 +86,13 @@ class EventMemberModel {
         do {
             let eventMembers = try context.fetch(fetchRequest) as! [EventMemberMO];
             if (eventMembers.count > 0) {
-                return eventMembers[0];
+                
+                let eventMemberMo = eventMembers[0];
+                if (eventMemberMo.userId != 0) {
+                    eventMemberMo.user = CenesUserModel().fetchOfflineCenesUserByUserId(cenesUserId: eventMemberMo.userId);
+
+                }
+                return eventMemberMo;
             } else {
                 return EventMemberMO(context: context);
             }
@@ -98,6 +104,43 @@ class EventMemberModel {
         }
         
         return EventMemberMO(context: context);
+    }
+    
+    func fetchOfflineEventMemberByEventId(eventId: Int32) -> [EventMemberMO] {
+        
+        var eventMembersFinal = [EventMemberMO]();
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
+
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
+        
+        // Create Entity Description
+        let entityDescription = NSEntityDescription.entity(forEntityName: "EventMemberMO", in: context)
+        
+        // Configure Fetch Request
+        fetchRequest.entity = entityDescription
+        fetchRequest.predicate = NSPredicate(format: "eventId == %i", eventId)
+        do {
+            let eventMembers = try context.fetch(fetchRequest) as! [EventMemberMO];
+            if (eventMembers.count > 0) {
+                
+                let eventMemberMo = eventMembers[0];
+                if (eventMemberMo.userId != 0) {
+                    eventMemberMo.user = CenesUserModel().fetchOfflineCenesUserByUserId(cenesUserId: eventMemberMo.userId);
+
+                }
+                eventMembersFinal = eventMembers;
+                return eventMembers;
+            } else {
+                return [EventMemberMO]();
+            }
+        } catch {
+            let fetchError = error as NSError
+            print(fetchError)
+            print("Failed saving Event Member Managed Object func : fetchOfflineEventMemberByEventMemberId")
+        }
+        return [EventMemberMO]();
     }
     
     func loggedInUserAsEventMember(user: User) -> EventMemberMO {
@@ -236,7 +279,7 @@ class EventMemberModel {
         
         do {
             try context.execute(deleteRequest)
-            //context.reset();
+            try context.save();
 
         } catch {
             print ("There was an error")
@@ -254,6 +297,7 @@ class EventMemberModel {
         
         do {
             try context.execute(deleteRequest)
+            try context.save();
         } catch {
             print ("There was an error")
         }
@@ -279,7 +323,15 @@ class EventMemberModel {
         eventMemberMO.userId = eventMember.userId;
         eventMemberMO.name = eventMember.name;
         eventMemberMO.photo = eventMember.photo;
-        
+        if let userContactId = eventMember.userContactId {
+            eventMemberMO.userContactId = userContactId;
+        }
+        if let cenesMember = eventMember.cenesMember {
+            eventMemberMO.cenesMember = cenesMember;
+        }
+        if let status = eventMember.status {
+            eventMemberMO.status = status;
+        }
         if let user = eventMember.user {
             eventMemberMO.user = CenesUserModel().copyBOToCenesUser(user: user);
         }

@@ -461,7 +461,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         }
         
         if (self.metimeRecurringEvent.photo != nil) {
-            let imageUrl = "\(apiUrl)\(self.metimeRecurringEvent.photo!)";
+            let imageUrl = "\(imageUploadDomain)\(self.metimeRecurringEvent.photo!)";
             self.meTimeImageView.isHidden = false;
             self.withoutimageView.isHidden = true;
             self.meTimeImageView.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile icon"));

@@ -118,7 +118,7 @@ class GatheringManager {
         var cenesMembers = [UserContact]();
         for cenesContact in friendList {
             
-            if (cenesContact.user != nil || cenesContact.cenesMember == "yes") {
+            if ((cenesContact.friendId != nil && cenesContact.friendId != 0) || cenesContact.user != nil || cenesContact.cenesMember == "yes") {
                 cenesMembers.append(cenesContact);
 
             }

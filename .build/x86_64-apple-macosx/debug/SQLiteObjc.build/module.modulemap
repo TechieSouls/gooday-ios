@@ -1,0 +1,4 @@
+module SQLiteObjc {
+    umbrella header "/Users/cenes_dev/Desktop/Mandeep/projects/ios/cenes/beta/gooday-ios/.build/checkouts/SQLite.swift/Sources/SQLiteObjc/include/SQLiteObjc.h"
+    export *
+}

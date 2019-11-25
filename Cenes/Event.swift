@@ -36,6 +36,7 @@ class Event {
     var imageToUpload: UIImage!;
     var requestType = EventRequestType.NewEvent;
     var eventPictureBinary: Data = Data();
+    var synced: Bool = true;
     
     var eventMembers: [EventMember]!;
     

@@ -414,7 +414,7 @@ extension SignupSuccessStep2ViewController: UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
             case 0:
-                return 465;
+                return 435;
             case 1:
                 return 200;
             default:

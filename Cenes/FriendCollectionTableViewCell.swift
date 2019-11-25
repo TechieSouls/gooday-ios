@@ -96,7 +96,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.removeFriendIcon.isHidden = false;
                 let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
                 cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);
-                if (userContact.userContactId != nil) {
+                if (userContact.userContactId != nil && userContact.userContactId != 0) {
                     removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
                     cell.tag = Int(userContact.userContactId);
                 }

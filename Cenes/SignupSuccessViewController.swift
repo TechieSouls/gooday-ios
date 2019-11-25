@@ -105,7 +105,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     */
 
     @IBAction func signupButtonPressed(_ sender: Any) {
-        
+                
         let isFormValidFlag = isFormValid();
         
         if (isFormValidFlag == true && textFieldEmail.text != nil && isValidEmail(testStr: textFieldEmail.text!)) {

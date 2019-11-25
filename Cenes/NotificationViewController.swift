@@ -28,8 +28,8 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
     var notificationPerPage = [NotificationData]()
     var allNotifications = [NotificationData]()
     
-    var allNotificationModels = [NotificationMO]()
-    var notificationModelPerPage = [NotificationMO]()
+    //var allNotificationModels = [NotificationMO]()
+    //var notificationModelPerPage = [NotificationMO]()
 
     var notificationDtos = [NotificationDto]();
     var pageNumber = 0;
@@ -85,7 +85,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
         let myView = UIView.init(frame: CGRect.init(x: 0, y: -1, width: ((self.tabBarController?.tabBar.frame.width)!), height: 2));
         myView.backgroundColor = themeColor;
         self.tabBarController?.tabBar.addSubview(myView);
-        
+        self.navigationController?.navigationItem.title = "What's New";
         /*if self.loggedInUser.photo != nil {
             let webServ = WebService()
             webServ.profilePicFromFacebook(url:  String(self.loggedInUser.photo), completion: { image in
@@ -93,9 +93,9 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
                 self.setUpNavBar()
             })
         }*/
-        self.notificationTableView.isHidden = false;
-        self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
-        self.notificationTableView.reloadData();
+        //self.notificationTableView.isHidden = false;
+        //self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
+        //self.notificationTableView.reloadData();
 
         self.tabBarController?.setTabBarDotVisible(visible: false);
         // Do any additional setup after loading the view.
@@ -129,21 +129,21 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
         self.notificationPerPage = [NotificationData]();
         self.allNotifications = [NotificationData]();
         self.notificationDtos = [NotificationDto]();
-        self.allNotificationModels = [NotificationMO]();
+        //self.allNotificationModels = [NotificationMO]();
         
         //NotificationModel().emtpyNotificationModel();
         //CenesUserModel().deleteAllCenesUserModel(context: context!);
-        
-        self.allNotificationModels = NotificationModel().fetchOfflineNotifications();
-        if (self.allNotificationModels.count > 0) {
+        //self.allNotificationModels = NotificationModel().fetchOfflineNotifications();
+        self.allNotifications = sqlDatabaseManager.findAllNotifications();
+        if (self.allNotifications.count > 0) {
             //let totalEventsPresent = self.allNotificationModels.count;
             //self.pageNumber = self.pageNumber + (totalEventsPresent/20)*20
-            self.totalNotificationCounts = self.allNotificationModels.count;
+            self.totalNotificationCounts = self.allNotifications.count;
             self.notificationTableView.isHidden = false;
             
-            for notificationMO in self.allNotificationModels {
+            /*for notificationMO in self.allNotificationModels {
                 self.allNotifications.append(NotificationModel().copyNotificationMOToNotificationDataBO(notificationMO: notificationMO));
-            }
+            }*/
         }
         
         self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
@@ -184,26 +184,33 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
                 if (notificationsNsArray.count > 0) {
                     
                     
-                     self.notificationTableView.isHidden = false
-                     /*self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
-                    for notification in self.notificationPerPage {
-                        self.allNotifications.append(notification);
-                    }*/
-                        
+                    self.notificationTableView.isHidden = false
+                    
                     //Save Notification Locally.
                     if (self.pageNumber == 0) {
-                        NotificationModel().emtpyNotificationModel();
-                        self.allNotificationModels = [NotificationMO]();
+                        sqlDatabaseManager.deleteAllNotifications();
+                        self.notificationPerPage = [NotificationData]();
                     }
-                    let notificationMOPerPage = NotificationModel().saveNotificationModelArray(notificationDataArray: notificationsNsArray);
-                    self.notificationPerPage = [NotificationData]();
-                    for notificationMO in notificationMOPerPage {
-                        self.notificationPerPage.append(NotificationModel().copyNotificationMOToNotificationDataBO(notificationMO: notificationMO));
-                    }
-                    
+                     self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
                     for notification in self.notificationPerPage {
                         self.allNotifications.append(notification);
+                        
+                        //Saving Notification Locally
+                        sqlDatabaseManager.saveNotification(notification: notification);
                     }
+                        
+                    
+                    
+                    
+                    /*let notificationMOPerPage = NotificationModel().saveNotificationModelArray(notificationDataArray: notificationsNsArray);
+                        self.notificationPerPage = [NotificationData]();
+                        for notificationMO in notificationMOPerPage {
+                            self.notificationPerPage.append(NotificationModel().copyNotificationMOToNotificationDataBO(notificationMO: notificationMO));
+                        }
+                        
+                        for notification in self.notificationPerPage {
+                            self.allNotifications.append(notification);
+                        }*/
 
                     self.notificationDtos = NotificationManager().parseNotificationData(notifications: self.allNotifications, notificationDtos: self.notificationDtos);
                     //self.allNotificationModels = NotificationModel().fetchOfflineNotifications(context: self.context!);

@@ -144,9 +144,7 @@ class EventModel {
 
         if (eventAlreadyExists == false) {
             
-            let entity = NSEntityDescription.entity(forEntityName: "EventMO", in: context)
-            let entityModel = NSManagedObject(entity: entity!, insertInto: context) as! EventMO
-            
+            let entityModel = EventMO(context: context);
             //print("Title", eventDict.value(forKey: "title") as! String);
             entityModel.eventId = eventDict.value(forKey: "eventId") as! Int32;
             entityModel.title = (eventDict.value(forKey: "title") as! String);
@@ -224,7 +222,7 @@ class EventModel {
         
         do {
             try context.execute(deleteRequest);
-            //context.reset();
+            try context.save();
         } catch {
             print ("There was an error")
         }
@@ -238,9 +236,17 @@ class EventModel {
 
         let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "EventMO")
         deleteFetch.predicate = NSPredicate(format: "eventId == %i", eventId)
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+        //let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
         do {
-            try context.execute(deleteRequest)
+            let arrUsrObj = try context.fetch(deleteFetch)
+             for usrObj in arrUsrObj as! [NSManagedObject] { // Fetching Object
+                 context.delete(usrObj) // Deleting Object
+            }
+            do {
+                try context.save()
+            } catch {
+                print("Failed saving")
+            }
         } catch {
             print ("There was an error")
         }
@@ -248,6 +254,7 @@ class EventModel {
 
     func fetchOfflineEvents() -> [Event] {
         
+        let loggenInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
@@ -255,16 +262,31 @@ class EventModel {
         var eventsMo = [EventMO]();
         // Initialize Fetch Request
         let fetchRequest: NSFetchRequest<EventMO> = EventMO.fetchRequest();
-        
+        fetchRequest.predicate = NSPredicate(format: "scheduleAs != 'Notification'");
         let sortDescriptors = [NSSortDescriptor(key:"startTime" ,
                                                 ascending:true )]
         fetchRequest.sortDescriptors = sortDescriptors;
         do {
+            var eventIdTracking = [Int32: Bool]();
             let eventsMOTemp = try context.fetch(fetchRequest) as! [EventMO]
             if (eventsMOTemp.count > 0) {
                 for eventMoTemp in eventsMOTemp {
                     if (eventMoTemp.eventId != 0 && eventMoTemp.title != nil) {
-                        eventsMo.append(eventMoTemp);
+                        if (eventIdTracking[eventMoTemp.eventId] != nil) {
+                            continue;
+                        }
+                        
+                        let eventMoEventMembers = eventMoTemp.eventMembers;
+                        for eventMoEventMember in eventMoEventMembers! {
+                            
+                            let eventMoEventMemberMOTemp = eventMoEventMember as! EventMemberMO;
+                            if (eventMoEventMemberMOTemp.userId == loggenInUser.userId && eventMoEventMemberMOTemp.status == "Going") {
+                                                        
+                                eventsMo.append(eventMoTemp);
+                                eventIdTracking[eventMoTemp.eventId] = true;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -293,7 +315,7 @@ class EventModel {
                 continue;
             }
             for eventMemer in event.eventMembers {
-                
+                    
                 if (eventMemberStatus == "GOING" && eventMemer.userId == loggedInUserId && eventMemer.status == "Going") {
                     invitationTabEvents.append(event);
                     break;
@@ -328,8 +350,27 @@ class EventModel {
         do {
             let eventMos = try context.fetch(fetchRequest) as! [EventMO];
             for eventM in eventMos {
-                //print(eventM.eventId, eventM.description)
+                print(eventM.eventId, eventM.description)
                 if (eventM.title != nil) {
+                    
+                    let eventMembers = EventMemberModel().fetchOfflineEventMemberByEventId(eventId: eventM.eventId);
+                    if (eventMembers.count > 0) {
+                        eventM.eventMembers = nil;
+                        for eventMemMo in eventMembers {
+                            eventM.addToEventMembers(eventMemMo);
+                        }
+                    }
+                    if (eventM.eventMembers != nil) {
+                        for eventMem in eventM.eventMembers! {
+                            let eventMemMo = eventMem as! EventMemberMO;
+                            if (eventMemMo.userId != nil && eventMemMo.userId != 0) {
+                                let cenesUser = CenesUserModel().fetchOfflineCenesUserByUserId(cenesUserId: eventMemMo.userId);
+                                if (cenesUser.userId != 0) {
+                                    eventMemMo.user = cenesUser;
+                                }
+                            }
+                        }
+                    }
                     return eventM;
                 }
             }
@@ -347,13 +388,9 @@ class EventModel {
         let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
         // Initialize Fetch Request
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
-        
-        // Create Entity Description
-        let entityDescription = NSEntityDescription.entity(forEntityName: "EventMO", in: context)
-        
+        let fetchRequest: NSFetchRequest<EventMO> = EventMO.fetchRequest();
+                
         // Configure Fetch Request
-        fetchRequest.entity = entityDescription
         fetchRequest.predicate = NSPredicate(format: "eventId == %i", eventDict.value(forKey: "eventId") as! Int32);
         fetchRequest.relationshipKeyPathsForPrefetching = ["eventMembers"];
         do {
@@ -553,14 +590,20 @@ class EventModel {
         eventMember.eventId = eventMo.eventId;
         eventMember.name = eventMemberMO.name;
         eventMember.userId = eventMemberMO.userId;
-        
+        eventMember.userContactId = eventMemberMO.userContactId;
+        eventMember.cenesMember = eventMemberMO.cenesMember;
+        eventMember.photo = eventMemberMO.photo;
+
         if let status = eventMemberMO.status {
             eventMember.status = status;
         }
-        if let user = eventMemberMO.user {
+        
+        let user = CenesUserModel().copyManagedObjectToBO(cenesUserMO: CenesUserModel().fetchOfflineCenesUserByUserId(cenesUserId: eventMember.userId));
+        eventMember.user = user;
+        /*if let user = eventMemberMO.user {
             print(eventMemberMO.user?.description)
             eventMember.user = CenesUserModel().copyManagedObjectToBO(cenesUserMO: user);
-        }
+        }*/
         return eventMember;
     }
     

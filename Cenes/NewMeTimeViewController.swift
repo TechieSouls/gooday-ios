@@ -48,10 +48,8 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        if Connectivity.isConnectedToInternet {
-            self.meTimeItemsTableView.scrollsToTop = true;
-            self.loadMeTimeData();
-        }
+        self.meTimeItemsTableView.scrollsToTop = true;
+        self.loadMeTimeData();
     }
     
     /*
@@ -86,11 +84,11 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     
     func loadMeTimeData() -> Void {
 
-        self.metimeEvents = MetimeRecurringEventModel().findAllMetimeRecurringEvents();
-       // print(self.metimeEvents.count);
-        self.meTimeItemsTableView.reloadData();
+        //self.metimeEvents = MetimeRecurringEventModel().findAllMetimeRecurringEvents();
+       //print("Offline Events : ", self.metimeEvents.count);
+       // self.meTimeItemsTableView.reloadData();
 
-        if (self.metimeEvents.count == 0) {
+        if (Connectivity.isConnectedToInternet) {
             
             let queryStr = "userId=\(String(self.loggedInUser.userId))";
             
@@ -102,7 +100,8 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
                     
                     print(meTimeArray);
                     //self.metimeEvents = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
-                    self.metimeEvents = MetimeRecurringEventModel().saveMetimeRecurringEventsMOFromNSArray(recurringEvents: meTimeArray);
+                    //MetimeRecurringEventModel().deleteAllRecurringEvent();
+                    //self.metimeEvents = MetimeRecurringEventModel().saveMetimeRecurringEventsMOFromNSArray(recurringEvents: meTimeArray);
                     self.meTimeItemsTableView.reloadData();
                 } else {
                     let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
