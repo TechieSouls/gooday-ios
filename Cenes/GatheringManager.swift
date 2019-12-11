@@ -30,11 +30,11 @@ class GatheringManager {
             let time = self.gethhmmAATimeStr(timeStamp: key)
             key = self.getddMMMEEEE(timeStamp: key)
             
-            //var event = Event().loadEventData(eventDict: outerDict)
+            var event = Event().loadEventData(eventDict: outerDict)
             
-            var event = Event();
-            var eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict);
-            event = EventModel().copyDataToEventBo(eventMo: eventMO);
+            //var event = Event();
+            //var eventMO = EventModel().saveEventModelByEventDictnory(eventDict: outerDict);
+            //event = EventModel().copyDataToEventBo(eventMo: eventMO);
             if dict.value(forKey: key) != nil {
                 
                 //var array = dict.value(forKey: key) as! [CenesCalendarData]!
@@ -298,13 +298,19 @@ class GatheringManager {
         let dateFormatter = DateFormatter();
         dateFormatter.dateFormat = "yyyy/MM/dd";
         
-        let components = Calendar.current.dateComponents([.year, .month], from: selectedDate);
-        let startDateOfMonth = Calendar.current.date(from: components);
-        
+        let currentMonthComponents = Calendar.current.dateComponents([.year, .month], from: selectedDate);
+        let currentMonthDate = Calendar.current.date(from: currentMonthComponents);
+
+        var startDateOfMonth = Calendar.current.date(from: currentMonthComponents);
+        let todayDateComponents = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
+        if (Int(todayDateComponents.month as! Int) == Int(currentMonthComponents.month as! Int)) {
+            startDateOfMonth = Date();
+        }
+
         var endDateComponents = DateComponents();
         endDateComponents.month = 1;
         endDateComponents.day = -1;
-        let endDateOfMonth = Calendar.current.date(byAdding: endDateComponents, to: startDateOfMonth!);
+        let endDateOfMonth = Calendar.current.date(byAdding: endDateComponents, to: currentMonthDate!);
         
         var startIndex: Int = Calendar.current.dateComponents(in: TimeZone.current, from: startDateOfMonth!).day!
         

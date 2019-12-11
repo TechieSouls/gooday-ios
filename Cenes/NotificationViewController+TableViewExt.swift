@@ -17,7 +17,99 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
         
         if (self.notificationDtos.count != 0) {
             let notification = self.notificationDtos[indexPath.section].notifications[indexPath.row]
-            
+        
+            //print("Message : ", notification.message);
+            let font = UIFont(name: "Avenir-Medium", size: 15.0)
+            let fontAttributes = [NSAttributedStringKey.font: font]
+            let myText = notification.message!
+            let size = (myText as NSString).size(withAttributes: fontAttributes)
+            if (size.width > 250) {
+                
+                let identifier = "NotificationGatheringTwoLineTableViewCell"
+                let cell : NotificationGatheringTwoLineTableViewCell! = tableView.dequeueReusableCell(withIdentifier: identifier) as? NotificationGatheringTwoLineTableViewCell
+                
+                if (notification.type == "Welcome") {
+                    
+                    cell.profilePic.image = UIImage.init(named: "notification_alert_icon");
+                    
+                } else {
+                    
+                    if let user = notification.user {
+                        //print(user.photo);
+                        if (user.photo != nil) {
+                            cell.profilePic.sd_setImage(with: URL(string: user.photo!), placeholderImage: UIImage(named: "profile_pic_no_image"));
+                        } else {
+                            cell.profilePic.image = #imageLiteral(resourceName: "profile_pic_no_image")
+                        }
+                    } else {
+                        cell.profilePic.image = #imageLiteral(resourceName: "profile_pic_no_image")
+                    }
+                }
+                
+                cell.message.text = notification.message;
+               if (notification.type != "Welcome") {
+                   cell.title.text = "(\(String(notification.title!)))";
+               } else {
+                   cell.title.text = "";
+               }
+               if (notification.readStatus == "Read") {
+                   cell.title.textColor = UIColor.darkGray;
+                   cell.message.textColor = UIColor.darkGray;
+                   cell.circleButtonView.isHidden = true;
+               } else {
+                   cell.title.textColor = UIColor.black;
+                   cell.message.textColor = UIColor.black;
+                   
+                   if (notification.action == "AcceptDecline") {
+                       let searchString = "accepted|declined"
+                       let attributed = NSMutableAttributedString(string: notification.message!)
+                       do {
+                           let regex = try! NSRegularExpression(pattern: searchString,options: .caseInsensitive)
+                           for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.characters.count)) as [NSTextCheckingResult] {
+                               attributed.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: match.range)
+                           }
+                           cell.message.attributedText = attributed
+                       }
+                   }
+                   cell.circleButtonView.isHidden = false;
+                   let tapGestureRecognizer = MyTapGesture(target: self, action: #selector(self.connected(_:)))
+                   cell.rightCornerView.addGestureRecognizer(tapGestureRecognizer)
+                   tapGestureRecognizer.notificationId = notification.notificationId;
+               }
+                
+            let pastDateInMillis = Date().millisecondsSince1970 - Date(milliseconds: Int(notification.createdAt)).millisecondsSince1970
+
+               let days = pastDateInMillis/(1000*3600*24);
+               if (days == 0) {
+                   let hours = pastDateInMillis/(1000*3600);
+                   
+                   if (hours < 1) {
+                       let minutes = hours/(1000*60);
+                       if (minutes < 1) {
+                           
+                           let sec = minutes/1000;
+                           cell.happen.text = "\(sec)s";
+
+                       } else {
+                           cell.happen.text = "\(minutes)m";
+                       }
+                   } else {
+                       cell.happen.text = "\(hours)h";
+                   }
+               } else {
+                   
+                   if (days < 31) {
+                       cell.happen.text = "\(days)d";
+                   } else {
+                       let months = days / 30;
+                       if (months != 0) {
+                           cell.happen.text = "\(months)mo";
+                       }
+                   }
+               }
+                return cell;
+            }
+                        
             //print(notification.event?.title);
             if (notification.type == "Welcome") {
                 
@@ -37,73 +129,72 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 }
             }
             
-            
-            //print("Message : ", notification.message);
             cell.message.text = notification.message;
+                       if (notification.type != "Welcome") {
+                           cell.title.text = "(\(String(notification.title!)))";
+                       } else {
+                           cell.title.text = "";
+                       }
+                       if (notification.readStatus == "Read") {
+                           cell.title.textColor = UIColor.darkGray;
+                           cell.message.textColor = UIColor.darkGray;
+                           cell.circleButtonView.isHidden = true;
+                       } else {
+                           cell.title.textColor = UIColor.black;
+                           cell.message.textColor = UIColor.black;
+                           
+                           if (notification.action == "AcceptDecline") {
+                               let searchString = "accepted|declined"
+                               let attributed = NSMutableAttributedString(string: notification.message!)
+                               do {
+                                   let regex = try! NSRegularExpression(pattern: searchString,options: .caseInsensitive)
+                                   for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.characters.count)) as [NSTextCheckingResult] {
+                                       attributed.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: match.range)
+                                   }
+                                   cell.message.attributedText = attributed
+                               }
+                           }
+                           cell.circleButtonView.isHidden = false;
+                           let tapGestureRecognizer = MyTapGesture(target: self, action: #selector(self.connected(_:)))
+                           cell.rightCornerView.addGestureRecognizer(tapGestureRecognizer)
+                           tapGestureRecognizer.notificationId = notification.notificationId;
+                       }
             
-            if (notification.type != "Welcome") {
-                cell.title.text = "(\(String(notification.title!)))";
-            } else {
-                cell.title.text = "";
-            }
-            if (notification.readStatus == "Read") {
-                cell.title.textColor = UIColor.darkGray;
-                cell.message.textColor = UIColor.darkGray;
-                cell.circleButtonView.isHidden = true;
-            } else {
-                cell.title.textColor = UIColor.black;
-                cell.message.textColor = UIColor.black;
-                
-                if (notification.action == "AcceptDecline") {
-                    let searchString = "accepted|declined"
-                    let attributed = NSMutableAttributedString(string: notification.message!)
-                    do {
-                        let regex = try! NSRegularExpression(pattern: searchString,options: .caseInsensitive)
-                        for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.characters.count)) as [NSTextCheckingResult] {
-                            attributed.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: match.range)
-                        }
-                        cell.message.attributedText = attributed
-                    }
-                }
-                cell.circleButtonView.isHidden = false;
-                let tapGestureRecognizer = MyTapGesture(target: self, action: #selector(self.connected(_:)))
-                cell.rightCornerView.addGestureRecognizer(tapGestureRecognizer)
-                tapGestureRecognizer.notificationId = notification.notificationId;
-            }
-            
-            let pastDateInMillis = Date().millisecondsSince1970 - Date(milliseconds: Int(notification.createdAt)).millisecondsSince1970
+    let pastDateInMillis = Date().millisecondsSince1970 - Date(milliseconds: Int(notification.createdAt)).millisecondsSince1970
 
-            let days = pastDateInMillis/(1000*3600*24);
-            if (days == 0) {
-                let hours = pastDateInMillis/(1000*3600);
-                
-                if (hours < 1) {
-                    let minutes = hours/(1000*60);
-                    if (minutes < 1) {
-                        
-                        let sec = minutes/1000;
-                        cell.happen.text = "\(sec)s";
+               let days = pastDateInMillis/(1000*3600*24);
+               if (days == 0) {
+                   let hours = pastDateInMillis/(1000*3600);
+                   
+                   if (hours < 1) {
+                       let minutes = hours/(1000*60);
+                       if (minutes < 1) {
+                           
+                           let sec = minutes/1000;
+                           cell.happen.text = "\(sec)s";
 
-                    } else {
-                        cell.happen.text = "\(minutes)m";
-                    }
-                } else {
-                    cell.happen.text = "\(hours)h";
-                }
-            } else {
-                
-                if (days < 31) {
-                    cell.happen.text = "\(days)d";
-                } else {
-                    let months = days / 30;
-                    if (months != 0) {
-                        cell.happen.text = "\(months)mo";
-                    }
-                }
+                       } else {
+                           cell.happen.text = "\(minutes)m";
+                       }
+                   } else {
+                       cell.happen.text = "\(hours)h";
+                   }
+               } else {
+                   
+                   if (days < 31) {
+                       cell.happen.text = "\(days)d";
+                   } else {
+                       let months = days / 30;
+                       if (months != 0) {
+                           cell.happen.text = "\(months)mo";
+                       }
+                   }
+               }
+    
+                return cell
+
             }
-        }
-        
-        return cell
+        return cell;
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -152,7 +243,20 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        return 60;
+        var height: CGFloat = 60;
+        if (self.notificationDtos.count != 0) {
+                let notificationsTemp = self.notificationDtos[indexPath.section].notifications
+                let notification = notificationsTemp![indexPath.row];
+            if let font = UIFont(name: "Avenir-Medium", size: 15.0) {
+               let fontAttributes = [NSAttributedStringKey.font: font]
+                let myText = notification.message!
+               let size = (myText as NSString).size(withAttributes: fontAttributes)
+                if (size.width > 250) {
+                    height = 75;
+                }
+            }
+        }
+        return height;
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

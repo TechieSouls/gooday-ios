@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina5_9" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Onboarding Page View Controller-->
         <scene sceneID="b8B-37-Rq7">
             <objects>
-                <viewController storyboardIdentifier="OnboardingPageViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7x8-4Y-02N" customClass="OnboardingPageViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OnboardingPageViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7x8-4Y-02N" customClass="OnboardingPageViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="05h-ne-jp4"/>
                         <viewControllerLayoutGuide type="bottom" id="gd5-Rn-cAE"/>
@@ -26,10 +24,10 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fgy-FW-I00">
-                                        <rect key="frame" x="47" y="15" width="280" height="33"/>
+                                        <rect key="frame" x="47" y="18" width="280" height="33"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="18"/>
-                                        <state key="normal" title="GET STARTED"/>
+                                        <state key="normal" title="Get Started"/>
                                         <connections>
                                             <action selector="getStartedPressed:" destination="7x8-4Y-02N" eventType="touchUpInside" id="tgl-eF-d0U"/>
                                         </connections>
@@ -68,7 +66,7 @@
         <!--Time Match Onboarding View Controller-->
         <scene sceneID="Y4z-RQ-yNr">
             <objects>
-                <viewController storyboardIdentifier="TimeMatchOnboardingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Qoq-3T-Mya" customClass="TimeMatchOnboardingViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TimeMatchOnboardingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Qoq-3T-Mya" customClass="TimeMatchOnboardingViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ogy-V6-NJm"/>
                         <viewControllerLayoutGuide type="bottom" id="43F-sm-6A9"/>
@@ -112,7 +110,7 @@ Sync your calendar with Cenes to let your friends know your availability. </stri
         <!--Invitation Onboarding View Controller-->
         <scene sceneID="bKI-fD-0or">
             <objects>
-                <viewController storyboardIdentifier="InvitationOnboardingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="tYl-ue-sHm" customClass="InvitationOnboardingViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InvitationOnboardingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="tYl-ue-sHm" customClass="InvitationOnboardingViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="DOL-ta-bIw"/>
                         <viewControllerLayoutGuide type="bottom" id="frK-kV-ZY7"/>
@@ -156,7 +154,7 @@ events right within our calendar. </string>
         <!--Page Item View Controller-->
         <scene sceneID="0DO-Vx-jYb">
             <objects>
-                <viewController storyboardIdentifier="PageItemViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bzH-Yb-q49" customClass="PageItemViewController" customModule="Deploy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PageItemViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bzH-Yb-q49" customClass="PageItemViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fEx-hh-qdd"/>
                         <viewControllerLayoutGuide type="bottom" id="mp6-NR-SSa"/>
@@ -196,7 +194,7 @@ Begin by inviting your friends on Cenes or straight from your contacts. </string
     </scenes>
     <resources>
         <image name="invitation_group_img" width="101" height="139"/>
-        <image name="invite_background_bubble" width="125" height="270.66665649414062"/>
+        <image name="invite_background_bubble" width="176.66667175292969" height="310"/>
         <image name="onboarding_base_1_3" width="176.66667175292969" height="310"/>
         <image name="onboarding_base_2" width="176.66667175292969" height="310"/>
         <image name="predictive_bubble_img" width="112" height="102.33333587646484"/>

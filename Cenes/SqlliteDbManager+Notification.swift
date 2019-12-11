@@ -55,36 +55,38 @@ extension SqlliteDbManager {
     func saveNotification(notification: NotificationData) {
         
         do {
-            
-            let stmt = try database.prepare("INSERT into notifications (notification_id, title, sender_name, message, notification_time, notification_image_url, read_status, type, action, notification_type_id, sender_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            
-            var senderName = "";
-            if (notification.senderName != nil) {
-                senderName = notification.senderName;
-            }
-            var notificationImageUrl = "";
-            if (notification.notificationImageURL != nil) {
-                notificationImageUrl = notification.notificationImageURL;
-            }
-            var type = "";
-            if (notification.type != nil) {
-                type = notification.type;
-            }
-            
-            var action = "";
-            if (notification.action != nil) {
-                action = notification.action;
-            }
-            try stmt.run(Int64(notification.notificationId), notification.title, senderName, notification.message, notification.time, notificationImageUrl, notification.readStatus, type, action, Int64(notification.notificationTypeId), Int64(notification.senderId), notification.createdAt);
+            let notificationDb = findNotifictionByNotificationId(notificationId: notification.notificationId)
+            if (notificationDb.notificationId == nil) {
+                let stmt = try database.prepare("INSERT into notifications (notification_id, title, sender_name, message, notification_time, notification_image_url, read_status, type, action, notification_type_id, sender_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 
-            //Saving Event From Notification
-            if (notification.event != nil) {
-                saveEvent(event: notification.event);
-            }
-            
-            //Saving Notifcation Sender
-            if (notification.user != nil) {
-                saveCenesUser(cenesUser: notification.user);
+                var senderName = "";
+                if (notification.senderName != nil) {
+                    senderName = notification.senderName;
+                }
+                var notificationImageUrl = "";
+                if (notification.notificationImageURL != nil) {
+                    notificationImageUrl = notification.notificationImageURL;
+                }
+                var type = "";
+                if (notification.type != nil) {
+                    type = notification.type;
+                }
+                
+                var action = "";
+                if (notification.action != nil) {
+                    action = notification.action;
+                }
+                try stmt.run(Int64(notification.notificationId), notification.title, senderName, notification.message, notification.time, notificationImageUrl, notification.readStatus, type, action, Int64(notification.notificationTypeId), Int64(notification.senderId), notification.createdAt);
+                    
+                //Saving Event From Notification
+                if (notification.event != nil) {
+                    saveEvent(event: notification.event);
+                }
+                
+                //Saving Notifcation Sender
+                if (notification.user != nil) {
+                    saveCenesUser(cenesUser: notification.user);
+                }
             }
         } catch {
             print("Error in saveNotification : ", error)

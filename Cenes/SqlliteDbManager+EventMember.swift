@@ -104,6 +104,49 @@ extension SqlliteDbManager {
         }
     }
     
+    
+    func saveEventMemberWhenNoInternet(eventMember: EventMember) {
+                
+        do {
+            let stmt = try database.prepare("INSERT INTO event_members (event_id, event_member_id, name, cenes_member, user_id, photo, status, phone, user_contact_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+            eventMember.status = "Going"
+            eventMember.eventMemberId = eventMember.eventId;
+            eventMember.cenesMember = "yes";
+            var name = "";
+            if (eventMember.name != nil) {
+                name = eventMember.name;
+            }
+            
+            var userId: Int64 = 0;
+            if (eventMember.userId != nil) {
+                userId = Int64(eventMember.userId);
+            }
+            var photo = "";
+            if (eventMember.photo != nil) {
+                photo = eventMember.photo;
+            }
+            var status = "";
+            if (eventMember.status != nil) {
+                status = eventMember.status;
+            }
+            var phone = "";
+            if (eventMember.phone != nil) {
+                phone = eventMember.phone;
+            }
+            var userContactId: Int64 = 0;
+            if (eventMember.userContactId != nil) {
+                userContactId = Int64(eventMember.userContactId);
+            }
+            if (eventMember.eventId != nil) {
+                
+                try stmt.run(Int64(eventMember.eventId), Int64(eventMember.eventMemberId), name, eventMember.cenesMember, userId, photo, status, phone, userContactId);
+
+            }
+        } catch {
+            print("Error in saveEventMembers :", error);
+        }
+    }
     func findEventMembersByEventId(eventId: Int32) -> [EventMember] {
         
         var eventMembers = [EventMember]();

@@ -143,7 +143,7 @@ class GuestListViewController: UIViewController {
                 if (self.isLoggedInUserAsOwner == true) {
                     for evemem in self.event.eventMembers! {
 
-                        if (evemem.userId != nil && evemem.userId == 0) {
+                        if (evemem.userId == nil || evemem.userId == 0) {
                             self.filteredEventMembers.append(evemem);
                         }
                     }
@@ -151,7 +151,7 @@ class GuestListViewController: UIViewController {
                     //We will again iterate the loop to fetch all non cenes users
                     var nonCenesUserCount = 0;
                     for evemem in self.event.eventMembers! {
-                        if (evemem.userId != nil && evemem.userId == 0) {
+                        if (evemem.userId == nil || evemem.userId == 0) {
                             nonCenesUserCount = nonCenesUserCount + 1;
                         }
                     }
@@ -223,7 +223,7 @@ class GuestListViewController: UIViewController {
             if (self.isLoggedInUserAsOwner == true) {
                 for evemem in self.event.eventMembers! {
 
-                    if (evemem.userId != nil && evemem.userId == 0) {
+                    if (evemem.userId == nil || evemem.userId == 0) {
                         self.filteredEventMembers.append(evemem);
                     }
                 }
@@ -232,7 +232,7 @@ class GuestListViewController: UIViewController {
                 var nonCenesUserCount = 0;
                 for evemem in self.event.eventMembers! {
                     
-                    if (evemem.userId != nil && evemem.userId == 0) {
+                    if (evemem.userId == nil || evemem.userId == 0) {
                         nonCenesUserCount = nonCenesUserCount + 1;
                     }
                 }
@@ -420,36 +420,41 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
         if (eventMember.userId == event.createdById) {
             hostPrefix = " (Host)";
         }
-        if (eventMember.user != nil) {
-            if (eventMember.user!.name != nil) {
-                cell.cenesName.text = eventMember.user!.name! + hostPrefix;
-            } else if (eventMember.name != nil) {
-                cell.cenesName.text = eventMember.name! + hostPrefix;
-            } else {
-                cell.cenesName.text = "Unknown \(String(eventMember.eventMemberId))" + hostPrefix;
-            }
-            
-            if (eventMember.user!.photo != nil) {
-                cell.profilePic.sd_setImage(with: URL(string: eventMember.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
-            } else {
-                cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
-            }
-        } else {
-            
-            if (eventMember.name != nil) {
-                cell.cenesName.text = eventMember.name;
-            }
+        
+        //Setting Cenes Name
+        if (eventMember.user != nil && eventMember.user!.name != nil) {
+            cell.cenesName.text = eventMember.user!.name! + hostPrefix;
+        } else if (eventMember.name != nil) {
+            cell.cenesName.text = eventMember.name! + hostPrefix;
+        } else if (eventMember.userContact != nil && eventMember.userContact.name != nil) {
+            cell.cenesName.text = eventMember.userContact.name! + hostPrefix;
         }
         
-        if (self.event.createdById == self.loggedInUser.userId) {
-            if (eventMember.userContact != nil) {
-                cell.contactName.isHidden = false;
-                cell.contactName.text = eventMember.userContact!.name;
+        //Setting Phonebook Name
+        //if (self.event.createdById == self.loggedInUser.userId) {
+            
+            if (eventMember.user != nil && eventMember.user!.name != nil) {
+                if (eventMember.userId != nil && eventMember.userId != 0 && eventMember.userId != loggedInUser.userId && eventMember.userContact != nil) {
+                    cell.contactName.isHidden = false;
+                    cell.contactName.text = eventMember.userContact!.name;
+                } else if (eventMember.userId != nil && eventMember.userId != 0 && eventMember.userId == loggedInUser.userId) {
+                    cell.contactName.isHidden = false;
+                    cell.contactName.text = "You";
+                } else {
+                    cell.contactName.isHidden = true;
+                }
             } else {
-                cell.contactName.isHidden = true;
+               cell.contactName.isHidden = true;
             }
+        //} else {
+        //    cell.contactName.isHidden = true;
+        //}
+        
+        //Setting Image
+        if (eventMember.user != nil && eventMember.user!.photo != nil) {
+            cell.profilePic.sd_setImage(with: URL(string: eventMember.user!.photo!), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
         } else {
-            cell.contactName.isHidden = true;
+            cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
         }
         
         return cell;

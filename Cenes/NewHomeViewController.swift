@@ -113,14 +113,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         tabBarController?.delegate = self
 
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
-        homescreenDto.pageable.calendarDataPageNumber = 0;
+        //homescreenDto.pageable.calendarDataPageNumber = 0;
         homescreenDto.calendarData = [HomeData]();
         homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
-        //self.loadHomeData(pageNumber: homescreenDto.pageable.calendarDataPageNumber, offSet: homescreenDto.pageable.calendarDataOffset);
-        //self.loadPastEvents();
         
         
-        //let currentMonth = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
         self.homescreenDto.pageableMonthToAdd = 0;
         self.homescreenDto.pageableMonthTimestamp = Int(Date().millisecondsSince1970);
         self.homescreenDto.pageable.totalCalendarCounts = 0;
@@ -138,9 +135,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             self.scrollToCurrentDateAtHomeScreen();
         });
 
-        DispatchQueue.main.async {
-            //self.homeTableView.reloadData()
-        }
+        
         //self.checkSimCardDetails();
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
         do{
@@ -149,12 +144,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
           print("could not start reachability notifier")
         }
 
-    }
-    
-    override func viewDidAppear(_ animated:
-        Bool) {
-        
-        //refreshHomeScreenData();
     }
     
     /*
@@ -207,7 +196,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                  
                     let alertBody = "Cenes has detected a new phone number. Please logout and login again.";
                     
-                    let alertController = UIAlertController(title: "", message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                    let alertController = UIAlertController(title: "Alert", message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
                     
                     let okAction = UIAlertAction(title: "Logout", style: .default) { (UIAlertAction) in
                         print ("Ok")
@@ -649,6 +638,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
                     
                     //If this is the initial hit, Then we will get the first event inedx.
+                    //So that the screen scrolls to first event which will be today's event
                     if (pageNumber == 0) {
                         
                         let firstHomeData = calendarData[0];
@@ -660,8 +650,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         monthScrollDto.timestamp = Int(Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime)).startOfMonth().millisecondsSince1970);
 
                         self.homescreenDto.topHeaderDateIndex[HomeManager().getMonthWithYearKeyForScrollIndex(startTime: Int(Date(milliseconds: Int(firstHomeData.sectionObjects[0].startTime)).startOfMonth().millisecondsSince1970))] = monthScrollDto;
-
-                        
                         //self.homescreenDto.scrollToMonthStartSectionAtHomeButton.insert(monthScrollDto, at: 0);
                     }
                     
@@ -1387,8 +1375,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             
             
             let eventMO = offlineUnSyncedEvents[0];
-            //EventModel().updateEventManagedObjectSyncedStatus(eventMO: eventMO);
-
+            sqlDatabaseManager.updateSyncStatusEventByEventId(eventId: eventMO.eventId);
             if (eventMO.eventPictureBinary != nil) {
                 let imageToUpload = UIImage.init(data: eventMO.eventPictureBinary);
                 GatheringService().uploadEventImageV3(image: imageToUpload, loggedInUser: self.loggedInUser, complete: {(response) in
@@ -1407,7 +1394,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                                 eventMO.thumbnail = images.value(forKey: "thumbnail") as! String;
                             }
                         }
-                        eventMO.eventId = 0;
+                        eventMO.eventId = nil;
+                        eventMO.eventMembers = [EventMember]();
                         let eventDict = eventMO.toDictionary(event: eventMO);
                         print(eventDict);
                         GatheringService().createGathering(uploadDict: eventDict, complete: {(response) in
@@ -1422,8 +1410,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 
             } else {
                 
-                //EventModel().updateEventManagedObjectSyncedStatus(eventMO: eventMO);
-                eventMO.eventId = 0;
+                sqlDatabaseManager.updateSyncStatusEventByEventId(eventId: eventMO.eventId);
+                eventMO.eventId = nil;
+                eventMO.eventMembers = [EventMember]();
                 let eventDict = eventMO.toDictionary(event: eventMO);
                 print(eventDict);
                 GatheringService().createGathering(uploadDict: eventDict, complete: {(response) in

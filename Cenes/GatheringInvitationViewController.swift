@@ -410,7 +410,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     //cenes memebers.
                                     var nonCenesMembers = [EventMember]();
                                     for mem in self.event.eventMembers! {
-                                        if (mem.userId == nil && mem.eventMemberId == nil) {
+                                        if ((mem.userId == nil || mem.userId == 0) && (mem.eventMemberId == nil || mem.eventMemberId == 0) && mem.phone != nil) {
                                             
                                             nonCenesMembers.append(mem);
                                         }
@@ -454,7 +454,6 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                                                 let eventId = dataDict.value(forKey: "eventId") as! Int32;
                                                 if (eventId != nil && eventId != 0) {
-                                                    sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
                                                     let eventTemp = Event().loadEventData(eventDict: dataDict);
                                                     sqlDatabaseManager.saveEvent(event: eventTemp);
                                                 }
@@ -509,7 +508,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 //cenes memebers.
                                 var nonCenesMembers = [EventMember]();
                                 for mem in self.event.eventMembers! {
-                                    if (mem.userId == nil || mem.userId == 0) {
+                                    if (mem.userId == nil || mem.userId == 0 && mem.phone != nil) {
                                         nonCenesMembers.append(mem);
                                     }
                                 }
@@ -571,7 +570,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                                                 let eventId = dataDict.value(forKey: "eventId") as! Int32;
                                                 if (eventId != nil && eventId != 0) {
-                                                    sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                                    //sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
                                                     let eventTemp = Event().loadEventData(eventDict: dataDict);
                                                     sqlDatabaseManager.saveEvent(event: eventTemp);
                                                 }
@@ -590,8 +589,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         });
 
                                     } else {
+                                        
+                                        //Save Offline Event
                                         //EventModel().saveNewEventModelOffline(event: self.event, user: self.loggedInUser);
-                                        sqlDatabaseManager.saveEvent(event: self.event);
+                                        sqlDatabaseManager.saveEventWhenNoInternet(event: self.event);
                                     }
                                     
                                 }
@@ -817,12 +818,16 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             
             if (self.isLoggedInUserInMemberList == false) {
                 
-                let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=pending]";
-                GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
+                if (self.event.eventId != nil) {
                     
-                    self.loggedInUser.token, complete: {(response) in
+                    let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=pending]";
+                    GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
                         
-                });
+                        self.loggedInUser.token, complete: {(response) in
+                            
+                    });
+                }
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                     
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)

@@ -35,7 +35,7 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         if (phoneNumberStr != "") {
             phoneNumber.text = "\(countryCode)\(phoneNumberStr)";
         }
-        
+        resendCodeText.isUserInteractionEnabled = false;
         codeField1.addTarget(self, action: #selector(userPressedKey(textField:)), for: UIControlEvents.editingChanged);
         
         codeField1.becomeFirstResponder();
@@ -120,6 +120,7 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         
         if (seconds == 0) {
             timer.invalidate();
+            resendCodeText.isUserInteractionEnabled = true;
             resendCodeText.textColor = UIColor(red: 245/255, green: 166/255, blue: 36/255, alpha: 1)
             
             var tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(resendTextPressed))
@@ -131,6 +132,13 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
     }
     
     @objc func resendTextPressed() {
+        
+        resendCodeText.isUserInteractionEnabled = false;
+        resendCodeText.textColor = UIColor.lightGray
+        timer = Timer();
+        seconds = 30;
+        runTimer();
+        
         var postData = [String: Any]();
         postData["countryCode"] = "\(countryCode)";
         postData["phone"] = "\(phoneNumberStr)";

@@ -24,10 +24,8 @@ protocol GatheringInfoCellProtocol {
     );
     func uploadImageLabelOnly();
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerProtocal {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerDelegate {
 
-    
-    
     @IBOutlet weak var createGathTableView: UITableView!
     
     @IBOutlet weak var timePickerView: UIView!
@@ -150,6 +148,10 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
                 
                 if let status = eveMem.status {
                     userContact.status = status;
+                }
+                
+                if let phone = eveMem.phone {
+                    userContact.phone = phone;
                 }
                 userContacts.append(userContact);
             }
@@ -558,4 +560,25 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             self.showAlert(title: "Error", message: "Cannot upload from screenshot")
         }
     }
+    
+    func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage) {
+        if (self.gatheringInfoCellDelegate != nil) {
+            self.gatheringInfoCellDelegate.imageSelected();
+            //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
+            self.imageToUpload = cropped.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
+            
+            if (Connectivity.isConnectedToInternet) {
+                gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
+            } else {
+                
+                self.event.eventPictureBinary = UIImagePNGRepresentation(cropped)!;
+                gatheringInfoCellDelegate.uploadImageLabelOnly();
+            }
+        } else {
+            self.showAlert(title: "Error", message: "Cannot upload from screenshot")
+        }
+    }
+    func cropViewControllerDidFailToCrop(_ cropViewController: CropViewController, original: UIImage) {}
+    func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {}
+
 }

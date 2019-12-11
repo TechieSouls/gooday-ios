@@ -239,7 +239,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
         
         //After checking whether user is selected or not we will remove and add it in collection view cell.
         if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
-            friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.append(self.friendViewControllerDelegate.inviteFriendsDto.userContactIdMapList[userContactId]!);
+            friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.append(friendObj);
         } else {
             //self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: userContactId);
             var count = 0;

@@ -145,10 +145,13 @@
 		5E7A7A522386EA7F008E84ED /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E7A7A512386EA7F008E84ED /* libsqlite3.tbd */; };
 		5E7A7A542386F0FB008E84ED /* SqlliteDbManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7A7A532386F0FB008E84ED /* SqlliteDbManager.swift */; };
 		5E82F529238BA79000688034 /* SqlliteDbManager+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */; };
+		5E95199E238F92D200C6D61A /* AuthenticateDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E95199D238F92D200C6D61A /* AuthenticateDto.swift */; };
 		5E985CFA232CEFF000BC1382 /* VersionUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E985CF9232CEFF000BC1382 /* VersionUpdateViewController.swift */; };
 		5E9DBBF22261BFCB000F9AA4 /* PersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */; };
 		5E9DBBF42261C1D2000F9AA4 /* NotificationPersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */; };
 		5E9DBBF622645A11000F9AA4 /* FriendListDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF522645A11000F9AA4 /* FriendListDto.swift */; };
+		5EAC6F58238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6F57238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift */; };
+		5EAC6F5A238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6F59238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift */; };
 		5EADEB21222BBF2600569864 /* GatheringDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EADEB1F222BBF2600569864 /* GatheringDayTableViewCell.swift */; };
 		5EADEB22222BBF2600569864 /* GatheringDayTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EADEB20222BBF2600569864 /* GatheringDayTableViewCell.xib */; };
 		5EADEB25222BC11000569864 /* GatheringTimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EADEB23222BC11000569864 /* GatheringTimeTableViewCell.swift */; };
@@ -184,6 +187,8 @@
 		5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */; };
 		5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */; };
 		5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */; };
+		5ED340CF239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */; };
+		5ED340D0239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5ED340CE239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib */; };
 		5ED6FECF224B687B00E940DE /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FECE224B687B00E940DE /* Connectivity.swift */; };
 		5ED6FED3224B9B7A00E940DE /* ProfileTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */; };
 		5ED747B62226BA9000C3458A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED747B52226BA9000C3458A /* Event.swift */; };
@@ -571,10 +576,13 @@
 		5E7A7A512386EA7F008E84ED /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		5E7A7A532386F0FB008E84ED /* SqlliteDbManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SqlliteDbManager.swift; sourceTree = "<group>"; };
 		5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+Notification.swift"; sourceTree = "<group>"; };
+		5E95199D238F92D200C6D61A /* AuthenticateDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticateDto.swift; sourceTree = "<group>"; };
 		5E985CF9232CEFF000BC1382 /* VersionUpdateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUpdateViewController.swift; sourceTree = "<group>"; };
 		5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceManager.swift; sourceTree = "<group>"; };
 		5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPersistanceManager.swift; sourceTree = "<group>"; };
 		5E9DBBF522645A11000F9AA4 /* FriendListDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListDto.swift; sourceTree = "<group>"; };
+		5EAC6F57238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+MeTimeRecurringEvent.swift"; sourceTree = "<group>"; };
+		5EAC6F59238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+MeTimeRecurringPattern.swift"; sourceTree = "<group>"; };
 		5EADEB1F222BBF2600569864 /* GatheringDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringDayTableViewCell.swift; sourceTree = "<group>"; };
 		5EADEB20222BBF2600569864 /* GatheringDayTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GatheringDayTableViewCell.xib; sourceTree = "<group>"; };
 		5EADEB23222BC11000569864 /* GatheringTimeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringTimeTableViewCell.swift; sourceTree = "<group>"; };
@@ -610,6 +618,8 @@
 		5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMatchOnboardingViewController.swift; sourceTree = "<group>"; };
 		5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationOnboardingViewController.swift; sourceTree = "<group>"; };
 		5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveData.swift; sourceTree = "<group>"; };
+		5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGatheringTwoLineTableViewCell.swift; sourceTree = "<group>"; };
+		5ED340CE239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationGatheringTwoLineTableViewCell.xib; sourceTree = "<group>"; };
 		5ED6FECE224B687B00E940DE /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		5ED6FED2224B9B7A00E940DE /* ProfileTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTabViewController.swift; sourceTree = "<group>"; };
 		5ED747B52226BA9000C3458A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -968,6 +978,7 @@
 				5E20A4A7226F0EF000F1DBC6 /* LocationDto.swift */,
 				5EC7A1802281513C0010E804 /* ProfileDto.swift */,
 				5E64C0FD228F1B79000F2629 /* CountryDto.swift */,
+				5E95199D238F92D200C6D61A /* AuthenticateDto.swift */,
 			);
 			name = Dto;
 			sourceTree = "<group>";
@@ -1021,6 +1032,8 @@
 				5E60A974238802BE00A1391D /* SqlliteDbManager+CenesUser.swift */,
 				5EB43A0D238AA19B00069754 /* SqlliteDbManager+CenesContact.swift */,
 				5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */,
+				5EAC6F57238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift */,
+				5EAC6F59238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift */,
 			);
 			name = sqllite;
 			sourceTree = "<group>";
@@ -1293,6 +1306,8 @@
 				5EFFC0AB222ED6030037D2EC /* NotificationGatheringTableViewCell.xib */,
 				5E40954322523ADD00CA9700 /* HeaderTableViewCell.xib */,
 				5E40954222523ADD00CA9700 /* HeaderTableViewCell.swift */,
+				5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */,
+				5ED340CE239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib */,
 			);
 			name = Notifications;
 			sourceTree = "<group>";
@@ -1609,8 +1624,8 @@
 				F42AC09C1F27858E009FF9FA /* Services.swift */,
 				F45626AE1F32407A00B68761 /* ReminderData.swift */,
 				AE8423E81F8F55CD007DBACB /* CenesUser.swift */,
-				F4B871F91F0DDEF1001A9963 /* Cenes.xcdatamodeld */,
 				AE2F2EBC1F9DCC3200B05A92 /* NotificationData.swift */,
+				F4B871F91F0DDEF1001A9963 /* Cenes.xcdatamodeld */,
 				FA27BD0B21F1D04000E674D4 /* UserContact.swift */,
 				5ED747B52226BA9000C3458A /* Event.swift */,
 				5ED747B72226BAC800C3458A /* EventMember.swift */,
@@ -1989,6 +2004,7 @@
 				5EF84098223765910046E68D /* CountryTableViewCell.xib in Resources */,
 				F4E9C2301F1606D9002BE9B8 /* Onboarding.storyboard in Resources */,
 				5E41ED1622741F4D00E972E1 /* InvitationTabsTableViewCell.xib in Resources */,
+				5ED340D0239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib in Resources */,
 				5EFFC0A9222D1F320037D2EC /* FriendsTableViewCell.xib in Resources */,
 				5E6AE0C52241F2320076A275 /* MeTimeUnscheduleTableViewCell.xib in Resources */,
 				AE4647901F6FE03E00B5CB67 /* flag_gr.png in Resources */,
@@ -2184,8 +2200,10 @@
 				AE8184DD1F95CB0200D885A2 /* HomeTableViewCell.swift in Sources */,
 				5E1217CD229A64F00075961A /* UIImage+Custom.swift in Sources */,
 				AEEF8A791FA885360032D7B4 /* InvitationAcceptView.swift in Sources */,
+				5EAC6F58238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift in Sources */,
 				5EDEE1F22240AAA600330F47 /* NewMeTimeViewController+TableView.swift in Sources */,
 				5E6999082221098100A275B6 /* GatheringPreviewController.swift in Sources */,
+				5EAC6F5A238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift in Sources */,
 				5E20A49F226DD60200F1DBC6 /* CreateGatheringLocationViewController.swift in Sources */,
 				FA88C5C121CAC56E00399F1C /* CreateGatheringViewController+UITableView.swift in Sources */,
 				AE5A7C231F679F4D00C7B10C /* LocationCell.swift in Sources */,
@@ -2208,6 +2226,7 @@
 				FA3429F721FB663800205876 /* HomeHolidayTableViewCell.swift in Sources */,
 				B956ADB31FB04E00005B13CA /* LocationsModel+CoreDataClass.swift in Sources */,
 				5EB2A3B3232763E100EF9FAA /* EventMemberMO+CoreDataProperties.swift in Sources */,
+				5ED340CF239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift in Sources */,
 				5E64C10522905F9D000F2629 /* DeleteAccountTableViewCell.swift in Sources */,
 				5E64C0FB228F153E000F2629 /* CountryItemTableViewCell.swift in Sources */,
 				AE4A817D1FAB1D90008AB844 /* CenesTabController.swift in Sources */,
@@ -2217,6 +2236,7 @@
 				5EC7A1812281513C0010E804 /* ProfileDto.swift in Sources */,
 				B99D55CE1FC184F00020AC50 /* AlarmManager.swift in Sources */,
 				5E5408A8234634E300BC9BB5 /* CenesUserMO+CoreDataProperties.swift in Sources */,
+				5E95199E238F92D200C6D61A /* AuthenticateDto.swift in Sources */,
 				FA486CBE21FF1A9800E8AF72 /* UIView+Customs.swift in Sources */,
 				5E20CC432372CF83006F8CC5 /* MetimeRecurringEventMO+CoreDataClass.swift in Sources */,
 				B9FB16A21FBAA31F00FB0FD0 /* CreateDiaryViewController.swift in Sources */,
@@ -2607,12 +2627,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.17;
+				MARKETING_VERSION = 2.2.27;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2635,12 +2655,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.17;
+				MARKETING_VERSION = 2.2.27;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

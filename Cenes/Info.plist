@@ -33,6 +33,8 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>cenesbeta</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.212716305349-ep3u9dm1pgrk1eof023rrtms0e0b4l2j</string>
@@ -42,10 +44,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>cenesbeta</string>
+			<string>cenesapp01</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>cenesbeta</string>
+				<string>cenesapp01</string>
 			</array>
 		</dict>
 	</array>

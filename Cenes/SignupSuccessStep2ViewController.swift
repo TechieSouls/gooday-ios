@@ -48,7 +48,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     var loggedInUser: User!;
     var outlookService = OutlookService.shared();
     let picController = UIImagePickerController();
-
+    var signupSuccessStep2Dto: SignupSuccessStep2Dto!;
     
     class func MainViewController() -> UINavigationController{
         
@@ -92,7 +92,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
 
     func photoIconClicked() {
         // create an actionSheet
-        let actionSheetController: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let actionSheetController: UIAlertController = UIAlertController(title: "Help Others recognize you.", message: "Upload or Take your photo", preferredStyle: .actionSheet)
         
         let takePhotoAction: UIAlertAction = UIAlertAction(title: "Take Photo", style: .default) { action -> Void in
             self.takePicture();
@@ -225,9 +225,13 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         
         // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
         
-        self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Apple");
-        let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
-
+    self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Apple");
+        
+        var username = "Your iPhone";
+        if (loggedInUser.name != nil && loggedInUser.name != "") {
+            username = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
+        }
+        
         eventStore.requestAccess(to: .event) { (granted, error) in
             
             if (granted) && (error == nil) {
@@ -301,7 +305,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                     }
                     params = ["data":arrayDict]
                     params["userId"] = self.loggedInUser.userId;
-                    params["name"] = name;
+                    params["name"] = username;
                     
                     //Running In Background
                     DispatchQueue.global(qos: .background).async {
@@ -331,9 +335,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     
     @IBAction func completeButtonPressed(_ sender: Any) {
         
-        if (self.loggedInUser.name == nil) {
+        /*if (self.loggedInUser.name == nil || self.loggedInUser.name.trimmingCharacters(in: .whitespaces) == "") {*/
             
-            if (self.signupStep2FormTableViewCellDelegate.usernameField.text != "") {
+            if (self.loggedInUser.name != nil && self.loggedInUser.name.trimmingCharacters(in: .whitespaces) != "") {
                 
                 self.loggedInUser.name = signupStep2FormTableViewCellDelegate.usernameField.text!
                 
@@ -356,13 +360,13 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
             } else {
                 self.showAlert(title: "Name cannot be left empty", message: "");
             }
-        } else {
+            /*} else {
             setting.setValue(UserSteps.Authentication, forKey: "footprints")
             DispatchQueue.main.async {
                 WebService().setPushToken()
                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
             }
-        }
+        }*/
         
     }
     

@@ -85,7 +85,7 @@ class EventModel {
         entityModel.scheduleAs = "Gathering";
         entityModel.source = "Cenes";
         entityModel.createdById = event.createdById;
-
+	
         entityModel.title = event.title;
         entityModel.startTime = event.startTime;
         entityModel.endTime = event.endTime;

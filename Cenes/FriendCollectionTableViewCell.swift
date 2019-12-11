@@ -48,9 +48,11 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
         
         if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+            
+            let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
+
             //let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
             let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! UserContact;
             print("Array : \(userContact)")
@@ -101,8 +103,11 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                     cell.tag = Int(userContact.userContactId);
                 }
             }
+
+            return cell
         }
-        return cell
+        
+        return UICollectionViewCell();
     }
     
     @objc func removeFriendIconPressed(sender : RemoveFriendIconGesture) {

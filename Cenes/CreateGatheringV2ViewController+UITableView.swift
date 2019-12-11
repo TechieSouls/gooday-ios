@@ -66,7 +66,6 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                         } else {
                             cell.dateLabel.text = String(Date(milliseconds: Int(event.startTime)).EMMMd()!);
                         }
-                        
                     }
 
                     return cell;

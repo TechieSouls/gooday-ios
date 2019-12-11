@@ -65,5 +65,5 @@ let cenesWebUrl = "https://betaweb.cenesgroup.com";
 let shareLinkText = " \"[Host]\" invites you to \"[Title]\". RSVP through the Cenes app. Link below: ";
 let shareEventUrl = "https://betaweb.cenesgroup.com/event/invitation/"
 let faqLink = "https://www.cenesgroup.com/faq";
-let privacyPolicyLink = "https://www.cenesgroup.com/app/privacyPolicy";
+let privacyPolicyLink = "https://www.cenesgroup.com/legal/privacy-policy";
 let termsandconditionsLink = "https://www.cenesgroup.com/legal/terms-and-conditions";

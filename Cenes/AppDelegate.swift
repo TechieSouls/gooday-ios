@@ -54,6 +54,8 @@ var sqlDatabaseManager = SqlliteDbManager();
         sqlDatabaseManager.createTableCenesUser();
         sqlDatabaseManager.createTableCenesContact();
         sqlDatabaseManager.createTableNotifications();
+        sqlDatabaseManager.createTableMeTimeRecurringEvents();
+        sqlDatabaseManager.createTableMeTimeRecurringPatterns();
         
         // Override point for customization after application launch.
         let footprints = setting.string(forKey: "footprints")
@@ -146,6 +148,23 @@ var sqlDatabaseManager = SqlliteDbManager();
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         application.applicationIconBadgeNumber = 0
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
+        let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        if (loggedInUser.userId != nil && loggedInUser.token != nil) {
+            let queryStr = "userId=\(String(loggedInUser.userId))";
+            NotificationService().findNotificationBadgeCounts(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
+                
+                if (response.value(forKey: "success") as! Bool != false) {
+                    let notificationDataDict = response.value(forKey: "data") as! NSDictionary
+                    if (notificationDataDict["badgeCount"] as! Int != 0) {
+                        self.cenesTabBar?.setTabBarDotVisible(visible: true);
+                    }
+                }
+            })
+        }
         //WebService().resetBadgeCount();
         
     }
@@ -474,8 +493,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = notification.request.content.userInfo["aps"]! as? NSDictionary
         let alertDict = userInfo!["alert"] as! NSDictionary
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil);
+        
         if alertDict["type"] as? String == "HomeRefresh" {
                 if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                     self.cenesTabBar?.selectedIndex = 0

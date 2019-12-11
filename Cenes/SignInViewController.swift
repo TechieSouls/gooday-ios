@@ -248,7 +248,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             suffixChars = suffixChars + "*";
         }
         
-        let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
+        let confirmMessage = "A verification email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
         let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
         
         let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in

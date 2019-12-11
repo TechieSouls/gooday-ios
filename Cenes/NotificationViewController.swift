@@ -27,7 +27,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
     var imageDownloadsInProgress = [IndexPath : IconDownloader]()
     var notificationPerPage = [NotificationData]()
     var allNotifications = [NotificationData]()
-    
+    var notificationIdTracker = [Int32: Bool]();
     //var allNotificationModels = [NotificationMO]()
     //var notificationModelPerPage = [NotificationMO]()
 
@@ -45,6 +45,9 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
 
 
         self.notificationTableView.register(UINib(nibName: "NotificationGatheringTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NotificationGatheringTableViewCell")
+        
+        self.notificationTableView.register(UINib(nibName: "NotificationGatheringTwoLineTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NotificationGatheringTwoLineTableViewCell")
+        
         self.notificationTableView.register(UINib(nibName: "HeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "HeaderTableViewCell")
         
         self.notificationTableView.isHidden = true
@@ -122,7 +125,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
     }
     
     func initilize() {
-        
+        self.notificationIdTracker = [Int32: Bool]();
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.pageNumber = 0;
         self.totalNotificationCounts = 0;
@@ -136,9 +139,9 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
         //self.allNotificationModels = NotificationModel().fetchOfflineNotifications();
         self.allNotifications = sqlDatabaseManager.findAllNotifications();
         if (self.allNotifications.count > 0) {
-            //let totalEventsPresent = self.allNotificationModels.count;
+            //let totalEventsPresent = self.allNotifications.count;
             //self.pageNumber = self.pageNumber + (totalEventsPresent/20)*20
-            self.totalNotificationCounts = self.allNotifications.count;
+            //self.totalNotificationCounts = self.allNotifications.count;
             self.notificationTableView.isHidden = false;
             
             /*for notificationMO in self.allNotificationModels {
@@ -193,7 +196,10 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
                     }
                      self.notificationPerPage = NotificationData().loadNotificationList(notificationArray: notificationsNsArray);
                     for notification in self.notificationPerPage {
-                        self.allNotifications.append(notification);
+                        if (self.notificationIdTracker[notification.notificationId] == nil)  {
+                            self.notificationIdTracker[notification.notificationId] = true;
+                            self.allNotifications.append(notification);
+                        }
                         
                         //Saving Notification Locally
                         sqlDatabaseManager.saveNotification(notification: notification);

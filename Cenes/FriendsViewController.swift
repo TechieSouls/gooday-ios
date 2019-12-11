@@ -242,6 +242,9 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
             if let name = selectedFriend.name {
                 eventMember.name = name;
             }
+            if let phone = selectedFriend.phone {
+                eventMember.phone = phone;
+            }
             if let eventMemberId = selectedFriend.eventMemberId {
                 eventMember.eventMemberId = eventMemberId;
             }
@@ -285,7 +288,9 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
                 if let status = userContact.status {
                     eventMember.status = status;
                 }
-
+                if let phone = userContact.phone {
+                   eventMember.phone = phone;
+                }
                 if (viewController.event != nil) {
                     viewController.event.eventMembers.append(eventMember)
                 } else {
@@ -321,7 +326,9 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
                 if let status = userContact.status {
                     eventMember.status = status;
                 }
-
+                if let phone = userContact.phone {
+                   eventMember.phone = phone;
+                }
                 eventMembers.append(eventMember);
             }
             createGatheringProtocolDelegate.friendsDonePressed(eventMembers: eventMembers);

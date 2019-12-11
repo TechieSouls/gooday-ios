@@ -267,10 +267,15 @@ func showPredictions() {
     let newStartDateComposTemp = Calendar.current.dateComponents(in: TimeZone.current, from: newStartDate!);
     let yearDiff = createGatheringDelegate.fsCalendarElements.year - newStartDateComposTemp.year!;
     newStartDate = Calendar.current.date(byAdding: .year, value: yearDiff, to: newStartDate!);
+    print("Start Time : ",newStartDate?.millisecondsSince1970);
     
     var endTimeDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.endTime)))
     var newEndDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
-    newEndDateCompos.day = 15;
+    if (endTimeDateComponent.hour! < startTimeDateComponent.hour!) {
+        newEndDateCompos.day = 16;
+    } else {
+        newEndDateCompos.day = 15;
+    }
     newEndDateCompos.month = createGatheringDelegate.fsCalendarElements.month;
     newEndDateCompos.year = createGatheringDelegate.fsCalendarElements.year;
     newEndDateCompos.hour = endTimeDateComponent.hour;
@@ -282,6 +287,7 @@ func showPredictions() {
     let newEndDateComposTemp = Calendar.current.dateComponents(in: TimeZone.current, from: newEndDate!);
     let endYearDiff = createGatheringDelegate.fsCalendarElements.year - newEndDateComposTemp.year!;
     newEndDate = Calendar.current.date(byAdding: .year, value: endYearDiff, to: newEndDate!);
+    print("End Time : ",newEndDate?.millisecondsSince1970);
 
     selectedDates = [String: UIColor]();
     var queryStr = "userId=\(String(createGatheringDelegate.event.createdById))&startTime=\(String(newStartDate!.millisecondsSince1970))&endTime=\(String(newEndDate!.millisecondsSince1970))";

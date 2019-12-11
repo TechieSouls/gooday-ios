@@ -278,12 +278,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             let timePickerHour: Int = datePickerDateComponets.hour!;
             
             if (startTimeHour > timePickerHour) {
-                datePickerDateComponets.day = datePickerDateComponets.day! + 1;
-            } else {
+                createGatheringDelegate.event.endTime = Calendar.current.date(byAdding: .day, value: 1, to: Date(milliseconds: timeInMillis))!.millisecondsSince1970;
+                            } else {
                 datePickerDateComponets.day = startTimeDateComponents.day!;
+                createGatheringDelegate.event.endTime = Calendar.current.date(from: datePickerDateComponets)!.millisecondsSince1970;
             }
-            createGatheringDelegate.event.endTime = Calendar.current.date(from: datePickerDateComponets)!.millisecondsSince1970;
-
+            //createGatheringDelegate.event.endTime = Calendar.current.date(from: datePickerDateComponets)!.millisecondsSince1970;
+            print("End Time : ", createGatheringDelegate.event.endTime);
             //Code to show hide Event Preview Button.
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] = true;
             //createGatheringDelegate.showHidePreviewGatheringButton();
@@ -352,7 +353,9 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         
         let startDateYearComponent = Calendar.current.component(.year, from: date);
 
-        if (currentYearComponent > startDateYearComponent || currentYearComponent < startDateYearComponent) {        dateLabel.text = String(date.EMMMMdyyyy()!);
+        if (currentYearComponent > startDateYearComponent || currentYearComponent < startDateYearComponent) {
+            dateLabel.text = String(date.EMMMMdyyyy()!);
+            
         } else {
             dateLabel.text = String(date.EMMMd()!);
         }
@@ -370,23 +373,42 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         //Incrementing End Date to next hour from current hour
         let calendar = Calendar.current;
         var startComponents = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.startTime)));
-        startComponents.day = selectedDateComponents.day
-        startComponents.month = selectedDateComponents.month
-        startComponents.year = selectedDateComponents.year
+        
+        var startComponentsTemp = DateComponents();
+        startComponentsTemp.hour = startComponents.hour
+        startComponentsTemp.minute = startComponents.minute
+        startComponentsTemp.second = startComponents.second
+        startComponentsTemp.nanosecond = 0;
+        startComponentsTemp.day = selectedDateComponents.day
+        startComponentsTemp.month = selectedDateComponents.month
+        startComponentsTemp.year = startDateYearComponent
 
-        let startDate = calendar.date(from: startComponents);
-        createGatheringDelegate.event.startTime = startDate!.millisecondsSince1970;
-        print(createGatheringDelegate.event.startTime);
+        let startDateTemp = calendar.date(from: startComponentsTemp);
+        createGatheringDelegate.event.startTime = startDateTemp!.millisecondsSince1970;
+       print("Start Time After Date Selected : ",createGatheringDelegate.event.startTime);
         
         let endCalendar = Calendar.current;
         var endComponents = endCalendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.endTime)));
-        endComponents.day = selectedDateComponents.day
-        endComponents.month = selectedDateComponents.month
-        endComponents.year = selectedDateComponents.year
+        
+        
+        var endComponentsTemp = DateComponents();
+        endComponentsTemp.hour = endComponents.hour
+        endComponentsTemp.minute = endComponents.minute
+        endComponentsTemp.second = endComponents.second
+        endComponentsTemp.nanosecond = 0;
+        endComponentsTemp.day = selectedDateComponents.day;
+        endComponentsTemp.day = selectedDateComponents.day
+        endComponentsTemp.month = selectedDateComponents.month
+        endComponentsTemp.year = startDateYearComponent
 
-        let endDate = endCalendar.date(from: endComponents);
+        var endDate = endCalendar.date(from: endComponentsTemp);
+        if ((endComponents.hour!) < (startComponents.hour!)) {
+            endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate!)
+        } else if ((endComponents.hour!) == (startComponents.hour!) && (endComponents.minute!) < (startComponents.minute!)) {
+            endDate = Calendar.current.date(byAdding: .day, value: 1, to: endDate!)
+        }
         createGatheringDelegate.event.endTime = endDate!.millisecondsSince1970;
-        print(createGatheringDelegate.event.endTime);
+        print("End Time After Date Selected : ",createGatheringDelegate.event.endTime);
         
         //Code to show hide Event Preview Button.
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;

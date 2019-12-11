@@ -17,9 +17,10 @@ class LocationService {
 
 static let searchPlacesString: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=3.1893164,101.7383723&radius=100&name=Irama"
 
-    func getLocationLatLong(id :String ,complete: @escaping([String: Any])->Void ) {
+    func getLocationLatLong(id :String ,complete: @escaping(NSDictionary)->Void ) {
         // Both calls are equivalent
         
+        var responseDict = NSDictionary();
         var returnedDict: [String: Any] = [:]
         returnedDict["Error"] = false
         returnedDict["ErrorMsg"] = ""
@@ -31,6 +32,7 @@ static let searchPlacesString: String = "https://maps.googleapis.com/maps/api/pl
             case .success:
                 json = response.result.value as! [String: Any]
                 returnedDict["data"] = json["result"]
+                responseDict = returnedDict as NSDictionary;
             case .failure(let error):
                 let errorX = error as NSError
                 if errorX.code == -999 {
@@ -39,8 +41,9 @@ static let searchPlacesString: String = "https://maps.googleapis.com/maps/api/pl
                     returnedDict["success"] = true
                     returnedDict["ErrorMsg"] = error.localizedDescription
                 }
+                responseDict = returnedDict as NSDictionary;
             }
-            complete(returnedDict)
+            complete(responseDict)
         }
     }
     

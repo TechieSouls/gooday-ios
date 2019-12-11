@@ -35,6 +35,7 @@ extension SqlliteDbManager {
             let expired = Expression<Bool>("expired")                       //17
             let synced = Expression<Bool>("synced");                        //18
             let description = Expression<String>("description");            //19
+            let eventPictureBinary = Expression<String>("event_picture_binary");            //20
 
             try database.run(events.create { t in
                 t.column(eventId, defaultValue: 0)
@@ -57,6 +58,7 @@ extension SqlliteDbManager {
                 t.column(expired, defaultValue: false)
                 t.column(synced, defaultValue: true)
                 t.column(description, defaultValue: "")
+                t.column(eventPictureBinary, defaultValue: "")
 
             })
             // CREATE TABLE "users" (
@@ -70,8 +72,11 @@ extension SqlliteDbManager {
     }
     
     func saveEvent(event: Event) {
-            
-        let dbEvent = findEventByEventId(eventId: event.eventId);
+        
+        var dbEvent = Event();
+        if (event.eventId != nil) {
+            dbEvent = findEventByEventId(eventId: event.eventId);
+        }
         if (dbEvent.title == nil) {
          
             do {
@@ -130,6 +135,81 @@ extension SqlliteDbManager {
             } catch {
                 print("Insert event error ",error)
             }
+        } else {
+            updateEventByEventId(eventId: event.eventId, eventFromApi:event);
+        }
+    }
+    
+    func saveEventWhenNoInternet(event: Event) {
+                
+        do {
+            let stmt = try database.prepare("INSERT INTO events (event_id, title, location, latitude, longitude, start_time, end_time, created_by_id, source, schedule_as, thumbnail, event_picture, is_predictive_on, is_full_day, place_id, full_day_start_time, key, expired, synced, description, event_picture_binary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            
+            
+            event.eventId = Int32(Date().timeIntervalSince1970);
+            event.synced = false;
+            event.expired = false;
+            event.scheduleAs = "Gathering";
+            event.source = "Cenes";
+            
+            var placeId = "";
+            if (event.placeId != nil) {
+                placeId = event.placeId ;
+            }
+            var thumbnail = "";
+            if (event.thumbnail != nil) {
+                thumbnail = event.thumbnail ;
+            }
+            var eventPicture = "";
+            if (event.eventPicture != nil) {
+                eventPicture = event.eventPicture ;
+            }
+            var location = "";
+            if (event.location != nil) {
+                location = event.location ;
+            }
+            var latitude = "";
+            if (event.latitude != nil) {
+                latitude = event.latitude ;
+            }
+            var longitude = "";
+            if (event.longitude != nil) {
+                longitude = event.longitude ;
+            }
+            
+            var fullDayStartTime = "";
+            if (event.fullDayStartTime != nil) {
+                fullDayStartTime = event.fullDayStartTime ;
+            }
+            
+            var key = "";
+            if (event.key != nil) {
+                key = event.key ;
+            }
+            
+            var description = "";
+            if (event.description != nil) {
+                description = event.description ;
+            }
+
+            try stmt.run(Int64(event.eventId), event.title, location, latitude, longitude, event.startTime, event.endTime, Int64(event.createdById), event.source, event.scheduleAs, thumbnail, eventPicture, event.isPredictiveOn, event.isFullDay, placeId, fullDayStartTime, key, event.expired, event.synced, description,  event.eventPictureBinary.base64EncodedString());
+
+            //Saving Event Members Of Event
+            let eventMember = EventMember();
+            eventMember.eventId = event.eventId;
+            eventMember.userId = event.createdById;
+            saveEventMemberWhenNoInternet(eventMember: eventMember);
+            event.eventMembers = [EventMember]();
+            event.eventMembers.append(eventMember);
+            /*if (event.eventMembers != nil && event.eventMembers.count > 0) {
+                for eventMember in event.eventMembers {
+                    saveEventMembers(eventMember: eventMember);
+                }
+            } else {
+                event.eventMembers = [EventMember]();
+            }*/
+        } catch {
+            print("Insert event error ",error)
         }
     }
     
@@ -277,6 +357,17 @@ extension SqlliteDbManager {
          return unsyncedEvents;
     }
     
+    func updateSyncStatusEventByEventId(eventId: Int32) {
+        
+        do {
+            let stmt = try database.prepare("update events set synced = ? where event_id = ?");
+            try stmt.run(1, Int64(eventId));
+                        
+        } catch {
+            print("Error in updateEventByEventId : ", error)
+        }
+    }
+    
     func findAllEventCounts(){
         do {
             print("Event Counts : ", try database.scalar("SELECT count(*) FROM events"));
@@ -326,6 +417,10 @@ extension SqlliteDbManager {
         }
         offlineEvent.description = event[19]! as? String;
 
+        let imageDataStr = event[20]! as? String;
+        if (imageDataStr != nil && imageDataStr != "") {
+            offlineEvent.eventPictureBinary = Data(base64Encoded: imageDataStr!)!;
+        }
         let eventMembers = findEventMembersByEventId(eventId: offlineEvent.eventId);
         offlineEvent.eventMembers = eventMembers;
         

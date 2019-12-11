@@ -156,7 +156,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     }
     
     @objc func googleViewPressed() {
-        GIDSignIn.sharedInstance()?.signOut();
+        //GIDSignIn.sharedInstance()?.signOut();
         GIDSignIn.sharedInstance()?.signIn();
     }
     
@@ -319,7 +319,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         
                         let alertController = UIAlertController(title: message, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
                         
-                        let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
+                        let okAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { (UIAlertAction) in
                             print ("Ok")
                             
                             alertController.dismiss(animated: true, completion: nil);
@@ -328,7 +328,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         }
                         
                         
-                        let noAction = UIAlertAction(title: "No", style: .default) { (UIAlertAction) in
+                        let noAction = UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { (UIAlertAction) in
                             print ("No")
                         }
                         alertController.addAction(okAction)
@@ -357,9 +357,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         }
         
         let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
-        let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
+        let confirmAlertController = UIAlertController(title: "Verification", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
         
-        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in
+        let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertActionStyle.default) { (UIAlertAction) in
             print ("Ok")
             
             var updatPostData = [String: Any]();
@@ -374,7 +374,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 
             });
         }
+        
         confirmAlertController.addAction(confirmAction)
+
         self.present(confirmAlertController, animated: true, completion: nil)
     }
 }

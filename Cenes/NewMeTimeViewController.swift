@@ -84,9 +84,10 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     
     func loadMeTimeData() -> Void {
 
+        self.metimeEvents = sqlDatabaseManager.findAllMeTimeRecurringEvent();
         //self.metimeEvents = MetimeRecurringEventModel().findAllMetimeRecurringEvents();
-       //print("Offline Events : ", self.metimeEvents.count);
-       // self.meTimeItemsTableView.reloadData();
+        print("Offline Events : ", self.metimeEvents.count);
+        self.meTimeItemsTableView.reloadData();
 
         if (Connectivity.isConnectedToInternet) {
             
@@ -99,7 +100,13 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
                     let meTimeArray = response["data"] as! NSArray;
                     
                     print(meTimeArray);
-                    //self.metimeEvents = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
+                    self.metimeEvents = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
+                    
+                    //Lets refresh the list locally.
+                    sqlDatabaseManager.deleteAllRecurringEvent();
+                    for metimeRecurringEvent in self.metimeEvents {
+                        sqlDatabaseManager.saveMeTimeRecurringEvent(metimeRecurringEvent: metimeRecurringEvent);
+                    }
                     //MetimeRecurringEventModel().deleteAllRecurringEvent();
                     //self.metimeEvents = MetimeRecurringEventModel().saveMetimeRecurringEventsMOFromNSArray(recurringEvents: meTimeArray);
                     self.meTimeItemsTableView.reloadData();

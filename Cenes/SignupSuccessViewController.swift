@@ -220,12 +220,8 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
 
     @objc func imageTapped() {
         // Create the AlertController and add its actions like button in ActionSheet
-        let actionSheetController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let actionSheetController = UIAlertController(title: "Cenes Photo", message: "Upload or Take photo for Cenes", preferredStyle: .actionSheet)
         
-        let cancelActionButton = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
-            print("Cancel")
-        }
-        actionSheetController.addAction(cancelActionButton)
         
         let saveActionButton = UIAlertAction(title: "Take Picture", style: .default) { action -> Void in
                 self.takePicture()
@@ -237,6 +233,12 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             self.selectPicture()
         }
         actionSheetController.addAction(deleteActionButton)
+        
+        let cancelActionButton = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+            print("Cancel")
+        }
+        actionSheetController.addAction(cancelActionButton)
+
         self.present(actionSheetController, animated: true, completion: nil)
     }
     
