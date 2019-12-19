@@ -9,6 +9,7 @@
 import UIKit
 import FBSDKLoginKit
 import GoogleSignIn
+import Mixpanel
 
 class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate {
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
@@ -38,6 +39,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     @IBOutlet weak var termsAndConditionsText: UILabel!
 
     var fbLoginBtn : FBSDKLoginButton!
+    var signinType = "Facebook";
     
     class func MainViewController() -> UINavigationController{
         
@@ -80,7 +82,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         
         // Initialize Google sign-in
         GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().clientID = "212716305349-ep3u9dm1pgrk1eof023rrtms0e0b4l2j.apps.googleusercontent.com"
+        GIDSignIn.sharedInstance().clientID = Util.GOOGLE_SERVER_ID
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
@@ -133,6 +135,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     */
     
     @objc func facebookViewPressed() {
+    
         fbLoginBtn = FBSDKLoginButton();
         fbLoginBtn.delegate = self;
         
@@ -188,9 +191,11 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         postData["name"] = userName;
                     }
                     
+                    var userEmailVar = "";
                     if (resultDic.value(forKey:"email") != nil) {
                         let userEmail = resultDic.value(forKey:"email") as! String;
                         postData["email"] = userEmail;
+                        userEmailVar = userEmail;
                     }
                     
                     if (resultDic.value(forKey:"gender") != nil) {
@@ -210,6 +215,11 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     if let country = setting.value(forKey: "countryCode") {
                         postData["country"] = country;
                     }
+                    
+                    //Mixpanel for Facebook Sigup Begins
+                    Mixpanel.mainInstance().track(event: "Signup",
+                                                  properties:[ "SignupType" : "\(self.signinType)", "SignupBegins" : "True", "UserEmail": "\(userEmailVar)"]);
+                    
                     
                     self.loginSocialRequest(postData: postData);
                 }
@@ -240,8 +250,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 postData["name"] = user.profile.name;
             }
             
+            var emailVar = "";
             if (user.profile.email != nil) {
                 postData["email"] = user.profile.email;
+                emailVar = user.profile.email;
             }
             
             if (user.profile.hasImage == true) {
@@ -257,7 +269,12 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
             if let country = setting.value(forKey: "countryCode") {
                 postData["country"] = country;
             }
-	
+            self.signinType = "Google";
+            //Mixpanel for Facebook Sigup Begins
+            Mixpanel.mainInstance().track(event: "Signup",
+                                          properties:[ "SignupType" : "\(self.signinType)", "Action":"Signup Begins", "UserEmail": "\(emailVar)"]);
+            
+            
             loginSocialRequest(postData: postData);
         }
     }
@@ -269,6 +286,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
             let success = response.value(forKey: "success") as! Bool;
             if (success == true) {
                 
+                
                 let loggedInUserDict = response.value(forKey: "data") as! NSDictionary;
                 setting.setValue(loggedInUserDict.value(forKey: "name"), forKey: "name");
                 setting.setValue(loggedInUserDict.value(forKey: "userId"), forKey: "userId");
@@ -277,8 +295,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     setting.setValue(photo, forKey: "photo");
                 }
                 
+                var emailVar = "";
                 if loggedInUserDict.value(forKey: "email") as? String != nil {
                     setting.setValue(loggedInUserDict.value(forKey: "email"), forKey: "email");
+                    emailVar = loggedInUserDict.value(forKey: "email") as! String;
                 }
                 
                 if loggedInUserDict.value(forKey: "gender") as? String != nil {
@@ -297,6 +317,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 
                 setting.setValue(UserSteps.Authentication, forKey: "footprints")
 
+                //Mixpanel for Facebook Sigup Begins
+                Mixpanel.mainInstance().track(event: "Signup",
+                                              properties:[ "SignupType" : "Facebook", "Action":"Signup Success", "UserEmail": "\(emailVar)"]);
+                
                 let isNew = loggedInUserDict.value(forKey: "isNew") as! Bool;
                 if (isNew == false) {
                     setting.setValue(loggedInUserDict.value(forKey: "dateOfBirthStr"), forKey: "dateOfBirthStr");

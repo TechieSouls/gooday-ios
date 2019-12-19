@@ -13,6 +13,7 @@ import Crashlytics
 import CoreTelephony
 import CoreData
 import Reachability
+import Mixpanel
 
 protocol DataTableViewCellProtocol {
     func reloadTableToTop();
@@ -53,7 +54,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         super.viewDidLoad()
         //self.calendarView.backgroundColor = themeColor;
         // Do any additional setup after loading the view.
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshHomeScreenFromNotification), name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         calendrStatusToast.layer.cornerRadius = 10;
@@ -104,6 +104,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 }
             })
         }
+        
+        //Mixpanel.mainInstance().track(event: "HomeScreen",
+          //                            properties:[ "User" : "\(loggedInUser.name!)"])
 
     }
     

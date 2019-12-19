@@ -16,6 +16,7 @@ import GoogleSignIn
 import Google
 import SideMenu
 import Reachability
+import Mixpanel
  
 let setting = UserDefaults.standard
 let reachability = Reachability()!
@@ -45,6 +46,7 @@ var sqlDatabaseManager = SqlliteDbManager();
         
         print("My App Launched on Termination**************************************");
     
+        Mixpanel.initialize(token: "255bc3dcb4ae26b7202f5e997a66e4d9")
         Fabric.with([Crashlytics.self])
         
         FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -125,6 +127,10 @@ var sqlDatabaseManager = SqlliteDbManager();
                     }
                 }
             })
+        } else {
+            
+            //Mixpanel for App Launch
+            Mixpanel.mainInstance().track(event: "App Launch")
         }
         return true
     }
@@ -163,9 +169,10 @@ var sqlDatabaseManager = SqlliteDbManager();
                         self.cenesTabBar?.setTabBarDotVisible(visible: true);
                     }
                 }
+                
+                WebService().resetBadgeCount();
             })
         }
-        //WebService().resetBadgeCount();
         
     }
 

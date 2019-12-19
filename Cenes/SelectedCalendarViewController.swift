@@ -10,6 +10,7 @@ import UIKit
 import GoogleSignIn
 import EventKit
 import EventKitUI
+import Mixpanel
 
 protocol ThirdPartyCalendarProtocol {
     func updateInfo(isSynced: Bool, email: String);
@@ -44,11 +45,14 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
-        GIDSignIn.sharedInstance().serverClientID = "212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com";
-        GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
-                                             "https://www.googleapis.com/auth/calendar.readonly"]
+        GIDSignIn.sharedInstance().serverClientID = Util.GOOGLE_SERVER_ID;
+        GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/calendar.readonly"]
+        //Cenes App
+        //212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com
         
-        
+        //New Beta
+        //54828242588-8qk7si330grto3qo9ddek6e5q2j0dmdh.apps.googleusercontent.com
+
         activityIndicator.activityIndicatorViewStyle = .gray;
         activityIndicator.center = view.center;
         self.view.addSubview(activityIndicator);
@@ -98,6 +102,9 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         GIDSignIn.sharedInstance().disconnect()
         GIDSignIn.sharedInstance().signOut()
         GIDSignIn.sharedInstance().signIn()
+        
+        Mixpanel.mainInstance().track(event: "SyncCalendar",
+        properties:[ "CalendarType" : "Google", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
     }
     
     func outlookSyncBegins() {
@@ -105,7 +112,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             outlookService.logout()
         }
         // pass to webservice
-        
+        Mixpanel.mainInstance().track(event: "SyncCalendar",
+               properties:[ "CalendarType" : "Outlook", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
         outlookService.login(from: self) { (error,token, refreshToken) in
             if error == nil{
 
@@ -137,7 +145,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                 let success = response.value(forKey: "success") as! Bool;
                                 if (success == true) {
                                     
-                                    CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
+                                    Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                                  properties:[ "CalendarType" : "Outlook", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
                                     
                                     let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                                     
@@ -174,6 +183,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         var params : [String:Any]
         let eventStore : EKEventStore = EKEventStore()
         
+        Mixpanel.mainInstance().track(event: "SyncCalendar",
+               properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
         // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
         let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
         self.isSynced = true;
@@ -271,6 +282,9 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                             if (success == true) {
                                 let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
 
+                                Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                              properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+                                
                                 self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                             }
                             
@@ -330,7 +344,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
             print(error.localizedDescription)
         } else {
             
-            
             let authentication = user.authentication
             print("Access token:", (authentication?.accessToken!)!)
             print("Refresh token:", (authentication?.refreshToken!)!)
@@ -357,6 +370,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                     if (success == true) {
                         let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                         
+                        Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                      properties:[ "CalendarType" : "Google", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
                         self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                     }
                     

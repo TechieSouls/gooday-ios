@@ -10,6 +10,7 @@ import UIKit
 import MobileCoreServices
 import NVActivityIndicatorView
 import FBSDKLoginKit
+import Mixpanel
 
 class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate  {
 
@@ -109,6 +110,11 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         let isFormValidFlag = isFormValid();
         
         if (isFormValidFlag == true && textFieldEmail.text != nil && isValidEmail(testStr: textFieldEmail.text!)) {
+            
+            //Mixpanel for Sigup Begins
+            Mixpanel.mainInstance().track(event: "Signup",
+                                          properties:[ "SignupType" : "Email", "SignupBegins" : "True", "UserEmail": "\(textFieldEmail.text!)"]);
+            
             var postData = [String: Any]();
             postData["email"] = textFieldEmail.text!;
             postData["password"] = textFieldPassword.text!
@@ -128,8 +134,11 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
                     self.showAlert(title: "Error", message: response.value(forKey: "message") as! String);
                 } else {
                     
-                    let data = response.value(forKey: "data") as! NSDictionary;
+                    //Mixpanel for Signup Success
+                    Mixpanel.mainInstance().track(event: "Signup",
+                                                  properties:[ "SignupType" : "Email", "SignupSuccess" : "True", "UserEmail": "\(self.textFieldEmail.text!)"]);
                     
+                    let data = response.value(forKey: "data") as! NSDictionary;
                     setting.setValue(data.object(forKey: "userId"), forKey: "userId")
                     setting.setValue(data.object(forKey: "token"), forKey: "token")
                     setting.setValue(data.object(forKey: "email"), forKey: "email")

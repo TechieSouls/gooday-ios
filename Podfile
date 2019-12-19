@@ -25,6 +25,7 @@ pod 'Fabric'
 pod 'Crashlytics'
 pod 'ReachabilitySwift'
 pod 'SQLite.swift', '~> 0.12.0'
+pod 'Mixpanel-swift'
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|

@@ -10,6 +10,7 @@ import UIKit
 import NVActivityIndicatorView
 import VisualEffectView
 import CoreData
+import Mixpanel
 
 class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
 
@@ -37,6 +38,9 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
         
         //Variables Initialization
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+        
+        Mixpanel.mainInstance().track(event: "MeTime",
+        properties:[ "Action" : "MetimeScreenOpened", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
     }
     
     

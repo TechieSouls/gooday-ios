@@ -7,9 +7,9 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>212716305349-ep3u9dm1pgrk1eof023rrtms0e0b4l2j.apps.googleusercontent.com</string>
+	<string>54828242588-k1gmql38960e0b30fjs4qq6477um040m.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.212716305349-ep3u9dm1pgrk1eof023rrtms0e0b4l2j</string>
+	<string>com.googleusercontent.apps.54828242588-k1gmql38960e0b30fjs4qq6477um040m</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCwk1PW9TAix5uOW5M9mJ4XiGbeQiuZXi0</string>
 	<key>GCM_SENDER_ID</key>
@@ -17,21 +17,21 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.optima.cenesApp</string>
+	<string>com.cenesgroup.cenesapp01</string>
 	<key>PROJECT_ID</key>
-	<string>cenesapp</string>
+	<string>cenes-beta-live</string>
 	<key>STORAGE_BUCKET</key>
 	<string>cenesapp.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:212716305349:ios:22ed91ec71dc2520</string>
 	<key>DATABASE_URL</key>

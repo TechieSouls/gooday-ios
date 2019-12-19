@@ -12,6 +12,7 @@ import EventKit
 import EventKitUI
 import MobileCoreServices
 import Photos
+import Mixpanel
 
 protocol SignupStep2FormTableViewCellProtocol {
     
@@ -73,7 +74,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
-        GIDSignIn.sharedInstance().serverClientID = "212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com";
+        GIDSignIn.sharedInstance().serverClientID = Util.GOOGLE_SERVER_ID;
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]
     }
@@ -173,7 +174,10 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     func googleSyncBegins() {
         GIDSignIn.sharedInstance().disconnect()
         GIDSignIn.sharedInstance().signOut()
-        GIDSignIn.sharedInstance().signIn()
+        GIDSignIn.sharedInstance().signIn();
+        
+        Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                      properties:[ "CalendarType" : "Google", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
     }
     
     func outlookSyncBegins() {
@@ -181,6 +185,8 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
             outlookService.logout()
         }
         // pass to webservice
+        Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                      properties:[ "CalendarType" : "Outlook", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
         
         outlookService.login(from: self) { (error,token, refreshToken) in
             if error == nil{
@@ -204,7 +210,10 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                         DispatchQueue.global(qos: .background).async {
                             // your code here
                             UserService().syncOutlookEvents(postData: postData, token: self.loggedInUser.token, complete: {(response) in
-                                print("Outlook Synced.")
+                                print("Outlook Synced.");
+                                
+                                Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                properties:[ "CalendarType" : "Outlook", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
                             })
                         }
                     }
@@ -220,6 +229,10 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     }
     
     func appleSyncBegins() {
+        
+        Mixpanel.mainInstance().track(event: "SyncCalendar",
+        properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+        
         var params : [String:Any]
         let eventStore : EKEventStore = EKEventStore()
         
@@ -312,6 +325,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                         // your code here
                         UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
                             print("Device Synced.")
+                            
+                            Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                          properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
                         })
                     }
                     
@@ -393,6 +409,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
             DispatchQueue.global(qos: .background).async {
                 UserService().syncGoogleEvent(postData: postData, token: self.loggedInUser.token, complete: {(response) in
                     print("synced");
+                    
+                    Mixpanel.mainInstance().track(event: "SyncCalendar",
+                    properties:[ "CalendarType" : "Google", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
                 });
             }
         }

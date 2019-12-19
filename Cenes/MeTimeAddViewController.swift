@@ -11,6 +11,7 @@ import NVActivityIndicatorView
 import MobileCoreServices
 import Photos
 import CoreData
+import Mixpanel
 
 class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate {
 
@@ -253,6 +254,9 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             if Connectivity.isConnectedToInternet {
                 self.startLoading();
                 
+                Mixpanel.mainInstance().track(event: "MeTime",
+                                              properties:[ "Action" : "MeTime Create Begins", "Title":"\(self.metimeRecurringEvent.title!)", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+                
                 let meTimerecurringPatternDict = self.metimeRecurringEvent.toDictionary();
                 print(meTimerecurringPatternDict);
                 MeTimeService().saveMeTime(postData: meTimerecurringPatternDict, token: self.loggedInUser.token, complete: {(response) in
@@ -262,6 +266,10 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                     if (response.value(forKey: "status") != nil) {
                         let status = response.value(forKey: "status") as! String;
                         if (status == "success") {
+                            
+                            Mixpanel.mainInstance().track(event: "MeTime",
+                                                          properties:[ "Action" : "MeTime Create Success", "Title":"\(self.metimeRecurringEvent.title!)", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+                            
                             
                             if (response.value(forKey: "recurringEvent") != nil) {
                                 let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;

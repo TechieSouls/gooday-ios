@@ -13,6 +13,7 @@ import VisualEffectView
 import NVActivityIndicatorView
 import Mantis
 import CoreData
+import Mixpanel
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -475,6 +476,11 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             
             if (event.createdById == nil || event.createdById == 0) {
                 event.createdById = self.loggedInUser.userId;
+            }
+            
+            if (event.eventId == nil) {
+                Mixpanel.mainInstance().track(event: "Gathering",
+                properties:[ "Action" : "Create Gathering Begins", "Title":"\(self.event.title!)", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
             }
             
             let viewController: GatheringInvitationViewController = storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;

@@ -10,6 +10,7 @@ import UIKit
 import MessageUI
 import Messages
 import CoreData
+import Mixpanel
 
 protocol NewHomeViewControllerDeglegate {
     func refershDataFromOtherScreens();
@@ -55,9 +56,8 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var newHomeViewControllerDeglegate: NewHomeViewController!;
     var fromPushNotificaiton = false;
     var isLoggedInUserInMemberList = false;
-    //let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    //var context: NSManagedObjectContext? = nil;
-
+    var isNewEvent: Bool = false;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -104,6 +104,13 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         
         let outsideTabGuestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(cardPressed));
         buttonsView.addGestureRecognizer(outsideTabGuestureRecognizer);
+        
+        if (event.eventId != nil && event.eventId != 0) {
+            Mixpanel.mainInstance().track(event: "Invitation",
+            properties:[ "Action" : "View Invitation Card", "Title":"\(self.event.title!)", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+        } else {
+            isNewEvent = true;
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -567,6 +574,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                             
                                             let success = response.value(forKey: "success") as! Bool;
                                             if (success == true) {
+                                                
+                                                Mixpanel.mainInstance().track(event: "Gathering",
+                                                properties:[ "Action" : "Create Gathering Success", "Title":"\(self.event.title!)", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+                                                
                                                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                                                 let eventId = dataDict.value(forKey: "eventId") as! Int32;
                                                 if (eventId != nil && eventId != 0) {

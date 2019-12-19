@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Mixpanel
 
 class InvitationCardTableViewCell: UITableViewCell {
 
@@ -215,6 +216,9 @@ class InvitationCardTableViewCell: UITableViewCell {
             
             // present the view controller
             gatheringInvitaionViewControllerDelegate.present(activityViewController, animated: true, completion: nil)
+            
+            Mixpanel.mainInstance().track(event: "Invitation",
+            properties:[ "Action" : "Share Invitation", "Title":"\(gatheringInvitaionViewControllerDelegate.event.title!)", "UserEmail": "\(gatheringInvitaionViewControllerDelegate.loggedInUser.email!)", "UserName": "\(gatheringInvitaionViewControllerDelegate.loggedInUser.name!)"]);
         }
     }
     
