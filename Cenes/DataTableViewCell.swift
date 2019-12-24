@@ -199,6 +199,14 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
                         
         }
     }
+    
+    @objc func profilePicTapped(sender: UITapGestureRecognizer) {
+        
+        let viewContro = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "ImagePanableViewController") as! ImagePanableViewController;
+        viewContro.profilePicEnlargedTemp = sender.view as! UIImageView;
+        self.newHomeViewControllerDelegate.present(viewContro, animated: true, completion: nil);
+        
+    }
 }
 
 extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
@@ -254,6 +262,10 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                             cell.profileImage.image = UIImage(named: "profile_pic_no_image");
                         }
                     }
+                    
+                    let imageTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(profilePicTapped(sender:)));
+                    cell.profileImage.isUserInteractionEnabled = true;
+                    cell.profileImage.addGestureRecognizer(imageTapGesture);
                     
                     if (totalRows > 1 && indexPath.row == (totalRows - 2)) {
                         

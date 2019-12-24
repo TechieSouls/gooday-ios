@@ -186,6 +186,7 @@
 		5EC7A1832281AB090010E804 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A1822281AB090010E804 /* ProfileService.swift */; };
 		5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */; };
 		5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */; };
+		5ECF814023B232D600777F8F /* ImagePanableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECF813F23B232D600777F8F /* ImagePanableViewController.swift */; };
 		5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */; };
 		5ED340CF239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */; };
 		5ED340D0239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5ED340CE239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib */; };
@@ -617,6 +618,7 @@
 		5EC7A1822281AB090010E804 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMatchOnboardingViewController.swift; sourceTree = "<group>"; };
 		5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationOnboardingViewController.swift; sourceTree = "<group>"; };
+		5ECF813F23B232D600777F8F /* ImagePanableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePanableViewController.swift; sourceTree = "<group>"; };
 		5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveData.swift; sourceTree = "<group>"; };
 		5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGatheringTwoLineTableViewCell.swift; sourceTree = "<group>"; };
 		5ED340CE239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationGatheringTwoLineTableViewCell.xib; sourceTree = "<group>"; };
@@ -1666,6 +1668,7 @@
 				944A7B511F98044F001491D3 /* Alarm */,
 				AE4A817C1FAB1D90008AB844 /* CenesTabController.swift */,
 				AEDD81481FB0734500F15742 /* ProfileViewController.swift */,
+				5ECF813F23B232D600777F8F /* ImagePanableViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -2256,6 +2259,7 @@
 				B9710C901FA3BA35000A45B3 /* RemindersTableViewCell.swift in Sources */,
 				5E41ED1522741F4D00E972E1 /* InvitationTabsTableViewCell.swift in Sources */,
 				5E47C9F4225B16A800C738D3 /* UITabBarController+Customs.swift in Sources */,
+				5ECF814023B232D600777F8F /* ImagePanableViewController.swift in Sources */,
 				AE8F47151FB9B65500C153F0 /* DiaryViewController.swift in Sources */,
 				5E2797C5222BC2D20098F295 /* GatheringLocTableViewCell.swift in Sources */,
 				5EB2A3B1232763E100EF9FAA /* EventModel+CoreDataProp.swift in Sources */,
@@ -2629,12 +2633,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.33;
+				MARKETING_VERSION = 2.2.34;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2657,12 +2661,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.33;
+				MARKETING_VERSION = 2.2.34;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
