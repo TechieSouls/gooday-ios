@@ -264,23 +264,26 @@ class GuestListViewController: UIViewController {
         self.filteredEventMembers = [EventMember]();
 
         //Lets first find the host
-        for evemem in self.event.eventMembers! {
-            
-            if (evemem.userId != nil && evemem.userId != 0
-                && evemem.userId == self.event.createdById) {
-                evemem.owner = true;
-                self.filteredEventMembers.append(evemem);
-                break;
+        if (self.event.eventMembers != nil) {
+            for evemem in self.event.eventMembers! {
+                if (evemem.userId != nil && evemem.userId != 0
+                    && evemem.userId == self.event.createdById) {
+                    evemem.owner = true;
+                    self.filteredEventMembers.append(evemem);
+                    break;
+                }
             }
         }
 
         //We will again iterate the loop to fetch all other guests
         //except owner and they should be below host
-        for evemem in self.event.eventMembers! {
+        if (self.event.eventMembers != nil) {
+            for evemem in self.event.eventMembers! {
 
-            if (evemem.userId != nil && evemem.userId != 0 && evemem.userId != self.event.createdById && evemem.status == "Going") {
-                evemem.owner = false;
-                self.filteredEventMembers.append(evemem);
+                if (evemem.userId != nil && evemem.userId != 0 && evemem.userId != self.event.createdById && evemem.status == "Going") {
+                    evemem.owner = false;
+                    self.filteredEventMembers.append(evemem);
+                }
             }
         }
         
@@ -303,10 +306,12 @@ class GuestListViewController: UIViewController {
         
         self.filteredEventMembers = [EventMember]();
 
-        for eventMem in self.event.eventMembers! {
+        if (self.event.eventMembers != nil) {
+            for eventMem in self.event.eventMembers! {
 
-            if (eventMem.status == "NotGoing") {
-                filteredEventMembers.append(eventMem);
+                if (eventMem.status == "NotGoing") {
+                    filteredEventMembers.append(eventMem);
+                }
             }
         }
         

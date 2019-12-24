@@ -74,6 +74,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
+        GIDSignIn.sharedInstance().clientID = Util.GOOGLE_CLIENT_ID;
+        GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
+        GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
         GIDSignIn.sharedInstance().serverClientID = Util.GOOGLE_SERVER_ID;
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]

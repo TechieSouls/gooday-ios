@@ -102,6 +102,34 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
             }
             cell.nonCenesUserLabel.text = nonCenesUserName;            
         }
+        
+        if (eventMember.userId != nil && eventMember.userId != 0) {
+
+            if (createGatheringDelegate.createGathDto.availableFriendsList != "") {
+                let availableFriendsListArray = createGatheringDelegate.createGathDto.availableFriendsList.split(separator: ",");
+                
+                cell.availabilityMark.isHidden = false;
+
+                var ifUserAvailable: Bool = false;
+                for availableFriendsListArrayItem in availableFriendsListArray {
+                    if (eventMember.userId == Int32(availableFriendsListArrayItem)) {
+                        ifUserAvailable = true;
+                    }
+                }
+                
+                if (ifUserAvailable == false) {
+                    cell.availabilityMark.backgroundColor = UIColor.red;
+                } else {
+                    cell.availabilityMark.backgroundColor = UIColor.green;
+                }
+            } else {
+                cell.availabilityMark.isHidden = true;
+            }
+        } else {
+            cell.availabilityMark.isHidden = true;
+
+        }
+        
         return cell;
     }
 }

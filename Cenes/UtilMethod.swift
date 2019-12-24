@@ -270,6 +270,7 @@ class Util{
     }
     
     static var GOOGLE_SERVER_ID = "54828242588-l9jhdupf5vl2l1p1bjuif94a2dme5kov.apps.googleusercontent.com";
+    static var GOOGLE_CLIENT_ID = "54828242588-k1gmql38960e0b30fjs4qq6477um040m.apps.googleusercontent.com"
 }
 extension UIViewController
 {

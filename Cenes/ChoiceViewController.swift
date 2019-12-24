@@ -82,7 +82,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         
         // Initialize Google sign-in
         GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().clientID = Util.GOOGLE_SERVER_ID
+        GIDSignIn.sharedInstance().clientID = Util.GOOGLE_CLIENT_ID;
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
@@ -319,7 +319,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
 
                 //Mixpanel for Facebook Sigup Begins
                 Mixpanel.mainInstance().track(event: "Signup",
-                                              properties:[ "SignupType" : "Facebook", "Action":"Signup Success", "UserEmail": "\(emailVar)"]);
+                                              properties:[ "SignupType" : "\(self.signinType)", "Action":"Signup Success", "UserEmail": "\(emailVar)"]);
                 
                 let isNew = loggedInUserDict.value(forKey: "isNew") as! Bool;
                 if (isNew == false) {

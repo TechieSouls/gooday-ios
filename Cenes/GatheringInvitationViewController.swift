@@ -105,7 +105,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         let outsideTabGuestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(cardPressed));
         buttonsView.addGestureRecognizer(outsideTabGuestureRecognizer);
         
-        if (event.eventId != nil && event.eventId != 0) {
+        if (event.eventId != nil && event.eventId != 0 && self.event.title != nil) {
             Mixpanel.mainInstance().track(event: "Invitation",
             properties:[ "Action" : "View Invitation Card", "Title":"\(self.event.title!)", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
         } else {

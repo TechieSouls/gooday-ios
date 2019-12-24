@@ -1128,7 +1128,12 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 self.dataTableViewCellProtocolDelegate.refreshInnerTable();
                 
                 if (self.homescreenDto.scrollToMonthStartSectionAtHomeButton.count > 0) {
-                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
+                   
+                    let scrollSectionIndex = HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]);
+                   
+                    if (scrollSectionIndex < self.homeDtoList.count) {
+                        self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: scrollSectionIndex);
+                    }
                 }
 
             }
@@ -1513,8 +1518,12 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     } else {
                         self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: self.homescreenDto.scrollToSectionIndex)
                     }*/
-                    self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]))
-                    
+                   
+                    let sectionIndex = HomeManager().getScrollIndexForTodaysEvent(homeDataList: self.homeDtoList, key: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0]);
+                   
+                    if (sectionIndex < self.homeDtoList.count) {
+                        self.dataTableViewCellProtocolDelegate.scrollTableToDesiredIndex(sectionIndex: sectionIndex);
+                    }
                     
                 } else {
                     self.dataTableViewCellProtocolDelegate.reloadTableToTop();

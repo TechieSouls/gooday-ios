@@ -45,6 +45,11 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
+        // Initialize Google sign-in
+        GIDSignIn.sharedInstance().clientID = Util.GOOGLE_CLIENT_ID;
+        GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
+        GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
+
         GIDSignIn.sharedInstance().serverClientID = Util.GOOGLE_SERVER_ID;
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/calendar.readonly"]
         //Cenes App
@@ -99,12 +104,21 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
     }
     */
     func googleSyncBegins() {
-        GIDSignIn.sharedInstance().disconnect()
-        GIDSignIn.sharedInstance().signOut()
-        GIDSignIn.sharedInstance().signIn()
+        do {
+            GIDSignIn.sharedInstance().disconnect()
+            GIDSignIn.sharedInstance().signOut()
+            try GIDSignIn.sharedInstance().signIn()
+            
+            Mixpanel.mainInstance().track(event: "SyncCalendar",
+            properties:[ "CalendarType" : "Google", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+        } catch {
+            print(error)
+            Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                          properties:[ "CalendarType" : "Google", "Action" : "Sync Begins","Error":"\(error.localizedDescription)", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+        }
         
-        Mixpanel.mainInstance().track(event: "SyncCalendar",
-        properties:[ "CalendarType" : "Google", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+        
+        
     }
     
     func outlookSyncBegins() {

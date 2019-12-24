@@ -33,6 +33,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
     var selectedDates = [String: UIColor]();
     var unselectedDates = [String: UIColor]();
     var calendarPage: Date!
+    var predictionsData = [PredictiveData]();
         
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -149,14 +150,28 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 createGatheringDelegate.createGathDto.timeMatchIconOn = false;
                 predictiveInfoIcon.image = UIImage.init(named: "time_match_icon_off");
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveInfoRow] = false;
-                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = true;
+                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = false;
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true;
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.friendsCollectionRow] = true;
                 createGatheringDelegate.createGathTableView.reloadData();
             }
             
             
-            createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true
+            createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
+            
+            if (createGatheringDelegate.event.isPredictiveOn == true) {
+                for prediction in self.predictionsData {
+                    let predictiveDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: prediction.date));
+                    
+                    if (selectedDateCompos.day == predictiveDateCompos.day && selectedDateCompos.month == predictiveDateCompos.month && selectedDateCompos.year == predictiveDateCompos.year) {
+                        
+                        createGatheringDelegate.createGathDto.availableFriendsList =
+                            prediction.attendingFriendsList;
+                        break;
+                    }
+                }
+            }
+            
             dateClickedProtocolDelegate.predictiveCalendarDatePressed(date: date);
             
         } else {
@@ -246,6 +261,8 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 showPredictions();
             }
         } else {
+            createGatheringDelegate.createGathDto.availableFriendsList = "";
+            createGatheringDelegate.createGathTableView.reloadData();
             self.predictiveCalendar.reloadData();
         }
     }
@@ -316,7 +333,7 @@ func showPredictions() {
         if (success == true) {
             let predictiveArr = response.value(forKey: "data") as! NSArray;
             
-            let predictions = PredictiveData().loadPredicitiveDataFromList(predictiveArray: predictiveArr);
+            self.predictionsData = PredictiveData().loadPredicitiveDataFromList(predictiveArray: predictiveArr);
             
             let predictiveFormatter = DateFormatter();
             predictiveFormatter.dateFormat = "yyyy/MM/dd";
@@ -326,7 +343,7 @@ func showPredictions() {
             let currentPageDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: currentPageDate);
             print("Current Page Month : \(currentPageDateCompos.month)");
             
-            for prediction in predictions {
+            for prediction in self.predictionsData {
                 
                 let calendar = Calendar.current;
                 let dateComponents = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(prediction.date)))

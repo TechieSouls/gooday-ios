@@ -196,13 +196,13 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                     //createGatheringDelegate.showHidePreviewGatheringButton();
                 }
             } else {
-                
                 createGatheringDelegate.showHidePreviewGatheringButton(show: false);
 
                 //Date Bar is closed and user pressed it to choose date from Calendar
-                createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
-                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
-                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = false;
+            createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
+            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
+            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = false;
+                
                 dateBarArrow.image = UIImage.init(named: "date_panel_down_arrow")
                 
                 if (createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.startBar] == true || createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.endBar] == true) {
@@ -359,12 +359,12 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         } else {
             dateLabel.text = String(date.EMMMd()!);
         }
-        createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
+        createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
         
         createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true
         
-        dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
-        createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = false
+        //dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
+        //createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
         
         
         let selectedDateCal = Calendar.current;
@@ -423,6 +423,6 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //createGatheringDelegate.showHidePreviewGatheringButton();
         }
         
-        createGatheringDelegate.showHidePreviewGatheringButton(show: true);
+        //createGatheringDelegate.showHidePreviewGatheringButton(show: true);
     }
 }
