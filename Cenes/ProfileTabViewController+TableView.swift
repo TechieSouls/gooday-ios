@@ -52,43 +52,7 @@ extension ProfileTabViewController: UITableViewDelegate, UITableViewDataSource {
             break;
             
         case 3:
-            // create an actionSheet
-            let actionSheetController: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            
-            // create an action
-            let faqAction: UIAlertAction = UIAlertAction(title: "FAQ", style: .default) { action -> Void in
-                //self.selectPicture();
-                //if let requestUrl = NSURL(string: "\(faqLink)") {
-                    //UIApplication.shared.openURL(requestUrl as URL)
-                    UIApplication.shared.open(URL.init(string: faqLink)!, options: [String:Any](), completionHandler: nil);
-                }
-            
-            let handfAction: UIAlertAction = UIAlertAction(title: "Help & Feedback", style: .default) { action -> Void in
-                
-                let iphoneDetails = "\(UIDevice.modelName) \(UIDevice.current.systemVersion)";
-                
-                if MFMailComposeViewController.canSendMail() {
-                    let mail = MFMailComposeViewController()
-                    mail.mailComposeDelegate = self
-                    mail.setToRecipients(["support@cenesgroup.com"])
-                    mail.setMessageBody("\(iphoneDetails) \n", isHTML: false)
-                    self.present(mail, animated: true, completion: nil)
-                } else {
-                    print("Cannot send mail")
-                    // give feedback to the user
-                }
-            }
-            
-            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in }
-            //cancelAction.setValue(UIColor.black, forKey: "titleTextColor")
-            
-            actionSheetController.addAction(faqAction)
-            actionSheetController.addAction(handfAction)
-            actionSheetController.addAction(cancelAction)
-            
-            // present an actionSheet...
-            addActionSheetForiPad(actionSheet: actionSheetController)
-            self.present(actionSheetController, animated: true, completion: nil)
+            self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
             break;
             
         case 4:

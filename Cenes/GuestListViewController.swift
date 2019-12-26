@@ -462,6 +462,10 @@ extension GuestListViewController: UITableViewDelegate, UITableViewDataSource {
             cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
         }
         
+        cell.profilePic.isUserInteractionEnabled = true;
+        cell.profilePic.tag = -1;
+        cell.profilePic.addGestureRecognizer(self.profilePicTapGuesture);
+        
         return cell;
     }
     

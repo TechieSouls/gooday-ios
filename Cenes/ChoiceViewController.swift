@@ -10,8 +10,9 @@ import UIKit
 import FBSDKLoginKit
 import GoogleSignIn
 import Mixpanel
+import MessageUI
 
-class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate {
+class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate, MFMailComposeViewControllerDelegate {
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         print("Done");
     }
@@ -27,7 +28,8 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     
     @IBOutlet weak var secondViewContainer: UIView!
     
-    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
     @IBOutlet weak var threeButtonsView: UIView!
     
     @IBOutlet weak var facebookViewBtn: UIView!
@@ -87,7 +89,8 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
 
-        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -133,6 +136,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         // Pass the selected object to the new view controller.
     }
     */
+    
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
     
     @objc func facebookViewPressed() {
     

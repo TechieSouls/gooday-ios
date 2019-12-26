@@ -974,7 +974,10 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
                     self.isLoggedInUserAsOwner = true;
                 }
             }
-            
+            cell.profilePic.isUserInteractionEnabled = true;
+            cell.profilePic.tag = -1;
+            cell.profilePic.addGestureRecognizer(self.profilePicTapGuesture);
+
             if Connectivity.isConnectedToInternet {
                 
                 if (self.event.eventPicture != nil) {

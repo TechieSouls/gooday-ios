@@ -84,6 +84,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         photoUploadSpinner.isHidden = true;
         //Image View
         meTimeImageView.setRounded();
+        meTimeImageView.contentMode = .scaleAspectFill
         meTimeImageView.layer.borderWidth = 2;
         meTimeImageView.layer.borderColor = UIColor.white.cgColor;
         let meTimeImageViewTapGesture = UITapGestureRecognizer(target: self, action: #selector(photoIconClicked))

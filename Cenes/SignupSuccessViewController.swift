@@ -11,8 +11,9 @@ import MobileCoreServices
 import NVActivityIndicatorView
 import FBSDKLoginKit
 import Mixpanel
+import MessageUI
 
-class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate  {
+class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate, MFMailComposeViewControllerDelegate  {
 
     
     @IBOutlet weak var topRoundedView: UIView!
@@ -24,7 +25,8 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     
     @IBOutlet weak var textFieldConfirmPassword: UITextField!
     
-    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
     @IBOutlet weak var loginButton: UIButton!
     
     @IBOutlet weak var chooseProfilePhoto: UIImageView!
@@ -87,6 +89,10 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         backButton.addGestureRecognizer(backTapGesture);
         
         self.hideKeyboardWhenTappedAround();
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -221,6 +227,10 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             }
         }
         
+    }
+    
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
     }
     
     @objc func backButtonPressed() {

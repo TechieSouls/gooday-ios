@@ -18,6 +18,10 @@ class ImagePanableViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         self.profilePicEnlarged.image = profilePicEnlargedTemp.image;
+        
+        self.profilePicEnlarged.isUserInteractionEnabled = true;
+        let tapGuestureListener = UITapGestureRecognizer.init(target: self, action: #selector(zoomedImageTapped));
+        self.profilePicEnlarged.addGestureRecognizer(tapGuestureListener);
     }
     
 
@@ -30,5 +34,9 @@ class ImagePanableViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    @objc func zoomedImageTapped() {
+        self.dismiss(animated: true, completion: nil);
+    }
 
 }

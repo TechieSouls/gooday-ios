@@ -35,6 +35,10 @@
                                         <rect key="frame" x="167" y="184" width="80" height="80"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
+                                    <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="E1i-Xw-WJm">
+                                        <rect key="frame" x="376" y="56" width="30" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -95,6 +99,7 @@
                         <outlet property="facebookViewBtn" destination="T6e-tf-W0S" id="YKG-I6-9pN"/>
                         <outlet property="firstViewContainer" destination="E5B-LE-sfe" id="lhl-Sl-txS"/>
                         <outlet property="googleViewBtn" destination="zGj-qO-qbw" id="OQk-bj-4pR"/>
+                        <outlet property="helpAndFeedbackImg" destination="E1i-Xw-WJm" id="iVJ-MA-ac3"/>
                         <outlet property="secondViewContainer" destination="CIH-h1-wG9" id="TbE-B1-w5a"/>
                         <outlet property="threeButtonsView" destination="P1f-wb-mnj" id="KFq-QE-K1A"/>
                     </connections>
@@ -370,12 +375,17 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.29019607843137252" green="0.5607843137254902" blue="0.8901960784313725" alpha="0.75" colorSpace="calibratedRGB"/>
                             </view>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="d1c-02-2n9">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="S3h-49-s20"/>
                     </view>
                     <connections>
                         <outlet property="backButton" destination="3lV-pp-bKI" id="hZl-zI-zTm"/>
+                        <outlet property="helpAndFeedbackImg" destination="d1c-02-2n9" id="yW6-8l-uRb"/>
                         <outlet property="loginButton" destination="36W-Gg-DgV" id="ZMu-c4-cqi"/>
                         <outlet property="signupButton" destination="ffm-1U-XJD" id="thT-x9-GDJ"/>
                         <outlet property="textFieldConfirmPassword" destination="E44-Jk-Bao" id="sJx-HQ-lUr"/>
@@ -3321,14 +3331,14 @@ ALREADY
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ANt-Up-mRJ">
-                                            <rect key="frame" x="43" y="10.000000000000002" width="34" height="20.666666666666668"/>
+                                            <rect key="frame" x="43" y="10" width="32" height="20"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8lN-TE-Aac">
-                                            <rect key="frame" x="43" y="33.666666666666671" width="41.333333333333336" height="14.666666666666666"/>
+                                            <rect key="frame" x="43" y="33" width="41" height="14"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="12"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -5253,7 +5263,7 @@ ALREADY
         <!--Image Panable View Controller-->
         <scene sceneID="Yle-Ca-FeM">
             <objects>
-                <viewController storyboardIdentifier="ImagePanableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5I1-VE-6dx" customClass="ImagePanableViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagePanableViewController" modalTransitionStyle="crossDissolve" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5I1-VE-6dx" customClass="ImagePanableViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="awJ-Qe-Dnt">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5400,6 +5410,7 @@ ALREADY
         <image name="homeSelected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="homeUnselected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="image_white_default" width="40.666667938232422" height="36.666667938232422"/>
+        <image name="instabug_report" width="166.66667175292969" height="193.33332824707031"/>
         <image name="invitation_card" width="400" height="266.66665649414062"/>
         <image name="invitation_loader_spinner" width="33.333332061767578" height="33.333332061767578"/>
         <image name="metimeSelected" width="24.333333969116211" height="23.333333969116211"/>

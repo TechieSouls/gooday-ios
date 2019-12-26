@@ -145,7 +145,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             
             let imageToUpload = image.fixedOrientation();
-            imageToUpload.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0)
+            imageToUpload.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
             
             signupStep2FormTableViewCellProtocolDelegate.updateProfilePic(profilePicImage: imageToUpload);
 

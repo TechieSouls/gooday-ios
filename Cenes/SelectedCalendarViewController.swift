@@ -231,8 +231,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 
                 let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
                 
-                let userid = setting.value(forKey: "userId") as! NSNumber
-                let uid = "\(userid)"
                 let eventArray = eventStore.events(matching: predicate)
                 
                 if eventArray.count > 0 {
@@ -248,9 +246,15 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         if (event.isAllDay == true) {
                             continue;
                         }
-                        let title = event.title
+                        var title = "";
+                        if (event.title != nil) {
+                            title = event.title
+                        }
                         
-                        let location = event.location
+                        var  location = "";
+                        if (event.location != nil) {
+                            location = event.location!;
+                        }
                         
                         var description = ""
                         if let desc = event.notes{
@@ -264,7 +268,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         let nowDateMillis = Date().millisecondsSince1970
                         
                         
-                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location!,"source":"Apple","createdById":uid,"timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                        let postData: NSMutableDictionary = ["title":title,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
 
                         if (event.startDate.millisecondsSince1970 < nowDateMillis) {
                             
