@@ -10,8 +10,9 @@ import UIKit
 import MobileCoreServices
 import NVActivityIndicatorView
 import FBSDKLoginKit
+import MessageUI
 
-class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate  {
+class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate, MFMailComposeViewControllerDelegate  {
 
     
     @IBOutlet weak var topRoundedView: UIView!
@@ -23,7 +24,8 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     
     @IBOutlet weak var textFieldConfirmPassword: UITextField!
     
-    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
     @IBOutlet weak var loginButton: UIButton!
     
     @IBOutlet weak var chooseProfilePhoto: UIImageView!
@@ -86,6 +88,10 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         backButton.addGestureRecognizer(backTapGesture);
         
         self.hideKeyboardWhenTappedAround();
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -105,7 +111,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     */
 
     @IBAction func signupButtonPressed(_ sender: Any) {
-        
+                
         let isFormValidFlag = isFormValid();
         
         if (isFormValidFlag == true && textFieldEmail.text != nil && isValidEmail(testStr: textFieldEmail.text!)) {
@@ -214,18 +220,18 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         
     }
     
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
+    
     @objc func backButtonPressed() {
         self.navigationController?.popViewController(animated: true);
     }
 
     @objc func imageTapped() {
         // Create the AlertController and add its actions like button in ActionSheet
-        let actionSheetController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let actionSheetController = UIAlertController(title: "Cenes Photo", message: "Upload or Take photo for Cenes", preferredStyle: .actionSheet)
         
-        let cancelActionButton = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
-            print("Cancel")
-        }
-        actionSheetController.addAction(cancelActionButton)
         
         let saveActionButton = UIAlertAction(title: "Take Picture", style: .default) { action -> Void in
                 self.takePicture()
@@ -237,6 +243,12 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             self.selectPicture()
         }
         actionSheetController.addAction(deleteActionButton)
+        
+        let cancelActionButton = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+            print("Cancel")
+        }
+        actionSheetController.addAction(cancelActionButton)
+
         self.present(actionSheetController, animated: true, completion: nil)
     }
     

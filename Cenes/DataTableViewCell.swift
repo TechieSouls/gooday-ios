@@ -237,11 +237,13 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     cell.time.text = String(Date(milliseconds: Int(event.startTime)).hmma());
                     
                     var host = EventMember();
-                    print("Event Member Counts : ",event.eventMembers!.count);
-                    for eventMem in event.eventMembers {
-                        if (eventMem.userId != nil && eventMem.userId == event.createdById) {
-                            host = eventMem;
-                            break;
+                    if (event.eventMembers != nil && event.eventMembers.count > 0) {
+                        print("Event Member Counts : ",event.eventMembers!.count);
+                        for eventMem in event.eventMembers {
+                            if (eventMem.userId != nil && eventMem.userId == event.createdById) {
+                                host = eventMem;
+                                break;
+                            }
                         }
                     }
 
@@ -252,6 +254,9 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                             cell.profileImage.image = UIImage(named: "profile_pic_no_image");
                         }
                     }
+                    
+                    cell.profileImage.isUserInteractionEnabled = true;
+                    cell.profileImage.addGestureRecognizer(self.newHomeViewControllerDelegate.profilePicTapGuesture);
                     
                     if (totalRows > 1 && indexPath.row == (totalRows - 2)) {
                         
@@ -346,6 +351,9 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
                     }
                 }
+                
+                cell.profilePic.isUserInteractionEnabled = true;
+                cell.profilePic.addGestureRecognizer(self.newHomeViewControllerDelegate.profilePicTapGuesture);
                 
                 let timeLabel = "\(String(Date(milliseconds: Int(event.startTime)).hmma()))-\(String(Date(milliseconds: Int(event.endTime)).hmma()))"
                 cell.timeLabel.text = timeLabel;
@@ -490,8 +498,10 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
                         
                         viewController.event = Event().copyDataToNewEventObject(event: event);
-                        for eventMem in viewController.event.eventMembers {
-                            print(eventMem.name);
+                        if (viewController.event.eventMembers != nil && viewController.event.eventMembers.count > 0) {
+                            for eventMem in viewController.event.eventMembers {
+                                print(eventMem.name);
+                            }
                         }
                     //viewController.event = EventModel().copyDataToNewEventObject(event: event, context: self.newHomeViewControllerDelegate.context!);
                         viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate;
@@ -590,9 +600,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                             EventModel().deleteEventByEventId(eventId: eventId!);                      EventMemberModel().deleteEventMemberMOModelByEventId(eventId: eventId!);
                             NotificationModel().deleteNotificationByNotificationId(eventId: eventId!);
 
+                            let eventMoTemp = EventModel().fetchOfflineEventByEventId(eventId: eventId!);
+                            print(eventMoTemp.description)
                             self.newHomeViewControllerDelegate.homeTableView.reloadData();
                             
-                            let queryStr = "event_id=\(eventId)";
+                            let queryStr = "event_id=\(eventId!)";
                             HomeService().removeEventFromList(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
                                 
                                 self.newHomeViewControllerDelegate.refreshHomeScreenData();

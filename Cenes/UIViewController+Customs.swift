@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MessageUI
 
 extension UIViewController {
     
@@ -73,5 +74,76 @@ extension UIViewController {
             popoverPresentationController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
             popoverPresentationController.permittedArrowDirections = []
         }
+    }
+    
+    func helpAndFeedbackIconPressed(mfMailComposerDelegate: MFMailComposeViewControllerDelegate) {
+        // create an actionSheet
+        let actionSheetController: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        // create an action
+        let faqAction: UIAlertAction = UIAlertAction(title: "FAQ", style: .default) { action -> Void in
+            //self.selectPicture();
+            //if let requestUrl = NSURL(string: "\(faqLink)") {
+                //UIApplication.shared.openURL(requestUrl as URL)
+                UIApplication.shared.open(URL.init(string: faqLink)!, options: [String:Any](), completionHandler: nil);
+            }
+        
+        let handfAction: UIAlertAction = UIAlertAction(title: "Help & Feedback", style: .default) { action -> Void in
+            
+            let iphoneDetails = "\(UIDevice.modelName) \(UIDevice.current.systemVersion)";
+            
+            if MFMailComposeViewController.canSendMail() {
+                let mail = MFMailComposeViewController()
+                mail.mailComposeDelegate = mfMailComposerDelegate
+                mail.setToRecipients(["support@cenesgroup.com"])
+                mail.setMessageBody("\(iphoneDetails) \n", isHTML: false)
+                self.present(mail, animated: true, completion: nil)
+            } else {
+                print("Cannot send mail")
+                // give feedback to the user
+            }
+        }
+        
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in }
+        //cancelAction.setValue(UIColor.black, forKey: "titleTextColor")
+        
+        actionSheetController.addAction(faqAction)
+        actionSheetController.addAction(handfAction)
+        actionSheetController.addAction(cancelAction)
+        
+        // present an actionSheet...
+        addActionSheetForiPad(actionSheet: actionSheetController)
+        self.present(actionSheetController, animated: true, completion: nil)
+    }
+    
+    var profilePicTapGuesture: UITapGestureRecognizer {
+        return UITapGestureRecognizer.init(target: self, action: #selector(profilePicTapped(sender:)))
+    };
+    
+    @objc func profilePicTapped(sender: UITapGestureRecognizer) {
+        let imageView = sender.view as! UIImageView
+        let newImageView = UIImageView(image: imageView.image)
+        newImageView.frame = UIScreen.main.bounds
+        newImageView.backgroundColor = .black
+        newImageView.contentMode = .scaleAspectFit
+        newImageView.isUserInteractionEnabled = true
+        if (sender.view?.tag == -1) {
+            newImageView.tag = -1;
+        }
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
+        newImageView.addGestureRecognizer(tap)
+        self.view.addSubview(newImageView)
+        if (sender.view?.tag != -1) {
+            self.navigationController?.isNavigationBarHidden = true
+            self.tabBarController?.tabBar.isHidden = true
+        }
+    }
+    
+    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
+        if (sender.view?.tag != -1) {
+            self.navigationController?.isNavigationBarHidden = false
+            self.tabBarController?.tabBar.isHidden = false
+        }
+        sender.view?.removeFromSuperview()
     }
 }

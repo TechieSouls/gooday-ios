@@ -174,8 +174,10 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
                 
             }
             
-            
-            let userContactId: Int = Int(userContact.userContactId);
+            var userContactId: Int = 0;
+            if (userContact.userContactId != nil) {
+                userContactId = Int(userContact.userContactId);
+            }
             let keyExists = friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] != nil
             if (keyExists && friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
                 cell.hostGradientImage.isHidden = false;
@@ -217,7 +219,10 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             friendObj = friendViewControllerDelegate.inviteFriendsDto.allContacts[indexPath.section].sectionObjects[indexPath.row];
         }
         
-        let userContactId = Int(friendObj.userContactId);
+        var userContactId: Int = 0;
+        if (friendObj.userContactId != nil) {
+            userContactId = Int(friendObj.userContactId);
+        }
         
         //We will check if contact is never selected then we will add it in holder and mark it selected.
         if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] != nil ) {
@@ -234,7 +239,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
         
         //After checking whether user is selected or not we will remove and add it in collection view cell.
         if (friendViewControllerDelegate.inviteFriendsDto.checkboxStateHolder[userContactId] == true) {
-            friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.append(self.friendViewControllerDelegate.inviteFriendsDto.userContactIdMapList[userContactId]!);
+            friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.append(friendObj);
         } else {
             //self.friendViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.removeValue(forKey: userContactId);
             var count = 0;
@@ -268,7 +273,7 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        if (friendViewControllerDelegate.inviteFriendsDto.allContacts.count > 0) {
+        if (friendViewControllerDelegate.inviteFriendsDto.isAllContactsView == true && friendViewControllerDelegate.inviteFriendsDto.allContacts.count > 0) {
             let sectionTitle = friendViewControllerDelegate.inviteFriendsDto.allContacts[section].sectionName;
             
             let identifier = "InnerTableHeaderTableViewCell"
@@ -294,7 +299,6 @@ extension FriendsTableViewCell: UITableViewDataSource, UITableViewDelegate {
             }
             
             return cell
-
         }
         return nil;
     }

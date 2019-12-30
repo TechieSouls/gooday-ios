@@ -117,10 +117,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         profileDto.title = "About";
         profileDto.desc = "Update to latest version";
         profileDtos.append(profileDto);
-
-
     }
-    
 
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true;
@@ -228,7 +225,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             
-            let imageToUploadTemp = image.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0)
+            let imageToUploadTemp = image.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
             
             self.uploadImage = imageToUploadTemp.fixedOrientation();
             DispatchQueue.main.async {
@@ -273,8 +270,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         User().updateUserValuesInUserDefaults(user: self.loggedInUser);
         DispatchQueue.main.async {
             self.profilePic.image = UIImage.init(named: "profile_pic_no_image");
-            self.profilePic.setNeedsDisplay()
-            
+            self.profilePic.setNeedsDisplay();
         }
 
         DispatchQueue.global(qos: .background).async {

@@ -16,6 +16,7 @@ class NotificationGatheringTableViewCell: UITableViewCell {
     @IBOutlet weak var happen: UILabel!;
     @IBOutlet weak var circleButtonView: UIView!;
     @IBOutlet weak var circleButtonDot: UIButton!;
+    @IBOutlet weak var messageAndNameView: UIView!
     
     @IBOutlet weak var rightCornerView: UIView!
     

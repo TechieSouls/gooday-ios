@@ -52,6 +52,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     @IBOutlet weak var friday: UIButton!
     @IBOutlet weak var saturday: UIButton!
     
+    @IBOutlet weak var photoUploadSpinner: UIActivityIndicatorView!
+    
     var metimeRecurringEvent: MetimeRecurringEvent!;
     
     var dateSelected = "";
@@ -78,8 +80,10 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissMeTimeAddScreen))
         backButtonView.addGestureRecognizer(tap)
         
+        photoUploadSpinner.isHidden = true;
         //Image View
         meTimeImageView.setRounded();
+        meTimeImageView.contentMode = .scaleAspectFill
         meTimeImageView.layer.borderWidth = 2;
         meTimeImageView.layer.borderColor = UIColor.white.cgColor;
         let meTimeImageViewTapGesture = UITapGestureRecognizer(target: self, action: #selector(photoIconClicked))
@@ -130,7 +134,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         self.meTimeCard.layer.backgroundColor = cenesLabelBlue.cgColor
         //Here I'm masking the textView's layer with rectShape layer
         self.meTimeCard.layer.mask = rectShape
-        
+        self.meTimeCard.center.y += self.meTimeCard.bounds.height;
+
         self.setupDayButtons(button: sunday);
         self.setupDayButtons(button: monday);
         self.setupDayButtons(button: tuesday);
@@ -142,7 +147,10 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         if (metimeRecurringEvent == nil) {
             metimeRecurringEvent = MetimeRecurringEvent();
         }
-        self.showMeTimeCardView();
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: {
+            self.showMeTimeCardView();
+        });
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -204,7 +212,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                 
                 self.stopLoading();
                 
-                MetimeRecurringEventModel().deleteMetimeEventByMetimeRecurringId(recurringEventId: self.metimeRecurringEvent.recurringEventId);
+                sqlDatabaseManager.deleteMetimeRecurringEventByRecurringEventId(recurringEventId: self.metimeRecurringEvent.recurringEventId);
+                //MetimeRecurringEventModel().deleteMetimeEventByMetimeRecurringId(recurringEventId: self.metimeRecurringEvent.recurringEventId);
                 
                 self.newMeTimeViewControllerDelegate.loadMeTimeData();
                 self.hideMetimeCardView();
@@ -259,12 +268,17 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                                 let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;
                                     
                                 if (self.metimeRecurringEvent.recurringEventId != nil) {
-                                    MetimeRecurringEventModel().deleteMetimeEventByMetimeRecurringId(recurringEventId: recurringEvent.value(forKey: "recurringEventId") as! Int32);
+                                   
+                                    sqlDatabaseManager.deleteMetimeRecurringEventByRecurringEventId(recurringEventId: self.metimeRecurringEvent.recurringEventId);
+                                    //MetimeRecurringEventModel().deleteMetimeEventByMetimeRecurringId(recurringEventId: recurringEvent.value(forKey: "recurringEventId") as! Int32);
                                 }
 
-                                self.metimeRecurringEvent = MetimeRecurringEventModel().saveMetimeRecurringEventMOFromDictionary(metimeRecurringEventDict: recurringEvent);
+                                self.metimeRecurringEvent = MetimeRecurringEvent().loadMetimeRecurringEvent(meTimeDict: recurringEvent);
                                 
-                                self.uploadMeTimeImage();
+                                sqlDatabaseManager.saveMeTimeRecurringEvent(metimeRecurringEvent: self.metimeRecurringEvent);
+                                //self.metimeRecurringEvent = MetimeRecurringEventModel().saveMetimeRecurringEventMOFromDictionary(metimeRecurringEventDict: recurringEvent);
+                                self.newMeTimeViewControllerDelegate.loadMeTimeData();
+                                self.hideMetimeCardView();
                             } else {
                                 self.showAlert(title: "Alert", message: "There is some error while saving MeTime.");
                             }
@@ -419,7 +433,13 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
                 self.meTimeImageView.image = image;
             }
             self.imageToUpload = image;
-            let uploadImage = self.imageToUpload.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0)
+            let uploadImage = self.imageToUpload.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0);
+            
+            if (self.metimeRecurringEvent.recurringEventId != nil) {
+                self.uploadMeTimeImage();
+            } else {
+                self.getUploadImageLink();
+            }
         }
         
         picker.dismiss(animated: true, completion: nil);
@@ -428,27 +448,52 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     func uploadMeTimeImage() ->  Void {
         
         if (self.imageToUpload != nil) {
+            self.view.isUserInteractionEnabled = false;
+            self.photoUploadSpinner.isHidden = false;
+            self.photoUploadSpinner.startAnimating();
+            
             MeTimeService().uploadMeTimeImage(image: self.imageToUpload, recurringEventId: metimeRecurringEvent.recurringEventId, token: self.loggedInUser.token, complete: {(response) in
                 
-                if (response.value(forKey: "status") != nil) {
-                    let status = response.value(forKey: "status") as! String;
-                    if (status == "success") {
-                        
-                        if (response.value(forKey: "recurringEvent") != nil) {
-                            let recurringEvent = response.value(forKey: "recurringEvent") as! NSDictionary;
-                            
-                            self.metimeRecurringEvent.photo = recurringEvent.value(forKey: "photo") as! String;
-                            MetimeRecurringEventModel().updatePhoto(recurringEventId: self.metimeRecurringEvent.recurringEventId, photoUrl: self.metimeRecurringEvent.photo);
-                        }
-                    }
-                }
+                self.view.isUserInteractionEnabled = true;
+                self.photoUploadSpinner.isHidden = true;
+                self.photoUploadSpinner.stopAnimating();
                 
-                self.newMeTimeViewControllerDelegate.loadMeTimeData();
-                self.hideMetimeCardView();
-            })
-        } else {
-            self.newMeTimeViewControllerDelegate.loadMeTimeData();
-            self.hideMetimeCardView();
+                    let recurringEventId = response.value(forKey: "recurringEventId") as? Int32;
+                if (recurringEventId != nil) {
+                        
+                        self.metimeRecurringEvent.photo = (response.value(forKey: "photo") as! String);
+                    sqlDatabaseManager.deleteMetimeRecurringEventByRecurringEventId(recurringEventId: self.metimeRecurringEvent.recurringEventId);
+                    
+                    sqlDatabaseManager.saveMeTimeRecurringEvent(metimeRecurringEvent: self.metimeRecurringEvent) ;
+                    self.newMeTimeViewControllerDelegate.loadMeTimeData();
+                    self.newMeTimeViewControllerDelegate.meTimeItemsTableView.reloadData();
+                    }
+                });
+        }
+    }
+    
+    func getUploadImageLink() ->  Void {
+        
+        if (self.imageToUpload != nil) {
+            
+            self.view.isUserInteractionEnabled = false;
+            self.photoUploadSpinner.isHidden = false;
+            self.photoUploadSpinner.startAnimating();
+            
+
+            MeTimeService().uploadMeTimeImageVersion2(image: self.imageToUpload, userId: loggedInUser.userId, token: self.loggedInUser.token, complete: {(response) in
+                self.view.isUserInteractionEnabled = true;
+                self.photoUploadSpinner.isHidden = true;
+                self.photoUploadSpinner.stopAnimating();
+
+                let success = response.value(forKey: "success") as! Bool;
+                if (success == true) {
+                    
+                    let photoUrl = response.value(forKey: "data") as! String;
+                    self.metimeRecurringEvent.photo = photoUrl;
+                }
+                   
+            });
         }
     }
     
@@ -526,13 +571,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     }
     
     func showMeTimeCardView() -> Void {
-        self.meTimeCard.center.y += self.meTimeCard.bounds.height;
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseIn],
-                       animations: {
-                        self.meTimeCard.center.y -= self.meTimeCard.bounds.height
-                        self.meTimeCard.layoutIfNeeded()
-        }, completion: nil)
-        self.meTimeCard.isHidden = false;
+        //self.meTimeCard.isHidden = false;
+        //self.meTimeCard.center.y += self.meTimeCard.bounds.height;
         if (self.metimeRecurringEvent != nil && self.metimeRecurringEvent.recurringEventId != nil) {
             self.lblMeTimeTitle.isHidden = false;
             self.titletextField.isHidden = true;
@@ -542,6 +582,19 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             self.titletextField.isHidden = false;
             self.titletextField.becomeFirstResponder();
         }
+        UIView.animate(withDuration: 0.2, delay: 0.5, options: [.curveEaseIn, .curveLinear, .layoutSubviews],
+                       animations: {
+                        
+                        let diff = self.meTimeCard.center.y - self.meTimeCard.bounds.height;
+                        print("Diff : ", diff, " and Center Y : ",self.meTimeCard.center.y, "Height : ",self.meTimeCard.bounds.height, "After Multiple : ",self.meTimeCard.center.y * (0.9*0.61));
+                        
+                        self.meTimeCard.center.y -= self.meTimeCard.bounds.height;
+                        self.meTimeCard.layoutIfNeeded();
+                        
+        }, completion: {(_ completed: Bool) -> Void in
+            
+        });
+        
     }
     
     func hideMetimeCardView() -> Void{

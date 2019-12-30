@@ -35,7 +35,8 @@ class MeTimeItemTableViewCell: UITableViewCell {
         meTimeCellViewDetails.layer.borderColor = cenesLabelBlue.cgColor;
         
         meTimeImage.setRounded()
-        
+        meTimeImage.contentMode = .scaleAspectFill
+
         meTimeViewNoImage.roundedView();
         meTimeViewNoImage.layer.borderColor = cenesLabelBlue.cgColor;
         meTimeViewNoImage.layer.borderWidth = 1;

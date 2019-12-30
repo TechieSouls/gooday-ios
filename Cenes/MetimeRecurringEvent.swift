@@ -45,7 +45,7 @@ class MetimeRecurringEvent {
         metimeRecurringEvent.processed = meTimeDict["processed"] as? Int;
         metimeRecurringEvent.photo = meTimeDict["photo"] as? String;
         
-        metimeRecurringEvent.patterns = MeTimeRecurringPattern().loadRecurringPatterns(patterns: meTimeDict["recurringPatterns"] as! NSArray)
+        metimeRecurringEvent.patterns = MeTimeRecurringPattern().loadRecurringPatterns(patterns: meTimeDict["recurringPatterns"] as! NSArray, meTimeDict: meTimeDict);
         
         return metimeRecurringEvent;
     }
@@ -60,7 +60,10 @@ class MetimeRecurringEvent {
         recurringEventJson["userId"] = self.createdById;
         recurringEventJson["recurringEventId"] = self.recurringEventId;
         recurringEventJson["timezone"] = TimeZone.current.identifier;
-        
+        if (self.photo != nil) {
+            recurringEventJson["photo"] = self.photo;
+        }
+
         var events: [[String: Any]]! = [];
         for metimeEvent in self.patterns {
             var meTimeEventTemp: [String: Any] = [:];
@@ -112,7 +115,7 @@ class MeTimeRecurringPattern {
     var slotsGeneratedUpto: Int64!;
     
     
-    func loadRecurringPatterns(patterns: NSArray) -> [MeTimeRecurringPattern] {
+    func loadRecurringPatterns(patterns: NSArray, meTimeDict: NSDictionary) -> [MeTimeRecurringPattern] {
         
         var recurringPatterns = [MeTimeRecurringPattern]();
         
@@ -120,7 +123,7 @@ class MeTimeRecurringPattern {
             let patternDict = pattern as! NSDictionary;
             
             let metimeRecurringPattern = MeTimeRecurringPattern();
-            metimeRecurringPattern.recurringEventId = patternDict["recurringEventId"] as? Int32;
+            metimeRecurringPattern.recurringEventId = meTimeDict["recurringEventId"] as? Int32;
             metimeRecurringPattern.dayOfWeek = patternDict["dayOfWeek"] as? Int;
             metimeRecurringPattern.dayOfWeekTimestamp = patternDict["dayOfWeekTimestamp"] as? Int64;
             metimeRecurringPattern.recurringPatternId = patternDict["recurringPatternId"] as? Int32;

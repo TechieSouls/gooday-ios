@@ -37,11 +37,14 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
         
         if (nearbyLocObj.latitudeDouble != nil) {
             cell.distanceInKm.isHidden = false;
-
-            let destLat : CLLocationDegrees = CLLocationDegrees(nearbyLocObj.latitudeDouble as! Double);
-            let destLng : CLLocationDegrees = CLLocationDegrees(nearbyLocObj.longitudeDouble as! Double);
             
-            cell.distanceInKm.text = "\(String(LocationManager().getDistanceInKilometres(currentLatitude: currentLatitude, currentLongitude: currentLongitude, destLatitude: destLat, destLongitude: destLng)))Km";
+            let dist = Double(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: nearbyLocObj.latitudeDouble, destLongitude: nearbyLocObj.longitudeDouble))!;
+            if (Double(dist) > Double(9000)) {
+                cell.distanceInKm.isHidden = true;
+            } else {
+                cell.distanceInKm.isHidden = false;
+            }
+            cell.distanceInKm.text = "\(String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: nearbyLocObj.latitudeDouble, destLongitude: nearbyLocObj.longitudeDouble)))Km";
             
         } else {
             cell.distanceInKm.isHidden = true;
@@ -56,11 +59,11 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
         LocationService().getLocationLatLong(id: nearByLocObje.placeId, complete: {(response) in
             
             if (response["data"] != nil) {
-                let data = response["data"] as! [String: Any];
-                if let locationPoints = data["geometry"] as? [String: Any] {
-                    let latLong = locationPoints["location"] as? [String: Any]
-                    nearByLocObje.latitudeDouble = latLong!["lat"] as! Double
-                    nearByLocObje.longitudeDouble = latLong!["lng"] as! Double
+                let data = response["data"] as! NSDictionary;
+                if let locationPoints = data["geometry"] as? NSDictionary {
+                    let latLong = locationPoints["location"] as! NSDictionary
+                    nearByLocObje.latitudeDouble = latLong.value(forKey: "lat") as! Double
+                    nearByLocObje.longitudeDouble = latLong.value(forKey: "lng") as! Double
                 }
                 if (nearByLocObje.placeId == nil) {
                     nearByLocObje.placeId = data["place_id"] as! String;

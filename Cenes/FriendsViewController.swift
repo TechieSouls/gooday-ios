@@ -15,9 +15,10 @@ protocol CollectionFriendsProtocol {
 protocol CreateGatheringProtocol {
     func friendsDonePressed(eventMembers: [EventMember]);
 }
-class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating {
+class FriendsViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var friendTableView: UITableView!;
+    @IBOutlet weak var searchContactsField: UITextField!
     
     var collectionFriendsDelegate: CollectionFriendsProtocol?;
     var loggedInUser: User!;
@@ -56,7 +57,7 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
             }
         }
         
-        if (isFirstTime == true || eventId != nil) {
+        if (isFirstTime == true || (eventId != nil && eventId != 0)) {
             self.getFriendsWithName(nameStartsWith: "")
         } else {
             self.friendTableView.reloadData()
@@ -67,6 +68,21 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         DispatchQueue.global(qos: .background).async {
             self.syncDeviceContacts();
         }
+        
+        searchContactsField.layer.cornerRadius = 10
+        searchContactsField.leftViewMode = UITextFieldViewMode.always
+
+        let imageView = UIImageView(frame: CGRect(x: 10, y: 0, width: 20, height: 20))
+        let image = UIImage(named: "search_icon")
+        imageView.image = image
+        
+        let view = UIView(frame : CGRect(x: 0, y: 0, width: 35, height: 25))
+        view.addSubview(imageView)
+
+        searchContactsField.leftView = view
+        searchContactsField.addTarget(self, action: #selector(updateSearchResults), for: .editingChanged)
+        
+        self.hideKeyboardWhenTappedAround();
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -91,19 +107,6 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         closeButton.frame = CGRect(x: 0, y: 0, width: 50, height: 20);
         closeButton.addTarget(self, action: #selector(selectFriendsCancel(_ :)), for: .touchUpInside)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: closeButton);
-        
-        
-        let searchBarController = UISearchController(searchResultsController: nil);
-        searchBarController.searchBar.delegate = self
-        searchBarController.searchBar.placeholder = "Search Contacts"
-        searchBarController.searchResultsUpdater = self
-        searchBarController.obscuresBackgroundDuringPresentation = false
-        if #available(iOS 11.0, *) {
-            self.navigationItem.searchController = searchBarController
-        } else {
-            // Fallback on earlier versions
-        };
-        definesPresentationContext = true
 
         self.refreshNavigationBarItems();
     }
@@ -120,9 +123,8 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         }*/
     }
     
-    func updateSearchResults(for searchController: UISearchController) {
-        
-        let searchText = searchController.searchBar.text!;
+    @objc func updateSearchResults(_ textField: UITextField) {
+                let searchText = textField.text!;
         if (searchText != "") {
             inviteFriendsDto.isSearchOn = true;
             self.getfilterArray(str: searchText);
@@ -143,8 +145,8 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
         //Call api for friends
         WebService().cancelAll()
         
-        self.inviteFriendsDto.allEventMembers = CenesUserContactModel().fetchAllUserContacts(user: loggedInUser);
-        self.processFriendsList();
+        //self.inviteFriendsDto.allEventMembers = CenesUserContactModel().fetchAllUserContacts(user: loggedInUser);
+        //self.processFriendsList();
         //self.friendTableView.reloadData();
 
         if (Connectivity.isConnectedToInternet == true) {
@@ -241,6 +243,15 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
             if let name = selectedFriend.name {
                 eventMember.name = name;
             }
+            if let phone = selectedFriend.phone {
+                eventMember.phone = phone;
+            }
+            if let eventMemberId = selectedFriend.eventMemberId {
+                eventMember.eventMemberId = eventMemberId;
+            }
+            if let status = selectedFriend.status {
+                eventMember.status = status;
+            }
             userContacts.append(eventMember);
         }
         
@@ -272,7 +283,15 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
                 if let cenesMember = userContact.cenesMember {
                     eventMember.cenesMember = cenesMember;
                 }
-
+                if let eventMemberId = userContact.eventMemberId {
+                    eventMember.eventMemberId = eventMemberId;
+                }
+                if let status = userContact.status {
+                    eventMember.status = status;
+                }
+                if let phone = userContact.phone {
+                   eventMember.phone = phone;
+                }
                 if (viewController.event != nil) {
                     viewController.event.eventMembers.append(eventMember)
                 } else {
@@ -293,12 +312,24 @@ class FriendsViewController: UIViewController, UISearchBarDelegate, UISearchResu
                 //print(userContact.name);
                 
                 let eventMember = EventMember();
-                eventMember.userContactId = Int32(userContact.userContactId);
-                eventMember.userId = Int32(userContact.friendId);
+                if (userContact.userContactId != nil) {
+                    eventMember.userContactId = Int32(userContact.userContactId);
+                }
+                if let friendId = userContact.friendId {
+                    eventMember.userId = Int32(friendId);
+                }
                 eventMember.user = userContact.user;
                 eventMember.name = userContact.name;
                 eventMember.cenesMember = userContact.cenesMember;
-
+                if let eventMemberId = userContact.eventMemberId {
+                    eventMember.eventMemberId = eventMemberId;
+                }
+                if let status = userContact.status {
+                    eventMember.status = status;
+                }
+                if let phone = userContact.phone {
+                   eventMember.phone = phone;
+                }
                 eventMembers.append(eventMember);
             }
             createGatheringProtocolDelegate.friendsDonePressed(eventMembers: eventMembers);

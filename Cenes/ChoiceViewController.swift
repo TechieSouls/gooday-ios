@@ -9,8 +9,9 @@
 import UIKit
 import FBSDKLoginKit
 import GoogleSignIn
+import MessageUI
 
-class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate {
+class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate, MFMailComposeViewControllerDelegate {
     func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         print("Done");
     }
@@ -26,7 +27,8 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     
     @IBOutlet weak var secondViewContainer: UIView!
     
-    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
     @IBOutlet weak var threeButtonsView: UIView!
     
     @IBOutlet weak var facebookViewBtn: UIView!
@@ -38,6 +40,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     @IBOutlet weak var termsAndConditionsText: UILabel!
 
     var fbLoginBtn : FBSDKLoginButton!
+    var signinType = "Facebook";
     
     class func MainViewController() -> UINavigationController{
         
@@ -85,7 +88,8 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
 
-        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -132,7 +136,12 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     }
     */
     
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
+    
     @objc func facebookViewPressed() {
+    
         fbLoginBtn = FBSDKLoginButton();
         fbLoginBtn.delegate = self;
         
@@ -156,7 +165,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     }
     
     @objc func googleViewPressed() {
-        GIDSignIn.sharedInstance()?.signOut();
+        //GIDSignIn.sharedInstance()?.signOut();
         GIDSignIn.sharedInstance()?.signIn();
     }
     
@@ -188,9 +197,11 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         postData["name"] = userName;
                     }
                     
+                    var userEmailVar = "";
                     if (resultDic.value(forKey:"email") != nil) {
                         let userEmail = resultDic.value(forKey:"email") as! String;
                         postData["email"] = userEmail;
+                        userEmailVar = userEmail;
                     }
                     
                     if (resultDic.value(forKey:"gender") != nil) {
@@ -240,8 +251,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 postData["name"] = user.profile.name;
             }
             
+            var emailVar = "";
             if (user.profile.email != nil) {
                 postData["email"] = user.profile.email;
+                emailVar = user.profile.email;
             }
             
             if (user.profile.hasImage == true) {
@@ -253,6 +266,13 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
             if let phone = setting.value(forKey: "verifiedPhone") {
                 postData["phone"] = phone;
             }
+            
+            if let country = setting.value(forKey: "countryCode") {
+                postData["country"] = country;
+            }
+            self.signinType = "Google";
+            
+            
             loginSocialRequest(postData: postData);
         }
     }
@@ -272,8 +292,10 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                     setting.setValue(photo, forKey: "photo");
                 }
                 
+                var emailVar = "";
                 if loggedInUserDict.value(forKey: "email") as? String != nil {
                     setting.setValue(loggedInUserDict.value(forKey: "email"), forKey: "email");
+                    emailVar = loggedInUserDict.value(forKey: "email") as! String;
                 }
                 
                 if loggedInUserDict.value(forKey: "gender") as? String != nil {
@@ -314,7 +336,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         
                         let alertController = UIAlertController(title: message, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
                         
-                        let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
+                        let okAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { (UIAlertAction) in
                             print ("Ok")
                             
                             alertController.dismiss(animated: true, completion: nil);
@@ -323,7 +345,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                         }
                         
                         
-                        let noAction = UIAlertAction(title: "No", style: .default) { (UIAlertAction) in
+                        let noAction = UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { (UIAlertAction) in
                             print ("No")
                         }
                         alertController.addAction(okAction)
@@ -352,9 +374,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         }
         
         let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
-        let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
+        let confirmAlertController = UIAlertController(title: "Verification", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
         
-        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in
+        let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertActionStyle.default) { (UIAlertAction) in
             print ("Ok")
             
             var updatPostData = [String: Any]();
@@ -369,7 +391,9 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
                 
             });
         }
+        
         confirmAlertController.addAction(confirmAction)
+
         self.present(confirmAlertController, animated: true, completion: nil)
     }
 }

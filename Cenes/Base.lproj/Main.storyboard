@@ -35,6 +35,10 @@
                                         <rect key="frame" x="167" y="184" width="80" height="80"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
+                                    <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="E1i-Xw-WJm">
+                                        <rect key="frame" x="376" y="56" width="30" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -95,6 +99,7 @@
                         <outlet property="facebookViewBtn" destination="T6e-tf-W0S" id="YKG-I6-9pN"/>
                         <outlet property="firstViewContainer" destination="E5B-LE-sfe" id="lhl-Sl-txS"/>
                         <outlet property="googleViewBtn" destination="zGj-qO-qbw" id="OQk-bj-4pR"/>
+                        <outlet property="helpAndFeedbackImg" destination="E1i-Xw-WJm" id="iVJ-MA-ac3"/>
                         <outlet property="secondViewContainer" destination="CIH-h1-wG9" id="TbE-B1-w5a"/>
                         <outlet property="threeButtonsView" destination="P1f-wb-mnj" id="KFq-QE-K1A"/>
                     </connections>
@@ -174,6 +179,10 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.29019607843137252" green="0.5607843137254902" blue="0.8901960784313725" alpha="0.75" colorSpace="calibratedRGB"/>
                             </view>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="Siq-k2-xmA">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="wDC-jI-wcG"/>
@@ -182,6 +191,7 @@
                         <outlet property="backButton" destination="AgP-qL-Z5q" id="qKl-ws-4vp"/>
                         <outlet property="emailTxtField" destination="Xif-Mm-uuT" id="oT2-VB-Q2s"/>
                         <outlet property="forgotPasswordButton" destination="gyf-IA-nuP" id="1Qg-Ke-qsu"/>
+                        <outlet property="helpAndFeedbackImg" destination="Siq-k2-xmA" id="g9i-fQ-tc0"/>
                         <outlet property="loginBtn" destination="yKp-Pb-bSB" id="VWj-Ci-O81"/>
                         <outlet property="passwordTextField" destination="M9J-r2-avB" id="R4c-as-3yo"/>
                     </connections>
@@ -255,6 +265,10 @@
                                 <rect key="frame" x="20" y="66" width="12" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="3l6-Vo-Imf">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="NJY-MQ-e2m"/>
@@ -263,6 +277,7 @@
                         <outlet property="backButtton" destination="UlP-GA-EcV" id="6X3-fW-qW8"/>
                         <outlet property="confirmPasswordField" destination="z6F-sp-7OP" id="SsF-I7-6TV"/>
                         <outlet property="emailTF" destination="WS3-ie-3kF" id="MPs-2K-zjA"/>
+                        <outlet property="helpAndFeedbackImg" destination="3l6-Vo-Imf" id="XZ2-EN-E69"/>
                         <outlet property="newPasswordField" destination="KKI-hd-qsV" id="Htf-VC-uP3"/>
                         <outlet property="newPasswordView" destination="L2L-Li-sHU" id="LUf-39-bt1"/>
                     </connections>
@@ -370,12 +385,17 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.29019607843137252" green="0.5607843137254902" blue="0.8901960784313725" alpha="0.75" colorSpace="calibratedRGB"/>
                             </view>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="d1c-02-2n9">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="S3h-49-s20"/>
                     </view>
                     <connections>
                         <outlet property="backButton" destination="3lV-pp-bKI" id="hZl-zI-zTm"/>
+                        <outlet property="helpAndFeedbackImg" destination="d1c-02-2n9" id="yW6-8l-uRb"/>
                         <outlet property="loginButton" destination="36W-Gg-DgV" id="ZMu-c4-cqi"/>
                         <outlet property="signupButton" destination="ffm-1U-XJD" id="thT-x9-GDJ"/>
                         <outlet property="textFieldConfirmPassword" destination="E44-Jk-Bao" id="sJx-HQ-lUr"/>
@@ -421,6 +441,10 @@
                                     <outlet property="delegate" destination="huB-0a-lwZ" id="LvC-ci-j9m"/>
                                 </connections>
                             </tableView>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="Y3f-rU-2x1">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jzz-9x-M9c">
                                 <rect key="frame" x="0.0" y="807" width="414" height="90"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -497,6 +521,7 @@
                         <outlet property="datePickerDoneButton" destination="9Jq-8E-nQD" id="WiA-a9-xep"/>
                         <outlet property="datePickerView" destination="1cs-3Z-T5S" id="igT-R8-Esf"/>
                         <outlet property="datepickerButtonBar" destination="2sZ-5s-TUI" id="mqR-A3-F8R"/>
+                        <outlet property="helpAndFeedbackImg" destination="Y3f-rU-2x1" id="XYH-dx-Dfu"/>
                         <outlet property="signupStep2TableView" destination="Qxo-eP-5FB" id="hNM-HG-9RM"/>
                     </connections>
                 </viewController>
@@ -640,6 +665,10 @@
                                 <color key="textColor" red="0.0" green="0.50845147562449644" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="OWV-Qn-JlK">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="vLu-c9-6il"/>
@@ -651,6 +680,7 @@
                         <outlet property="countryLabel" destination="cI3-O9-B7i" id="akE-ea-LTm"/>
                         <outlet property="getAccessButton" destination="gnh-Fu-oW0" id="1Yg-Yo-A8r"/>
                         <outlet property="getAccessView" destination="aR5-Vb-Wjh" id="qAx-M4-Gjk"/>
+                        <outlet property="helpAndFeedbackImg" destination="OWV-Qn-JlK" id="5d7-pa-GkA"/>
                         <outlet property="phoneNumberTextField" destination="gf2-mH-7iM" id="tkc-at-38Z"/>
                         <outlet property="privacyPolicyLabel" destination="f3v-Rp-2lF" id="Gx6-Vn-qh3"/>
                         <outlet property="termsAndConditionsLabel" destination="LCk-0M-flL" id="fo1-fL-J6O"/>
@@ -1023,9 +1053,6 @@
                                     <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="1ml-gO-R1g">
                                         <rect key="frame" x="0.0" y="50" width="414" height="220"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="578720576.43204498">
-                                            <!--2019-05-05 03:42:56 +0000-->
-                                        </date>
                                     </datePicker>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hme-wu-lGM">
                                         <rect key="frame" x="20" y="8" width="70" height="30"/>
@@ -1424,7 +1451,7 @@ ALREADY
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="delete_event_icon" translatesAutoresizingMaskIntoConstraints="NO" id="35V-3S-PXi">
-                                        <rect key="frame" x="300" y="210" width="100" height="123"/>
+                                        <rect key="frame" x="320" y="220" width="65" height="65"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qfu-X2-cKw">
@@ -1468,6 +1495,7 @@ ALREADY
                         <outlet property="acceptedImageView" destination="dlE-5s-SJ1" id="j2E-55-bFS"/>
                         <outlet property="acceptedSendInvitationLoader" destination="vt2-ba-kM9" id="EcW-Hq-G7D"/>
                         <outlet property="acceptedSendInvitationLoaderView" destination="4Ss-Jo-hUu" id="ayv-Qv-hgl"/>
+                        <outlet property="buttonsView" destination="ot6-0z-qQ9" id="eDL-iZ-eEB"/>
                         <outlet property="deleteImageView" destination="35V-3S-PXi" id="VbI-sV-fHC"/>
                         <outlet property="editImageView" destination="3xQ-vM-U73" id="2ob-SQ-zNP"/>
                         <outlet property="invitationCardTableView" destination="Cxk-TV-RRa" id="elq-nq-Zsv"/>
@@ -1493,7 +1521,7 @@ ALREADY
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4uS-aX-3KT">
                                 <rect key="frame" x="0.0" y="44" width="414" height="852"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <outlet property="dataSource" destination="cUt-zv-wL8" id="LJp-mP-MTF"/>
@@ -1501,7 +1529,7 @@ ALREADY
                                 </connections>
                             </tableView>
                             <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="close_guest_list" translatesAutoresizingMaskIntoConstraints="NO" id="9jf-pN-ywz">
-                                <rect key="frame" x="370" y="60" width="25" height="25"/>
+                                <rect key="frame" x="370" y="25" width="25" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="po1-am-K3l">
@@ -1832,7 +1860,6 @@ ALREADY
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="yYG-UC-jqS"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="next"/>
                                         <connections>
@@ -1854,7 +1881,6 @@ ALREADY
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="6co-7v-1KJ"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
@@ -1876,7 +1902,6 @@ ALREADY
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="mtD-vX-M4t"/>
                                         </constraints>
-                                        <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
@@ -1946,7 +1971,7 @@ ALREADY
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Me Time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uDH-Mo-TZk">
-                                <rect key="frame" x="18" y="128" width="382" height="30"/>
+                                <rect key="frame" x="18" y="128" width="288" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="O9O-pj-D57"/>
                                 </constraints>
@@ -1966,7 +1991,7 @@ ALREADY
                                 <nil key="highlightedColor"/>
                             </label>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x0q-3V-sxz">
-                                <rect key="frame" x="26" y="257" width="365" height="527"/>
+                                <rect key="frame" x="26" y="257" width="271" height="527"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Me Time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YFa-NH-JKm">
                                         <rect key="frame" x="28" y="8" width="111" height="38"/>
@@ -1978,7 +2003,7 @@ ALREADY
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IVo-Lj-3BX">
-                                        <rect key="frame" x="316" y="3" width="46" height="48"/>
+                                        <rect key="frame" x="222" y="3" width="46" height="48"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="46" id="C0k-F3-XbB"/>
                                             <constraint firstAttribute="height" constant="48" id="wkT-hQ-pqJ"/>
@@ -1992,7 +2017,7 @@ ALREADY
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="14N-Em-sfF">
-                                        <rect key="frame" x="0.0" y="54" width="365" height="469"/>
+                                        <rect key="frame" x="0.0" y="54" width="271" height="469"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="dataSource" destination="hGK-I9-UoI" id="wI2-O6-S9w"/>
@@ -2021,20 +2046,20 @@ ALREADY
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q89-j4-xbt">
-                                <rect key="frame" x="0.0" y="847" width="414" height="1"/>
+                                <rect key="frame" x="0.0" y="847" width="320" height="1"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="zT0-2D-4DV"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2VD-gs-iaF">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="862"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gfv-fY-7Dv">
-                                        <rect key="frame" x="0.0" y="594" width="414" height="268"/>
+                                        <rect key="frame" x="0.0" y="594" width="320" height="268"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vc2-HV-i79">
-                                                <rect key="frame" x="336" y="10" width="46" height="30"/>
+                                                <rect key="frame" x="242" y="10" width="46" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="46" id="11H-n7-R6j"/>
                                                     <constraint firstAttribute="height" constant="30" id="kAN-wl-TfF"/>
@@ -2072,14 +2097,11 @@ ALREADY
                                         </constraints>
                                     </view>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="9nl-tu-l9h">
-                                        <rect key="frame" x="0.0" y="646" width="414" height="216"/>
+                                        <rect key="frame" x="0.0" y="646" width="320" height="216"/>
                                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="216" id="bWD-xS-PGa"/>
                                         </constraints>
-                                        <date key="date" timeIntervalSinceReferenceDate="526481321.061037">
-                                            <!--2017-09-07 12:48:41 +0000-->
-                                        </date>
                                         <connections>
                                             <action selector="datePickerDidChange:" destination="hGK-I9-UoI" eventType="valueChanged" id="wF8-aZ-vBS"/>
                                         </connections>
@@ -2435,6 +2457,10 @@ ALREADY
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="zMK-po-6al">
+                                                <rect key="frame" x="33" y="33" width="20" height="20"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </activityIndicatorView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
@@ -2599,9 +2625,6 @@ ALREADY
                                     <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="oFt-yB-7Ts">
                                         <rect key="frame" x="1" y="88" width="413" height="281"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="574781859.79870605">
-                                            <!--2019-03-20 13:37:39 +0000-->
-                                        </date>
                                         <connections>
                                             <action selector="timePicketChanged:" destination="eQo-bi-N6y" eventType="valueChanged" id="NAZ-gz-gsm"/>
                                         </connections>
@@ -2637,6 +2660,7 @@ ALREADY
                         <outlet property="meTimeCard" destination="5wd-kC-PPc" id="rbh-LL-sTE"/>
                         <outlet property="meTimeImageView" destination="qgX-JT-6Cn" id="vXi-H7-w4q"/>
                         <outlet property="monday" destination="GqD-Cq-mnm" id="dxm-Ak-6oP"/>
+                        <outlet property="photoUploadSpinner" destination="zMK-po-6al" id="0lt-ks-Tm9"/>
                         <outlet property="saturday" destination="vNP-nj-fHo" id="7qo-Le-rM4"/>
                         <outlet property="startTimeLabel" destination="U3P-hC-TBA" id="8SI-rc-6xQ"/>
                         <outlet property="startTimeView" destination="RWg-x7-uxc" id="bVn-eW-BeD"/>
@@ -3114,7 +3138,6 @@ ALREADY
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="zC2-kE-s7q"/>
                                 </constraints>
-                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -3126,7 +3149,6 @@ ALREADY
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="O59-jo-Rjn"/>
                                 </constraints>
-                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -3138,7 +3160,6 @@ ALREADY
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="HrL-7e-eEP"/>
                                 </constraints>
-                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -3150,7 +3171,6 @@ ALREADY
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="Jnn-rt-FAu"/>
                                 </constraints>
-                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -3331,14 +3351,14 @@ ALREADY
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ANt-Up-mRJ">
-                                            <rect key="frame" x="43" y="10" width="32" height="20"/>
+                                            <rect key="frame" x="43" y="10.000000000000002" width="34" height="20.666666666666668"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="8lN-TE-Aac">
-                                            <rect key="frame" x="43" y="33" width="41" height="14"/>
+                                            <rect key="frame" x="43" y="33.666666666666671" width="41.333333333333336" height="14.666666666666666"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="12"/>
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -4401,11 +4421,11 @@ ALREADY
             <objects>
                 <viewController storyboardIdentifier="AddAlarmViewController" id="qT1-lx-PE8" customClass="AddAlarmViewController" customModule="Deploy_2_0_24" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="h4J-B2-CEc">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mWC-Fh-6DO">
-                                <rect key="frame" x="0.0" y="312" width="414" height="433"/>
+                                <rect key="frame" x="0.0" y="280" width="414" height="411"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="AlarmInfo" rowHeight="55" id="9Zw-xO-G2Z" customClass="AlarmDetailTableViewCell" customModule="Deploy_2_0_24" customModuleProvider="target">
@@ -4426,14 +4446,14 @@ ALREADY
                                 </connections>
                             </tableView>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Dh-XA-vK1">
-                                <rect key="frame" x="0.0" y="88" width="414" height="216"/>
+                                <rect key="frame" x="0.0" y="56" width="414" height="216"/>
                                 <connections>
                                     <outlet property="dataSource" destination="qT1-lx-PE8" id="XNM-dT-x3E"/>
                                     <outlet property="delegate" destination="qT1-lx-PE8" id="MaO-dI-zgK"/>
                                 </connections>
                             </pickerView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A4z-y5-A1J">
-                                <rect key="frame" x="0.0" y="780" width="414" height="40"/>
+                                <rect key="frame" x="0.0" y="726" width="414" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="iyx-sG-xTb"/>
                                 </constraints>
@@ -4488,11 +4508,11 @@ ALREADY
             <objects>
                 <viewController id="GRY-dd-obM" customClass="AlarmInfoViewController" customModule="Deploy_2_0_24" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ok3-4p-SMa">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="8j6-xH-u2h">
-                                <rect key="frame" x="0.0" y="90" width="414" height="772"/>
+                                <rect key="frame" x="0.0" y="58" width="414" height="750"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AlarmInfo" rowHeight="35" id="FoQ-d9-85p">
@@ -4510,7 +4530,7 @@ ALREADY
                                 </connections>
                             </tableView>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Alarm name" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="DOy-xE-RiG">
-                                <rect key="frame" x="0.0" y="158" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="126" width="414" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="5LD-6c-SQQ"/>
                                 </constraints>
@@ -4518,7 +4538,7 @@ ALREADY
                                 <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                             </textField>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Qa-rA-Eop">
-                                <rect key="frame" x="0.0" y="87.666666666666671" width="414" height="0.3333333333333286"/>
+                                <rect key="frame" x="0.0" y="55.666666666666664" width="414" height="0.3333333333333357"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="0.5" id="349-9r-SFt"/>
@@ -4631,7 +4651,7 @@ ALREADY
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5a9-Ne-lo4" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gWq-nr-pD3">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -4917,6 +4937,9 @@ ALREADY
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="aWZ-tA-Ne8">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="Z3l-ze-jx9" kind="relationship" relationship="rootViewController" id="dxW-u3-MtR"/>
                     </connections>
@@ -4933,8 +4956,8 @@ ALREADY
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="sE2-oa-aGP">
-                                <rect key="frame" x="0.0" y="50" width="414" height="846"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="sE2-oa-aGP">
+                                <rect key="frame" x="0.0" y="119" width="414" height="777"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
@@ -4942,17 +4965,28 @@ ALREADY
                                     <outlet property="delegate" destination="JMm-T2-aez" id="M2q-QA-fRa"/>
                                 </connections>
                             </tableView>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Contacts" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Wgd-hD-F0n">
+                                <rect key="frame" x="10" y="90" width="384" height="35"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.94999999999999996" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="JMm-T2-aez" id="thX-kQ-n7b"/>
+                                </connections>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="iH5-KZ-BBK"/>
                     </view>
                     <connections>
                         <outlet property="friendTableView" destination="sE2-oa-aGP" id="g4s-Jk-vYR"/>
+                        <outlet property="searchContactsField" destination="Wgd-hD-F0n" id="sfa-tp-TeE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DaK-wt-FHA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1249" y="-736"/>
+            <point key="canvasLocation" x="-1249.2753623188407" y="-736.60714285714278"/>
         </scene>
         <!--Create GatheringV2 View Controller-->
         <scene sceneID="jET-Js-G1J">
@@ -5309,7 +5343,7 @@ ALREADY
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GPg-1q-jOd">
-                                <rect key="frame" x="0.0" y="35" width="414" height="825"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
@@ -5329,7 +5363,7 @@ ALREADY
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="61O-Pm-jQX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1249" y="68"/>
+            <point key="canvasLocation" x="-1249.2753623188407" y="67.633928571428569"/>
         </scene>
     </scenes>
     <resources>
@@ -5396,10 +5430,10 @@ ALREADY
     <inferredMetricsTieBreakers>
         <segue reference="Bpo-Ea-8hE"/>
         <segue reference="PXI-Ri-yjX"/>
-        <segue reference="g6q-MS-Mfj"/>
-        <segue reference="9St-zC-7Yh"/>
+        <segue reference="iFo-v5-JcP"/>
+        <segue reference="Xmm-eh-cxS"/>
         <segue reference="HSP-rP-a3L"/>
-        <segue reference="enX-q2-EFx"/>
+        <segue reference="rJU-vW-0nc"/>
         <segue reference="OYa-35-IV8"/>
         <segue reference="DDM-i0-nof"/>
     </inferredMetricsTieBreakers>

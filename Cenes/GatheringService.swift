@@ -17,6 +17,11 @@ class GatheringService {
     let get_update_invitation_api: String = "/api/event/memberStatusUpdate";
     let get_predictive_api: String = "api/predictive/calendar/v2";
     let get_event_by_key: String = "/api/event/invitation/";
+    
+    let post_event_image_upload = "api/event/upload";
+    let post_event_image_upload_v2 = "/api/event/uploadv2";
+    let post_event_create_v2 = "/api/event/create";
+    
     var requestArray = NSMutableArray()
     
     //Function to get User Gatherings
@@ -29,7 +34,17 @@ class GatheringService {
         })
     }
     
-    
+    //Function to get User Gatherings
+    func createGatheringV2(postData: [String: Any],token :String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiUrl)\(post_event_create_v2)";
+        
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+    }
+
+
     //Function To Create Gathering..
     func createGathering(uploadDict : [String : Any],complete: @escaping(NSMutableDictionary)->Void ) {
         
@@ -151,7 +166,7 @@ class GatheringService {
             MultipartFormData.append(imgData, withName: "uploadfile", fileName: "file.jpg", mimeType: "image/jpg")
             MultipartFormData.append( "\(String(eventId))".data(using: .utf8)!, withName: "eventId")
             
-        }, usingThreshold: UInt64.init(), to: "\(apiUrl)api/event/upload", method: .post, headers:Auth_header as! HTTPHeaders) { (result) in
+        }, usingThreshold: UInt64.init(), to: "\(apiUrl)\(post_event_image_upload)", method: .post, headers:Auth_header as! HTTPHeaders) { (result) in
             switch result {
             case .success(let upload,_,_):
                 
@@ -193,7 +208,7 @@ class GatheringService {
         var returnedDict = NSDictionary()
         Alamofire.upload(multipartFormData: { (MultipartFormData) in
             MultipartFormData.append(imgData, withName: "uploadfile", fileName: "file.jpg", mimeType: "image/jpg")
-        }, usingThreshold: UInt64.init(), to: "\(apiUrl)/api/event/uploadv2", method: .post, headers:Auth_header as! HTTPHeaders) { (result) in
+        }, usingThreshold: UInt64.init(), to: "\(apiUrl)\(post_event_image_upload_v2)", method: .post, headers:Auth_header as! HTTPHeaders) { (result) in
             switch result {
             case .success(let upload,_,_):
                 

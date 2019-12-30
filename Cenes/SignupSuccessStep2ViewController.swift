@@ -12,6 +12,7 @@ import EventKit
 import EventKitUI
 import MobileCoreServices
 import Photos
+import MessageUI
 
 protocol SignupStep2FormTableViewCellProtocol {
     
@@ -23,7 +24,7 @@ protocol SignupStep2CalendarsTableViewProtocol {
     func highlightCalendarCircles(calendar: String);
 }
 
-class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate {
 
     
     @IBOutlet weak var signupStep2TableView: UITableView!
@@ -42,13 +43,16 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
 
     @IBOutlet weak var completeButtonView: UIView!
     
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
+    
     var signupStep2FormTableViewCellProtocolDelegate: SignupStep2FormTableViewCellProtocol!
     var signupStep2CalendarsTableViewProtocolDelegate: SignupStep2CalendarsTableViewProtocol!
     var signupStep2FormTableViewCellDelegate: SignupStep2FormTableViewCell!;
     var loggedInUser: User!;
     var outlookService = OutlookService.shared();
     let picController = UIImagePickerController();
-
+    var signupSuccessStep2Dto: SignupSuccessStep2Dto!;
     
     class func MainViewController() -> UINavigationController{
         
@@ -76,6 +80,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().serverClientID = "212716305349-dqqjgf3njkqt9s3ucied3bit42po3m39.apps.googleusercontent.com";
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }
     /*
     // MARK: - Navigation
@@ -92,7 +99,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
 
     func photoIconClicked() {
         // create an actionSheet
-        let actionSheetController: UIAlertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let actionSheetController: UIAlertController = UIAlertController(title: "Help Others recognize you.", message: "Upload or Take your photo", preferredStyle: .actionSheet)
         
         let takePhotoAction: UIAlertAction = UIAlertAction(title: "Take Photo", style: .default) { action -> Void in
             self.takePicture();
@@ -141,7 +148,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
             
             let imageToUpload = image.fixedOrientation();
-            imageToUpload.compressImage(newSizeWidth: 212, newSizeHeight: 212, compressionQuality: 1.0)
+            imageToUpload.compressImage(newSizeWidth: 512, newSizeHeight: 512, compressionQuality: 1.0)
             
             signupStep2FormTableViewCellProtocolDelegate.updateProfilePic(profilePicImage: imageToUpload);
 
@@ -225,9 +232,13 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         
         // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
         
-        self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Apple");
-        let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
-
+    self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Apple");
+        
+        var username = "Your iPhone";
+        if (loggedInUser.name != nil && loggedInUser.name != "") {
+            username = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
+        }
+        
         eventStore.requestAccess(to: .event) { (granted, error) in
             
             if (granted) && (error == nil) {
@@ -301,7 +312,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                     }
                     params = ["data":arrayDict]
                     params["userId"] = self.loggedInUser.userId;
-                    params["name"] = name;
+                    params["name"] = username;
                     
                     //Running In Background
                     DispatchQueue.global(qos: .background).async {
@@ -331,9 +342,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     
     @IBAction func completeButtonPressed(_ sender: Any) {
         
-        if (self.loggedInUser.name == nil) {
+        /*if (self.loggedInUser.name == nil || self.loggedInUser.name.trimmingCharacters(in: .whitespaces) == "") {*/
             
-            if (self.signupStep2FormTableViewCellDelegate.usernameField.text != "") {
+            if (self.loggedInUser.name != nil && self.loggedInUser.name.trimmingCharacters(in: .whitespaces) != "") {
                 
                 self.loggedInUser.name = signupStep2FormTableViewCellDelegate.usernameField.text!
                 
@@ -356,13 +367,13 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
             } else {
                 self.showAlert(title: "Name cannot be left empty", message: "");
             }
-        } else {
+            /*} else {
             setting.setValue(UserSteps.Authentication, forKey: "footprints")
             DispatchQueue.main.async {
                 WebService().setPushToken()
                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
             }
-        }
+        }*/
         
     }
     
@@ -399,6 +410,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().signOut();
     }
 
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
 }
 
 extension SignupSuccessStep2ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -414,7 +428,7 @@ extension SignupSuccessStep2ViewController: UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
             case 0:
-                return 465;
+                return 435;
             case 1:
                 return 200;
             default:

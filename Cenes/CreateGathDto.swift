@@ -11,7 +11,7 @@ import Foundation
 class CreateGathDto {
     
     var timeMatchIconOn : Bool = false;
-    
+    var availableFriendsList: String = "";
     var createGatheringRowsOrder = [CreateGatheringRows.friendsCollectionRow, CreateGatheringRows.datePanelRow, CreateGatheringRows.predictiveInfoRow, CreateGatheringRows.predictiveCalendarRow,CreateGatheringRows.eventInfoPanelRow];
     
     var createGatheringRowsVisibility = [CreateGatheringRows.friendsCollectionRow: true, CreateGatheringRows.datePanelRow: true, CreateGatheringRows.predictiveInfoRow : false, CreateGatheringRows.predictiveCalendarRow: false, CreateGatheringRows.eventInfoPanelRow : true];

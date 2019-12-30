@@ -60,7 +60,7 @@ class EventMemberModel {
                         eventMemberModel.user = user;
                     }
                 }
-                try context.save()
+                //try context.save()
                 return eventMemberModel;
             } catch {
                 print("Failed saving Event member mo, func : saveEventMemberModel")
@@ -86,7 +86,13 @@ class EventMemberModel {
         do {
             let eventMembers = try context.fetch(fetchRequest) as! [EventMemberMO];
             if (eventMembers.count > 0) {
-                return eventMembers[0];
+                
+                let eventMemberMo = eventMembers[0];
+                if (eventMemberMo.userId != 0) {
+                    eventMemberMo.user = CenesUserModel().fetchOfflineCenesUserByUserId(cenesUserId: eventMemberMo.userId);
+
+                }
+                return eventMemberMo;
             } else {
                 return EventMemberMO(context: context);
             }

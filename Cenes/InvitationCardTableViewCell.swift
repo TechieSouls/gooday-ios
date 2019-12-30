@@ -211,10 +211,13 @@ class InvitationCardTableViewCell: UITableViewCell {
             activityViewController.popoverPresentationController?.sourceView = gatheringInvitaionViewControllerDelegate.view // so that iPads won't crash
             
             // exclude some activity types from the list (optional)
-            activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
+            activityViewController.excludedActivityTypes = []
             
             // present the view controller
             gatheringInvitaionViewControllerDelegate.present(activityViewController, animated: true, completion: nil)
+            
+
+
         }
     }
     

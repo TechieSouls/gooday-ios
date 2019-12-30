@@ -19,7 +19,8 @@ class MeTimeService {
     //POST
     let post_metimeData: String = "api/user/metime";
     let post_metimePhoto: String = "api/recurring/upload";
-    
+    let post_metimePhotoVersion2: String = "api/recurring/upload/v2";
+
     
     //Function to get User Gatherings
     func getMeTimes(queryStr: String, token: String, complete: @escaping(NSDictionary)->Void){
@@ -50,6 +51,16 @@ class MeTimeService {
         });
     }
     
+    func uploadMeTimeImageVersion2(image: UIImage, userId: Int32, token: String, complete: @escaping(NSDictionary) -> Void) {
+    
+        let url = "\(apiUrl)\(post_metimePhotoVersion2)";
+        
+        HttpService().postMultipartImage(url: url, image: image, recurringEventId: userId, token: token, complete: { (response) in
+            
+            complete(response)
+        });
+    }
+
     func deleteMeTimeByRecurringEventId(queryStr: String, token: String, complete: @escaping(NSDictionary)->Void){
         
         let url = "\(apiUrl)\(put_deleteByRecurringId)?\(queryStr)";

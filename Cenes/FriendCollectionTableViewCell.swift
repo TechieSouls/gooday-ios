@@ -48,9 +48,11 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
         
         if (self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+            
+            let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
+
             //let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
             let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! UserContact;
             print("Array : \(userContact)")
@@ -96,13 +98,16 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
                 cell.removeFriendIcon.isHidden = false;
                 let removeFriendIconTapGesture = RemoveFriendIconGesture(target: self, action: #selector(self.removeFriendIconPressed(sender: )));
                 cell.removeFriendIcon.addGestureRecognizer(removeFriendIconTapGesture);
-                if (userContact.userContactId != nil) {
+                if (userContact.userContactId != nil && userContact.userContactId != 0) {
                     removeFriendIconTapGesture.userContactId = Int(userContact.userContactId);
                     cell.tag = Int(userContact.userContactId);
                 }
             }
+
+            return cell
         }
-        return cell
+        
+        return UICollectionViewCell();
     }
     
     @objc func removeFriendIconPressed(sender : RemoveFriendIconGesture) {

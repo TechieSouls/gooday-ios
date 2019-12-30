@@ -102,6 +102,7 @@ class SignupStep2FormTableViewCell: UITableViewCell, UITextFieldDelegate, Signup
             usernameField.layer.insertSublayer(getTextFieldBottomBorderGradient(textField: usernameField, cgColors: cgColors), at: 0);
             
         }
+        signupSuccessStep2ViewControllerDelegate.loggedInUser.name = textField.text!;
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

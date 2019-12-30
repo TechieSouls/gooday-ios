@@ -19,6 +19,7 @@ class UserContact {
     var status: String!;
     var phone: String!;
     var user: User!;
+    var eventMemberId: Int32!; //This is needed when editing post and adding new guests
     
     func loadUserContact(userContactDic: NSDictionary) -> UserContact {
         let userContact = UserContact();
@@ -27,7 +28,8 @@ class UserContact {
         userContact.name = userContactDic.value(forKey: "name") as? String;
         userContact.cenesMember = userContactDic.value(forKey: "cenesMember") as? String;
         userContact.phone = userContactDic.value(forKey: "phone") as? String;
-        
+        userContact.friendId = userContactDic.value(forKey: "friendId") as? Int; //This is the actual cenes id of user
+
         if let user = userContactDic.value(forKey: "user") as? NSDictionary {
             
             if let photo = user.value(forKey: "photo") as? String {
@@ -54,7 +56,7 @@ class UserContact {
         var userContactsToReturn: [UserContact] = [];
         for userContact in userContacts {
             
-            if (userContact.name.starts(with: predicate)) {
+            if (userContact.name != nil && userContact.name.lowercased().starts(with: predicate.lowercased())) {
                 userContactsToReturn.append(userContact);
             }
         }

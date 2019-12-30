@@ -33,6 +33,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
     var selectedDates = [String: UIColor]();
     var unselectedDates = [String: UIColor]();
     var calendarPage: Date!
+    var predictionsData = [PredictiveData]();
         
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,6 +42,7 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
         unselectedDates = GatheringManager().getCurrentMonthDatesWithColor(selectedDate: predictiveCalendar.currentPage);
         
         predictiveCalendar.appearance.borderRadius = 0.5
+        predictiveCalendar.appearance.titleFont = UIFont.init(name: "Avenir-Heavy", size: 20)
         formatter.dateFormat = "yyyy/MM/dd";
         //selectedDates = ["2019/04/08", "2019/04/09", "2019/04/10"]
         
@@ -148,14 +150,28 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 createGatheringDelegate.createGathDto.timeMatchIconOn = false;
                 predictiveInfoIcon.image = UIImage.init(named: "time_match_icon_off");
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveInfoRow] = false;
-                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = true;
+                createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = false;
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true;
                 createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.friendsCollectionRow] = true;
                 createGatheringDelegate.createGathTableView.reloadData();
             }
             
             
-            createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true
+            createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
+            
+            if (createGatheringDelegate.event.isPredictiveOn == true) {
+                for prediction in self.predictionsData {
+                    let predictiveDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: prediction.date));
+                    
+                    if (selectedDateCompos.day == predictiveDateCompos.day && selectedDateCompos.month == predictiveDateCompos.month && selectedDateCompos.year == predictiveDateCompos.year) {
+                        
+                        createGatheringDelegate.createGathDto.availableFriendsList =
+                            prediction.attendingFriendsList;
+                        break;
+                    }
+                }
+            }
+            
             dateClickedProtocolDelegate.predictiveCalendarDatePressed(date: date);
             
         } else {
@@ -245,6 +261,8 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 showPredictions();
             }
         } else {
+            createGatheringDelegate.createGathDto.availableFriendsList = "";
+            createGatheringDelegate.createGathTableView.reloadData();
             self.predictiveCalendar.reloadData();
         }
     }
@@ -266,10 +284,15 @@ func showPredictions() {
     let newStartDateComposTemp = Calendar.current.dateComponents(in: TimeZone.current, from: newStartDate!);
     let yearDiff = createGatheringDelegate.fsCalendarElements.year - newStartDateComposTemp.year!;
     newStartDate = Calendar.current.date(byAdding: .year, value: yearDiff, to: newStartDate!);
+    print("Start Time : ",newStartDate?.millisecondsSince1970);
     
     var endTimeDateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(createGatheringDelegate.event.endTime)))
     var newEndDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
-    newEndDateCompos.day = 15;
+    if (endTimeDateComponent.hour! < startTimeDateComponent.hour!) {
+        newEndDateCompos.day = 16;
+    } else {
+        newEndDateCompos.day = 15;
+    }
     newEndDateCompos.month = createGatheringDelegate.fsCalendarElements.month;
     newEndDateCompos.year = createGatheringDelegate.fsCalendarElements.year;
     newEndDateCompos.hour = endTimeDateComponent.hour;
@@ -281,6 +304,7 @@ func showPredictions() {
     let newEndDateComposTemp = Calendar.current.dateComponents(in: TimeZone.current, from: newEndDate!);
     let endYearDiff = createGatheringDelegate.fsCalendarElements.year - newEndDateComposTemp.year!;
     newEndDate = Calendar.current.date(byAdding: .year, value: endYearDiff, to: newEndDate!);
+    print("End Time : ",newEndDate?.millisecondsSince1970);
 
     selectedDates = [String: UIColor]();
     var queryStr = "userId=\(String(createGatheringDelegate.event.createdById))&startTime=\(String(newStartDate!.millisecondsSince1970))&endTime=\(String(newEndDate!.millisecondsSince1970))";
@@ -309,7 +333,7 @@ func showPredictions() {
         if (success == true) {
             let predictiveArr = response.value(forKey: "data") as! NSArray;
             
-            let predictions = PredictiveData().loadPredicitiveDataFromList(predictiveArray: predictiveArr);
+            self.predictionsData = PredictiveData().loadPredicitiveDataFromList(predictiveArray: predictiveArr);
             
             let predictiveFormatter = DateFormatter();
             predictiveFormatter.dateFormat = "yyyy/MM/dd";
@@ -319,7 +343,7 @@ func showPredictions() {
             let currentPageDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: currentPageDate);
             print("Current Page Month : \(currentPageDateCompos.month)");
             
-            for prediction in predictions {
+            for prediction in self.predictionsData {
                 
                 let calendar = Calendar.current;
                 let dateComponents = calendar.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(prediction.date)))
@@ -336,7 +360,7 @@ func showPredictions() {
                 //print(dateComponents.year!, todayDateComponents.year!)
 
                /* if ((dateComponents.day! >= todayDateComponents.day! && dateComponents.month! == todayDateComponents.month!) || ((dateComponents.month! > todayDateComponents.month!) && (dateComponents.year! >= todayDateComponents.year!)) || (dateComponents.month! < todayDateComponents.month! && (dateComponents.year! > todayDateComponents.year!))) {*/
-                if (currentDateCompos.month == self.createGatheringDelegate.fsCalendarElements.month && (Int)(dateComponents.day as! Int) < (Int)(currentDateCompos.day as! Int)) {
+                if (currentDateCompos.month == self.createGatheringDelegate.fsCalendarElements.month && (Int)(dateComponents.day as! Int) < (Int)(currentDateCompos.day as! Int) && currentDateCompos.year as! Int == dateComponents.year as! Int) {
                     continue;
                 }
                 

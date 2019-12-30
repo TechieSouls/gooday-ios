@@ -53,7 +53,7 @@ class HomeManager {
                     for eventObj in array {
                         if (eventObj.source == "Outlook" || eventObj.source == "Apple" || eventObj.source == "Google") {
                             
-                            if (eventObj.sourceEventId == event.sourceEventId) {
+                            if (eventObj.sourceEventId != nil && eventObj.sourceEventId == event.sourceEventId) {
                                 eventAlreadyExists = true;
                                 break;
                             }
@@ -142,10 +142,6 @@ class HomeManager {
                         let monthSeparatorTitle = Date(milliseconds: Int(currentDateEvent.startTime)).MMMMsyyyy()!;
                         if (!homescreenDto.monthSeparatorList.contains(monthSeparatorTitle)) {
                             homescreenDto.monthSeparatorList.append(monthSeparatorTitle);
-
-                            //Creating new Event Managed Object
-                            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                            let context: NSManagedObjectContext = appDelegate.persistentContainer.viewContext;
 
                             let monthEvent = Event();
                             monthEvent.title = monthSeparatorTitle;
@@ -286,10 +282,8 @@ class HomeManager {
             
             let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
             if dataType == "Event" {
-                //let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
-            
-                var event = EventModel().copyDataToEventBo(eventMo: EventModel().saveEventModelByEventDictnory(eventDict: outerDict.value(forKey: "event") as! NSDictionary));
-
+                let event = Event().loadEventData(eventDict: outerDict.value(forKey: "event") as! NSDictionary)
+        
                 let key = getMonthKeyForScrollIndex(startTime: Int(event.startTime));
                 let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(event.startTime));
                 
@@ -424,8 +418,7 @@ class HomeManager {
             let outerDict = resultArray[i] as! NSDictionary
             
             
-            //let event = Event().loadEventData(eventDict: outerDict)
-            let event = EventModel().copyDataToEventBo(eventMo: EventModel().saveEventModelByEventDictnory(eventDict: outerDict));
+            let event = Event().loadEventData(eventDict: outerDict)
             if (event.eventId == 0 || event.title == nil || event.scheduleAs != "Gathering") {
                 continue;
             }
@@ -479,6 +472,9 @@ class HomeManager {
         
         for eventBO in eventBOs {
 
+            if (eventBO.scheduleAs != "Gathering") {
+                continue;
+            }
             var key: String = Date(milliseconds: Int(eventBO.startTime)).EMMMd()!;
             let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(eventBO.startTime));
 

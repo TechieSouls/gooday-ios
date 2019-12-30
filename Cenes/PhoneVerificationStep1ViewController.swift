@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtocol, UITextFieldDelegate {
+class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtocol, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
     @IBOutlet weak var countryDropdownBar: UIView!
     
@@ -25,6 +26,8 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
     @IBOutlet weak var termsAndConditionsLabel: UILabel!
     
     @IBOutlet weak var privacyPolicyLabel: UILabel!
+
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
 
     var countryCodeService: CountryCodeService!
     
@@ -44,6 +47,9 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
 
         let countryDropdownBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryDropdownBarPressed))
         countryDropdownBar.addGestureRecognizer(countryDropdownBarTap);
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
         
         addDoneButtonOnKeyboard();
         
@@ -115,6 +121,10 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         phoneNumberTextField.inputAccessoryView = doneToolbar
     }
     
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
+    
     @objc func doneButtonAction(){
         phoneNumberTextField.resignFirstResponder()
         if (phoneNumberTextField.text != "") {
@@ -149,10 +159,18 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         
         if (self.countryCodeService != nil) {
             
+            var phoneNumberWithoutInitialZero = self.phoneNumberTextField.text!
+            let startIndexCharacter = phoneNumberWithoutInitialZero[phoneNumberWithoutInitialZero.startIndex];
+            
+            //If number has zero, lets truncate it
+            if (startIndexCharacter == "0") {
+                phoneNumberWithoutInitialZero = String(phoneNumberWithoutInitialZero.suffix(phoneNumberWithoutInitialZero.count - 1))
+            }
+            
             self.getAccessButton.isUserInteractionEnabled = false;
             var postData = [String: Any]();
             postData["countryCode"] = "\(self.countryCodeService.getPhoneCode())";
-            postData["phone"] = "\(self.phoneNumberTextField.text!)";
+            postData["phone"] = "\(phoneNumberWithoutInitialZero)";
             
             setting.setValue("\(self.countryCodeService.nameCode)", forKey: "countryCode")
 
@@ -164,7 +182,7 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
                     
                     let viewController = self.storyboard?.instantiateViewController(withIdentifier: "PhoneVerificationStep2ViewController") as! PhoneVerificationStep2ViewController;
                     viewController.countryCode = "\(self.countryCodeService.getPhoneCode())";
-                    viewController.phoneNumberStr =  "\(self.phoneNumberTextField.text!)";
+                    viewController.phoneNumberStr =  "\(phoneNumberWithoutInitialZero)";
                     self.navigationController?.pushViewController(viewController, animated: true);
                     
                 } else {

@@ -217,7 +217,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                     for wwloc in self.worldWideLocations {
                         finalwwlocList.append(wwloc);
                         if (count == 9) {
-                            break;
+                            break; 
                         }
                         count = count + 1;
                     }
@@ -372,6 +372,9 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         
                         let prevLoc = Location().loadLocationDataFromPreviousLocations(prevLocDict: prevLocDict as! NSDictionary);
                         
+                        if (prevLoc.placeId == nil || prevLoc.placeId == "") {
+                            continue;
+                        }
                         let destinationLat = Double(prevLoc.latitude) as! CLLocationDegrees
                         let destinationLong = Double(prevLoc.longitude) as! CLLocationDegrees
 
@@ -379,7 +382,11 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         let coordinateDestination = CLLocation(latitude: destinationLat, longitude: destinationLong);
                         let distanceInMeters = coordinateUser.distance(from: coordinateDestination);
                         print("distanceInMeters : ", distanceInMeters/1000, String(format: "%.1f", distanceInMeters/1000))
-                        prevLoc.kilometers = "\(String(format: "%.1f", distanceInMeters/1000))Km";
+                        
+                        let distInKms = Int(String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: prevLoc.latitudeDouble, destLongitude: prevLoc.longitudeDouble)));
+                        
+                            prevLoc.kilometers = "";
+                            //prevLoc.kilometers = "\(String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: prevLoc.latitudeDouble, destLongitude: prevLoc.longitudeDouble)))";
                         self.previousLoactions.append(prevLoc);
                     }
                     

@@ -40,6 +40,7 @@ class GatheringCardTableViewCell: UITableViewCell {
         self.membersCollectionView.register(UINib(nibName: "MemberCollectionViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "MemberCollectionViewCell")
         self.membersCollectionView.register(UINib(nibName: "MemberCountCollectionViewCell", bundle: Bundle.main), forCellWithReuseIdentifier: "MemberCountCollectionViewCell")
         
+        membersCollectionView.isUserInteractionEnabled = true;
         self.updateUI();
 
         
@@ -166,6 +167,9 @@ extension GatheringCardTableViewCell: UICollectionViewDelegate, UICollectionView
                     cell.name.text = "Me";
                 }
             }
+            
+            cell.profilePic.isUserInteractionEnabled = true;
+            cell.profilePic.addGestureRecognizer(self.newHomeViewControllerDelegate.profilePicTapGuesture);
             
             if (indexPath.row == 0) {
                 cell.guestLabel.isHidden = false;

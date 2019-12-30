@@ -24,10 +24,8 @@ protocol GatheringInfoCellProtocol {
     );
     func uploadImageLabelOnly();
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerProtocal {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerDelegate {
 
-    
-    
     @IBOutlet weak var createGathTableView: UITableView!
     
     @IBOutlet weak var timePickerView: UIView!
@@ -100,9 +98,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             var eventMembers: [EventMember] = [EventMember]();
             for eventMem in event.eventMembers! {
                 
-                if (eventMem.userId != self.loggedInUser.userId) {
-                    eventMembers.append(eventMem);
-                } else {
+                eventMembers.append(eventMem);
+
+                if (eventMem.userId == self.loggedInUser.userId) {
                     eventHost = eventMem;
                 }
             }
@@ -115,7 +113,49 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
                 }
                 
             }
-            inviteFriendsDto.selectedFriendCollectionViewList = cenesUserContacts;
+            
+            //Converting Event Member into User Contacts
+            var userContacts = [UserContact]();
+            for eveMem in eventMembers {
+                     
+                let userContact = UserContact();
+                if (eveMem.eventMemberId != nil) {
+                    userContact.eventMemberId = eveMem.eventMemberId;
+                }
+                if let name = eveMem.name {
+                    userContact.name = name;
+                }
+                
+                if let userContactId = eveMem.userContactId {
+                    userContact.userContactId = Int(userContactId);
+                }
+                
+                if let userId = eveMem.userId {
+                    userContact.userId = Int(userId);
+                    userContact.friendId = Int(userId);
+                }
+                
+                if let user = eveMem.user {
+                    userContact.user = user;
+                }
+                
+                if let photo = eveMem.photo {
+                    userContact.photo = photo;
+                }
+                if let cenesMember = eveMem.cenesMember {
+                    userContact.cenesMember = cenesMember;
+                }
+                
+                if let status = eveMem.status {
+                    userContact.status = status;
+                }
+                
+                if let phone = eveMem.phone {
+                    userContact.phone = phone;
+                }
+                userContacts.append(userContact);
+            }
+            inviteFriendsDto.selectedFriendCollectionViewList = userContacts;
             showAllFields();
         }
         self.setupNavigationBar();
@@ -301,6 +341,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         previewGatheringBtnView.isHidden = false;
     }
     
+    
+    /** This is when user click on +  button to choose or edit the guests. */
     func openGuestListViewController() {
         let viewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController;
         viewController.inviteFriendsDto = self.inviteFriendsDto;
@@ -313,6 +355,9 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func friendsDonePressed(eventMembers: [EventMember]) {
         self.event.eventMembers = [EventMember]();
         for eventMem in eventMembers {
+            if (eventMem.eventId == nil && self.event.eventId != nil && self.event.eventId != 0 && eventMem.eventMemberId != nil) {
+                eventMem.eventId = self.event.eventId;
+            }
             self.event.eventMembers.append(eventMem);
         }
         self.createGathTableView.reloadData();
@@ -419,7 +464,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             if (self.event.eventId != nil && self.event.eventId != 0) {
                 var hostExists = false;
                 for eve in self.event.eventMembers! {
-                    if (eve.eventMemberId == eventHost.eventMemberId) {
+                    if ((eve.eventMemberId != nil && eve.eventMemberId == eventHost.eventMemberId) || (eve.userId != nil && eve.userId == eventHost.userId)) {
                         hostExists = true;
                     }
                 }
@@ -515,4 +560,25 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             self.showAlert(title: "Error", message: "Cannot upload from screenshot")
         }
     }
+    
+    func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage) {
+        if (self.gatheringInfoCellDelegate != nil) {
+            self.gatheringInfoCellDelegate.imageSelected();
+            //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
+            self.imageToUpload = cropped.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
+            
+            if (Connectivity.isConnectedToInternet) {
+                gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
+            } else {
+                
+                self.event.eventPictureBinary = UIImagePNGRepresentation(cropped)!;
+                gatheringInfoCellDelegate.uploadImageLabelOnly();
+            }
+        } else {
+            self.showAlert(title: "Error", message: "Cannot upload from screenshot")
+        }
+    }
+    func cropViewControllerDidFailToCrop(_ cropViewController: CropViewController, original: UIImage) {}
+    func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {}
+
 }

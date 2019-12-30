@@ -33,7 +33,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
             
             let meTimeEventObj = self.metimeEvents[indexPath.row - 1];
             
-            if (meTimeEventObj.startTime == 0) {
+            if (meTimeEventObj.startTime == nil || meTimeEventObj.startTime == 0) {
                 
                 let identifier = "MeTimeUnscheduleTableViewCell"
                 let cell: MeTimeUnscheduleTableViewCell  = (tableView.dequeueReusableCell(withIdentifier: identifier) as? MeTimeUnscheduleTableViewCell)!
@@ -76,7 +76,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                             finalCell.meTimeImage.isHidden = false;
                             
                             let imageUrl = "\(apiUrl)\(meTimeEventObj.photo!)";
-                            finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile icon"));
+                            finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                         }
                         return finalCell;
                 
@@ -104,7 +104,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         finalCell.meTimeImage.isHidden = false;
                         
                         let imageUrl = "\(apiUrl)\(meTimeEventObj.photo!)";
-                        finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile icon"));
+                        finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                     }
                     
                         return finalCell;
@@ -131,7 +131,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         finalCell.meTimeImage.isHidden = false;
                         
                         let imageUrl = "\(apiUrl)\(meTimeEventObj.photo!)";
-                        finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile icon"));
+                        finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                     }
                     
                     return finalCell;

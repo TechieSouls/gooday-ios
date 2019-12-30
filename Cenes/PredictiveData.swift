@@ -15,6 +15,7 @@ class PredictiveData {
     var predictivePercentage: Int = 0;
     var readableDate: String!;
     var totalFriends: Int = 0;
+    var attendingFriendsList: String = "";
     
     func loadPredicitiveDataFromList(predictiveArray: NSArray) -> [PredictiveData] {
         
@@ -22,7 +23,7 @@ class PredictiveData {
 
         for predictive in predictiveArray {
             
-            let predictiveDict  = predictive as! NSDictionary
+            let predictiveDict = predictive as! NSDictionary
             
             let predictiveData = PredictiveData();
             predictiveData.attendingFriends = predictiveDict.value(forKey: "attendingFriends") as! Int;
@@ -30,6 +31,8 @@ class PredictiveData {
             predictiveData.predictivePercentage = predictiveDict.value(forKey: "predictivePercentage") as! Int;
             predictiveData.readableDate = predictiveDict.value(forKey: "readableDate") as! String;
             predictiveData.totalFriends = predictiveDict.value(forKey: "totalFriends") as! Int;
+            predictiveData.attendingFriendsList = predictiveDict.value(forKey: "attendingFriendsList") as? String ?? "";
+            
             predictiveDataList.append(predictiveData);
         }
         

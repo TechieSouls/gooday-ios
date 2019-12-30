@@ -8,8 +8,8 @@
 
 import UIKit
 import NVActivityIndicatorView
-
-class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityIndicatorViewable {
+import MessageUI
+class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityIndicatorViewable, MFMailComposeViewControllerDelegate {
 
     
     @IBOutlet weak var emailTxtField: UITextField!
@@ -21,6 +21,9 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     @IBOutlet weak var backButton: UIImageView!
     
     @IBOutlet weak var forgotPasswordButton: UIButton!
+    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
     
     var existingEmail = "";
     
@@ -55,6 +58,9 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             emailTxtField.text = existingEmail;
         }
         
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -69,6 +75,10 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
     
     @objc func backButtonPressed() {
         self.navigationController?.popViewController(animated: true);
+    }
+    
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
     }
     
     
@@ -248,7 +258,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             suffixChars = suffixChars + "*";
         }
         
-        let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
+        let confirmMessage = "A verification email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
         let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
         
         let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in

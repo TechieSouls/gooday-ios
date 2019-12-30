@@ -66,7 +66,6 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                         } else {
                             cell.dateLabel.text = String(Date(milliseconds: Int(event.startTime)).EMMMd()!);
                         }
-                        
                     }
 
                     return cell;
@@ -102,8 +101,10 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                         cell.messageLabel.isHidden = false;
                         cell.messageLabel.text = "Saved";
                         
-                        //cell.imageLabel.isHidden = false;
-                        //cell.imageLabel.text = "Uploaded";
+                        if (event.eventPicture != nil) {
+                            cell.imageLabel.isHidden = false;
+                            cell.imageLabel.text = "Uploaded";
+                        }
                     }
                     return cell;
                 }

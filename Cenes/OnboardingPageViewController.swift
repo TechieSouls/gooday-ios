@@ -96,13 +96,16 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 
         if type(of: viewController) == PageItemViewController.self {
-            pageControlBox.currentPage = 0;
+            
+            print("viewControllerBefore",pageControlBox.currentPage);
             return nil
         } else if (type(of: viewController) == TimeMatchOnboardingViewController.self) {
-            pageControlBox.currentPage = 1;
+            print("viewControllerBefore",pageControlBox.currentPage);
+
             return firstViewController;
         } else if (type(of: viewController) == InvitationOnboardingViewController.self) {
-            pageControlBox.currentPage = 2;
+            print("viewControllerBefore",pageControlBox.currentPage);
+
             return timematchController;
         }
             return nil;
@@ -111,13 +114,15 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         
         if type(of: viewController) == PageItemViewController.self {
-            pageControlBox.currentPage = 0;
+            print("viewControllerAfter",pageControlBox.currentPage);
+
             return timematchController;
         } else if (type(of: viewController) == TimeMatchOnboardingViewController.self) {
-            pageControlBox.currentPage = 1;
+            print("viewControllerAfter",pageControlBox.currentPage);
+
             return invitationController;
         } else if (type(of: viewController) == InvitationOnboardingViewController.self) {
-            pageControlBox.currentPage = 2;
+            print("viewControllerAfter",pageControlBox.currentPage);
             return nil;
         }
         return nil;
@@ -127,9 +132,25 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
         
         if (completed) {
             
+            let viewCont = pageViewController.viewControllers![0];
+            if type(of: viewCont) == PageItemViewController.self {
+                pageControlBox.currentPage = 0;
+                print("didFinishAnimating",pageControlBox.currentPage);
+
+            } else if (type(of: viewCont) == TimeMatchOnboardingViewController.self) {
+                pageControlBox.currentPage = 1;
+                print("didFinishAnimating",pageControlBox.currentPage);
+
+            } else if (type(of: viewCont) == InvitationOnboardingViewController.self) {
+                pageControlBox.currentPage = 2;
+                print("didFinishAnimating",pageControlBox.currentPage);
+
+            }
+            
+            
         }
     }
-    
+        
     func getItemController(_ itemIndex: Int) -> UIViewController? {
     
             self.pageIndex = itemIndex;
