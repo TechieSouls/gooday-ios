@@ -13,6 +13,7 @@ import EventKitUI
 import MobileCoreServices
 import Photos
 import Mixpanel
+import MessageUI
 
 protocol SignupStep2FormTableViewCellProtocol {
     
@@ -24,7 +25,7 @@ protocol SignupStep2CalendarsTableViewProtocol {
     func highlightCalendarCircles(calendar: String);
 }
 
-class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate {
 
     
     @IBOutlet weak var signupStep2TableView: UITableView!
@@ -42,6 +43,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     @IBOutlet weak var completeButton: UIButton!
 
     @IBOutlet weak var completeButtonView: UIView!
+    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
+
     
     var signupStep2FormTableViewCellProtocolDelegate: SignupStep2FormTableViewCellProtocol!
     var signupStep2CalendarsTableViewProtocolDelegate: SignupStep2CalendarsTableViewProtocol!
@@ -80,6 +84,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().serverClientID = Util.GOOGLE_SERVER_ID;
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }
     /*
     // MARK: - Navigation
@@ -425,6 +432,9 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().signOut();
     }
 
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
 }
 
 extension SignupSuccessStep2ViewController: UITableViewDelegate, UITableViewDataSource {

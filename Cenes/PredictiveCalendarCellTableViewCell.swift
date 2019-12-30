@@ -360,7 +360,7 @@ func showPredictions() {
                 //print(dateComponents.year!, todayDateComponents.year!)
 
                /* if ((dateComponents.day! >= todayDateComponents.day! && dateComponents.month! == todayDateComponents.month!) || ((dateComponents.month! > todayDateComponents.month!) && (dateComponents.year! >= todayDateComponents.year!)) || (dateComponents.month! < todayDateComponents.month! && (dateComponents.year! > todayDateComponents.year!))) {*/
-                if (currentDateCompos.month == self.createGatheringDelegate.fsCalendarElements.month && (Int)(dateComponents.day as! Int) < (Int)(currentDateCompos.day as! Int)) {
+                if (currentDateCompos.month == self.createGatheringDelegate.fsCalendarElements.month && (Int)(dateComponents.day as! Int) < (Int)(currentDateCompos.day as! Int) && currentDateCompos.year as! Int == dateComponents.year as! Int) {
                     continue;
                 }
                 

@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtocol, UITextFieldDelegate {
+class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtocol, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
     @IBOutlet weak var countryDropdownBar: UIView!
     
@@ -25,6 +26,8 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
     @IBOutlet weak var termsAndConditionsLabel: UILabel!
     
     @IBOutlet weak var privacyPolicyLabel: UILabel!
+
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
 
     var countryCodeService: CountryCodeService!
     
@@ -44,6 +47,9 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
 
         let countryDropdownBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryDropdownBarPressed))
         countryDropdownBar.addGestureRecognizer(countryDropdownBarTap);
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
         
         addDoneButtonOnKeyboard();
         
@@ -113,6 +119,10 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         doneToolbar.sizeToFit()
         
         phoneNumberTextField.inputAccessoryView = doneToolbar
+    }
+    
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
     }
     
     @objc func doneButtonAction(){

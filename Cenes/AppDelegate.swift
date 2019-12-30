@@ -67,7 +67,7 @@ var sqlDatabaseManager = SqlliteDbManager();
             if (loggedInUser.name == nil || loggedInUser.name == "") {
                 window?.rootViewController = SignupSuccessStep2ViewController.MainViewController();
             } else {
-                window?.rootViewController = ChoiceViewController.MainViewController()
+                window?.rootViewController = HomeViewController.MainViewController()
             }
         }  else if footprints == UserSteps.PhoneVerification {//If Phone Verificaiton Done Then move to CHoice Screen
             //window?.rootViewController = LoginViewController.MainViewController()

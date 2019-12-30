@@ -81,7 +81,8 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
 
         searchContactsField.leftView = view
         searchContactsField.addTarget(self, action: #selector(updateSearchResults), for: .editingChanged)
-
+        
+        self.hideKeyboardWhenTappedAround();
     }
     
     override func viewWillAppear(_ animated: Bool) {

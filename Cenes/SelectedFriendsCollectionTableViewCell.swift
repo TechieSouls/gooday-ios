@@ -127,7 +127,6 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
             }
         } else {
             cell.availabilityMark.isHidden = true;
-
         }
         
         return cell;

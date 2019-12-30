@@ -117,7 +117,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         //homescreenDto.pageable.calendarDataPageNumber = 0;
-        homescreenDto.calendarData = [HomeData]();
+        /*homescreenDto.calendarData = [HomeData]();
         homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
         
         
@@ -136,7 +136,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.homeTableView.reloadData();
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
             self.scrollToCurrentDateAtHomeScreen();
-        });
+        });*/
 
         
         //self.checkSimCardDetails();
@@ -520,7 +520,10 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         print("Total Offline Events Present : ",events.count)
         self.showOfflineData(events: events, totalCountsParam: events.count);
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-            self.scrollToCurrentDateAtHomeScreen();
+            
+            if Connectivity.isConnectedToInternet == false {
+                self.scrollToCurrentDateAtHomeScreen();
+            }
         });
         if Connectivity.isConnectedToInternet {
             

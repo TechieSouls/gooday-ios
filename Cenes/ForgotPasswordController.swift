@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class ForgotPasswordController: UIViewController, UITextFieldDelegate {
+class ForgotPasswordController: UIViewController, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
     @IBOutlet weak var emailTF: UITextField!
     
@@ -19,6 +20,8 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var confirmPasswordField: UITextField!
     
     @IBOutlet weak var backButtton: UIImageView!
+    
+    @IBOutlet weak var helpAndFeedbackImg: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,6 +57,9 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
         confirmPasswordField.layer.insertSublayer(confimrPasswordGradient, at: 0);
         
         self.hideKeyboardWhenTappedAround();
+        
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }
 
     override func didReceiveMemoryWarning() {
@@ -63,6 +69,10 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate {
     
     @objc func backButtonPressed() {
         self.navigationController?.popViewController(animated: true);
+    }
+    
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
     }
     
     /*

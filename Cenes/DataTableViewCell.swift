@@ -352,6 +352,9 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
                 
+                cell.profilePic.isUserInteractionEnabled = true;
+                cell.profilePic.addGestureRecognizer(self.newHomeViewControllerDelegate.profilePicTapGuesture);
+                
                 let timeLabel = "\(String(Date(milliseconds: Int(event.startTime)).hmma()))-\(String(Date(milliseconds: Int(event.endTime)).hmma()))"
                 cell.timeLabel.text = timeLabel;
                 

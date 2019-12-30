@@ -179,6 +179,10 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.29019607843137252" green="0.5607843137254902" blue="0.8901960784313725" alpha="0.75" colorSpace="calibratedRGB"/>
                             </view>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="Siq-k2-xmA">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="wDC-jI-wcG"/>
@@ -187,6 +191,7 @@
                         <outlet property="backButton" destination="AgP-qL-Z5q" id="qKl-ws-4vp"/>
                         <outlet property="emailTxtField" destination="Xif-Mm-uuT" id="oT2-VB-Q2s"/>
                         <outlet property="forgotPasswordButton" destination="gyf-IA-nuP" id="1Qg-Ke-qsu"/>
+                        <outlet property="helpAndFeedbackImg" destination="Siq-k2-xmA" id="g9i-fQ-tc0"/>
                         <outlet property="loginBtn" destination="yKp-Pb-bSB" id="VWj-Ci-O81"/>
                         <outlet property="passwordTextField" destination="M9J-r2-avB" id="R4c-as-3yo"/>
                     </connections>
@@ -260,6 +265,10 @@
                                 <rect key="frame" x="20" y="66" width="12" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="3l6-Vo-Imf">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="NJY-MQ-e2m"/>
@@ -268,6 +277,7 @@
                         <outlet property="backButtton" destination="UlP-GA-EcV" id="6X3-fW-qW8"/>
                         <outlet property="confirmPasswordField" destination="z6F-sp-7OP" id="SsF-I7-6TV"/>
                         <outlet property="emailTF" destination="WS3-ie-3kF" id="MPs-2K-zjA"/>
+                        <outlet property="helpAndFeedbackImg" destination="3l6-Vo-Imf" id="XZ2-EN-E69"/>
                         <outlet property="newPasswordField" destination="KKI-hd-qsV" id="Htf-VC-uP3"/>
                         <outlet property="newPasswordView" destination="L2L-Li-sHU" id="LUf-39-bt1"/>
                     </connections>
@@ -431,6 +441,10 @@
                                     <outlet property="delegate" destination="huB-0a-lwZ" id="LvC-ci-j9m"/>
                                 </connections>
                             </tableView>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="Y3f-rU-2x1">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jzz-9x-M9c">
                                 <rect key="frame" x="0.0" y="807" width="414" height="90"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -507,6 +521,7 @@
                         <outlet property="datePickerDoneButton" destination="9Jq-8E-nQD" id="WiA-a9-xep"/>
                         <outlet property="datePickerView" destination="1cs-3Z-T5S" id="igT-R8-Esf"/>
                         <outlet property="datepickerButtonBar" destination="2sZ-5s-TUI" id="mqR-A3-F8R"/>
+                        <outlet property="helpAndFeedbackImg" destination="Y3f-rU-2x1" id="XYH-dx-Dfu"/>
                         <outlet property="signupStep2TableView" destination="Qxo-eP-5FB" id="hNM-HG-9RM"/>
                     </connections>
                 </viewController>
@@ -650,6 +665,10 @@
                                 <color key="textColor" red="0.0" green="0.50845147562449644" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="instabug_report" translatesAutoresizingMaskIntoConstraints="NO" id="OWV-Qn-JlK">
+                                <rect key="frame" x="375" y="56" width="30" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="vLu-c9-6il"/>
@@ -661,6 +680,7 @@
                         <outlet property="countryLabel" destination="cI3-O9-B7i" id="akE-ea-LTm"/>
                         <outlet property="getAccessButton" destination="gnh-Fu-oW0" id="1Yg-Yo-A8r"/>
                         <outlet property="getAccessView" destination="aR5-Vb-Wjh" id="qAx-M4-Gjk"/>
+                        <outlet property="helpAndFeedbackImg" destination="OWV-Qn-JlK" id="5d7-pa-GkA"/>
                         <outlet property="phoneNumberTextField" destination="gf2-mH-7iM" id="tkc-at-38Z"/>
                         <outlet property="privacyPolicyLabel" destination="f3v-Rp-2lF" id="Gx6-Vn-qh3"/>
                         <outlet property="termsAndConditionsLabel" destination="LCk-0M-flL" id="fo1-fL-J6O"/>
@@ -5410,7 +5430,7 @@ ALREADY
         <image name="homeSelected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="homeUnselected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="image_white_default" width="40.666667938232422" height="36.666667938232422"/>
-        <image name="instabug_report" width="166.66667175292969" height="193.33332824707031"/>
+        <image name="instabug_report" width="33.333332061767578" height="38.666667938232422"/>
         <image name="invitation_card" width="400" height="266.66665649414062"/>
         <image name="invitation_loader_spinner" width="33.333332061767578" height="33.333332061767578"/>
         <image name="metimeSelected" width="24.333333969116211" height="23.333333969116211"/>

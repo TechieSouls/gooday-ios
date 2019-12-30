@@ -7,13 +7,13 @@
 //
 
 import UIKit
+import MessageUI
 
-class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegate {
+class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
     @IBOutlet weak var phoneNumber: UILabel!
     
     @IBOutlet weak var verificationCodeField: UITextField!
-    
     
     @IBOutlet weak var codeField1: UITextField!
     
@@ -70,8 +70,21 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         let backBarButton = UIBarButtonItem.init(customView: backButton)
         
         self.navigationItem.leftBarButtonItem = backBarButton
+        
+        let instabugButton = UIButton.init(type: .custom)
+        instabugButton.setImage(#imageLiteral(resourceName: "instabug_report"), for: UIControlState.normal)
+        instabugButton.setImage(#imageLiteral(resourceName: "instabug_report"), for: UIControlState.selected)
+    
+        let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
+        instabugButton.addGestureRecognizer(bugTapGuesture);
+        instabugButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 35)
+        let instabugBarButton = UIBarButtonItem.init(customView: instabugButton);
+        self.navigationItem.rightBarButtonItem = instabugBarButton;
     }
     
+    @objc func bugButtonPressed() {
+        self.helpAndFeedbackIconPressed(mfMailComposerDelegate: self);
+    }
     
     @objc func userPressedKey(textField: UITextField) {
         
