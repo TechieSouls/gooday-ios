@@ -79,7 +79,7 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         instabugButton.addGestureRecognizer(bugTapGuesture);
         instabugButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 35)
         let instabugBarButton = UIBarButtonItem.init(customView: instabugButton);
-        self.navigationItem.rightBarButtonItem = instabugBarButton;
+        //self.navigationItem.rightBarButtonItem = instabugBarButton;
     }
     
     @objc func bugButtonPressed() {

@@ -267,32 +267,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            
-           
-            /*gatheringInfoCellDelegate.imageSelected();
-            event.imageToUpload = image;
-            let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
-             */
             picker.dismiss(animated: true, completion: nil);
-
-            /*let cropper = UIImageCropper(cropRatio: 2/3)
-            cropper.delegate = self
-            cropper.picker = nil
-            cropper.image = image
-            cropper.cropButtonText = "Choose";
-            cropper.cancelButtonText = "Cancel"
-            self.present(cropper, animated: true, completion: nil)*/
-            
-            /*let imageCropper = self.storyboard?.instantiateViewController(withIdentifier: "GatheringImagePickerViewController") as! GatheringImagePickerViewController
-            imageCropper.imageToCrop = image;
-            imageCropper.createGatherigV2ProtocoinglDelegate = self;
-            self.present(imageCropper, animated: true, completion: nil)*/
-            
-            /*let imageCropper = self.storyboard?.instantiateViewController(withIdentifier: "MyImageCropperViewController") as! MyImageCropperViewController
-            imageCropper.imageToCrop = image;
-            imageCropper.createGatherigV2ProtocolDelegate = self;
-            self.present(imageCropper, animated: true, completion: nil)*/
-            
             let cropViewController = Mantis.cropViewController(image: image)
             cropViewController.delegate = self
             self.present(cropViewController, animated: true)

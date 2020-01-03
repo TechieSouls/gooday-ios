@@ -90,6 +90,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
         
         self.hideKeyboardWhenTappedAround();
         
+        self.helpAndFeedbackImg.isHidden = true;
         let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
         self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
 

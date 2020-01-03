@@ -89,6 +89,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.login")
         GIDSignIn.sharedInstance().scopes.append("https://www.googleapis.com/auth/plus.me")
 
+        self.helpAndFeedbackImg.isHidden = true;
         let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
         self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }

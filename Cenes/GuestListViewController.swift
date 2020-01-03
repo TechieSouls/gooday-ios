@@ -101,9 +101,9 @@ class GuestListViewController: UIViewController {
         var declinedCount = 0;
         if (self.event.eventMembers != nil && self.event.eventMembers.count > 0) {
             for eventMem in self.event.eventMembers! {
-                if (eventMem.status == "Going") {
+                if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.status == "Going") {
                     acceptedCount = acceptedCount + 1;
-                } else if (eventMem.status == "NotGoing") {
+                } else if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.status == "NotGoing") {
                     declinedCount = declinedCount + 1;
                 }
             }

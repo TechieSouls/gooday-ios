@@ -57,6 +57,7 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
         } else {
             
             var postData = [String: Any]();
+            postData["userId"] = appSettingsEditViewControllerDelegate.loggedInUser.userId!
             postData["phone"] = "\(String(countryCode.text!))\(phoneNumber.text!)";
             if (passwordAvailable == true) {
                 postData["password"] = "\(String(password.text!))";

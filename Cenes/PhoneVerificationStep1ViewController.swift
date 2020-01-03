@@ -48,6 +48,7 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         let countryDropdownBarTap = UITapGestureRecognizer.init(target: self, action: #selector(countryDropdownBarPressed))
         countryDropdownBar.addGestureRecognizer(countryDropdownBarTap);
         
+        self.helpAndFeedbackImg.isHidden = true;
         let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
         self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
         
@@ -83,7 +84,7 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
                     self.selectedCountry(countryCodeService: self.countryCodeService);
                 })
             }
-        })
+        });
     }
     
     override func viewWillAppear(_ animated: Bool) {

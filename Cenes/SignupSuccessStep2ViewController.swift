@@ -72,7 +72,8 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         
         self.hideKeyboardWhenTappedAround();
         
-        self.datePicker.maximumDate = Date();
+        let eligibleDate = Calendar.current.date(byAdding: .year, value: -13, to: Date());
+        self.datePicker.maximumDate = eligibleDate;
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         
@@ -85,6 +86,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().scopes = ["https://www.googleapis.com/auth/calendar",
                                              "https://www.googleapis.com/auth/calendar.readonly"]
         
+        self.helpAndFeedbackImg.isHidden = true;
         let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
         self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
     }

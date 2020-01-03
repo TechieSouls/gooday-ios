@@ -58,9 +58,9 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
             emailTxtField.text = existingEmail;
         }
         
+        self.helpAndFeedbackImg.isHidden = true;
         let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
         self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
-        
     }
 
     override func viewWillAppear(_ animated: Bool) {
