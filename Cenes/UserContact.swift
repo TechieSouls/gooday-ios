@@ -11,6 +11,7 @@ import UIKit
 class UserContact {
     
     var name: String!;
+    var cenesName: String!;
     var userContactId: Int!;
     var photo: String!
     var userId: Int!;
@@ -32,20 +33,29 @@ class UserContact {
 
         if let user = userContactDic.value(forKey: "user") as? NSDictionary {
             
+            userContact.cenesName = user.value(forKey: "name") as! String;
             if let photo = user.value(forKey: "photo") as? String {
                 userContact.photo = photo;
             }
+            
             userContact.userId = user.value(forKey: "userId") as! Int;
+            userContact.user = User().loadUserData(userDataDict: user);
         }
         return userContact;
     }
     
     func loadUserContactList(userContactArray: NSArray) -> [UserContact] {
-        
+        let user = User().loadUserDataFromUserDefaults(userDataDict: setting);
+
         var userContacts: [UserContact] = [];
         for userContactDict in userContactArray {
             
             let userContact: UserContact = self.loadUserContact(userContactDic: userContactDict as! NSDictionary);
+            
+            //Removing own user from list.
+            if (userContact.friendId != nil && userContact.friendId != 0 && userContact.friendId == user.userId) {
+                continue;
+            }
             userContacts.append(userContact);
         }
         return userContacts;
@@ -56,7 +66,21 @@ class UserContact {
         var userContactsToReturn: [UserContact] = [];
         for userContact in userContacts {
             
-            if (userContact.name != nil && userContact.name.lowercased().starts(with: predicate.lowercased())) {
+            if (userContact.user != nil && userContact.cenesName.lowercased().starts(with: predicate.lowercased())) {
+                userContactsToReturn.append(userContact);
+            } else if (userContact.name != nil && userContact.name.lowercased().starts(with: predicate.lowercased())) {
+                userContactsToReturn.append(userContact);
+            }
+        }
+        return userContactsToReturn;
+    }
+    
+    func filteredByCenesName(userContacts: [UserContact], predicate: String) -> [UserContact] {
+    
+        var userContactsToReturn: [UserContact] = [];
+        for userContact in userContacts {
+            
+            if (userContact.cenesName != nil && userContact.cenesName.lowercased().starts(with: predicate.lowercased())) {
                 userContactsToReturn.append(userContact);
             }
         }

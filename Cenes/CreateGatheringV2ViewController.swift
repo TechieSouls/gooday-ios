@@ -270,6 +270,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             picker.dismiss(animated: true, completion: nil);
             let cropViewController = Mantis.cropViewController(image: image)
             cropViewController.delegate = self
+            cropViewController.modalPresentationStyle = .fullScreen
             self.present(cropViewController, animated: true)
         }
         
@@ -546,7 +547,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         if (self.gatheringInfoCellDelegate != nil) {
             self.gatheringInfoCellDelegate.imageSelected();
             //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
-            self.imageToUpload = cropped.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
+            self.imageToUpload = cropped;//.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
             
             if (Connectivity.isConnectedToInternet) {
                 gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);

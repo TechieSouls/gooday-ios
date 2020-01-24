@@ -8,6 +8,7 @@
 
 import UIKit
 import MessageUI
+import Mixpanel
 
 class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtocol, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
@@ -53,6 +54,10 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
         self.helpAndFeedbackImg.addGestureRecognizer(bugTapGuesture);
         
         addDoneButtonOnKeyboard();
+        
+        Mixpanel.mainInstance().track(event: "PhoneVerification",
+               properties:[ "Action" : "Verification Begins", "Title": "Step 1", "Device": "iOS"]);
+        
         
         let countryCodeServices = CountryCodeService().getLibraryMasterCountriesEnglish();
         
@@ -158,9 +163,9 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
 
     @IBAction func getAccessButtonPressed(_ sender: Any) {
         
-        if (self.countryCodeService != nil) {
+        if (self.countryCodeService != nil && self.phoneNumberTextField.text != "") {
             
-            var phoneNumberWithoutInitialZero = self.phoneNumberTextField.text!
+            var phoneNumberWithoutInitialZero = self.phoneNumberTextField.text!.removeWhitespace();
             let startIndexCharacter = phoneNumberWithoutInitialZero[phoneNumberWithoutInitialZero.startIndex];
             
             //If number has zero, lets truncate it
@@ -180,6 +185,9 @@ class PhoneVerificationStep1ViewController: UIViewController, AppSettingsProtoco
 
                 let success = response.value(forKey: "success") as! Bool;
                 if (success == true) {
+                    
+                    Mixpanel.mainInstance().track(event: "PhoneVerification",
+                    properties:[ "Action" : "Verification Success", "Title": "Step 1", "Device": "iOS"]);
                     
                     let viewController = self.storyboard?.instantiateViewController(withIdentifier: "PhoneVerificationStep2ViewController") as! PhoneVerificationStep2ViewController;
                     viewController.countryCode = "\(self.countryCodeService.getPhoneCode())";

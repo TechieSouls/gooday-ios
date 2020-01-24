@@ -66,7 +66,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView();
     var context: NSManagedObjectContext!;
-    
+    var metimeFiels = MeTimeFields();
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -125,7 +126,6 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
 
         btnSave.backgroundColor = cenesLabelBlue
         btnDelete.backgroundColor = cenesLabelBlue
-        
         
         let rectShape = CAShapeLayer()
         rectShape.bounds = self.meTimeCard.frame
@@ -193,7 +193,15 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             self.metimeRecurringEvent.startTime = self.timePicker.clampedDate.millisecondsSince1970;
            // print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.startTimeLabel.text = "START  \(self.timePicker.clampedDate.hmma())";
+            if (metimeFiels.endTime == false) {
+                let endDate = Calendar.current.date(byAdding: .minute, value: 60, to: Date(millis: self.metimeRecurringEvent.startTime));
+                self.metimeRecurringEvent.endTime = endDate?.millisecondsSince1970;
+                self.endTimeLabel.text = "FINISH  \(endDate!.hmma())";
+                metimeFiels.endTime = true;
+            }
+            
         } else if (self.dateSelected == "endTime") {
+            metimeFiels.endTime = true;
           //  print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.metimeRecurringEvent.endTime = self.timePicker.clampedDate.millisecondsSince1970;
             self.endTimeLabel.text = "FINISH  \(self.timePicker.clampedDate.hmma())";
@@ -204,8 +212,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     @IBAction func btnDeletePressed(_ sender: Any) {
 
-        if (self.metimeRecurringEvent.recurringEventId != 0) {
-            
+        if (self.metimeRecurringEvent.recurringEventId != nil && self.metimeRecurringEvent.recurringEventId != 0) {
             self.startLoading();
             
             let queryStr = "recurringEventId=\(String(metimeRecurringEvent.recurringEventId))";

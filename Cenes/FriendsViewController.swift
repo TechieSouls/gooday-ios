@@ -156,8 +156,8 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
                     self.showAlert(title: "Error", message: (returnedDict["message"] as? String)!)
                 }else{
                     
-                    CenesUserContactModel().deleteAllCenesUserContactMO();
-                    self.inviteFriendsDto.allEventMembers = CenesUserContactModel().loadUserContactsMO(eventMemberArray: returnedDict["data"] as! NSArray);
+                    self.inviteFriendsDto.allEventMembers = UserContact().loadUserContactList(userContactArray: returnedDict["data"] as! NSArray);
+                    //CenesUserContactModel().loadUserContactsMO(eventMemberArray: returnedDict["data"] as! NSArray);
                         self.processFriendsList();
                     self.friendTableView.reloadData();
 
@@ -202,8 +202,15 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         if (str == "") {
             self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
         } else {
-            self.inviteFriendsDto.filteredEventMembers = UserContact().filtered(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
             
+            if (self.inviteFriendsDto.isAllContactsView == false) {
+                //It means cenes contact list is visible and we will search by cenes name
+                self.inviteFriendsDto.filteredEventMembers = UserContact().filteredByCenesName(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
+                
+            } else {
+                self.inviteFriendsDto.filteredEventMembers = UserContact().filtered(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
+                
+            }
             //self.inviteFriendsDto.filteredEventMembers = EventMember().filteredEventMemberMO(eventMembers: self.inviteFriendsDto.allEventMembers, predicate: str);
         }
         

@@ -188,17 +188,30 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
         GIDSignIn.sharedInstance().signOut()
         GIDSignIn.sharedInstance().signIn();
         
+        var userName = "";
+        if (loggedInUser.name != nil && loggedInUser.name != "") {
+            userName = loggedInUser.name!;
+        } else {
+            userName = "Syned Before Adding Name";
+        }
         Mixpanel.mainInstance().track(event: "SyncCalendar",
-                                      properties:[ "CalendarType" : "Google", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+                                      properties:[ "CalendarType" : "Google", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(userName)"]);
     }
     
     func outlookSyncBegins() {
         if (outlookService.isLoggedIn) {
             outlookService.logout()
         }
+        
+        var userName = "";
+        if (loggedInUser.name != nil && loggedInUser.name != "") {
+            userName = loggedInUser.name!;
+        } else {
+            userName = "Syned Before Adding Name";
+        }
         // pass to webservice
         Mixpanel.mainInstance().track(event: "SyncCalendar",
-                                      properties:[ "CalendarType" : "Outlook", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+                                      properties:[ "CalendarType" : "Outlook", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(userName)"]);
         
         outlookService.login(from: self) { (error,token, refreshToken) in
             if error == nil{
@@ -225,7 +238,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                                 print("Outlook Synced.");
                                 
                                 Mixpanel.mainInstance().track(event: "SyncCalendar",
-                                properties:[ "CalendarType" : "Outlook", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+                                properties:[ "CalendarType" : "Outlook", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(userName)"]);
                             })
                         }
                     }
@@ -241,114 +254,130 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
     }
     
     func appleSyncBegins() {
-        
+        // 'EKEntityTypeReminder' or 'EKEntityTypeEvent
+        var iphoneName = "Your iPhone";
+        var userName = "";
+        if (loggedInUser.name != nil && loggedInUser.name != "") {
+            iphoneName = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
+            userName = loggedInUser.name!;
+        }
+        if (userName == "") {
+            userName = "Syned Before Adding Name";
+        }
         Mixpanel.mainInstance().track(event: "SyncCalendar",
-        properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+                                      properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(userName)"]);
         
         var params : [String:Any]
-        let eventStore : EKEventStore = EKEventStore()
-        
-        // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
-        
-    self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Apple");
-        
-        var username = "Your iPhone";
-        if (loggedInUser.name != nil && loggedInUser.name != "") {
-            username = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
-        }
-        
-        eventStore.requestAccess(to: .event) { (granted, error) in
+        do {
+            guard let eventStore : EKEventStore = try EKEventStore() else {
+                return;
+            }
             
-            if (granted) && (error == nil) {
-                print("granted \(granted)")
-                print("error \(error)")
+            eventStore.requestAccess(to: .event) { (granted, error) in
                 
-                let calendar = Calendar.current
-                
-                var datecomponent = DateComponents()
-                datecomponent.year = 1
-                var endDate = calendar.date(byAdding: datecomponent, to: Date())
-                
-                let calendars = eventStore.calendars(for: .event)
-                
-                var newCalendar = [EKCalendar]()
-                
-                for calendar in calendars {
-                    if calendar.title == "Work" || calendar.title == "Home"{
-                        //      newCalendar.append(calendar)
+                if (granted == true && error == nil) {
+                    DispatchQueue.main.async() {
+                        self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Apple");
                     }
-                    newCalendar.append(calendar)
+                    
+                    print("granted \(granted)")
+                    print("error \(error)")
+                    
+                    let calendar = Calendar.current
+                    
+                    var datecomponent = DateComponents()
+                    datecomponent.year = 1
+                    var endDate = calendar.date(byAdding: datecomponent, to: Date())
+                    
+                    let calendars = eventStore.calendars(for: .event)
+                    
+                    var newCalendar = [EKCalendar]()
+                    
+                    for calendar in calendars {
+                        if calendar.title == "Work" || calendar.title == "Home"{
+                            //      newCalendar.append(calendar)
+                        }
+                        newCalendar.append(calendar)
+                    }
+                    
+                    
+                    
+                    let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
+                    
+                    let userid = setting.value(forKey: "userId") as! NSNumber
+                    let uid = "\(userid)"
+                    let eventArray = eventStore.events(matching: predicate)
+                    
+                    if eventArray.count > 0 {
+                        
+                        var params : [String:Any]
+                        
+                        var arrayDict = [NSMutableDictionary]()
+                        
+                        for event  in eventArray {
+                            
+                            let event = event as EKEvent
+                            
+                            let title = event.title
+                            
+                            var location = ""
+                            if let loc = event.location{
+                                location = loc
+                            }
+
+                            var description = ""
+                            if let desc = event.notes{
+                                description = desc
+                            }
+                            
+                            let startTime = "\(event.startDate.millisecondsSince1970)"
+                            let endTime = "\(event.endDate.millisecondsSince1970)"
+                            
+                            let nowDateMillis = Date().millisecondsSince1970
+
+                            var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                            
+                            if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                                
+                                postData["processed"] = "\(1)";
+                                arrayDict.append(postData)
+                            } else {
+                                
+                                postData["processed"] = "\(0)";
+                                arrayDict.append(postData)
+                            }
+                            
+                        }
+                        params = ["data":arrayDict]
+                        params["userId"] = self.loggedInUser.userId;
+                        params["name"] = iphoneName;
+                        
+                        //Running In Background
+                        DispatchQueue.global(qos: .background).async {
+                            // your code here
+                            UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                                print("Device Synced.")
+                                
+                                Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                              properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(userName)"]);
+                            })
+                        }
+                        
+                    }
                 }
-                
-                
-                
-                let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
-                
-                let userid = setting.value(forKey: "userId") as! NSNumber
-                let uid = "\(userid)"
-                let eventArray = eventStore.events(matching: predicate)
-                
-                if eventArray.count > 0 {
-                    
-                    var params : [String:Any]
-                    
-                    var arrayDict = [NSMutableDictionary]()
-                    
-                    for event  in eventArray {
-                        
-                        let event = event as EKEvent
-                        
-                        let title = event.title
-                        
-                        var location = ""
-                        if let loc = event.location{
-                            location = loc
-                        }
+                else{
+                    // print("failed to save event with error : \(error!) or access not granted")
+                    DispatchQueue.main.async() {
+                        Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                      properties:[ "CalendarType" : "Apple", "Action" : "No Permissions", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(userName)"]);
 
-                        var description = ""
-                        if let desc = event.notes{
-                            description = desc
-                        }
-                        
-                        let startTime = "\(event.startDate.millisecondsSince1970)"
-                        let endTime = "\(event.endDate.millisecondsSince1970)"
-                        
-                        let nowDateMillis = Date().millisecondsSince1970
-
-                        var postData: NSMutableDictionary = ["title":title!,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
-                        
-                        if (event.startDate.millisecondsSince1970 < nowDateMillis) {
-                            
-                            postData["processed"] = "\(1)";
-                            arrayDict.append(postData)
-                        } else {
-                            
-                            postData["processed"] = "\(0)";
-                            arrayDict.append(postData)
-                        }
-                        
+                        self.showAlert(title: "Error", message: "Please provide Permission to Cenes App to access your Device Calendar.")
                     }
-                    params = ["data":arrayDict]
-                    params["userId"] = self.loggedInUser.userId;
-                    params["name"] = username;
-                    
-                    //Running In Background
-                    DispatchQueue.global(qos: .background).async {
-                        // your code here
-                        UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
-                            print("Device Synced.")
-                            
-                            Mixpanel.mainInstance().track(event: "SyncCalendar",
-                                                          properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
-                        })
-                    }
-                    
                 }
             }
-            else{
-                // print("failed to save event with error : \(error!) or access not granted")
-                self.showAlert(title: "Error", message: "Please provide Permission to Cenes App to access your Device Calendar.")
-            }
+            
+        } catch {
+            print(error)
         }
     }
     
@@ -403,6 +432,12 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
             print(error.localizedDescription)
         } else {
             
+            var userName = "";
+            if (loggedInUser.name != nil && loggedInUser.name != "") {
+                userName = loggedInUser.name!;
+            } else {
+                userName = "Syned Before Adding Name";
+            }
             self.signupStep2CalendarsTableViewProtocolDelegate.highlightCalendarCircles(calendar: "Google")
             
             let authentication = user.authentication
@@ -423,7 +458,7 @@ class SignupSuccessStep2ViewController: UIViewController, GIDSignInUIDelegate, G
                     print("synced");
                     
                     Mixpanel.mainInstance().track(event: "SyncCalendar",
-                    properties:[ "CalendarType" : "Google", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+                    properties:[ "CalendarType" : "Google", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(userName)"]);
                 });
             }
         }

@@ -416,10 +416,12 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     //And we will open sms composer to send invitation link to non
                                     //cenes memebers.
                                     var nonCenesMembers = [EventMember]();
-                                    for mem in self.event.eventMembers! {
-                                        if ((mem.userId == nil || mem.userId == 0) && (mem.eventMemberId == nil || mem.eventMemberId == 0) && mem.phone != nil) {
-                                            
-                                            nonCenesMembers.append(mem);
+                                    if (self.event.eventMembers != nil) {
+                                        for mem in self.event.eventMembers! {
+                                            if ((mem.userId == nil || mem.userId == 0) && (mem.eventMemberId == nil || mem.eventMemberId == 0) && mem.phone != nil) {
+                                                
+                                                nonCenesMembers.append(mem);
+                                            }
                                         }
                                     }
                                     if (nonCenesMembers.count > 0) {
@@ -487,17 +489,19 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                     //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
                                                     
                                                 } else {
-                                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                        
-                                                        //let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                        //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                                                    if (self.tabBarController != nil) {
+                                                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                            
+                                                            //let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                            //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
 
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                                                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                                        });
-                                                        
-                                                        self.navigationController?.popToRootViewController(animated: true);
-                                                        
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                                                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                                            });
+                                                            
+                                                            self.navigationController?.popToRootViewController(animated: true);
+                                                            
+                                                        }
                                                     }
                                                 }
                                             }
@@ -514,9 +518,11 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 //And we will open sms composer to send invitation link to non
                                 //cenes memebers.
                                 var nonCenesMembers = [EventMember]();
-                                for mem in self.event.eventMembers! {
-                                    if (mem.userId == nil || mem.userId == 0 && mem.phone != nil) {
-                                        nonCenesMembers.append(mem);
+                                if (self.event.eventMembers != nil) {
+                                    for mem in self.event.eventMembers! {
+                                        if (mem.userId == nil || mem.userId == 0 && mem.phone != nil) {
+                                            nonCenesMembers.append(mem);
+                                        }
                                     }
                                 }
                                 if (nonCenesMembers.count > 0) {
@@ -553,10 +559,12 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     
                                     //If its the first time. Lets take out the owner from event and let the backend handle it.
                                     var index = 0;
-                                    for eventmem in self.event.eventMembers! {
-                                        if (eventmem.userId == self.loggedInUser.userId) {
-                                            self.event.eventMembers.remove(at: index);
-                                            index = index + 1;
+                                    if (self.event.eventMembers != nil) {
+                                        for eventmem in self.event.eventMembers! {
+                                            if (eventmem.userId == self.loggedInUser.userId) {
+                                                self.event.eventMembers.remove(at: index);
+                                                index = index + 1;
+                                            }
                                         }
                                     }
                                     
@@ -622,12 +630,17 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                             UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
                                             
                                         } else {
-                                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                
-                                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                homeViewController?.refershDataFromOtherScreens();
-                                                //self.navigationController?.popViewController(animated: true);
-                                                UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                            if (self.tabBarController != nil) {
+                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                    
+                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                   
+                                                    if (homeViewController != nil) {
+                                                        homeViewController?.refershDataFromOtherScreens();
+                                                    }
+                                                    //self.navigationController?.popViewController(animated: true);
+                                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                                }
                                             }
                                         }
                                     }

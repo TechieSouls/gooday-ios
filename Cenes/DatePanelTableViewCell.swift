@@ -359,12 +359,15 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         } else {
             dateLabel.text = String(date.EMMMd()!);
         }
-        createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = true;
+       
+        //This is to close predictive calendar
+createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
         
         createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true
         
-        //dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
-        //createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = true
+        //This is to close the calendar
+        dateBarArrow.image = UIImage.init(named: "date_panel_right_arrow")
+        createGatheringDelegate.createGathDto.barSelected[CreateGatheringBars.dateBar] = false
         
         
         let selectedDateCal = Calendar.current;
@@ -412,7 +415,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         
         //Code to show hide Event Preview Button.
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
-        //createGatheringDelegate.showHidePreviewGatheringButton();
+        createGatheringDelegate.showHidePreviewGatheringButton(show: true);
         
         createGatheringDelegate.createGathTableView.reloadData();
         
@@ -423,6 +426,6 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
             //createGatheringDelegate.showHidePreviewGatheringButton();
         }
         
-        //createGatheringDelegate.showHidePreviewGatheringButton(show: true);
+        createGatheringDelegate.showHidePreviewGatheringButton(show: true);
     }
 }

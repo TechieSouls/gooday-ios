@@ -8,6 +8,7 @@
 
 import UIKit
 import MessageUI
+import Mixpanel
 
 class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
@@ -41,6 +42,9 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         codeField1.becomeFirstResponder();
         
         self.hideKeyboardWhenTappedAround();
+        
+        Mixpanel.mainInstance().track(event: "PhoneVerification",
+        properties:[ "Action" : "Verification Begins", "Title": "Step 2", "Device": "iOS"]);
     }
     override func viewDidAppear(_ animated: Bool) {
         runTimer();
@@ -109,6 +113,9 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
                     
                 } else {
                     self.timer.invalidate();
+                    
+                    Mixpanel.mainInstance().track(event: "PhoneVerification",
+                    properties:[ "Action" : "Verification Success", "Title": "Step 2", "Device": "iOS"]);
                     
                     setting.setValue("\(self.countryCode)\(self.phoneNumberStr)", forKey: "verifiedPhone")
                     setting.setValue(UserSteps.PhoneVerification, forKey: "footprints")

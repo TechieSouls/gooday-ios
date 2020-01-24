@@ -79,6 +79,7 @@
 		5E44D1E022AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E44D1DE22AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift */; };
 		5E44D1E122AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E44D1DF22AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib */; };
 		5E47C9F4225B16A800C738D3 /* UITabBarController+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */; };
+		5E4D62DB23D59C9F0096F0C4 /* String+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E4D62DA23D59C9F0096F0C4 /* String+Customs.swift */; };
 		5E51FD842265891900A86994 /* InviteFriendsDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E51FD832265891900A86994 /* InviteFriendsDto.swift */; };
 		5E51FD872265979000A86994 /* FriendAllContactsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E51FD852265979000A86994 /* FriendAllContactsTableViewCell.swift */; };
 		5E51FD882265979000A86994 /* FriendAllContactsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E51FD862265979000A86994 /* FriendAllContactsTableViewCell.xib */; };
@@ -161,6 +162,7 @@
 		5EAF0CB522893C9500AE2264 /* SignupStep2FormTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EAF0CB322893C9500AE2264 /* SignupStep2FormTableViewCell.xib */; };
 		5EAF0CB8228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAF0CB6228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.swift */; };
 		5EAF0CB9228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EAF0CB7228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.xib */; };
+		5EB12A9823C338AA00231206 /* MeTimeDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB12A9723C338AA00231206 /* MeTimeDto.swift */; };
 		5EB2A3AF232763E100EF9FAA /* EventMemberMO+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB2A3AA232763DF00EF9FAA /* EventMemberMO+CoreDataClass.swift */; };
 		5EB2A3B0232763E100EF9FAA /* EventMO+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB2A3AB232763DF00EF9FAA /* EventMO+CoreDataProperties.swift */; };
 		5EB2A3B1232763E100EF9FAA /* EventModel+CoreDataProp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB2A3AC232763E000EF9FAA /* EventModel+CoreDataProp.swift */; };
@@ -511,6 +513,7 @@
 		5E44D1DE22AFC1B0000288B5 /* MonthSeparatorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthSeparatorTableViewCell.swift; sourceTree = "<group>"; };
 		5E44D1DF22AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MonthSeparatorTableViewCell.xib; sourceTree = "<group>"; };
 		5E47C9F3225B16A800C738D3 /* UITabBarController+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController+Customs.swift"; sourceTree = "<group>"; };
+		5E4D62DA23D59C9F0096F0C4 /* String+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Customs.swift"; sourceTree = "<group>"; };
 		5E51FD832265891900A86994 /* InviteFriendsDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsDto.swift; sourceTree = "<group>"; };
 		5E51FD852265979000A86994 /* FriendAllContactsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAllContactsTableViewCell.swift; sourceTree = "<group>"; };
 		5E51FD862265979000A86994 /* FriendAllContactsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendAllContactsTableViewCell.xib; sourceTree = "<group>"; };
@@ -593,6 +596,7 @@
 		5EAF0CB322893C9500AE2264 /* SignupStep2FormTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignupStep2FormTableViewCell.xib; sourceTree = "<group>"; };
 		5EAF0CB6228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupStep2CalendarsTableViewCell.swift; sourceTree = "<group>"; };
 		5EAF0CB7228945FD00AE2264 /* SignupStep2CalendarsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignupStep2CalendarsTableViewCell.xib; sourceTree = "<group>"; };
+		5EB12A9723C338AA00231206 /* MeTimeDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeDto.swift; sourceTree = "<group>"; };
 		5EB2A3AA232763DF00EF9FAA /* EventMemberMO+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventMemberMO+CoreDataClass.swift"; sourceTree = "<group>"; };
 		5EB2A3AB232763DF00EF9FAA /* EventMO+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventMO+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5EB2A3AC232763E000EF9FAA /* EventModel+CoreDataProp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EventModel+CoreDataProp.swift"; sourceTree = "<group>"; };
@@ -981,6 +985,7 @@
 				5EC7A1802281513C0010E804 /* ProfileDto.swift */,
 				5E64C0FD228F1B79000F2629 /* CountryDto.swift */,
 				5E95199D238F92D200C6D61A /* AuthenticateDto.swift */,
+				5EB12A9723C338AA00231206 /* MeTimeDto.swift */,
 			);
 			name = Dto;
 			sourceTree = "<group>";
@@ -1742,6 +1747,7 @@
 				5E67566822846C44005C83B6 /* UIDevice+Custom.swift */,
 				5E1217CC229A64F00075961A /* UIImage+Custom.swift */,
 				5E123C7F22B0DC9A00BB7E6E /* UITableView+Customs.swift */,
+				5E4D62DA23D59C9F0096F0C4 /* String+Customs.swift */,
 			);
 			name = extensions;
 			sourceTree = "<group>";
@@ -2240,8 +2246,10 @@
 				AE03511B1F5E87D7001A162B /* CreateGatheringViewController.swift in Sources */,
 				5EC7A1812281513C0010E804 /* ProfileDto.swift in Sources */,
 				B99D55CE1FC184F00020AC50 /* AlarmManager.swift in Sources */,
+				5EB12A9823C338AA00231206 /* MeTimeDto.swift in Sources */,
 				5E5408A8234634E300BC9BB5 /* CenesUserMO+CoreDataProperties.swift in Sources */,
 				5E95199E238F92D200C6D61A /* AuthenticateDto.swift in Sources */,
+				5E4D62DB23D59C9F0096F0C4 /* String+Customs.swift in Sources */,
 				FA486CBE21FF1A9800E8AF72 /* UIView+Customs.swift in Sources */,
 				5E20CC432372CF83006F8CC5 /* MetimeRecurringEventMO+CoreDataClass.swift in Sources */,
 				B9FB16A21FBAA31F00FB0FD0 /* CreateDiaryViewController.swift in Sources */,
@@ -2633,12 +2641,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 39;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.39;
+				MARKETING_VERSION = 2.2.50;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2661,12 +2669,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 39;
+				CURRENT_PROJECT_VERSION = 50;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.39;
+				MARKETING_VERSION = 2.2.50;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

@@ -11,6 +11,7 @@ import IoniconsSwift
 import NVActivityIndicatorView
 import SideMenu
 import CoreData
+import Mixpanel
 
 class NotificationViewController: UIViewController, NVActivityIndicatorViewable, UITabBarControllerDelegate {
     
@@ -77,6 +78,10 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
             self.notificationTableView.layer.removeAllAnimations();
             self.notificationTableView.reloadData();
         }*/
+        if (self.loggedInUser != nil && self.loggedInUser.name != nil) {
+            Mixpanel.mainInstance().track(event: "Notifications",
+                                          properties:[ "Action" : "Notification Screen Opened", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)", "Device": "iOS"]);
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -102,7 +107,8 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
 
         self.tabBarController?.setTabBarDotVisible(visible: false);
         // Do any additional setup after loading the view.
-        
+        self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+
     }
     
     override func viewDidAppear(_ animated: Bool) {

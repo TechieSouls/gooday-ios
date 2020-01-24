@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import FBSDKCoreKit
 import FBSDKLoginKit
+import FBSDKCoreKit
 import NVActivityIndicatorView
 import Alamofire
 

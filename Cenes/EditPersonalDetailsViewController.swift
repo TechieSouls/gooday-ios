@@ -213,9 +213,9 @@ extension EditPersonalDetailsViewController: UITableViewDataSource, UITableViewD
             return 60;
         } else if (seagueafor == "Password") {
             if (loggedInUser.password == nil || loggedInUser.password == "") {
-                return 160;
+                return 200;
             } else {
-                return 260;
+                return 300;
             }
         }
         return 0

@@ -61,7 +61,7 @@ class MeTimeManager {
     func getCountinousDaysStr(recurringPatterns: [MeTimeRecurringPattern]) -> String {
         var daysStr: String = "";
         
-        let sevenDays = ["1234567": "SUN-SAT", "123456": "SUN-FRI", "234567": "MON-SAT", "12345" : "SUN-THUR", "23456": "MON-FRI", "34567" : "TUE-SAT"] ;
+        let sevenDays = ["1234567": "EVERYDAY", "123456": "SUN-FRI", "234567": "MON-SAT", "12345" : "SUN-THUR", "23456": "WEEKDAYS", "34567" : "TUE-SAT", "17":"WEEKEND"] ;
         
         var daysIntStr: String = "";
         for pattern in recurringPatterns {

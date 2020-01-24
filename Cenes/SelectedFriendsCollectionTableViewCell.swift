@@ -103,7 +103,7 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
             cell.nonCenesUserLabel.text = nonCenesUserName;            
         }
         
-        if (eventMember.userId != nil && eventMember.userId != 0) {
+        if (eventMember.userId != nil && eventMember.userId != 0 && createGatheringDelegate.event.isPredictiveOn == true) {
 
             if (createGatheringDelegate.createGathDto.availableFriendsList != "") {
                 let availableFriendsListArray = createGatheringDelegate.createGathDto.availableFriendsList.split(separator: ",");
@@ -123,7 +123,9 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
                     cell.availabilityMark.backgroundColor = UIColor.green;
                 }
             } else {
-                cell.availabilityMark.isHidden = true;
+                
+                cell.availabilityMark.backgroundColor = UIColor.red;
+                cell.availabilityMark.isHidden = false;
             }
         } else {
             cell.availabilityMark.isHidden = true;

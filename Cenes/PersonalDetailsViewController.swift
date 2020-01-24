@@ -58,6 +58,10 @@ class PersonalDetailsViewController: UIViewController {
         
         let genderTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(genderPressed));
         genderView.addGestureRecognizer(genderTapGesture);
+        
+        let eligibleDate = Calendar.current.date(byAdding: .year, value: -13, to: Date());
+        self.dateTimePicker.maximumDate = eligibleDate;
+
     }
     
 
@@ -95,8 +99,9 @@ class PersonalDetailsViewController: UIViewController {
         } else {
             dateOfBirth.text = "Set Birth Day"
         }
-        if let dateOfBirthStr = loggedInUser.birthDayStr {
-            gender.text = loggedInUser.gender!;
+        
+        if let userGender = loggedInUser.gender {
+            gender.text = userGender;
         } else {
             gender.text = "Set Gender";
         }

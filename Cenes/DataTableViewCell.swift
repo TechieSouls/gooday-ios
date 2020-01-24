@@ -142,61 +142,69 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab && self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
+        if (self.newHomeViewControllerDelegate != nil && self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab && self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
             let tableView = scrollView as! UITableView;
             
-            let indexPath = tableView.indexPathsForVisibleRows![0];
-            let homeDto = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section];
             if (tableView.indexPathsForVisibleRows!.count > 0) {
-                
-                if (homeDto.sectionObjects[0].scheduleAs != "MonthSeparator") {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "E MMMM d yyyy";
-                    let dateObj = dateFormatter.date(from: homeDto.sectionNameWithYear);
+                let indexPath = tableView.indexPathsForVisibleRows![0];
+                if (indexPath.section < self.newHomeViewControllerDelegate.homeDtoList.count) {
                     
-                    let monthDateFormatter = DateFormatter()
-                    monthDateFormatter.dateFormat = "MMMM";
-                    let monthstr = monthDateFormatter.string(from: dateObj!);
-                    
-                    let yearDateFormatter = DateFormatter()
-                    yearDateFormatter.dateFormat = "yyyy";
-                    let yearStr = yearDateFormatter.string(from: dateObj!);
-                    
-                    var topDatekey = "";
-                    for (key, value) in self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex {
-                        if (key.contains(monthstr) && key.contains(yearStr)) {
-                            topDatekey = key;
-                            break;
-                        }
-                    }
-                    
-                    if (topDatekey != "" && self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey] != nil) {
-                        //print("Hehahahah ahahahah ahahha ahahahaha  hhhh",homeDto.sectionName!);
-                        var monthDto = self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey];
-                        if (monthDto != nil) {
-                           
+                    let homeDto = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section];
+                    if (homeDto.sectionObjects.count > 0) {
+                        
+                        if (homeDto.sectionObjects[0].scheduleAs != "MonthSeparator") {
+                            let dateFormatter = DateFormatter()
+                            dateFormatter.dateFormat = "E MMMM d yyyy";
+                            let dateObj = dateFormatter.date(from: homeDto.sectionNameWithYear);
                             
+                            let monthDateFormatter = DateFormatter()
+                            monthDateFormatter.dateFormat = "MMMM";
+                            let monthstr = monthDateFormatter.string(from: dateObj!);
                             
-                            let componentsForScrollDate = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: monthDto!.timestamp));
+                            let yearDateFormatter = DateFormatter()
+                            yearDateFormatter.dateFormat = "yyyy";
+                            let yearStr = yearDateFormatter.string(from: dateObj!);
                             
-                           let componentsForTopHeaderDate =  Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: self.newHomeViewControllerDelegate.homescreenDto.timestampForTopHeader));
-                           
-                            //This condition is needed, becuse theer may be multiple headres for that months and
-                            //after page scroll, a header may give same month and upddate top header date again.
-                            if (componentsForScrollDate.month != componentsForTopHeaderDate.month) {
-                            self.newHomeViewControllerDelegate.dateDroDownCellProtocolDelegate.updateDate(milliseconds: monthDto!.timestamp);
-                                
-                                self.newHomeViewControllerDelegate.homescreenDto.timestampForTopHeader = monthDto!.timestamp;
+                            var topDatekey = "";
+                            if (self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex != nil) {
+                                for (key, value) in self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex {
+                                    if (key.contains(monthstr) && key.contains(yearStr)) {
+                                        topDatekey = key;
+                                        break;
+                                    }
+                                }
                             }
                             
-
+                            if (topDatekey != "" && self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey] != nil) {
+                                //print("Hehahahah ahahahah ahahha ahahahaha  hhhh",homeDto.sectionName!);
+                                var monthDto = self.newHomeViewControllerDelegate.homescreenDto.topHeaderDateIndex[topDatekey];
+                                if (monthDto != nil) {
+                                   
+                                    
+                                    
+                                    let componentsForScrollDate = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: monthDto!.timestamp));
+                                    
+                                   let componentsForTopHeaderDate =  Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: self.newHomeViewControllerDelegate.homescreenDto.timestampForTopHeader));
+                                   
+                                    //This condition is needed, becuse theer may be multiple headres for that months and
+                                    //after page scroll, a header may give same month and upddate top header date again.
+                                    if (componentsForScrollDate.month != componentsForTopHeaderDate.month) {
+                                   
+                                        if (self.newHomeViewControllerDelegate.dateDroDownCellProtocolDelegate != nil) {
+                                            self.newHomeViewControllerDelegate.dateDroDownCellProtocolDelegate.updateDate(milliseconds: monthDto!.timestamp);
+                                            
+                                        }
+                                        self.newHomeViewControllerDelegate.homescreenDto.timestampForTopHeader = monthDto!.timestamp;
+                                    }
+                                }
+                            }
                         }
+
                     }
                 }
-
+                
             }
-            
-                        
+          
         }
     }
 }
@@ -325,6 +333,18 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 
                 var host: EventMember!;
                 if (event.eventMembers != nil) {
+                    
+                    var eventIdTracker = [Int32: Bool]();
+                    var eventMembersTempList = [EventMember]();
+                       for eventMem in event.eventMembers {
+                           if (eventIdTracker[eventMem.eventMemberId] == nil) {
+                               eventMembersTempList.append(eventMem);
+                               eventIdTracker[eventMem.eventMemberId] = true;
+                           }
+                       }
+                       event.eventMembers = eventMembersTempList;
+                    
+                    
                     for eventMem in event.eventMembers! {
                         if (eventMem.userId != nil && eventMem.userId != 0 && eventMem.userId == event.createdById) {
                             host = eventMem;
@@ -499,9 +519,17 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         
                         viewController.event = Event().copyDataToNewEventObject(event: event);
                         if (viewController.event.eventMembers != nil && viewController.event.eventMembers.count > 0) {
+                            var eventMembersTempList = [EventMember]();
+                            var eventIdTracker = [Int32: Bool]();
                             for eventMem in viewController.event.eventMembers {
-                                print(eventMem.name);
+                                
+                                if (eventIdTracker[eventMem.eventMemberId] == nil) {
+                                    print(eventMem.name);
+                                    eventMembersTempList.append(eventMem);
+                                    eventIdTracker[eventMem.eventMemberId] = true;
+                                }
                             }
+                            viewController.event.eventMembers = eventMembersTempList;
                         }
                     //viewController.event = EventModel().copyDataToNewEventObject(event: event, context: self.newHomeViewControllerDelegate.context!);
                         viewController.newHomeViewControllerDeglegate = self.newHomeViewControllerDelegate;

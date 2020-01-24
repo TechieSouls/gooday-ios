@@ -10,6 +10,7 @@ import UIKit
 import MessageUI
 import MobileCoreServices
 import Photos
+import Mixpanel
 
 class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -117,6 +118,13 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
         profileDto.title = "About";
         profileDto.desc = "Update to latest version";
         profileDtos.append(profileDto);
+        
+        loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
+
+        if (self.loggedInUser != nil && self.loggedInUser.name != nil) {
+            Mixpanel.mainInstance().track(event: "ProfileScreen",
+                                          properties:[ "Action" : "Profile Screen Opened", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)", "Device": "iOS"]);
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

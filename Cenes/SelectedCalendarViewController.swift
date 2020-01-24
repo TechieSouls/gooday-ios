@@ -17,6 +17,10 @@ protocol ThirdPartyCalendarProtocol {
 }
 class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate {
 
+    enum PermissionError: Error {
+      case NSInternalInconsistencyException
+    }
+
     @IBOutlet weak var selectedCalendarTableView: UITableView!
     
     var calendarSelected: String!;
@@ -195,166 +199,184 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
     
     func appleSyncBegins() {
         var params : [String:Any]
-        let eventStore : EKEventStore = EKEventStore()
         
-        Mixpanel.mainInstance().track(event: "SyncCalendar",
-               properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
-        // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
-        let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
-        self.isSynced = true;
-        self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: true, email: name)
-        
-        
-        eventStore.requestAccess(to: .event) { (granted, error) in
+        do {
+            guard let eventStore : EKEventStore = try EKEventStore() else {
+                throw PermissionError.NSInternalInconsistencyException;
+            }
             
-            if (granted) && (error == nil) {
+            Mixpanel.mainInstance().track(event: "SyncCalendar",
+                   properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)"]);
+            // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
+            let name = "\(String(self.loggedInUser.name.split(separator: " ")[0]))'s iPhone";
             
-                 print("granted \(granted)")
-                print("error \(error)")
+           try eventStore.requestAccess(to: .event) { (granted, error) in
                 
-                let calendar = Calendar.current
+                if (granted == true && error == nil) {
                 
-                var datecomponent = DateComponents()
-                datecomponent.year = 1
-                var endDate = calendar.date(byAdding: datecomponent, to: Date())
-                
-                let calendars = eventStore.calendars(for: .event)
-                
-                var newCalendar = [EKCalendar]()
-                
-                for calendar in calendars {
-                    if calendar.title == "Work" || calendar.title == "Home"{
-                        //      newCalendar.append(calendar)
+                    DispatchQueue.main.async() {
+                        self.isSynced = true;
+                        self.thirdPartyCalendarProtocolDelegate.updateInfo(isSynced: true, email: name);
                     }
-                    newCalendar.append(calendar)
-                }
-                
-                let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
-                
-                let eventArray = eventStore.events(matching: predicate)
-                
-                if eventArray.count > 0 {
-                    
-                    var arrayDict = [NSMutableDictionary]()
-                    
-                    for event  in eventArray {
-                        
-                        let event = event as EKEvent
-                        
-                        print(event.eventIdentifier);
-                        
-                        if (event.isAllDay == true) {
-                            continue;
-                        }
-                        var title = "";
-                        if (event.title != nil) {
-                            title = event.title
-                        }
-                        
-                        var  location = "";
-                        if (event.location != nil) {
-                            location = event.location!;
-                        }
-                        
-                        var description = ""
-                        if let desc = event.notes{
-                            description = desc
-                        }
-                        
-                        let startTime = "\(event.startDate.millisecondsSince1970)"
-                        let endTime = "\(event.endDate.millisecondsSince1970)"
-                       
-                        
-                        let nowDateMillis = Date().millisecondsSince1970
-                        
-                        
-                        let postData: NSMutableDictionary = ["title":title,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
 
-                        if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                     print("granted \(granted)")
+                    print("error \(error)")
+                    
+                    let calendar = Calendar.current
+                    
+                    var datecomponent = DateComponents()
+                    datecomponent.year = 1
+                    var endDate = calendar.date(byAdding: datecomponent, to: Date())
+                    
+                    let calendars = eventStore.calendars(for: .event)
+                    
+                    var newCalendar = [EKCalendar]()
+                    
+                    for calendar in calendars {
+                        if calendar.title == "Work" || calendar.title == "Home"{
+                            //      newCalendar.append(calendar)
+                        }
+                        newCalendar.append(calendar)
+                    }
+                    
+                    let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
+                    
+                    let eventArray = eventStore.events(matching: predicate)
+                    
+                    if eventArray.count > 0 {
+                        
+                        var arrayDict = [NSMutableDictionary]()
+                        
+                        for event  in eventArray {
                             
-                            postData["processed"] = "\(1)";
-                            arrayDict.append(postData)
-                        } else {
-                           
-                            postData["processed"] = "\(0)";
-                            arrayDict.append(postData)
-                        }
-                    }
-                
-                    var params =  [String:Any]();
-                    params["data"]  = arrayDict;
-                    params["userId"] = self.loggedInUser.userId;
-                    params["name"] = name;
-
-                    DispatchQueue.main.async {
-                        self.activityIndicator.startAnimating();
-                        UIApplication.shared.beginIgnoringInteractionEvents()
-                    }
-                    //Running In Background
-                    //DispatchQueue.global(qos: .background).async {
-                        // your code here
-                        UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
-                            print("Device Synced.")
-
-                            let success = response.value(forKey: "success") as! Bool;
-                            if (success == true) {
-                                let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
-
-                                Mixpanel.mainInstance().track(event: "SyncCalendar",
-                                                              properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
-                                
-                                self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                            let event = event as EKEvent
+                            
+                            print(event.eventIdentifier);
+                            
+                            if (event.isAllDay == true) {
+                                continue;
+                            }
+                            var title = "";
+                            if (event.title != nil) {
+                                title = event.title
                             }
                             
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
-                                UIApplication.shared.endIgnoringInteractionEvents();
-                                self.activityIndicator.stopAnimating();
+                            var  location = "";
+                            if (event.location != nil) {
+                                location = event.location!;
+                            }
+                            
+                            var description = ""
+                            if let desc = event.notes{
+                                description = desc
+                            }
+                            
+                            let startTime = "\(event.startDate.millisecondsSince1970)"
+                            let endTime = "\(event.endDate.millisecondsSince1970)"
+                           
+                            
+                            let nowDateMillis = Date().millisecondsSince1970
+                            
+                            
+                            let postData: NSMutableDictionary = ["title":title,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+
+                            if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                                
+                                postData["processed"] = "\(1)";
+                                arrayDict.append(postData)
+                            } else {
+                               
+                                postData["processed"] = "\(0)";
+                                arrayDict.append(postData)
+                            }
+                        }
+                    
+                        var params =  [String:Any]();
+                        params["data"]  = arrayDict;
+                        params["userId"] = self.loggedInUser.userId;
+                        params["name"] = name;
+
+                        DispatchQueue.main.async {
+                            self.activityIndicator.startAnimating();
+                            UIApplication.shared.beginIgnoringInteractionEvents()
+                        }
+                        //Running In Background
+                        //DispatchQueue.global(qos: .background).async {
+                            // your code here
+                            UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                                print("Device Synced.")
+
+                                let success = response.value(forKey: "success") as! Bool;
+                                if (success == true) {
+                                    let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
+
+                                    Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                                  properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+                                    
+                                    self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                                }
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                                    UIApplication.shared.endIgnoringInteractionEvents();
+                                    self.activityIndicator.stopAnimating();
+                                    self.showAlert(title: "Account Synced", message: "");
+
+                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                        
+                                        let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                        homeViewController?.refershDataFromOtherScreens();
+                                    }
+                                });
+
+                            })
+                        //}
+                    } else {
+                        
+                        
+                        var params =  [String:Any]();
+                        params["data"]  = [NSMutableDictionary]();
+                        params["userId"] = self.loggedInUser.userId;
+                        params["name"] = name;
+
+                        //Running In Background
+                        DispatchQueue.global(qos: .background).async {
+                            // your code here
+                            UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                                print("Device Synced.")
                                 self.showAlert(title: "Account Synced", message: "");
 
-                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                let success = response.value(forKey: "success") as! Bool;
+                                if (success == true) {
                                     
-                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                    homeViewController?.refershDataFromOtherScreens();
+                                    CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
+                                    
+                                    let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
+                                    
+                                    self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
                                 }
-                            });
-
-                        })
-                    //}
-                } else {
-                    
-                    
-                    var params =  [String:Any]();
-                    params["data"]  = [NSMutableDictionary]();
-                    params["userId"] = self.loggedInUser.userId;
-                    params["name"] = name;
-
-                    //Running In Background
-                    DispatchQueue.global(qos: .background).async {
-                        // your code here
-                        UserService().syncDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
-                            print("Device Synced.")
-                            self.showAlert(title: "Account Synced", message: "");
-
-                            let success = response.value(forKey: "success") as! Bool;
-                            if (success == true) {
                                 
-                                CalendarSyncToken().updateCalendarSettingDefault(calendarName: self.calendarSelected, isSynced: true);
-                                
-                                let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
-                                
-                                self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
-                            }
-                            
-                        })
+                            })
+                        }
+                        
                     }
-                    
+                }
+                else{
+                    // print("failed to save event with error : \(error!) or access not granted")
+                    DispatchQueue.main.async() {
+                        Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                                      properties:[ "CalendarType" : "Apple", "Action" : "No Permissions", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+
+                        self.showAlert(title: "Error", message: "Please provide Permission to Cenes App to access your Device Calendar.");
+                    }
                 }
             }
-            else{
-                // print("failed to save event with error : \(error!) or access not granted")
-                self.showAlert(title: "Error", message: "Please provide Permission to Cenes App to access your Device Calendar.")
-            }
+        } catch {
+            print(error);
+            Mixpanel.mainInstance().track(event: "SyncCalendar",
+                                          properties:[ "CalendarType" : "Apple", "Action" : "Sync Begins", "UserEmail": "\(loggedInUser.email!)", "UserName": "\(loggedInUser.name!)",  "Error": "\(error.localizedDescription)"]);
+                      
         }
+        
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!){
@@ -445,7 +467,6 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 }
             });
         }
-        
     }
 }
 

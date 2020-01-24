@@ -268,7 +268,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         
         //This method will load the dots in the calendar
-        self.loadCalendarEventsData();
+        //self.loadCalendarEventsData();
         
         //This method is to load the invitation tabs data.
         //self.initilizeInvitationTabsData();
@@ -282,7 +282,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         
         //This method will load the dots in the calendar
-        self.loadCalendarEventsData();
+        //self.loadCalendarEventsData();
         
         //This method is to load the invitation tabs data.
         //self.initilizeInvitationTabsData();
@@ -417,6 +417,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 
                     let homeScreenDataHolder = HomeManager().parseResultsForHomeEvents(homescreenDto: self.homescreenDto, events: events);
                     
+                    self.loadCalendarDots(events: events);
+
                     let calendarData = homeScreenDataHolder.homeDataList!;
                     self.homescreenDto = homeScreenDataHolder.homescreenDto;
 
@@ -525,6 +527,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 self.scrollToCurrentDateAtHomeScreen();
             }
         });
+        loadCalendarDots(events: events);
+        
         if Connectivity.isConnectedToInternet {
             
             //self.homescreenDto = HomeDto();
@@ -574,6 +578,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     let totalCounts = returnedDict["totalCounts"]  as! Int;
                     self.totalPageCounts = totalCounts;
                     //HomeManager().populateOfflineData(context: self.context!, events: events);
+                    self.loadCalendarDots(events: events);
                     self.handleMonthWizeEventResponse(events: events, totalCountsParam: totalCounts);
                     //}
                 } else {
@@ -813,6 +818,27 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         }
     }
     
+    func loadCalendarDots(events: [Event]) {
+        let calendarEventDataDto = self.homescreenDto.calendarEventsData;
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd";
+        for calendarEventTemp in events {
+            let eventDateStr = dateFormatter.string(from: Date(milliseconds: Int(calendarEventTemp.startTime)));
+            
+            let eventType: String = calendarEventTemp.scheduleAs!;
+            
+            if (!calendarEventDataDto.eventDates.contains(eventDateStr) && (eventType == "Event" || eventType == "Gathering")) {
+                calendarEventDataDto.eventDates.append(eventDateStr);
+            }
+            
+            if (!calendarEventDataDto.holidayDates.contains(eventDateStr) && eventType == "Holiday") {
+                calendarEventDataDto.holidayDates.append(eventDateStr);
+            }
+        }
+        self.homescreenDto.calendarEventsData = calendarEventDataDto;
+        self.homeTableView.reloadData();
+    }
+    
     /**
      * This function is to show dots in the Calendar at home screen
      **/
@@ -1027,7 +1053,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         let queryStr = "userId=\(String(self.loggedInUser.userId))&startTime=\(String(describing: previousDate.millisecondsSince1970))&endTime=\(String(describing: self.homescreenDto.currentMonthStartDateTimeStamp))";
             
-            //self.homeTableView.reloadData();
+            self.homeTableView.reloadData();
 
             HomeService().getHomePastEvents(queryStr: queryStr, token: self.loggedInUser.token) {(returnedDict) in
                 //print(returnedDict)
@@ -1073,7 +1099,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     self.homescreenDto.pageable.totalCalendarCounts = self.homescreenDto.pageable.totalCalendarCounts + Int(returnedDict["totalCounts"]  as! Int);
                     
                     let homeScreenDataHolder = HomeManager().parseResultsForHomeEvents(homescreenDto: self.homescreenDto, events: events);
-                    
+                    self.loadCalendarDots(events: events);
                     
                     let calendarData = homeScreenDataHolder.homeDataList!;
                     self.homescreenDto = homeScreenDataHolder.homescreenDto;
@@ -1190,6 +1216,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
     @objc func refreshButtonPressed() {
 
+        if (self.loggedInUser != nil && self.loggedInUser.name != nil) {
+            Mixpanel.mainInstance().track(event: "HomeScreen",
+            properties:[ "Action" : "Refresh Button Pressed", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
+        }
+
         self.view.isUserInteractionEnabled = false;
         self.activityIndicator.startAnimating();
         self.refreshCalButton.startRotating(duration: 0.5, repeatCount: 1, clockwise: true);
@@ -1244,120 +1275,143 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         });
         
         var params : [String:Any]
-        let eventStore : EKEventStore = EKEventStore()
-        
+        do {
+            guard let eventStore : EKEventStore = try EKEventStore() else {
+                return;
+            }
         // 'EKEntityTypeReminder' or 'EKEntityTypeEvent'
-        let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
-        eventStore.requestAccess(to: .event) { (granted, error) in
-            
-            
-            if (granted) && (error == nil) {
-                
-                print("granted \(granted)")
-                print("error \(error)")
-                
-                let calendar = Calendar.current
-                
-                var datecomponent = DateComponents()
-                datecomponent.year = 1
-                var endDate = calendar.date(byAdding: datecomponent, to: Date())
-                
-                let calendars = eventStore.calendars(for: .event)
-                
-                var newCalendar = [EKCalendar]()
-                
-                for calendar in calendars {
-                    if calendar.title == "Work" || calendar.title == "Home"{
-                        //      newCalendar.append(calendar)
-                    }
-                    newCalendar.append(calendar)
-                }
+            let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
+            eventStore.requestAccess(to: .event) { (granted, error) in
                 
                 
-                
-                let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
-                
-                let eventArray = eventStore.events(matching: predicate)
-                
-                if eventArray.count > 0 {
+                if (granted == true && error == nil) {
                     
-                    var arrayDict = [NSMutableDictionary]()
+                    print("granted \(granted)")
+                    print("error \(error)")
                     
-                    for event  in eventArray {
-                        
-                        let event = event as EKEvent
-                        
-                        
-                        if (event.isAllDay == true) {
-                            continue;
+                    let calendar = Calendar.current
+                    
+                    var datecomponent = DateComponents()
+                    datecomponent.year = 1
+                    var endDate = calendar.date(byAdding: datecomponent, to: Date())
+                    
+                    let calendars = eventStore.calendars(for: .event)
+                    
+                    var newCalendar = [EKCalendar]()
+                    
+                    for calendar in calendars {
+                        if calendar.title == "Work" || calendar.title == "Home"{
+                            //      newCalendar.append(calendar)
                         }
-                        var title = "";
-                        if (event.title != nil) {
-                            title = event.title
-                        }
-                        
-                        var  location = "";
-                        if (event.location != nil) {
-                            location = event.location!;
-                        }
-                        
-                        var description = ""
-                        if let desc = event.notes{
-                            description = desc
-                        }
-                        
-                        let startTime = "\(event.startDate.millisecondsSince1970)"
-                        let endTime = "\(event.endDate.millisecondsSince1970)"
-                        
-                        let nowDateMillis = Date().millisecondsSince1970
-                        
-                        let postData: NSMutableDictionary = ["title":title,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
-                        
-                        if (event.startDate.millisecondsSince1970 < nowDateMillis) {
-                            
-                            postData["processed"] = "\(1)";
-                            arrayDict.append(postData)
-                        } else {
-                            
-                            postData["processed"] = "\(0)";
-                            arrayDict.append(postData)
-                        }
-                        
+                        newCalendar.append(calendar)
                     }
                     
-                    var params =  [String:Any]();
-                    params["data"]  = arrayDict;
-                    params["userId"] = self.loggedInUser.userId;
-                    params["name"] = name;
                     
-                    //Running In Background
-                    //DispatchQueue.global(qos: .background).async {
-                    // your code here
-                    UserService().refreshDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
-                        print("Device Synced.")
+                    
+                    let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
+                    
+                    let eventArray = eventStore.events(matching: predicate)
+                    
+                    if eventArray.count > 0 {
                         
-                        isRefreshDone["Apple"] = true;
-                        if (isRefreshDone.count == 3) {
-                            self.refreshCalButton.stopRotating();
-                            self.activityIndicator.stopAnimating();
-                            self.view.isUserInteractionEnabled = true;
-                            self.tabBarController?.tabBar.isUserInteractionEnabled = true;
+                        var arrayDict = [NSMutableDictionary]()
+                        
+                        for event  in eventArray {
+                            
+                            let event = event as EKEvent
+                            
+                            
+                            if (event.isAllDay == true) {
+                                continue;
+                            }
+                            var title = "";
+                            if (event.title != nil) {
+                                title = event.title
+                            }
+                            
+                            var  location = "";
+                            if (event.location != nil) {
+                                location = event.location!;
+                            }
+                            
+                            var description = ""
+                            if let desc = event.notes{
+                                description = desc
+                            }
+                            
+                            let startTime = "\(event.startDate.millisecondsSince1970)"
+                            let endTime = "\(event.endDate.millisecondsSince1970)"
+                            
+                            let nowDateMillis = Date().millisecondsSince1970
+                            
+                            let postData: NSMutableDictionary = ["title":title,"description":description,"location":location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":startTime,"endTime":endTime,"sourceEventId":"\(event.eventIdentifier!)\(startTime)"]
+                            
+                            if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                                
+                                postData["processed"] = "\(1)";
+                                arrayDict.append(postData)
+                            } else {
+                                
+                                postData["processed"] = "\(0)";
+                                arrayDict.append(postData)
+                            }
+                            
+                        }
+                        
+                        var params =  [String:Any]();
+                        params["data"]  = arrayDict;
+                        params["userId"] = self.loggedInUser.userId;
+                        params["name"] = name;
+                        
+                        //Running In Background
+                        //DispatchQueue.global(qos: .background).async {
+                        // your code here
+                        UserService().refreshDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                            print("Device Synced.")
+                            
+                            isRefreshDone["Apple"] = true;
+                            if (isRefreshDone.count == 3) {
+                                self.refreshCalButton.stopRotating();
+                                self.activityIndicator.stopAnimating();
+                                self.view.isUserInteractionEnabled = true;
+                                self.tabBarController?.tabBar.isUserInteractionEnabled = true;
 
-                            self.refreshHomeScreenData();
+                                self.refreshHomeScreenData();
+                                
+                                self.calendrStatusToast.text  = "Done";
+                                UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+                                    self.calendrStatusToast.alpha = 0.0
+                                }, completion: {(isCompleted) in
+                                    self.calendrStatusToast.isHidden = true;
+                                })
+                            }
                             
-                            self.calendrStatusToast.text  = "Done";
-                            UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
-                                self.calendrStatusToast.alpha = 0.0
-                            }, completion: {(isCompleted) in
-                                self.calendrStatusToast.isHidden = true;
-                            })
-                        }
+                        })
+                        //}
+                    }
+                } else {
+                    isRefreshDone["Apple"] = true;
+                    if (isRefreshDone.count == 3) {
+                        self.refreshCalButton.stopRotating();
+                        self.activityIndicator.stopAnimating();
+                        self.view.isUserInteractionEnabled = true;
+                        self.tabBarController?.tabBar.isUserInteractionEnabled = true;
+
+                        self.refreshHomeScreenData();
                         
-                    })
-                    //}
+                        self.calendrStatusToast.text  = "Done";
+                        UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+                            self.calendrStatusToast.alpha = 0.0
+                        }, completion: {(isCompleted) in
+                            self.calendrStatusToast.isHidden = true;
+                        })
+                    }
                 }
             }
-        }
+
+            } catch {
+                print(error)
+            }
     }
         /*self.spinnerBtn.startAnimate(spinnerType: SpinnerType.lineSpinFade, spinnercolor: UIColor.red, spinnerSize: 20, complete: {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {

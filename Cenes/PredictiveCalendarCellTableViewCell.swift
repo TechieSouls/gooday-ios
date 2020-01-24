@@ -156,7 +156,6 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 createGatheringDelegate.createGathTableView.reloadData();
             }
             
-            
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
             
             if (createGatheringDelegate.event.isPredictiveOn == true) {
@@ -172,6 +171,9 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 }
             }
             
+           //This is to show date panel, if predictive info panel was opened and idi not hidden
+            createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.datePanelRow] = true;
+
             dateClickedProtocolDelegate.predictiveCalendarDatePressed(date: date);
             
         } else {

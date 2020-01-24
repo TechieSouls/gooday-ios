@@ -88,6 +88,27 @@ class GuestListViewController: UIViewController {
         declinedUIView.layer.borderWidth = 5
         declinedUIView.layer.borderColor = UIColor.white.cgColor
         
+        //Eradicating duplicate Members
+        if (self.event.eventMembers != nil) {
+            var eventIdTracker = [Int32: Bool]();
+            var eventMembersTempList = [EventMember]();
+            
+            if (self.event.eventId != nil) {
+                for eventMem in self.event.eventMembers {
+                    if (eventMem.eventMemberId != nil) {
+                        if (eventIdTracker[eventMem.eventMemberId] == nil) {
+                            eventMembersTempList.append(eventMem);
+                            eventIdTracker[eventMem.eventMemberId] = true;
+                        }
+                    } else {
+                        eventMembersTempList.append(eventMem);
+                    }
+                }
+                self.event.eventMembers = eventMembersTempList;
+            }
+               
+        }
+           
         if (self.event.eventMembers != nil) {
             invitedUIViewUILabel.text = String(self.event.eventMembers!.count);
         } else {

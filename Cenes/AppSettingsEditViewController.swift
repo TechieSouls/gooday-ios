@@ -9,6 +9,7 @@
 import UIKit
 import NVActivityIndicatorView
 import IoniconsSwift
+import Mixpanel
 
 class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVActivityIndicatorViewable {
 
@@ -31,6 +32,8 @@ class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVAc
         
         appSettingsEditTableView.register(UINib.init(nibName: "DeleteAccountTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "DeleteAccountTableViewCell");
         
+        Mixpanel.mainInstance().track(event: "ProfileScreen",
+               properties:[ "Action" : "Delete Account Opened", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)", "Device": "iOS"]);
         
         let countryCodeServices = CountryCodeService().getLibraryMasterCountriesEnglish();
         
@@ -105,11 +108,14 @@ class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVAc
     }
     
     func deleteUserRequest(postData: [String: Any]) {
-        
+        Mixpanel.mainInstance().track(event: "ProfileScreen",
+               properties:[ "Action" : "Delete Account Begins", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)", "Device": "iOS"]);
         self.startAnimating(loadinIndicatorSize, message: "", type: NVActivityIndicatorType.ballRotateChase);
         
         UserService().deleteUserByPhoneAndPassword(postData: postData, token: loggedInUser.token, complete: {(response) in
             
+            Mixpanel.mainInstance().track(event: "ProfileScreen",
+                   properties:[ "Action" : "Delete Account Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)", "Device": "iOS"]);
             self.stopAnimating()
 
             let success = response.value(forKey: "success") as! Bool;

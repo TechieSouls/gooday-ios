@@ -30,7 +30,6 @@ class VersionUpdateViewController: UIViewController {
         
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         self.buildVersion.text = "Version \(String(appVersion!))";
-
     }
     
 
