@@ -15,6 +15,7 @@ class HomeEventTableViewCell: UITableViewCell {
     @IBOutlet weak var title: UILabel!
     
     @IBOutlet weak var location: UILabel!
+    @IBOutlet weak var locationView: UIView!
     @IBOutlet weak var time: UILabel!
     
     @IBOutlet weak var separator: UIView!

@@ -125,6 +125,7 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
             Mixpanel.mainInstance().track(event: "ProfileScreen",
                                           properties:[ "Action" : "Profile Screen Opened", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)", "Device": "iOS"]);
         }
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -158,7 +159,11 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
                     let message = response.value(forKey: "message") as! String;
                     self.errorAlert(message: message)
                 }
-            })
+            });
+            
+            DispatchQueue.global(qos: .background).async {
+                self.fetchUserProfile();
+            }
         }
     }
     /*
@@ -288,5 +293,22 @@ class ProfileTabViewController: UIViewController, MFMailComposeViewControllerDel
 
             });
         }
+    }
+    
+    func fetchUserProfile() {
+        
+        let apiEndPoint = "\(apiUrl)\(UserService().get_user_profile_data)";
+        let queryStr = "userId=\(loggedInUser.userId!)";
+        UserService().commonGetCall(queryStr: queryStr, apiEndPoint: apiEndPoint, token: loggedInUser.token, complete: {response in
+            
+            let success = response.value(forKey: "success") as! Bool;
+            if (success ==  true) {
+                let userDict = response.value(forKey: "data") as! NSDictionary;
+                
+                self.loggedInUser = User().loadUserData(userDataDict: userDict);
+                User().updateUserValuesInUserDefaults(user: self.loggedInUser);
+                
+            }
+        });
     }
 }

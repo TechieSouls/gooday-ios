@@ -56,9 +56,18 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
             appSettingsEditViewControllerDelegate.showAlert(title: "Alert", message: "Password cannot be empty.")
         } else {
             
+            var phoneNumberWithoutInitialZero = self.phoneNumber.text!.removeWhitespace();
+            let startIndexCharacter = phoneNumberWithoutInitialZero[phoneNumberWithoutInitialZero.startIndex];
+            
+            //If number has zero, lets truncate it
+            if (startIndexCharacter == "0") {
+                phoneNumberWithoutInitialZero = String(phoneNumberWithoutInitialZero.suffix(phoneNumberWithoutInitialZero.count - 1))
+            }
+            
+            
             var postData = [String: Any]();
             postData["userId"] = appSettingsEditViewControllerDelegate.loggedInUser.userId!
-            postData["phone"] = "\(String(countryCode.text!))\(phoneNumber.text!)";
+            postData["phone"] = "\(String(countryCode.text!))\(phoneNumberWithoutInitialZero)";
             if (passwordAvailable == true) {
                 postData["password"] = "\(String(password.text!))";
             }

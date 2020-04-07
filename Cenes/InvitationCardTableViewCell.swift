@@ -67,8 +67,6 @@ class InvitationCardTableViewCell: UITableViewCell {
         
         self.topHeaderView.addSubview(layer)
         
-        
-        
         let guestListViewTapGesture = UITapGestureRecognizer(target: self, action: Selector("guestListViewPressed"));
         guestListView.addGestureRecognizer(guestListViewTapGesture);
         
@@ -142,14 +140,14 @@ class InvitationCardTableViewCell: UITableViewCell {
         }
     }
     
-    @objc func alertControllerBackgroundTapped(){
+    @objc func alertControllerBackgroundTapped() {
         self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
         self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")
         gatheringInvitaionViewControllerDelegate.dismiss(animated: true, completion: nil)
     }
     
     @objc func descriptionViewPressed() {
-        
+            
         self.processAlreadyCheckedBubble(selectedBubble: "description");
         
         self.descriptionView.backgroundColor = UIColor.white;
@@ -160,7 +158,48 @@ class InvitationCardTableViewCell: UITableViewCell {
             
             self.descriptionView.backgroundColor = UIColor.white;
             self.descriptionUILabel.text = gatheringInvitaionViewControllerDelegate.event.description;
-            if (self.descriptionUILabelHolder.isHidden) {
+            var isScrollViewPresent = false;
+            for uiview in self.gatheringInvitaionViewControllerDelegate.view.subviews {
+                if (uiview is ChatFeatureView) {
+                    isScrollViewPresent = true;
+                }
+            }
+            if (isScrollViewPresent == true) {
+                for uiview in self.gatheringInvitaionViewControllerDelegate.view.subviews {
+                    if (uiview is ChatFeatureView) {
+                        uiview.removeFromSuperview();
+                    }
+                }
+                self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
+                self.descriptionView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
+            } else {
+                
+                if (gatheringInvitaionViewControllerDelegate.event.expired == false && gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
+                    gatheringInvitaionViewControllerDelegate.addChatScrollView();
+                    gatheringInvitaionViewControllerDelegate.makeMessagesAsRead();
+                } else {
+                    if (self.descriptionUILabelHolder.isHidden) {
+                        
+                        self.descriptionUILabelHolder.isHidden = false;
+                        let height = self.heightForViewDesc(text:gatheringInvitaionViewControllerDelegate.event.description!, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
+                        
+                        
+                        //160 is the destance from bottom
+                        //40 is the total padding from uilabel(20 top , 20 bottom)
+                        //so y will be total height of screen - bottom space(160) - height of uilabel(height) - total padding(top + bottom)
+                        self.descriptionUILabelHolder.frame =  CGRect(x: self.descriptionUILabelHolder.frame.origin.x, y: gatheringInvitaionViewControllerDelegate.view.frame.height - (160 + height + 40) , width: self.descriptionUILabelHolder.frame.width, height: height + 40);
+                        
+                        self.chatProfilePic.isHidden = false;
+                        
+                    } else {
+                        self.descriptionView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
+                        self.descriptionUILabelHolder.isHidden = true;
+                        self.chatProfilePic.isHidden = true;
+                        self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
+                    }
+                }
+            }
+            /*if (self.descriptionUILabelHolder.isHidden) {
                 
                 self.descriptionUILabelHolder.isHidden = false;
                 let height = self.heightForView(text:gatheringInvitaionViewControllerDelegate.event.description!, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
@@ -178,7 +217,7 @@ class InvitationCardTableViewCell: UITableViewCell {
                 self.descriptionUILabelHolder.isHidden = true;
                 self.chatProfilePic.isHidden = true;
                 self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
-            }
+            }*/
         } else {
             let alert = UIAlertController(title: "Alert!", message: "Description Not Available.", preferredStyle: .alert);
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(resp) in
@@ -188,9 +227,6 @@ class InvitationCardTableViewCell: UITableViewCell {
             gatheringInvitaionViewControllerDelegate.present(alert, animated: true)
         }
     }
-    
-    
-    
     
     @objc func shareViewPressed() {
         
@@ -233,7 +269,7 @@ class InvitationCardTableViewCell: UITableViewCell {
         gatheringInvitaionViewControllerDelegate.resetScreenToDefaultPosition();
     }
     
-    func heightForView(text:String, font:UIFont, width:CGFloat) -> CGFloat{
+    func heightForViewDesc(text:String, font:UIFont, width:CGFloat) -> CGFloat{
         let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.descriptionUILabel.frame.width, height: CGFloat.greatestFiniteMagnitude))
         label.numberOfLines = 0
         label.lineBreakMode = NSLineBreakMode.byWordWrapping
@@ -334,7 +370,6 @@ class InvitationCardTableViewCell: UITableViewCell {
             gatheringInvitaionViewControllerDelegate.editImageView.isHidden = true;
             gatheringInvitaionViewControllerDelegate.deleteImageView.isHidden = true;
             gatheringInvitaionViewControllerDelegate.rejectedImageiew.isHidden = false;
-
         }
     }
 }

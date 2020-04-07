@@ -12,7 +12,7 @@ import Alamofire
 class HttpService {
     
     func getMethod(url: String, token: String,complete: @escaping(NSDictionary)->Void) {
-    
+        print(url);
         let Auth_header = [ "token" : token ]
         
         Alamofire.request("\(url)", method: .get , parameters: nil, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in

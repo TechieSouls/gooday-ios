@@ -28,8 +28,6 @@ class HomeManager {
         
         //for i : Int in (0..<resultArray.count) {
         for event in events {
-            
-            print(event.description);
             //let outerDict = resultArray[i] as! NSDictionary
             
             //let dataType = (outerDict.value(forKey: "type") != nil) ? outerDict.value(forKey: "type") as? String : nil
@@ -44,7 +42,6 @@ class HomeManager {
                 let keyWithYear = getMonthWithYearKeyForScrollIndex(startTime: Int(event.startTime));
                 
                 //let currentMonth
-            print(event.title);
                 if dict.value(forKey: key) != nil {
                     //var array = dict.value(forKey: key) as! [CenesCalendarData]!
                     var array = dict.value(forKey: key) as! [Event]
@@ -417,7 +414,6 @@ class HomeManager {
             
             let outerDict = resultArray[i] as! NSDictionary
             
-            
             let event = Event().loadEventData(eventDict: outerDict)
             if (event.eventId == 0 || event.title == nil || event.scheduleAs != "Gathering") {
                 continue;
@@ -432,34 +428,34 @@ class HomeManager {
             }else if((components.day!+1) == componentStart.day && components.month == componentStart.month && components.year == componentStart.year){
                 key = "Tomorrow " + key;
             }
-                if dict.value(forKey: key) != nil {
-                    //var array = dict.value(forKey: key) as! [CenesCalendarData]!
-                    var array = dict.value(forKey: key) as! [Event]
-                    array.append(event)
-                    dict.setValue(array, forKey: key)
-                    
-                    for cenesEvent in dataObjectArray {
-                        if (cenesEvent.sectionName == key) {
-                            cenesEvent.sectionObjects = array
-                        }
+            
+            if dict.value(forKey: key) != nil {
+                //var array = dict.value(forKey: key) as! [CenesCalendarData]!
+                var array = dict.value(forKey: key) as! [Event]
+                array.append(event)
+                dict.setValue(array, forKey: key)
+                
+                for cenesEvent in dataObjectArray {
+                    if (cenesEvent.sectionName == key) {
+                        cenesEvent.sectionObjects = array
                     }
-                } else {
-                    var array = [Event]()
-                    array.append(event)
-                    dict.setValue(array, forKey: key)
-                    
-                    let cenesEvent: HomeData = HomeData();
-                    cenesEvent.sectionName = key;
-                    cenesEvent.year = Date(milliseconds: Int(event.startTime)).yyyy()
-                    cenesEvent.month = Date(milliseconds: Int(event.startTime)).MMMM()
-                    cenesEvent.sectionKeyInMillis = event.startTime
-                    cenesEvent.sectionNameWithYear = keyWithYear;
-                    cenesEvent.sectionObjects = array;
-
-                    cenesEvent.sectionObjects = array;
-                    dataObjectArray.append(cenesEvent)
-                    
                 }
+            } else {
+                var array = [Event]()
+                array.append(event)
+                dict.setValue(array, forKey: key)
+                
+                let cenesEvent: HomeData = HomeData();
+                cenesEvent.sectionName = key;
+                cenesEvent.year = Date(milliseconds: Int(event.startTime)).yyyy()
+                cenesEvent.month = Date(milliseconds: Int(event.startTime)).MMMM()
+                cenesEvent.sectionKeyInMillis = event.startTime
+                cenesEvent.sectionNameWithYear = keyWithYear;
+                cenesEvent.sectionObjects = array;
+
+                cenesEvent.sectionObjects = array;
+                dataObjectArray.append(cenesEvent)
+            }
         }
         
         return dataObjectArray;
@@ -638,6 +634,7 @@ class HomeManager {
             if (homeData.sectionName == key.indexKey) {
                 var year: Int = 0
                 if (homeData.sectionObjects[0].scheduleAs != "MonthSeparator") {
+                    
                     year = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
                 }
                 if (year == key.year) {
@@ -650,11 +647,35 @@ class HomeManager {
     }
     
     
-    func getScrollIndexForTodaysEvent(homeDataList: [HomeData], key: MonthScrollDto) -> Int {
+    func getScrollIndexForTodaysEvent(homeDataList: [HomeData], key: MonthScrollDto) -> [String: Int] {
         
+        var scrollIndexDict = [String: Int]();
         var scrollToIIndex = 0;
         for homeData in homeDataList {
             if (homeData.sectionName == key.indexKey) {
+                
+                /*var rowIndexInSection = 0;
+                for desiredSectionIndexEvent in homeData.sectionObjects {
+                    let currentTimeStamp = Date().millisecondsSince1970;
+                    let startTimestamp = desiredSectionIndexEvent.startTime;
+                    let endTimestamp = desiredSectionIndexEvent.endTime;
+                
+                    if (currentTimeStamp < endTimestamp) {
+                        scrollIndexDict["rowIndex"] = rowIndexInSection;
+                        break;
+                    }
+                    
+                    rowIndexInSection = rowIndexInSection +  1;
+                }*/
+                var rowIndex = 0;
+                for sectionObjectItem in homeData.sectionObjects {
+                    if (sectionObjectItem.startTime == key.timestamp) {
+                        scrollIndexDict["rowIndex"] = rowIndex;
+                        break;
+                    }
+                    rowIndex = rowIndex + 1;
+                }
+                
                 let year: Int = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: Int(homeData.sectionObjects[0].startTime))).year!;
                 
                 if (year == key.year) {
@@ -663,7 +684,15 @@ class HomeManager {
             }
             scrollToIIndex = scrollToIIndex + 1;
         }
-        return scrollToIIndex;
+        
+        
+        
+        
+        if (scrollIndexDict["rowIndex"] == nil) {
+            scrollIndexDict["rowIndex"] = 0;
+        }
+        scrollIndexDict["sectionIndex"] = scrollToIIndex;
+        return scrollIndexDict;
     }
     
     func populateTotalEventIds(eventIdList: [Int32], resultArray: NSArray) -> [Int32]{

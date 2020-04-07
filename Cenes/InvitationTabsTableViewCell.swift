@@ -34,10 +34,11 @@ class InvitationTabsTableViewCell: UITableViewCell {
         pendingBtn.unselectedBottomBorderBtn();
         declinedBtn.unselectedBottomBorderBtn();
         activateSelectedTabData(selectedTab: HomeInvitationTabs.Accepted);
-        newHomeViewControllerDelegate.homeDtoList = newHomeViewControllerDelegate.homescreenDto.acceptedGatherings;
-        newHomeViewControllerDelegate.homeTableView.reloadData();
+        //newHomeViewControllerDelegate.homeDtoList = newHomeViewControllerDelegate.homescreenDto.acceptedGatherings;
+        //newHomeViewControllerDelegate.homeTableView.reloadData();
         //newHomeViewControllerDelegate.dataTableViewCellProtocolDelegate.reloadTableToTop();
         //newHomeViewControllerDelegate.loadGatheringDataByStatus(status: "Going")
+        newHomeViewControllerDelegate.initilizeInvitationTabsData();
     }
     
     @IBAction func pendingBtnPressed(_ sender: Any) {

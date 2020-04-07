@@ -6,6 +6,7 @@
 //  Copyright © 2019 Cenes Pvt Ltd. All rights reserved.
 //
 
+
 import UIKit
 import MessageUI
 import Messages
@@ -15,7 +16,7 @@ import Mixpanel
 protocol NewHomeViewControllerDeglegate {
     func refershDataFromOtherScreens();
 }
-class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate {
+class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDelegate, MFMessageComposeViewControllerDelegate, UITextFieldDelegate, UIScrollViewDelegate {
 
     @IBOutlet weak var acceptedImageView: UIImageView!
     
@@ -42,8 +43,15 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     
     @IBOutlet weak var buttonsView: UIView!
     
+    var chatBoxView: ChatBoxView!;
+    var chatFeatureView: ChatFeatureView!;
+    var tapToChatView: TapToChatView!;
+    
     var divisor : CGFloat!;
     var event: Event!;
+    var eventChats: [EventChat] = [EventChat]();
+    var eventChatDateKeys: [String] = [String]();
+    var eventChatAndDateMap: [String: [EventChat]] = [String: [EventChat]]();
     var eventOwner: EventMember!;
     var loggedInUser: User!;
     var trackCheckdeBubble: String!;
@@ -57,7 +65,12 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var fromPushNotificaiton = false;
     var isLoggedInUserInMemberList = false;
     var isNewEvent: Bool = false;
-    
+    var isKeyboardVisible = false;
+    var gapBetweenChatBubbles: CGFloat = 11.0;
+    var paddingBetweenChatTextAndBubble: CGFloat = 8.0;
+    var minBubbleWidth: CGFloat = 80.0;
+    var inputChatMessageText: String = "";
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -69,9 +82,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         self.invitationCardTableView.register(UINib.init(nibName: "NextCardTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NextCardTableViewCell")
 
         self.invitationCardTableView.frame = self.view.bounds;
-        
-        //acceptedImageView.alpha = 0;
-        
+                
         self.acceptedImageView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
         self.rejectedImageiew.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
         self.sendInvitationImageView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
@@ -111,13 +122,25 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         } else {
             isNewEvent = true;
         }
+                
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil);
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil);
+        
+        self.hideKeyboardWhenTappedAround();
+        self.hideKeyboardWhenTappedOnTableviewAround(tableViewArea: invitationCardTableView);
+        
+        if (event.eventId != nil && event.startTime < Date().millisecondsSince1970) {
+            event.expired = true;
+            sqlDatabaseManager.updateExpiredStatusByEventId(event: event);
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         //acceptedImageView.alpha = 0;
         self.acceptedImageView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
         self.rejectedImageiew.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
-         self.sendInvitationImageView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
+        self.sendInvitationImageView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0);
         //rejectedImageiew.alpha = 0;
         nextScreenArrow.alpha = 0;
         deleteImageView.alpha = 0;
@@ -129,7 +152,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
 
         if (event.eventId != nil && event.eventId != 0) {
-            GatheringService().eventInfoTask(eventId: Int64(event!.eventId), complete: {(response) in
+            
+            let apiEndpoint = "\(apiUrl)\(GatheringService().get_gathering_data)";
+            let queryStr = "eventId=\(self.event.eventId!)&userId=\(self.loggedInUser.userId!)";
+            GatheringService().gatheringCommonGetAPI(api: apiEndpoint, queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
                 
                 let success = response.value(forKey: "success") as! Bool;
                 if (success == true) {
@@ -147,41 +173,75 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 self.event = eventTemp;
                             }
                         } else {
+                            
+                            if (eventTemp.createdAt != nil) {
+                                self.event.createdAt = eventTemp.createdAt;
+                            } else if (eventTemp.updateAt != nil) {
+                                self.event.createdAt = eventTemp.updateAt;
+                            } else {
+                                self.event.createdAt = Date().millisecondsSince1970;
+                            }
                             if (self.event.requestType != EventRequestType.EditEvent) {
                                 self.event.eventPicture = eventTemp.eventPicture;
                             }
                             if (eventTemp.eventMembers != nil) {
                                 
+                                let eventMembersExistingInEvent  = self.event.eventMembers;
+                                
+                                self.event.eventMembers = [EventMember]();
+                                
                                 for eventMemFromDb in eventTemp.eventMembers! {
                                     
-                                    var editMembersIndex = 0;
+                                    var eventMemberAlreadyExists = false;
                                     for eveMemFromEdit in self.event.eventMembers! {
-                                        
-                                        if (eventMemFromDb.userContactId != nil && eventMemFromDb.userContactId != 0 && eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
-                                            
-                                            eventMemFromDb.userContact = eveMemFromEdit.userContact;
-                                            self.event.eventMembers[editMembersIndex] = eventMemFromDb;
-                                            //self.event.removeFromEventMembers(eveMemFromEditMO);
-                                            //self.event.addToEventMembers(eventMemFromDbMO);
+                                        if (eventMemFromDb.userId != nil && eventMemFromDb.userId == eveMemFromEdit.userId) {
+                                            eventMemberAlreadyExists = true;
                                             break;
-                                            
                                         }
-                                        editMembersIndex  = editMembersIndex + 1;
+                                    }
+                                    
+                                    if (eventMemberAlreadyExists == true) {
+                                        continue;
+                                    }
+                                    self.event.eventMembers.append(eventMemFromDb);
+                                    
+                                    /*var editMembersIndex = 0;
+                                            for eveMemFromEdit in self.event.eventMembers! {
+                                                
+                                                if (eventMemFromDb.userContactId != nil && eventMemFromDb.userContactId != 0 && eventMemFromDb.userContactId == eveMemFromEdit.userContactId) {
+                                                    
+                                                    eventMemFromDb.userContact = eveMemFromEdit.userContact;
+                                                    self.event.eventMembers[editMembersIndex] = eventMemFromDb;
+                                                    //self.event.removeFromEventMembers(eveMemFromEditMO);
+                                                    //self.event.addToEventMembers(eventMemFromDbMO);
+                                                    break;
+                                                    
+                                                }
+                                                editMembersIndex  = editMembersIndex + 1;
+                                            }*/
+                                }
+                                
+                                //Lets add newly added members
+                                for oldEventMember in eventMembersExistingInEvent! {
+                                    if (oldEventMember.eventMemberId == nil) {
+                                        self.event.eventMembers.append(oldEventMember);
                                     }
                                 }
                             }
-                            
                             self.event.thumbnail = eventTemp.thumbnail;
                         }
                         self.invitationCardTableView.reloadData();
+                        self.getAllEventChat();
                     }
                 }
             });
+        
         } else if (event.key != nil) {
             
+            let apiEndpoint = "\(apiUrl)\(GatheringService().get_gathering_data)";
+            let queryStr = "key=\(self.event.key!)&userId=\(self.loggedInUser.userId!)";
+            GatheringService().gatheringCommonGetAPI(api: apiEndpoint, queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
             
-            GatheringService().getEventInfoByKey(pathVariable: event.key!, token: loggedInUser.token!, complete: {(response) in
-                
                 let success = response.value(forKey: "success") as! Bool;
                 if (success == true) {
                     if (response.value(forKey: "data") != nil) {
@@ -201,12 +261,32 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                 self.event.eventPicture = eventTemp.eventPicture;
                             }
                             
+                            if (eventTemp.createdAt != nil) {
+                                self.event.createdAt = eventTemp.createdAt;
+                            } else if (eventTemp.updateAt != nil) {
+                                self.event.createdAt = eventTemp.updateAt;
+                            } else {
+                                self.event.createdAt = Date().millisecondsSince1970;
+                            }
                             if (eventTemp.eventMembers != nil) {
                                 
                                 for eventMemFromDb in eventTemp.eventMembers! {
                                     
+                                    var eventMemberAlreadyExists = false;
+                                    for eveMemFromEdit in self.event.eventMembers! {
+                                        if (eventMemFromDb.userId != nil && eventMemFromDb.userId == eveMemFromEdit.userId) {
+                                            eventMemberAlreadyExists = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (eventMemberAlreadyExists == true) {
+                                        continue;
+                                    }
+                                    self.event.eventMembers.append(eventMemFromDb);
+                                    
                                     //var eventMemFromDbMO = eventMemFromDb as! EventMemberMO;
-                                    var editMembersIndex = 0;
+                                    /*var editMembersIndex = 0;
                                     for eveMemFromEdit in self.event.eventMembers! {
                                         
                                         //var eveMemFromEditMO = eveMemFromEdit as! EventMemberMO;
@@ -220,13 +300,14 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                             break;
                                         }
                                         editMembersIndex  = editMembersIndex + 1;
-                                    }
+                                    }*/
                                 }
                             }
                             
                             self.event.thumbnail = eventTemp.thumbnail;
                         }
                         self.invitationCardTableView.reloadData();
+                        self.getAllEventChat();
                     }
                 }
             });
@@ -251,7 +332,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             self.acceptedSendInvitationLoaderView.isHidden = true;
             self.rejectedInvitationLoaderView.isHidden = true;
             
-            var gestureIsDraggingFromLeftToRight = (sender.velocity(in: view).x > 0)
+            let gestureIsDraggingFromLeftToRight = (sender.velocity(in: view).x > 0)
             if (gestureIsDraggingFromLeftToRight == true && leftToRightGestureEnabled == false) {
                 //If user stated swiping from left to right
                 //We will not move the screen and set its position at center
@@ -340,69 +421,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         //For other users accept gathering
                         if (self.isLoggedInUserAsOwner == false) {
                             
-                            if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
-                                self.navigationController?.popViewController(animated: true);
-                            } else {
-                                
-                                //Update EventMEmber status in CoreData EventMember table
-                                EventMemberModel().updateEventMemberStatus(eventId: self.event.eventId, userId: self.loggedInUser.userId, status: "Going");
-                                
-                                let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=Going";
-                                GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
-                                    
-                                    self.loggedInUser.token, complete: {(response) in
-                                        
-                                });
-                                self.pendingEventIndex = self.pendingEventIndex + 1;
-                                if (self.pendingEventIndex < self.pendingEvents.count) {
-                                    self.event = self.pendingEvents[self.pendingEventIndex]
-                                    //self.populateCardDetails();
-                                    self.resetScreenToDefaultPosition();
-                                    self.swipeCardView.alpha = 1
-                                    
-                                    self.invitationCardTableView.reloadData();
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                                        self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
-                                    });
-                                    
-                                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                } else {
-                                    
-                                    /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
-                                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                                     } else {
-                                     self.navigationController?.popViewController(animated: false);
-                                     }*/
-                                    //This is called when the user is from home screen
-                                    
-                                    //This is needed when user clciked on push notification.
-                                    if (self.fromPushNotificaiton == true) {
-                                        UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                    
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                        });
-                                    } else {
-                                        if (self.newHomeViewControllerDeglegate != nil) {
-                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                            self.navigationController?.popViewController(animated: true);
-                                            
-                                        } else {
-                                            if (self.tabBarController != nil) {
-
-                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                    
-                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                    homeViewController?.refershDataFromOtherScreens();
-                                                    self.navigationController?.popViewController(animated: true);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
+                            self.acceptGatheringCall();
                         } else {
                             
                             //If owner is looking at the event and,
@@ -450,57 +469,120 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     
                                     DispatchQueue.global(qos: .background).async {
                                         
+                                        //If its an already existing event
                                         if (self.event.eventId != nil && self.event.eventId != 0) {
-                                            sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                            
+                                            let existingEvents = sqlDatabaseManager.findEventListByEventId(eventId: self.event.eventId);
+                                            
+                                            if (existingEvents.count > 0) {
+                                                //Deleting the
+                                                sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                            }
+                                            //Saving the events again in localdatabase
+                                            for existingEve in existingEvents {
+                                                self.event.displayScreenAt = existingEve.displayScreenAt;
+                                                self.event.processed = 0;
+                                                sqlDatabaseManager.saveEvent(event: self.event);
+                                            }
+                                        } else {
+                                            //If Event is a new Event then lets save this event with temp id.
+                                            //And save it with processed status 0
+                                            self.event.eventId = Int32(Date().millisecondsSince1970);
+                                            self.event.processed = 0;
+                                            self.event.displayScreenAt = EventDisplayScreen.HOME;
+                                            for offlineEventMem in self.event.eventMembers {
+                                                offlineEventMem.eventId = self.event.eventId;
+                                            }
+                                            sqlDatabaseManager.saveEvent(event: self.event);
+                                            
+                                            self.event.eventId = nil;
+                                            for offlineEventMem in self.event.eventMembers {
+                                                offlineEventMem.eventId = nil;
+                                                offlineEventMem.eventMemberId = nil;
+                                            }
                                         }
                                         
                                         let eventDict = self.event.toDictionary(event: self.event);
                                         print(eventDict);
-                                        GatheringService().createGatheringV2(postData: eventDict, token: self.loggedInUser.token, complete: {(response) in
+                                        /*GatheringService().createGatheringV2(postData: eventDict, token: self.loggedInUser.token, complete: {(response) in
                                             print("Saved Successfully...")
                                             let success = response.value(forKey: "success") as! Bool;
                                             if (success == true) {
+                                                
+                                                //Lets delete all unprocessed events
+                                                sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
+
                                                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                                                 let eventId = dataDict.value(forKey: "eventId") as! Int32;
                                                 if (eventId != nil && eventId != 0) {
+                                                    
+                                                    //If its an existing event, lets delete it so that if user has added or removed any member then it can be reflected in the app.
+                                                    sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                                    
+                                                    //Now after deleting lets add the event again to display at Home and Accepted screen
                                                     let eventTemp = Event().loadEventData(eventDict: dataDict);
+                                                    eventTemp.displayScreenAt = EventDisplayScreen.HOME;
                                                     sqlDatabaseManager.saveEvent(event: eventTemp);
+                                                    
+                                                    eventTemp.displayScreenAt = EventDisplayScreen.ACCEPTED;
+                                                    sqlDatabaseManager.saveEvent(event: eventTemp);
+                                                    
+                                                    DispatchQueue.main.async {
+                                                        // Go back to the main thread to update the UI.
+                                                        if (nonCenesMembers.count == 0) {
+                                                            
+                                                            //This is called when the user is from home screen
+                                                            if (self.newHomeViewControllerDeglegate != nil) {
+                                                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                                                self.navigationController?.popToRootViewController(animated: true);
+                                                            } else {
+                                                                if (self.tabBarController != nil) {
+                                                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
+                                                                        self.navigationController?.popToRootViewController(animated: true);
+                                                                        
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        
+                                                    }
+                                                    
                                                 }
                                                 
                                             }
-                                        });
+                                        });*/
                                         DispatchQueue.main.async {
                                             // Go back to the main thread to update the UI.
                                             if (nonCenesMembers.count == 0) {
-                                                //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
                                                 
                                                 //This is called when the user is from home screen
                                                 if (self.newHomeViewControllerDeglegate != nil) {
-                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                                    });
+                                                    //DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                                                     //   NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                                    //});
+                                                    self.newHomeViewControllerDeglegate.createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: nonCenesMembers);
                                                     self.navigationController?.popToRootViewController(animated: true);
-                                                  // UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-
-                                                    //DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                                                            //self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                                    //}
-                                                    //self.navigationController?.popViewController(animated: true);
-                                                    //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                                    
+                                            
                                                 } else {
                                                     if (self.tabBarController != nil) {
                                                         if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                                                             
-                                                            //let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                            //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                                                            //DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                                                           //     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                                                            //});
+                                                            var isNewControllerFound: Bool = false;
+                                                            for viewController in cenesTabBarViewControllers {
+                                                                if (viewController is NewHomeViewController) {
+                                                                    isNewControllerFound = true;
+                                                                    (viewController as! NewHomeViewController).createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: nonCenesMembers);
+                                                                }
+                                                            }
+                                                            if (isNewControllerFound == false) {
+                                                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateExistingEventOnServer"), object: nil)
 
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                                                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                                            });
-                                                            
+                                                            }
                                                             self.navigationController?.popToRootViewController(animated: true);
-                                                            
                                                         }
                                                     }
                                                 }
@@ -570,18 +652,48 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                     
                                     if (Connectivity.isConnectedToInternet) {
                                         
+                                        //If its an already existing event
                                         if (self.event.eventId != nil && self.event.eventId != 0) {
-                                            sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
-                                            //EventModel().saveNewEventModelOffline(event: self.event, user: self.loggedInUser);
+                                            
+                                            let existingEvents = sqlDatabaseManager.findEventListByEventId(eventId: self.event.eventId);
+                                            
+                                            if (existingEvents.count > 0) {
+                                                //Deleting the
+                                                sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                            }
+                                            //Saving the events again in localdatabase
+                                            for existingEve in existingEvents {
+                                                self.event.displayScreenAt = existingEve.displayScreenAt;
+                                                self.event.processed = 0;
+                                                sqlDatabaseManager.saveEvent(event: self.event);
+                                            }
+                                        } else {
+                                            //If Event is a new Event then lets save this event with temp id.
+                                            //And save it with processed status 0
+                                            self.event.eventId = Int32(truncatingIfNeeded: Date().millisecondsSince1970);
+                                            self.event.processed = 0;
+                                            self.event.displayScreenAt = EventDisplayScreen.HOME;
+                                            for offlineEventMem in self.event.eventMembers {
+                                                offlineEventMem.eventId = self.event.eventId;
+                                            }
+                                            sqlDatabaseManager.saveEvent(event: self.event);
+                                            self.event.eventId = nil;
+                                            for offlineEventMem in self.event.eventMembers {
+                                                offlineEventMem.eventId = nil;
+                                                offlineEventMem.eventMemberId = nil;
+                                            }
+                                            
                                         }
 
                                         let eventDict = self.event.toDictionary(event: self.event);
                                         print(eventDict);
-                                        GatheringService().createGatheringV2(postData: eventDict, token: self.loggedInUser.token, complete: {(response) in
+                                        /*GatheringService().createGatheringV2(postData: eventDict, token: self.loggedInUser.token, complete: {(response) in
                                             print("Saved Successfully...")
                                             
                                             let success = response.value(forKey: "success") as! Bool;
                                             if (success == true) {
+                                                //Lets delete all unprocessed events
+                                                sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
                                                 
                                                 Mixpanel.mainInstance().track(event: "Gathering",
                                                 properties:[ "Action" : "Create Gathering Success", "Title":"\(self.event.title!)", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
@@ -589,23 +701,84 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                                                 let eventId = dataDict.value(forKey: "eventId") as! Int32;
                                                 if (eventId != nil && eventId != 0) {
-                                                    //sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                                    
+                                                    //If its an existing event, lets delete it so that if user has added or removed any member then it can be reflected in the app.
+                                                    sqlDatabaseManager.deleteEventByEventId(eventId: self.event.eventId);
+                                                    
+                                                    //Now after deleting lets add the event again to display at Home and Accepted screen
                                                     let eventTemp = Event().loadEventData(eventDict: dataDict);
+                                                    eventTemp.displayScreenAt = EventDisplayScreen.HOME;
                                                     sqlDatabaseManager.saveEvent(event: eventTemp);
+                                                    
+                                                    eventTemp.displayScreenAt = EventDisplayScreen.ACCEPTED;
+                                                    sqlDatabaseManager.saveEvent(event: eventTemp);
+                                                    
+                                                    if (nonCenesMembers.count == 0) {
+                                                        //self.navigationController?.popToRootViewController(animated: false);
+                                                        //This is called when the user is from home screen
+                                                        if (self.newHomeViewControllerDeglegate != nil) {
+                                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                                            //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                                                            
+                                                        } else {
+                                                            if (self.tabBarController != nil) {
+                                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                                    
+                                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                                                   
+                                                                    if (homeViewController != nil) {
+                                                                        homeViewController?.refershDataFromOtherScreens();
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
+                                        });*/
 
-                                            /*let error = response.value(forKey: "Error") as! Bool;
-                                            if (error == false && imageToUpload != nil) {
-                                                let dataDict = response.value(forKey: "data") as! NSDictionary;
-                                                let eventId = dataDict.value(forKey: "eventId") as! Int32
-                                                GatheringService().uploadEventImageV2(image: imageToUpload, eventId: eventId, loggedInUser: self.loggedInUser, complete: {(resp) in
-                                                    print("Saved Uploaded...")
-                                                    
-                                                });
-                                            }*/
-                                            
-                                        });
+                                        if (nonCenesMembers.count == 0) {
+                                           //self.navigationController?.popToRootViewController(animated: false);
+                                           //This is called when the user is from home screen
+                                           if (self.newHomeViewControllerDeglegate != nil) {
+                                                self.newHomeViewControllerDeglegate.createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: nonCenesMembers);
+                                                self.navigationController?.popViewController(animated: true);
+
+                                           } else {
+                                            DispatchQueue.main.async {
+
+                                               if (self.tabBarController != nil) {
+                                                   if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                                       
+                                                        var isNewControllerFound: Bool = false;
+                                                        for viewController in cenesTabBarViewControllers {
+                                                           if (viewController is NewHomeViewController) {
+                                                               //isNewControllerFound = true;
+                                                               //(viewController as! NewHomeViewController).createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: nonCenesMembers);
+                                                           }
+                                                       }
+                                                       if (isNewControllerFound == false) {
+                                                        print(Date())
+                                                        print("Running Notification Code");
+                                                       
+                                                        //DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+                                                             print(Date())
+                                                            if (self.event.eventId == nil) {
+                                                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "createNewExistingEventOnServer"), object: nil)
+                                                            } else {
+                                                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateExistingEventOnServer"), object: nil)
+                                                            }
+                                                        //});
+
+                                                       }
+
+                                                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+
+                                                   }
+                                               }
+                                            }
+                                           }
+                                       }
 
                                     } else {
                                         
@@ -613,19 +786,18 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         //EventModel().saveNewEventModelOffline(event: self.event, user: self.loggedInUser);
                                         sqlDatabaseManager.saveEventWhenNoInternet(event: self.event);
                                     }
-                                    
                                 }
-                                
+                                                                
                                 //DispatchQueue.main.async {
                                     // Go back to the main thread to update the UI.
                                     //If user has no non cenes members then we will directly take him to
                                     //Home screen, Otherwise message box will open and user will then
                                     //redirect to home screen after action
-                                    if (nonCenesMembers.count == 0) {
+                                    /*if (nonCenesMembers.count == 0) {
                                         //self.navigationController?.popToRootViewController(animated: false);
                                         //This is called when the user is from home screen
                                         if (self.newHomeViewControllerDeglegate != nil) {
-                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                                            //Commenting for now self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
                                             //self.navigationController?.popViewController(animated: true);
                                             UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
                                             
@@ -636,14 +808,14 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                     let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
                                                    
                                                     if (homeViewController != nil) {
-                                                        homeViewController?.refershDataFromOtherScreens();
+                                                        //Commenting for now homeViewController?.refershDataFromOtherScreens();
                                                     }
                                                     //self.navigationController?.popViewController(animated: true);
                                                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
                                                 }
                                             }
                                         }
-                                    }
+                                    }*/
                                 //}
                                 //}
                             }
@@ -664,76 +836,15 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         self.rejectedImageiew.transform = CGAffineTransform(scaleX: 1.0, y: 1.0);
                     }
                     
-                    self.rejectedInvitationLoaderView.startRotatingView(duration: 0.5, repeatCount: 1, clockwise: true);
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        // your code here
-                        self.rejectedInvitationLoaderView.stopRotatingView();
-
-                        if (self.isLoggedInUserAsOwner == false) {
-                            
-                            self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x - 200, y: self.swipeCardView.center.y);
-                            
-                            self.swipeCardView.alpha = 0
-                            
-                            if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
-                                self.navigationController?.popViewController(animated: true);
-                            } else {
-                                
-                                //Update EventMEmber status in CoreData EventMember table
-                                EventMemberModel().updateEventMemberStatus(eventId: self.event.eventId, userId: self.loggedInUser.userId, status: "NotGoing");
-                                
-                                let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=NotGoing";
-                                GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
-                                    
-                                });
-                                
-                                self.pendingEventIndex = self.pendingEventIndex + 1;
-                                if (self.pendingEventIndex < self.pendingEvents.count) {
-                                    self.event = self.pendingEvents[self.pendingEventIndex]
-                                    self.resetScreenToDefaultPosition();
-                                    self.swipeCardView.alpha = 1;
-                                    //self.populateCardDetails();
-                                    self.invitationCardTableView.reloadData();
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                                        self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
-                                    });
-                                    
-                                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-
-                                    
-                                } else {                                    
-                                    
-                                    if (self.fromPushNotificaiton == true) {
-                                        
-                                        UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                                        });
-                                    } else {
-                                        //This is called when the user is from home screen
-                                        if (self.newHomeViewControllerDeglegate != nil) {
-                                            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
-                                            self.navigationController?.popViewController(animated: true);
-                                            
-                                        } else {
-                                            if (self.tabBarController != nil) {
-                                                
-                                                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                                    
-                                                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                                    homeViewController?.refershDataFromOtherScreens();
-                                                    self.navigationController?.popViewController(animated: true);
-                                                    
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
+                    //If logged In User is not an Owner and is going to decline the event
+                    if (self.isLoggedInUserAsOwner == false) {
+                        //self.declineInvitationCall();
+                        self.declinedInvitationConfirmAlert();
+                    } else {
+                        self.rejectedInvitationLoaderView.startRotatingView(duration: 0.5, repeatCount: 1, clockwise: true);
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            // your code here
+                            self.rejectedInvitationLoaderView.stopRotatingView();
                             if (self.event.eventId != nil && self.event.eventId != 0) {
                                 
                                 if (self.event.requestType == EventRequestType.EditEvent) {
@@ -746,8 +857,8 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                             } else {
                                 self.navigationController?.popViewController(animated: false);
                             }
-                        }
-                    };
+                        };
+                    }
                     return;
                 });
             } else {
@@ -814,15 +925,261 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         self.resetScreenToDefaultPosition();
     }
     
-    /*
-    // MARK: - Navigation
+   func acceptGatheringCall() {
+        if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
+            self.navigationController?.popViewController(animated: true);
+        } else {
+            
+            //Update EventMEmber status in CoreData EventMember table
+            //sqlDatabaseManager.updateEventMemberStatusByUserId(eventMemberStatus: "Going", userId: self.loggedInUser.userId);
+            
+            let acceptedEvent = sqlDatabaseManager.findEventByEventId(eventId: event.eventId);
+            sqlDatabaseManager.deleteEventByEventId(eventId: acceptedEvent.eventId);
+            
+            //Display Event At Home Screen
+            acceptedEvent.displayScreenAt = EventDisplayScreen.HOME;
+            sqlDatabaseManager.saveEvent(event: acceptedEvent);
+            
+            //Display Event At Accepted Screen
+            acceptedEvent.displayScreenAt = EventDisplayScreen.ACCEPTED;
+            sqlDatabaseManager.saveEvent(event: acceptedEvent);
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+            
+            let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=Going";
+            GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
+                
+                self.loggedInUser.token, complete: {(response) in
+                    
+            });
+            self.pendingEventIndex = self.pendingEventIndex + 1;
+            if (self.pendingEventIndex < self.pendingEvents.count) {
+                self.event = self.pendingEvents[self.pendingEventIndex]
+                //self.populateCardDetails();
+                self.resetScreenToDefaultPosition();
+                self.swipeCardView.alpha = 1
+                
+                self.invitationCardTableView.reloadData();
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+                });
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+            } else {
+                
+                /*if (self.event.eventClickedFrom == EventClickedFrom.Gathering) {
+                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
+                 } else {
+                 self.navigationController?.popViewController(animated: false);
+                 }*/
+                //This is called when the user is from home screen
+                
+                //This is needed when user clciked on push notification.
+                if (self.fromPushNotificaiton == true) {
+                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                    });
+                } else {
+                    if (self.newHomeViewControllerDeglegate != nil) {
+                        self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                        self.navigationController?.popViewController(animated: true);
+                        
+                    } else {
+                        if (self.tabBarController != nil) {
+
+                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                                
+                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                                homeViewController?.refershDataFromOtherScreens();
+                                self.navigationController?.popViewController(animated: true);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
     }
-    */
+    func declineInvitationCall() {
+        
+        self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x - 200, y: self.swipeCardView.center.y);
+        self.swipeCardView.alpha = 0;
+        
+        if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
+            self.navigationController?.popViewController(animated: true);
+        } else {
+            
+            //Update EventMEmber status in CoreData EventMember table
+            sqlDatabaseManager.updateEventMemberStatusByUserId(eventMemberStatus: "NotGoing", userId: self.loggedInUser.userId);
+
+            let declinedEvent = sqlDatabaseManager.findEventByEventId(eventId: event.eventId);
+            sqlDatabaseManager.deleteEventByEventId(eventId: declinedEvent.eventId);
+            
+            //Display Event At Home Screen
+            declinedEvent.displayScreenAt = EventDisplayScreen.DECLINED;
+            sqlDatabaseManager.saveEvent(event: declinedEvent);
+                    
+            let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=NotGoing";
+            GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
+                
+            });
+        }
+    }
+    
+    func declinedInvitationConfirmAlert() {
+        
+        let declineAlert = UIAlertController(title: "Message", message: "Are you sure to decline this event?", preferredStyle: UIAlertControllerStyle.alert)
+
+        declineAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here");
+            self.declinedInvitationSendMessageAlert();
+            self.declineInvitationCall();
+          }))
+
+        declineAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
+            print("Handle Cancel Logic here");
+            self.resetScreenToDefaultPosition();
+        }));
+        
+        self.present(declineAlert, animated: true, completion: nil)
+
+    }
+    
+    func declinedInvitationSendMessageAlert() {
+        
+        let declineAlert = UIAlertController(title: "Decline Event", message: "Do you want to leave a note to ", preferredStyle: UIAlertControllerStyle.alert)
+
+        //2. Add the text field. You can configure it however you need.
+        declineAlert.addTextField { (textField) in
+            textField.text = ""
+        }
+
+        declineAlert.addAction(UIAlertAction(title: "Send", style: .default, handler: { (action: UIAlertAction!) in
+            print("Handle Ok logic here")
+            let textField = declineAlert.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(textField.text)")
+            if (textField.text != "") {
+                
+                self.rejectedInvitationLoaderView.startRotatingView(duration: 0.5, repeatCount: 1, clockwise: true);
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    // your code here
+                    self.rejectedInvitationLoaderView.stopRotatingView();
+                    self.self.resetScreenToDefaultPosition();
+                }
+                self.postEventChat(chatMessage: textField.text!);
+            }
+        }));
+
+        declineAlert.addAction(UIAlertAction(title: "Skip", style: .cancel, handler: { (action: UIAlertAction!) in
+                print("Handle Cancel Logic here");
+            self.resetScreenToDefaultPosition();
+            //self.moveToHomeScreen();
+            self.pendingEventIndex = self.pendingEventIndex + 1;
+            if (self.pendingEventIndex < self.pendingEvents.count) {
+                self.event = self.pendingEvents[self.pendingEventIndex]
+                self.resetScreenToDefaultPosition();
+                self.swipeCardView.alpha = 1;
+                //self.populateCardDetails();
+                self.invitationCardTableView.reloadData();
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
+                });
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+
+                
+            } else {
+                
+                if (self.fromPushNotificaiton == true) {
+                    
+                    UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+                    });
+                } else {
+                    self.moveToHomeScreen();
+                }
+            }
+          }))
+
+        self.present(declineAlert, animated: true, completion: nil)
+    }
+    
+    func postEventChat(chatMessage: String) {
+        
+        let api = "\(apiUrl)\(GatheringService.post_event_chat_api)";
+        var postData = [String: Any]();
+        postData["senderId"] = loggedInUser.userId;
+        postData["chat"] = chatMessage;
+        postData["eventId"] = event.eventId;
+        postData["chatStatus"] = "Sent"; //1 For making status as Read
+        postData["createdAt"] = Date().millisecondsSince1970; //1 For making status as Read
+
+        if (self.isKeyboardVisible == true) {
+            self.chatBoxView.activiyIndicator.stopAnimating();
+            self.chatBoxView.sendMessageTextField.resignFirstResponder();
+        }
+
+        let eventChatTmp = EventChat();
+        eventChatTmp.createdAt = (postData["createdAt"] as! Int64);
+        eventChatTmp.chat = (postData["chat"] as! String);
+        eventChatTmp.senderId = loggedInUser.userId;
+        eventChatTmp.eventId = (postData["eventId"] as! Int32);
+        
+        let eventChatDateKeyeTmp = Date(millis: eventChatTmp.createdAt).EMMMd();
+        if (!self.eventChatDateKeys.contains(eventChatDateKeyeTmp!)) {
+            self.eventChatDateKeys.append(eventChatDateKeyeTmp!);
+        }
+        
+        if (self.eventChatAndDateMap[eventChatDateKeyeTmp!] != nil) {
+            var eventChatTmpList = self.eventChatAndDateMap[eventChatDateKeyeTmp!]!;
+            eventChatTmpList.append(eventChatTmp);
+            self.eventChatAndDateMap[eventChatDateKeyeTmp!] = eventChatTmpList;
+            
+        } else {
+            var eventChatTmpList = [EventChat]();
+            eventChatTmpList.append(eventChatTmp);
+            self.eventChatAndDateMap[eventChatDateKeyeTmp!] = eventChatTmpList;
+        }
+        
+        for chatFeatureViewTemp in self.view.subviews {
+            if (chatFeatureViewTemp is ChatFeatureView) {
+                self.addChatScrollView();
+                break;
+            }
+        }
+        self.inputChatMessageText = "";
+        
+        GatheringService().gatheringCommonPostAPI(api: api, postData: postData, token: loggedInUser.token, complete: {response in
+            
+            let success = response.value(forKey: "success") as! Bool;
+            if (success == true) {
+                self.getAllEventChat();
+            }
+        });
+    }
+    
+    func moveToHomeScreen() {
+        //This is called when the user is from home screen
+        if (self.newHomeViewControllerDeglegate != nil) {
+            self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+            self.navigationController?.popViewController(animated: true);
+            
+        } else {
+            if (self.tabBarController != nil) {
+                
+                if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                    
+                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                    homeViewController?.refershDataFromOtherScreens();
+                    self.navigationController?.popViewController(animated: true);
+                }
+            }
+        }
+    }
     func skipCard() {
         //We will check if user swiped the card upto 200 Y axis
         //Then we will either bring the new card or popup to previous screen.
@@ -838,13 +1195,22 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 self.invitationCardTableView.scrollToRow(at: IndexPath.init(row: 0, section: 0), at: .top, animated: true);
             });
             swipeCardView.center = self.view.center;
+            
+            
+            self.chatFeatureView = nil;
+            for chatFeatView in self.view.subviews {
+                if (chatFeatView is ChatFeatureView) {
+                    chatFeatView.removeFromSuperview();
+                }
+            }
+            self.getAllEventChat();
         } else {
             
             if (self.isLoggedInUserInMemberList == false) {
                 
                 if (self.event.eventId != nil) {
                     
-                    let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=pending]";
+                    let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=pending";
                     GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token:
                         
                         self.loggedInUser.token, complete: {(response) in
@@ -895,6 +1261,543 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         //If its an edit event request then we will send user to Home screen
         UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
     }
+    
+    func addChatScrollView() {
+        
+        if (self.chatFeatureView == nil) {
+            self.chatFeatureView = ChatFeatureView.instanceFromNib() as! ChatFeatureView;
+        }
+        self.chatFeatureView.frame = CGRect.init(x: 25, y: self.view.frame.height - 550, width: self.view.frame.width - 30, height: 400);
+        self.chatFeatureView.chatMessageScrollView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: 0, width: self.chatFeatureView.frame.width, height: 300);
+        
+        self.chatFeatureView.addSubview(self.chatFeatureView.chatMessageScrollView);
+        print("Scroll View Y posigion : ",self.chatFeatureView.chatMessageScrollView.frame.origin.y);
+        for viewTemp in self.chatFeatureView.chatMessageScrollView.subviews {
+            viewTemp.removeFromSuperview();
+        }
+        var descriptionHeight: CGFloat = 0;
+        
+        for eventChatDateKey in self.eventChatDateKeys {
+            
+            let chatBlurbView: ChatBlurbView = ChatBlurbView.instanceFromNib() as! ChatBlurbView!;
+            
+            let yesterdayKey = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.EMMMd();
+            if (eventChatDateKey == Date().EMMMd()) {
+                chatBlurbView.chatBlurbLabel.text = "Today";
+            } else if (eventChatDateKey == yesterdayKey) {
+                chatBlurbView.chatBlurbLabel.text = "Yesterday";
+            } else {
+                chatBlurbView.chatBlurbLabel.text = eventChatDateKey;
+            }
+                        
+            //Setting frame for Chat Blur View
+            chatBlurbView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: descriptionHeight, width: self.chatFeatureView.chatMessageScrollView.frame.width, height: chatBlurbView.frame.height);
+
+            //Adding View to ScrollView
+            self.chatFeatureView.chatMessageScrollView.addSubview(chatBlurbView);
+            
+            descriptionHeight = descriptionHeight + chatBlurbView.frame.height;
+            
+            let eventChatsFromMap = self.eventChatAndDateMap[eventChatDateKey];
+            
+            //Creating Chat Bubbles
+            descriptionHeight = createChatBubbles(eventChatsFromMap: eventChatsFromMap!, descriptionHeightParam: descriptionHeight);
+        }
+        
+        
+        self.chatFeatureView.layoutSubviews();
+        self.chatFeatureView.layoutIfNeeded();
+        //self.chatFeatureView.backgroundColor = UIColor.green;
+        //self.chatFeatureView.chatMessageScrollView.backgroundColor = UIColor.red;
+        
+        self.chatFeatureView.chatMessageScrollView.isScrollEnabled = true;
+        self.chatFeatureView.chatMessageScrollView.contentSize = CGSize.init(width: self.chatFeatureView.frame.width, height: descriptionHeight + 50);
+        
+        if (eventChats.count == 1) {
+            self.chatFeatureView.chatMessageScrollView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: 400 - descriptionHeight - 100, width: self.chatFeatureView.frame.width, height: 300);
+        } else {
+            self.chatFeatureView.chatMessageScrollView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: 0, width: self.chatFeatureView.frame.width, height: 300);
+        }
+        //self.chatFeatureView.chatMessageScrollView.frame = CGRect.init(x: self.chatFeatureView.frame.origin.x, y: 0, width: self.chatFeatureView.frame.width, height: 300.0);
+                
+        
+        //Tap to send message will be needed only if the event is not expired.
+        if (event.expired == false) {
+            
+            addTapToChatViewSection();
+        }
+        
+        scrollToBottomScrollView();
+        self.view.addSubview(chatFeatureView);
+    }
+    
+    func getAllEventChat() {
+        
+        let defaultEventDesc = EventChat();
+        if (event.description != nil && event.description != "") {
+            defaultEventDesc.senderId = event.createdById;
+            defaultEventDesc.chat = event.description!;
+            defaultEventDesc.eventId = event.eventId;
+            defaultEventDesc.createdAt = event.createdAt;
+            defaultEventDesc.synced = true;
+            if (eventOwner.eventMemberId != nil && eventOwner.user != nil) {
+                defaultEventDesc.user = eventOwner.user;
+            }
+            //self.eventChats.append(defaultEventDesc);
+        }
+        
+        let apiEndpoint = "\(apiUrl)\(GatheringService.get_event_chat_by_eventId)";
+        let queryStr = "eventId=\(event.eventId!)";
+        
+        GatheringService().gatheringCommonGetAPI(api: apiEndpoint, queryStr: queryStr, token: loggedInUser.token, complete: {response in
+            
+            
+            self.eventChats = [EventChat]();
+            self.eventChatDateKeys = [String]();
+            self.eventChatAndDateMap = [String: [EventChat]]();
+            self.eventChats.append(defaultEventDesc);
+
+            let success = response.value(forKey: "success") as! Bool;
+            if (success == true) {
+                let eventChatDataArr = response.value(forKey: "data") as! NSArray;
+                if (eventChatDataArr.count > 0) {
+                    let eventChatsTemps = EventChat().populateEventChatFromArray(eventChatArray: eventChatDataArr);
+                    for eventChatTemp in eventChatsTemps {
+                        eventChatTemp.synced = true;
+                        self.eventChats.append(eventChatTemp);
+                    }
+                }
+            }
+            //Deleting event Chats
+            sqlDatabaseManager.deleteEventChatByEventId(eventId: self.event.eventId);
+            for eventChatTmp in self.eventChats {
+                //Saving Event Chats
+                sqlDatabaseManager.saveEventChat(eventChat: eventChatTmp);
+            }
+            
+            //Processing event chat list to create
+            for eventChatTmp in self.eventChats {
+                if (eventChatTmp.createdAt == nil) {
+                    eventChatTmp.createdAt = Date().millisecondsSince1970;
+                }
+                let eventChatDateKeyeTmp = Date(millis: eventChatTmp.createdAt).EMMMd();
+                if (!self.eventChatDateKeys.contains(eventChatDateKeyeTmp!)) {
+                    self.eventChatDateKeys.append(eventChatDateKeyeTmp!);
+                }
+                
+                if (self.eventChatAndDateMap[eventChatDateKeyeTmp!] != nil) {
+                    var eventChatTmpList = self.eventChatAndDateMap[eventChatDateKeyeTmp!]!;
+                    eventChatTmpList.append(eventChatTmp);
+                    self.eventChatAndDateMap[eventChatDateKeyeTmp!] = eventChatTmpList;
+                    
+                } else {
+                    
+                    var eventChatTmpList = [EventChat]();
+                    eventChatTmpList.append(eventChatTmp);
+                    self.eventChatAndDateMap[eventChatDateKeyeTmp!] = eventChatTmpList;
+                }
+            }
+        });
+    }
+    
+    func addTapToChatViewSection() {
+        self.tapToChatView = TapToChatView.instanceFromNib() as! TapToChatView;
+        tapToChatView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.width - tapToChatView.frame.width, y: self.chatFeatureView.frame.height - tapToChatView.frame.height, width: tapToChatView.frame.width, height: tapToChatView.frame.height);
+        
+         if (loggedInUser.photo != nil) {
+            tapToChatView.profilePic.sd_setImage(with: URL.init(string: loggedInUser.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+        } else {
+            tapToChatView.profilePic.image = UIImage.init(named: "profile_pic_no_image");
+        }
+         
+        if (loggedInUser.userId == event.createdById) {
+            tapToChatView.hostGradientCircle.isHidden = false;
+        } else {
+            tapToChatView.hostGradientCircle.isHidden = true;
+        }
+         let tapToChatTouchListener = UITapGestureRecognizer.init(target: self, action: #selector(tapToChatPressed));
+         tapToChatView.addGestureRecognizer(tapToChatTouchListener);
+             chatFeatureView.addSubview(tapToChatView);
+    }
+    
+    func scrollToBottomScrollView() {
+        var bottomOffset: CGPoint = CGPoint(x: 0, y: self.chatFeatureView.chatMessageScrollView.contentSize.height - self.chatFeatureView.chatMessageScrollView.bounds.size.height + self.chatFeatureView.chatMessageScrollView.contentInset.bottom);
+        
+        if (eventChats.count > 1) {
+            self.chatFeatureView.chatMessageScrollView.setContentOffset(bottomOffset, animated: true);
+        }
+    }
+    
+    func createChatBubbles(eventChatsFromMap: [EventChat], descriptionHeightParam: CGFloat) -> CGFloat {
+        
+        var descriptionHeight = descriptionHeightParam;
+        for eventChat in eventChatsFromMap {
+            
+            print(eventChat.senderId, eventChat.chat);
+            if (loggedInUser.userId == eventChat.senderId) {
+                
+                descriptionHeight = createSenderChatBubble(eventChat: eventChat, descriptionHeightParam: descriptionHeight);
+                
+            } else {
+                
+                descriptionHeight = createAttendeeView(eventChat: eventChat, descriptionHeightParam: descriptionHeight);
+            }
+        }
+        
+        return descriptionHeight;
+    }
+    
+    func createSenderChatBubble(eventChat: EventChat, descriptionHeightParam: CGFloat) -> CGFloat {
+        
+        var descriptionHeight = descriptionHeightParam;
+        
+        //Lets load different view in case the text if from logged In User
+        let senderChatView: SenderChatView = SenderChatView.instanceFromNib() as! SenderChatView!;
+
+        let chatTime = Date.init(millis: eventChat.createdAt).hmma();
+        let timeConstraintRect = CGSize(width: .greatestFiniteMagnitude, height: senderChatView.chatTime.frame.height);
+        let timeBoundingBox = chatTime.boundingRect(with: timeConstraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: senderChatView.chatTime.font], context: nil);
+
+        //Lets find the number of lines for Chat Message
+        let heightOfDesc = self.heightForView(text: eventChat.chat!, font: senderChatView.chatMessage.font, width: self.chatFeatureView.chatMessageScrollView.frame.width - (100));
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: heightOfDesc)
+        let boundingBox = eventChat.chat.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: senderChatView.chatMessage.font], context: nil)
+               
+        //Setting Frame for Chat Message *******
+        //Lets find the number of lines of chat message uilabel
+        senderChatView.chatMessage.text = eventChat.chat!;
+        var numberOFlines: Int = 0;
+        let heightOfUILabel: Int = 20;
+        let widthOfSpeechArrow: CGFloat = 25;
+        let leftPaddingToText: CGFloat = 10;
+        let rightPaddingToText: CGFloat = 10;
+        let maxWidth: CGFloat = self.chatFeatureView.chatMessageScrollView.frame.width - 30;
+
+        senderChatView.chatMessage.frame = CGRect.init(x: 10 , y: senderChatView.chatMessage.frame.origin.y, width: maxWidth - timeBoundingBox.width - senderChatView.chatMsgStatus.frame.width - leftPaddingToText - rightPaddingToText, height: heightOfDesc);
+        numberOFlines = countLabelLines(label: senderChatView.chatMessage);
+        var addHeightToSingleLine: CGFloat = 0.0;
+
+        if (boundingBox.width < minBubbleWidth) {
+
+            addHeightToSingleLine = 0.0;
+            senderChatView.senderChatBoxView.frame = CGRect.init(x: chatFeatureView.chatMessageScrollView.frame.width - 30 - boundingBox.width - timeBoundingBox.width - senderChatView.chatMsgStatus.frame.width - leftPaddingToText - rightPaddingToText, y: 9, width: boundingBox.width + timeBoundingBox.width + senderChatView.chatMsgStatus.frame.width + widthOfSpeechArrow + leftPaddingToText + rightPaddingToText, height: heightOfDesc + 2*paddingBetweenChatTextAndBubble + addHeightToSingleLine);
+            
+        } else if (numberOFlines == 1) {
+            
+            addHeightToSingleLine = 0.0;
+            senderChatView.senderChatBoxView.frame = CGRect.init(x: chatFeatureView.chatMessageScrollView.frame.width - 30 - boundingBox.width - timeBoundingBox.width - senderChatView.chatMsgStatus.frame.width  - leftPaddingToText - rightPaddingToText
+            , y: 9, width: boundingBox.width + timeBoundingBox.width  + senderChatView.chatMsgStatus.frame.width + widthOfSpeechArrow + leftPaddingToText + rightPaddingToText, height: CGFloat(heightOfUILabel*numberOFlines) + 2*paddingBetweenChatTextAndBubble + addHeightToSingleLine);
+        } else {
+            //Setting Frame for Sender Chat Box *******
+            senderChatView.senderChatBoxView.frame = CGRect.init(x: senderChatView.senderChatBoxView.frame.origin.x, y: 9, width: maxWidth, height: CGFloat(heightOfUILabel*numberOFlines) + 2*paddingBetweenChatTextAndBubble);
+        }
+        senderChatView.senderChatBoxView.layer.cornerRadius = 10;
+        
+        if (boundingBox.width < minBubbleWidth) {
+            senderChatView.chatMessage.frame = CGRect.init(x: senderChatView.chatMessage.frame.origin.x
+        , y: senderChatView.chatMessage.frame.origin.y, width: self.chatFeatureView.chatMessageScrollView.frame.width - (50), height: heightOfDesc);
+            
+            numberOFlines = countLabelLines(label: senderChatView.chatMessage);
+            print(numberOFlines);
+
+        } else {
+            
+            print("Chat message origin : ",senderChatView.chatMessage.frame.origin.y);
+            //10 is the start padding of text
+            senderChatView.chatMessage.frame = CGRect.init(x: 10 , y: senderChatView.chatMessage.frame.origin.y, width: maxWidth - timeBoundingBox.width - senderChatView.chatMsgStatus.frame.width - leftPaddingToText - rightPaddingToText, height: CGFloat(numberOFlines*heightOfUILabel));
+            
+            numberOFlines = countLabelLines(label: senderChatView.chatMessage);
+            print(numberOFlines);
+        }
+
+        //Setting frame for chat message
+        if (eventChat.chatStatus == "Read") {
+            senderChatView.chatMsgStatus.image = UIImage.init(named: "read_chat_msg")
+        } else {
+            senderChatView.chatMsgStatus.image = UIImage.init(named: "sent_chat_msg")
+        }
+        senderChatView.chatMsgStatus.frame = CGRect.init(x: senderChatView.senderChatBoxView.frame.width - (senderChatView.chatMsgStatus.frame.width + 9), y: CGFloat(numberOFlines*heightOfUILabel) - 2, width: senderChatView.chatMsgStatus.frame.width, height: senderChatView.chatMsgStatus.frame.height);
+
+        
+        //Setting Frame for Chat Time *******
+        if (eventChat.createdAt == nil) {
+            eventChat.createdAt = event.createdAt;
+        }
+        if (eventChat.createdAt == nil) {
+            eventChat.createdAt = event.updateAt;
+        }
+        if (eventChat.createdAt == nil) {
+            eventChat.createdAt = Date().millisecondsSince1970;
+        }
+        senderChatView.chatTime.text = chatTime;
+        senderChatView.chatTime.frame = CGRect.init(x: senderChatView.senderChatBoxView.frame.width - (senderChatView.chatTime.frame.width + senderChatView.chatMsgStatus.frame.width + 10), y: CGFloat(numberOFlines*heightOfUILabel) - 2, width: senderChatView.chatTime.frame.width, height: senderChatView.chatTime.frame.height);
+        //Setting Frame for Sender Chat Main View *******
+        senderChatView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: descriptionHeight, width: self.chatFeatureView.chatMessageScrollView.frame.width, height: senderChatView.senderChatBoxView.frame.height + gapBetweenChatBubbles);
+        
+        descriptionHeight = descriptionHeight + senderChatView.frame.height;
+
+        senderChatView.layoutIfNeeded();
+        
+        let path = UIBezierPath();
+        path.move(to : CGPoint(x: senderChatView.senderChatBoxView.frame.width - 6 , y: senderChatView.senderChatBoxView.frame.origin.y - 8.5));
+        path.addLine(to: CGPoint(x: senderChatView.senderChatBoxView.frame.width + 15, y: senderChatView.senderChatBoxView.frame.origin.y - 8.5));
+        path.addLine(to: CGPoint(x: senderChatView.senderChatBoxView.frame.width - 6, y: senderChatView.senderChatBoxView.frame.origin.y + 9));
+        path.close();
+        
+        let bubbleLayer = CAShapeLayer()
+        bubbleLayer.path = path.cgPath;
+        bubbleLayer.fillColor = senderChatView.senderChatBoxView.backgroundColor?.cgColor;
+        bubbleLayer.strokeColor = senderChatView.senderChatBoxView.backgroundColor?.cgColor
+        senderChatView.senderChatBoxView.layer.addSublayer(bubbleLayer)
+        self.chatFeatureView.chatMessageScrollView.addSubview(senderChatView);
+        return descriptionHeight;
+    }
+    
+    func createAttendeeView(eventChat: EventChat, descriptionHeightParam: CGFloat) -> CGFloat {
+        
+        var descriptionHeight = descriptionHeightParam;
+
+        let attandeeChatView = AttendeeChatView.instanceFromNib() as! AttendeeChatView;
+        
+        //Lets find the height of Text Message
+        let heightOfDesc = self.heightForView(text: eventChat.chat, font: attandeeChatView.chatLbl.font, width: self.chatFeatureView.chatMessageScrollView.frame.width - (100));
+
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: heightOfDesc)
+        let boundingBox = eventChat.chat.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: attandeeChatView.chatLbl.font], context: nil)
+        
+        //Lets fetch the bounds of Chat Time
+        let chatTime = Date.init(millis: eventChat.createdAt).hmma();
+        let timeConstraintRect = CGSize(width: .greatestFiniteMagnitude, height: attandeeChatView.chatTime.frame.height);
+        let timeBoundingBox = chatTime.boundingRect(with: timeConstraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: attandeeChatView.chatTime.font], context: nil);
+
+        //Lets find the number of lines of chat message uilabel
+        attandeeChatView.chatLbl.text = eventChat.chat!;
+        var numberOFlines: Int = 0;
+        let heightOfUILabel: Int = 20;
+        attandeeChatView.chatLbl.frame = CGRect.init(x: 10 , y: attandeeChatView.chatLbl.frame.origin.y, width: self.chatFeatureView.chatMessageScrollView.frame.width - (30) - timeBoundingBox.width - 10, height: heightOfDesc);
+        numberOFlines = countLabelLines(label: attandeeChatView.chatLbl);
+        
+        var addHeightToSingleLine: CGFloat = 0.0;
+        if (boundingBox.width < 80) {
+            
+            //addHeightToSingleLine = 10.0;
+            //Seeting frame size for chat message and time
+             attandeeChatView.chatLblView.frame = CGRect.init(x: attandeeChatView.chatLblView.frame.origin.x
+                , y: 9, width: boundingBox.width + 20 + timeBoundingBox.width + attandeeChatView.profilePic.frame.width/2 + 15.0, height: heightOfDesc + 2*paddingBetweenChatTextAndBubble + addHeightToSingleLine);
+
+        } else if (numberOFlines == 1) {
+            
+            //addHeightToSingleLine = 10.0;
+            //Seeting frame size for chat message and time
+             attandeeChatView.chatLblView.frame = CGRect.init(x: attandeeChatView.chatLblView.frame.origin.x
+                , y: 9, width: boundingBox.width + timeBoundingBox.width + 50, height: heightOfDesc + 2*paddingBetweenChatTextAndBubble + addHeightToSingleLine);
+       } else {
+            //Seeting frame size for chat message and time
+             attandeeChatView.chatLblView.frame = CGRect.init(x: attandeeChatView.chatLblView.frame.origin.x
+                , y: 9, width: self.chatFeatureView.chatMessageScrollView.frame.width - (60), height: heightOfDesc + 2*paddingBetweenChatTextAndBubble);
+                            
+        }
+        
+        
+        //Setting frame for CHAT LABEL ******
+        if (boundingBox.width < 80) {
+            
+            attandeeChatView.chatLbl.frame = CGRect.init(x: attandeeChatView.profilePic.frame.width/2 + 10.0, y: 10, width: boundingBox.width + timeBoundingBox.width, height: heightOfDesc);
+            
+        } else if (numberOFlines == 1) {
+            
+            attandeeChatView.chatLbl.frame = CGRect.init(x: attandeeChatView.profilePic.frame.width/2 + 5.0, y: 10, width: self.chatFeatureView.chatMessageScrollView.frame.width - (60) - 30, height: heightOfDesc);
+
+        } else {
+            attandeeChatView.chatLbl.frame = CGRect.init(x: attandeeChatView.profilePic.frame.width/2 + 5.0, y: 10, width: self.chatFeatureView.chatMessageScrollView.frame.width - (60) - 30, height: heightOfDesc);
+        }
+        
+                       
+        attandeeChatView.chatLblView.layer.cornerRadius = 10;
+        attandeeChatView.chatLblView.backgroundColor = UIColor.white;
+
+        //Setting Frame for Chat Time *******
+        if (eventChat.createdAt == nil) {
+            eventChat.createdAt = event.createdAt;
+        }
+        if (eventChat.createdAt == nil) {
+            eventChat.createdAt = event.updateAt;
+        }
+        if (eventChat.createdAt == nil) {
+            eventChat.createdAt = Date().millisecondsSince1970;
+        }
+        attandeeChatView.chatTime.text = Date.init(millis: eventChat.createdAt).hmma();
+        attandeeChatView.chatTime.frame = CGRect.init(x: attandeeChatView.chatLblView.frame.width - (attandeeChatView.chatTime.frame.width + 10), y: heightOfDesc - 2.0, width: attandeeChatView.chatTime.frame.width, height: attandeeChatView.chatTime.frame.height);
+        
+         if (eventChat.user != nil && eventChat.user.photo != nil) {
+             attandeeChatView.profilePic.sd_setImage(with: URL.init(string: eventChat.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
+         } else {
+             attandeeChatView.profilePic.image = UIImage.init(named: "profile_pic_no_image");
+         }
+         
+        //Lets set the frame for profile pic
+        if (numberOFlines == 1) {
+            attandeeChatView.profilePic.frame = CGRect.init(x: attandeeChatView.profilePic.frame.origin.x, y: attandeeChatView.chatLblView.frame.height - attandeeChatView.profilePic.frame.width/3, width: attandeeChatView.profilePic.frame.width, height: attandeeChatView.profilePic.frame.height);
+        } else {
+            attandeeChatView.profilePic.frame = CGRect.init(x: attandeeChatView.profilePic.frame.origin.x, y: attandeeChatView.chatLblView.frame.height - attandeeChatView.profilePic.frame.width/2, width: attandeeChatView.profilePic.frame.width, height: attandeeChatView.profilePic.frame.height);
+        }
+         
+         
+        attandeeChatView.hostGradientColor.frame = attandeeChatView.profilePic.frame;
+
+         if (eventChat.user.userId == event.createdById) {
+             attandeeChatView.hostGradientColor.isHidden = false;
+         } else {
+             attandeeChatView.hostGradientColor.isHidden = true;
+             attandeeChatView.profilePic.layer.borderWidth = 1.5;
+             attandeeChatView.profilePic.layer.borderColor = UIColor.white.cgColor;
+         }
+        attandeeChatView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: descriptionHeight, width: self.chatFeatureView.chatMessageScrollView.frame.width, height: attandeeChatView.chatLblView.frame.height + attandeeChatView.profilePic.frame.height/2 + gapBetweenChatBubbles);
+         
+        descriptionHeight = descriptionHeight + attandeeChatView.frame.height;
+         attandeeChatView.layoutSubviews();
+        attandeeChatView.layoutIfNeeded();
+
+        self.chatFeatureView.chatMessageScrollView.addSubview(attandeeChatView);
+        
+        return descriptionHeight;
+    }
+    
+    func makeMessagesAsRead() {
+        let apiUpdateStatus = "\(apiUrl)api/eventchat/updateStatus";
+        var postData = [String: Any]();
+        postData["eventId"] = self.event.eventId;
+        postData["eventId"] = self.event.eventId;
+
+        GatheringService().gatheringCommonPostAPI(api: apiUpdateStatus, postData: postData, token: self.loggedInUser.token, complete: {response in
+            
+        });
+    }
+    
+    func countLabelLines(label: UILabel) -> Int {
+        // Call self.layoutIfNeeded() if your view uses auto layout
+        let myText = label.text! as NSString
+        let rect = CGSize(width: label.bounds.width, height: CGFloat.greatestFiniteMagnitude)
+        let labelSize = myText.boundingRect(with: rect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: label.font], context: nil)
+        return Int(ceil(CGFloat(labelSize.height) / label.font.lineHeight))
+    }
+
+    func expandTextField() {
+
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+                //Frame Option 1:
+            self.chatBoxView.frame = CGRect(x: 0, y: self.view.frame.height - 230, width: self.view.frame.width, height: self.chatBoxView.frame.height);
+            print("Final Width : ",self.chatBoxView.frame.width);
+            
+            },completion: { finish in
+                self.chatBoxView.sendMessageTextField.becomeFirstResponder();
+           
+        });
+    }
+    
+    @objc func tapToChatPressed() {
+        //expandTextField();
+        if (isKeyboardVisible == false) {
+            
+            self.chatBoxView = ChatBoxView.instanceFromNib() as! ChatBoxView;
+            self.view.addSubview(self.chatBoxView);
+            chatBoxView.frame = CGRect(x: view.frame.width - 230, y: view.frame.height - 230, width: 155, height: chatBoxView.frame.height);
+            
+            print("Initial Width : ",chatBoxView.frame.width);
+            //chatBoxView.sendMessageTextField.becomeFirstResponder();
+                        
+            isKeyboardVisible = true;
+            for tapToChatViewTemp in self.chatFeatureView.subviews {
+                if (tapToChatViewTemp is TapToChatView) {
+                    tapToChatViewTemp.removeFromSuperview();
+                }
+            }
+            expandTextField();
+        } else {
+            
+            for chatBoxViewTemp in self.view.subviews {
+                if (chatBoxViewTemp is ChatBoxView) {
+                    self.chatBoxView = chatBoxViewTemp as! ChatBoxView;
+                    break;
+                }
+            }
+            //self.chatBoxView.sendMessageTextField.resignFirstResponder();
+            isKeyboardVisible = false;
+            addTapToChatViewSection();
+
+        }
+    }
+    
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+        
+        if let keyboardRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+              print(keyboardRect.height)
+            
+            for chatBoxViewTemp in self.view.subviews {
+                if (chatBoxViewTemp is ChatBoxView) {
+                    self.chatBoxView = chatBoxViewTemp as! ChatBoxView;
+                    break;
+                }
+            }
+            if (self.chatBoxView == nil) {
+                self.chatBoxView = ChatBoxView.instanceFromNib() as! ChatBoxView;
+            }
+            let sendMessageBtnGesture = GatheringTapGesture.init(target: self, action: #selector(sendChatMessageButtonPressed));            self.chatBoxView.sendMessageBtn.addGestureRecognizer(sendMessageBtnGesture);
+
+            self.chatBoxView.frame = CGRect(x: 0, y: view.frame.height - keyboardRect.height - self.chatBoxView.frame.height, width: keyboardRect.width, height: self.chatBoxView.frame.height);
+            
+            if (self.chatFeatureView == nil) {
+                self.chatFeatureView = ChatFeatureView.instanceFromNib() as! ChatFeatureView;
+            }
+            
+            for tapToChatViewTemp in self.chatFeatureView.subviews {
+                if (tapToChatViewTemp is TapToChatView) {
+                    tapToChatViewTemp.removeFromSuperview();
+                    self.tapToChatView = nil;
+                }
+            }
+            self.chatFeatureView.frame = CGRect.init(x: 25, y: self.view.frame.height - 400 - keyboardRect.height, width: self.view.frame.width - 30, height: 400);
+            self.chatFeatureView.chatMessageScrollView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: 0, width: self.chatFeatureView.frame.width, height: 300);
+            self.chatFeatureView.chatMessageScrollView.contentOffset.x = 0;
+            
+            scrollToBottomScrollView();
+            
+            self.chatBoxView.sendMessageTextField.delegate = self;
+            if (self.inputChatMessageText != "") {
+                self.chatBoxView.sendMessageTextField.text = self.inputChatMessageText;
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(_ notification: NSNotification) {
+        
+        self.inputChatMessageText = self.chatBoxView.sendMessageTextField.text!;
+
+        isKeyboardVisible = false;
+        for chatBoxView in self.view.subviews {
+            if (chatBoxView is ChatBoxView) {
+                chatBoxView.removeFromSuperview();
+            }
+        }
+        
+        self.chatFeatureView.frame = CGRect.init(x: 25, y: self.view.frame.height - 550, width: self.view.frame.width - 30, height: 400);
+        self.chatFeatureView.chatMessageScrollView.frame = CGRect.init(x: self.chatFeatureView.chatMessageScrollView.frame.origin.x, y: 0, width: self.chatFeatureView.frame.width, height: 300);
+        self.chatFeatureView.chatMessageScrollView.contentOffset.x = 0;
+
+        addTapToChatViewSection();
+    }
+        
+    @objc func sendChatMessageButtonPressed(sendMessageBtnGesture: GatheringTapGesture) {
+        
+        if (self.chatBoxView.sendMessageTextField.text! != "") {
+            if (self.isKeyboardVisible == true) {
+                self.chatBoxView.sendMessageBtn.isHidden = true;
+                self.chatBoxView.activiyIndicator.isHidden = false;
+                self.chatBoxView.activiyIndicator.startAnimating();
+            }
+            postEventChat(chatMessage: self.chatBoxView.sendMessageTextField.text!);
+        }
+    }
 }
 
 extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDataSource {
@@ -928,6 +1831,9 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             
             let cell : InvitationCardTableViewCell = tableView.dequeueReusableCell(withIdentifier: "InvitationCardTableViewCell") as! InvitationCardTableViewCell;
             cell.gatheringInvitaionViewControllerDelegate = self;
+            
+            leftToRightGestureEnabled = true;
+            rightToLeftGestureEnabled = true;
             
             if ((event.eventId == nil || event.eventId == 0) && event.key == nil) {
                 cell.shareView.isHidden = true;
@@ -1105,7 +2011,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
 
             let uiTapGuestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(cardPressed));
             cell.topHeaderView.addGestureRecognizer(uiTapGuestureRecognizer)
-            
+        
             return cell;
         } else if (indexPath.row == 1) {
             

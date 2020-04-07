@@ -26,7 +26,9 @@ class HomeDto {
     var timeStamp: Int = Int(Date().millisecondsSince1970);
     var timestampForInvitationTabs: Int = Int(Date().millisecondsSince1970);
     var calendarEventsData: CalendarEventsData = CalendarEventsData();
-    
+    var allCalendarTabEvents = [Event]();
+    var allPastEvents = [Event]();
+
     //This is needed for scrolling home screen to desired index.
     //So we will store the month scroll details in it.
     var scrollToMonthStartSectionAtHomeButton = [MonthScrollDto]();
@@ -117,7 +119,7 @@ class HomeDataPageNumbers {
     var totalPendingCounts = 0;
 
     var calendarDataPageNumber = 0;
-    var calendarDataOffset = 20;
+    var calendarDataOffset = 30;
     var totalCalendarCounts: Int = 0;
 
 }

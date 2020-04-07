@@ -21,8 +21,6 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         super.awakeFromNib()
         // Initialization code
         registerTableCells();
-       
-        
         refreshControl.tag = 1001;
         // Configure Refresh Control
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
@@ -72,6 +70,20 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         
         self.dataTableView.contentInset = UIEdgeInsetsMake(topInset, 0, bottomInset, 0)
     }
+    
+    func removeEventFromHomeDtoList(eventId: Int32) {
+        for homeDataTmp in newHomeViewControllerDelegate.homeDtoList {
+            
+            var index = 0;
+            for sectionObj in homeDataTmp.sectionObjects {
+                if (sectionObj.eventId == eventId) {
+                    homeDataTmp.sectionObjects.remove(at: index);
+                    index += 1;
+                    break;
+                }
+            }
+        }
+    }
 
     func reloadTableToDesiredSection(rowsToAdd: Int, sectionIndex: Int) {
         //dataTableView.scrollsToTop = true;
@@ -99,12 +111,23 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     }
     
     func refreshInnerTable() {
-        dataTableView.reloadData();
+        DispatchQueue.main.async {
+            self.dataTableView.reloadData();
+        }
     }
     
-    func scrollTableToDesiredIndex(sectionIndex: Int) {
-        let indexPath = IndexPath(row: 0, section: sectionIndex)
-        dataTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+    func initializeHomeDtoList() {
+        //DispatchQueue.main.async {
+            self.newHomeViewControllerDelegate.homeDtoList = [HomeData]();
+        //}
+    }
+    
+    func scrollTableToDesiredIndex(rowIndex: Int, sectionIndex: Int) {
+        let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.dataTableView.scrollToRow(at: indexPath, at: .
+                top, animated: false)
+        }
     }
     
     func addRemoveSubViewOnHeaderTabSelected(selectedTab: String) {
@@ -232,7 +255,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             //print("section", indexPath.section, "Row: ",indexPath.row)
             
             let totalRows = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects.count;
-           let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
+            let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
             print(event);
             if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
                 
@@ -241,7 +264,12 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     
                     print(event.title);
                     cell.title.text = event.title;
-                    cell.location.text = event.location;
+                    if (event.location == nil || event.location == "") {
+                        cell.locationView.isHidden = true;
+                    } else {
+                        cell.locationView.isHidden = false;
+                        cell.location.text = event.location;
+                    }
                     cell.time.text = String(Date(milliseconds: Int(event.startTime)).hmma());
                     
                     var host = EventMember();
@@ -329,7 +357,13 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                 
                 cell.newHomeViewControllerDelegate = newHomeViewControllerDelegate;
                 cell.title.text = event.title;
-                cell.location.text = event.location;
+                if (event.location == nil || event.location == "") {
+                    cell.locationView.isHidden = true;
+                } else {
+                    cell.locationView.isHidden = false;
+                    cell.location.text = event.location;
+
+                }
                 
                 var host: EventMember!;
                 if (event.eventMembers != nil) {
@@ -413,12 +447,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             }
             
         } else {
-            if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+            if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab && newHomeViewControllerDelegate.callMadeToApi == true) {
                 let cell: NoGatheringTableViewCell = self.dataTableView.dequeueReusableCell(withIdentifier: "NoGatheringTableViewCell") as! NoGatheringTableViewCell;
-                cell.newHomeViewControllerDelegate = newHomeViewControllerDelegate;
+                cell.noGatheringView.isHidden = false;
                 return cell;
             }
-            
         }
         
         var noCell = UITableViewCell();
@@ -515,7 +548,8 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         //self.newHomeViewControllerDelegate.present(viewController, animated: true, completion: nil);
                         
                     } else {*/
-                        let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                        let viewController = self.newHomeViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as!
+                    GatheringInvitationViewController;
                         
                         viewController.event = Event().copyDataToNewEventObject(event: event);
                         if (viewController.event.eventMembers != nil && viewController.event.eventMembers.count > 0) {
@@ -553,8 +587,13 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             for homeData in self.newHomeViewControllerDelegate.homeDtoList {
                 gatheringsCount = gatheringsCount + homeData.sectionObjects.count;
             };
-            print("Gatheinrg Count : ", gatheringsCount, "total Page Counts", self.newHomeViewControllerDelegate.totalPageCounts)
-            if (gatheringsCount < self.newHomeViewControllerDelegate.totalPageCounts) {
+            print("Gatheinrg Count : ", gatheringsCount, "total Page Counts", self.newHomeViewControllerDelegate.totalPageCounts, "Past Counts : ",self.newHomeViewControllerDelegate.homescreenDto.allPastEvents.count);
+            
+            var eventCounts = (gatheringsCount - self.newHomeViewControllerDelegate.homescreenDto.allPastEvents.count);
+            if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.InvitationTab) {
+                eventCounts = gatheringsCount;
+            }
+            if (eventCounts < self.newHomeViewControllerDelegate.totalPageCounts) {
                 //self.spinner.startAnimating()
                 //self.spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
                 
@@ -625,17 +664,15 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                                 self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects = sectionEvents;
                             }
                             
-                            EventModel().deleteEventByEventId(eventId: eventId!);                      EventMemberModel().deleteEventMemberMOModelByEventId(eventId: eventId!);
-                            NotificationModel().deleteNotificationByNotificationId(eventId: eventId!);
+                            sqlDatabaseManager.deleteEventByEventId(eventId: eventId!);
+                            sqlDatabaseManager.deleteNotificationByNotificationTypeId(notificationTypeId: eventId!);
 
-                            let eventMoTemp = EventModel().fetchOfflineEventByEventId(eventId: eventId!);
-                            print(eventMoTemp.description)
                             self.newHomeViewControllerDelegate.homeTableView.reloadData();
                             
                             let queryStr = "event_id=\(eventId!)";
                             HomeService().removeEventFromList(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
                                 
-                                self.newHomeViewControllerDelegate.refreshHomeScreenData();
+                                //self.newHomeViewControllerDelegate.refreshHomeScreenData();
                             });
                             
                             
@@ -646,12 +683,18 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         return [deleteButton]
                     } else {
                         let declineButton = UITableViewRowAction(style: .default, title: "Decline") { (action, indexPath) in
+                                                        
+                            let homeEvent: Event = sqlDatabaseManager.findEventByEventIdAndDisplayScreenAt(eventId: event.eventId, displayScreenAt: EventDisplayScreen.HOME);
+                            homeEvent.displayScreenAt = EventDisplayScreen.DECLINED;
                             
-                            EventMemberModel().updateEventMemberStatus(eventId: event.eventId, userId: self.newHomeViewControllerDelegate.loggedInUser.userId, status: "NotGoing");
+                            sqlDatabaseManager.deleteEventByEventId(eventId: homeEvent.eventId);
+                            sqlDatabaseManager.saveEvent(event: homeEvent);
+                            sqlDatabaseManager.updateEventMemberStatusByUserId(eventMemberStatus: EventMemberStatus.NOTGOING, userId: self.newHomeViewControllerDelegate.loggedInUser.userId);
                             
                             let queryStr = "eventId=\(String(event.eventId))&userId=\(String(self.newHomeViewControllerDelegate.loggedInUser.userId))&status=NotGoing";
                             GatheringService().updateGatheringStatus(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
-                                self.newHomeViewControllerDelegate.refreshHomeScreenData()                            })
+                                //self.newHomeViewControllerDelegate.refreshHomeScreenData();
+                            });
                             var sectionEvents = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects;
                             sectionEvents.remove(at: indexPath.row);
                             if (sectionEvents.count == 0) {
@@ -676,7 +719,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                         let queryStr = "event_id=\(String(event.eventId))";
                         HomeService().removeEventFromList(queryStr: queryStr, token: self.newHomeViewControllerDelegate.loggedInUser.token, complete: {(response) in
                             
-                            self.newHomeViewControllerDelegate.refreshHomeScreenData();
+                            //self.newHomeViewControllerDelegate.refreshHomeScreenData();
                         });
                         var sectionEvents = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects;
                         sectionEvents.remove(at: indexPath.row);

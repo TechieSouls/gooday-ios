@@ -23,7 +23,7 @@ let reachability = Reachability()!
 var sqlDatabaseManager = SqlliteDbManager();
  
 @UIApplicationMain
- class AppDelegate: UIResponder, UIApplicationDelegate {
+    class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
@@ -156,7 +156,7 @@ var sqlDatabaseManager = SqlliteDbManager();
         application.applicationIconBadgeNumber = 0
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
+        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         if (loggedInUser.userId != nil && loggedInUser.token != nil) {
@@ -522,6 +522,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 completionHandler([.alert, .sound])
             }
         
+        let visibleVC = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController;
+        if (visibleVC is GatheringInvitationViewController) {
+            GatheringInvitationViewController().getAllEventChat();
+        }
     }
     
     
@@ -539,6 +543,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
+        let visibleVC = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController;
+        if (visibleVC is GatheringInvitationViewController) {
+            GatheringInvitationViewController().getAllEventChat();
+        }
         if userInfo!["type"] as? String == "HomeRefresh" {
 
             /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
@@ -554,13 +562,18 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             
             //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
             
-            let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
-            let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
-            viewContro.fromPushNotificaiton = true;
-            viewContro.event = Event();
-            viewContro.event.eventId = userInfo!["id"] as! Int32;
-            self.window?.rootViewController = viewContro
-            self.window?.makeKeyAndVisible()
+            if let eventId = userInfo!["id"] as? Int32 {
+                
+                let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+                let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                viewContro.fromPushNotificaiton = true;
+                viewContro.event = Event();
+                viewContro.event.eventId = eventId;
+                self.window?.rootViewController = viewContro
+                self.window?.makeKeyAndVisible();
+                
+            }
+            
             
             /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
                 self.cenesTabBar?.selectedIndex = 0

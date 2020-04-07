@@ -7,13 +7,13 @@
 //
 
 import UIKit
+import ShimmerSwift
 
 class FriendsTableViewCell: UITableViewCell {
 
     @IBOutlet weak var friendListInnerTable: UITableView!
 
     var friendViewControllerDelegate: FriendsViewController!;
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -28,6 +28,7 @@ class FriendsTableViewCell: UITableViewCell {
         self.friendListInnerTable.register(UINib(nibName: "FriendAllContactsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendAllContactsTableViewCell");
         
          self.friendListInnerTable.register(UINib(nibName: "InnerTableHeaderTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InnerTableHeaderTableViewCell");
+        
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

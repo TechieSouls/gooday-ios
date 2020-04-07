@@ -14,6 +14,8 @@ class NoGatheringTableViewCell: UITableViewCell {
     
     @IBOutlet weak var createBtn: UIButton!
     
+    @IBOutlet weak var noGatheringView: UIView!
+
     var newHomeViewControllerDelegate: NewHomeViewController!;
     
     

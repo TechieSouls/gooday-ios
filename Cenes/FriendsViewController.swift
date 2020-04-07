@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CoreData
+import ShimmerSwift;
 
 protocol CollectionFriendsProtocol {
     func collectionFriendsList(selectedFriendHolder: [EventMember])
@@ -26,15 +26,20 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
     var isFirstTime: Bool = true;
     var createGatheringProtocolDelegate: CreateGatheringProtocol!;
     var eventId: Int32!
-    
+    var shimmerview: ShimmeringView!;
+    var callMadeToApi: Bool = false;
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Invite Guests";
         self.tabBarController?.tabBar.isHidden = true;
 
+        shimmerview = ShimmeringView(frame: CGRect.init(x: 0, y: 250, width: self.view.frame.width, height: self.view.frame.height))
+        shimmerview.shimmerSpeed = 800;
+
         friendTableView.backgroundColor = themeColor;
         friendTableView.register(UINib(nibName: "FriendCollectionTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendCollectionTableViewCell")
+        friendTableView.register(UINib(nibName: "HomeShimmerView", bundle: Bundle.main), forCellReuseIdentifier: "HomeShimmerView")
         friendTableView.register(UINib(nibName: "AllAndCenesContactsSwitchTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "AllAndCenesContactsSwitchTableViewCell")
         friendTableView.register(UINib(nibName: "FriendsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendsTableViewCell")
         
@@ -56,8 +61,11 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
                 inviteFriendsDto.selectedFriendCollectionViewList.append(loggedInUserContact);
             }
         }
-        
+
         if (isFirstTime == true || (eventId != nil && eventId != 0)) {
+            shimmerview.contentView = FriendShimmerView.instanceFromNib();
+            //self.view.addSubview(shimmerview);
+            shimmerview.isShimmering = true;
             self.getFriendsWithName(nameStartsWith: "")
         } else {
             self.friendTableView.reloadData()
@@ -152,6 +160,8 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         if (Connectivity.isConnectedToInternet == true) {
             let queryStr = "userId=\(String(self.loggedInUser.userId))"
             UserService().findUserFriendsByUserId(queryStr: queryStr, token: self.loggedInUser.token, complete: { (returnedDict) in
+                
+                self.callMadeToApi = true;
                 if returnedDict.value(forKey: "success") as? Bool == false {
                     self.showAlert(title: "Error", message: (returnedDict["message"] as? String)!)
                 }else{
@@ -416,7 +426,17 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             if (inviteFriendsDto.totalNumberOfRows == 1) {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
                 cell.friendViewControllerDelegate = self;
-                cell.friendListInnerTable.reloadData()
+                
+                if (callMadeToApi == true) {
+                    
+                    for sview in self.view.subviews {
+                       if (sview is ShimmeringView) {
+                           sview.removeFromSuperview();
+                       }
+                    }
+                    shimmerview.isShimmering = false;
+                }
+                cell.friendListInnerTable.reloadData();
                 
                 return cell
             }
@@ -428,18 +448,19 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                     return cell;
                 }
                 
+                let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
+                
                 if (self.inviteFriendsDto.cenesContacts.count != 0) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
                     
                     if (self.inviteFriendsDto.isAllContactsView == true) {
                         cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
                     } else {
                         cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
                     }
-                    return cell
                 }
+                return cell;
             }
-
+            
             let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
             cell.friendsViewControllerDelegate = self;
             cell.friendshorizontalColView.reloadData();
@@ -456,22 +477,30 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
             
-            if (self.inviteFriendsDto.cenesContacts.count != 0) {
-                
-                if (self.inviteFriendsDto.isAllContactsView == true) {
-                    cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
-                } else {
-                    cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
-                }
-                return cell
-            }
+                if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                          
+                      if (self.inviteFriendsDto.isAllContactsView == true) {
+                          cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                      } else {
+                          cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                      }
+                      return cell
+                  }
             
             return cell
             
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
             cell.friendViewControllerDelegate = self;
-            cell.friendListInnerTable.reloadData()
+            if (callMadeToApi == true) {
+                for sview in self.view.subviews {
+                   if (sview is ShimmeringView) {
+                       sview.removeFromSuperview();
+                   }
+                }
+                shimmerview.isShimmering = false;
+            }
+            cell.friendListInnerTable.reloadData();
             return cell
             
         default:

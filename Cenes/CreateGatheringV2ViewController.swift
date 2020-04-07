@@ -332,7 +332,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     func friendsDonePressed(eventMembers: [EventMember]) {
         self.event.eventMembers = [EventMember]();
         for eventMem in eventMembers {
-            if (eventMem.eventId == nil && self.event.eventId != nil && self.event.eventId != 0 && eventMem.eventMemberId != nil) {
+            if (eventMem.eventId == nil && self.event.eventId != nil && self.event.eventId != 0) {
                 eventMem.eventId = self.event.eventId;
             }
             self.event.eventMembers.append(eventMem);
@@ -508,8 +508,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         } else if (imageSelectedOption == "Camera") {
             self.imageToUpload = croppedImage!.fixedOrientation().imageRotatedByDegrees(degrees: 90);
         }
-         //let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0)
-        
+         //let uploadImage = event.imageToUpload.compressImage(newSizeWidth: 450, newSizeHeight: 900, compressionQuality: 1.0) 
     }
     
     //optional

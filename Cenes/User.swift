@@ -34,6 +34,7 @@ class User {
         user.country = userDataDict.value(forKey: "country") as? String;
         user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
         user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
+        user.token = userDataDict.value(forKey: "token") as? String;
 
         return user;
     }
@@ -58,7 +59,11 @@ class User {
         }
         
         //user.token = "1572598392173eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcmVlZDEzMzcxNTcyNTExOTkyMTczIn0.UXV_9a5S3lisJYv76k4rFLxY6awm2zWE98Xkjg0OL4CYN3wgChLUlxTwY_J0_6FQ2R8t4V4L80H9J82xXXn4tQ"
-        //user.userId = 230
+        //user.userId = 642;
+        //user.userId = 143; //Creed
+        //user.userId = 616 //Louisa
+        //user.userId = 45 //Sharon Shun
+        //user.userId = 812;
         //user.phone = "";
 
         return user;

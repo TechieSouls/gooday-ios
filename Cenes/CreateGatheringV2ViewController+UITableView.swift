@@ -99,9 +99,13 @@ extension CreateGatheringV2ViewController: UITableViewDelegate, UITableViewDataS
                         cell.locationLabel.text = event.location;
                         
                         cell.messageLabel.isHidden = false;
-                        cell.messageLabel.text = "Saved";
+                        if (event.description != nil && event.description != "") {
+                            cell.messageLabel.text = "Saved";
+                        } else {
+                            cell.messageLabel.text = "";
+                        }
                         
-                        if (event.eventPicture != nil) {
+                        if (event.eventPicture != nil && event.eventPicture != "") {
                             cell.imageLabel.isHidden = false;
                             cell.imageLabel.text = "Uploaded";
                         }

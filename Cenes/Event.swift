@@ -37,7 +37,10 @@ class Event {
     var requestType = EventRequestType.NewEvent;
     var eventPictureBinary: Data = Data();
     var synced: Bool = true;
-    
+    var createdAt: Int64!;
+    var updateAt: Int64!;
+    var displayScreenAt: String = "Home";
+    var processed: Int8 = 1;
     var eventMembers: [EventMember]!;
     
     func createdByUserId() -> Int32 {
@@ -77,8 +80,9 @@ class Event {
         event.fullDayStartTime = eventDict.value(forKey: "fullDayStartTime") as? String;
         event.key = eventDict.value(forKey: "key") as? String;
         event.expired = eventDict.value(forKey: "expired") != nil ? eventDict.value(forKey: "expired") as! Bool : false;
+        event.createdAt = eventDict.value(forKey: "createdAt") as? Int64 ?? nil;
+        event.updateAt = eventDict.value(forKey: "updateAt") as? Int64 ?? nil;
 
-        
         if (eventDict.value(forKey: "eventMembers") != nil) {
              event.eventMembers = EventMember().loadEventMembers(eventMemberArray: eventDict.value(forKey: "eventMembers") as! NSArray)
         }
@@ -256,4 +260,18 @@ class EventScheduleAs {
     static let HOLIDAY = "Holiday";
     static let GATHERING = "Gathering";
     static let NOTIFICATION = "Notification";
+}
+
+
+class EventDisplayScreen {
+    static let HOME = "Home";
+    static let ACCEPTED = "Accepted";
+    static let PENDING = "Pending";
+    static let DECLINED = "Declined";
+}
+
+class EventMemberStatus {
+    static let GOING = "Going";
+    static let PENDING = "Pending";
+    static let NOTGOING = "NotGoing";
 }

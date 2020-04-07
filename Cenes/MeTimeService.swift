@@ -14,7 +14,7 @@ class MeTimeService {
     let get_metimeData: String  = "api/user/getmetimes";
     
     //PUT
-    let put_deleteByRecurringId: String = "/api/user/metime/deleteByRecurringId";
+    let put_deleteByRecurringId: String = "api/user/metime/deleteByRecurringId";
     
     //POST
     let post_metimeData: String = "api/user/metime";

@@ -48,6 +48,9 @@ extension SqlliteDbManager {
     
     func saveEventMembers(eventMember: EventMember) {
     
+        if (eventMember.eventMemberId == nil) {
+            eventMember.eventMemberId = Int32(truncatingIfNeeded: Date().millisecondsSince1970);
+        }
         let eventMemberFromDatabase = findEventMembersByEventMemberId(eventMemberId: eventMember.eventMemberId);
         if (eventMemberFromDatabase.eventMemberId == nil || eventMemberFromDatabase.eventMemberId == 0) {
             
@@ -219,7 +222,16 @@ extension SqlliteDbManager {
         return eventMemberDb;
     }
 
-        
+    func updateEventMemberStatusByUserId(eventMemberStatus: String, userId: Int32) {
+        do {
+            let updateEventMemberStatutsQuery = "UPDATE event_members set status = ? where user_id = ?";
+            let updateStmt = try database.prepare(updateEventMemberStatutsQuery);
+            try updateStmt.run(eventMemberStatus, Int64(userId));
+        } catch {
+            print(error)
+        }
+    }
+
     func deleteEventMembersByEventId(eventId: Int32) {
         do {
             let selectStmt = try database.prepare("DELETE from event_members where event_id = ?");

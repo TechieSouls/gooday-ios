@@ -47,6 +47,7 @@ class UserContact {
     func loadUserContactList(userContactArray: NSArray) -> [UserContact] {
         let user = User().loadUserDataFromUserDefaults(userDataDict: setting);
 
+        var phonenNumberDuplicacyChecker = [String]();
         var userContacts: [UserContact] = [];
         for userContactDict in userContactArray {
             
@@ -56,6 +57,11 @@ class UserContact {
             if (userContact.friendId != nil && userContact.friendId != 0 && userContact.friendId == user.userId) {
                 continue;
             }
+            if (phonenNumberDuplicacyChecker.contains(userContact.phone)) {
+                continue;
+            }
+            
+            phonenNumberDuplicacyChecker.append(userContact.phone);
             userContacts.append(userContact);
         }
         return userContacts;

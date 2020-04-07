@@ -143,6 +143,16 @@ extension SqlliteDbManager {
             print(error)
         }
     }
+    
+    func deleteNotificationByNotificationTypeId(notificationTypeId: Int32) {
+        do {
+            let selectStmt = try database.prepare("DELETE from notifications where notification_type_id = ?");
+            try selectStmt.run(Int64(notificationTypeId));
+            
+        } catch {
+            print(error)
+        }
+    }
 
     func processSqlliteNotificationData(notification: Statement.Element) -> NotificationData {
         

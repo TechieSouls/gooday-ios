@@ -18,8 +18,9 @@ class UserService {
     let get_forget_password_email = "auth/forgetPassword/v2";
     let get_forget_password_send_email = "auth/forgetPassword/v2/sendEmail";
     let get_country_by_ip_address = "auth/getCountryByIpAddress";
-    let get_simcard_info_by_userId = "/api/user/findSimCardByUserId";//userId
-    
+    let get_simcard_info_by_userId = "api/user/findSimCardByUserId";//userId
+    let get_user_profile_data = "api/user/profileById";//userId
+
     
     let post_signup_user_step1 = "api/users/signupstep1";
     let post_signup_user_step2 = "api/users/signupstep2";
@@ -35,9 +36,10 @@ class UserService {
     let post_delete_user_by_phone_password = "api/deleteUserByPhonePassword";
     let post_verification_code = "api/guest/sendVerificationCode";
     let post_check_verification_code = "api/guest/checkVerificationCode";
-    let post_save_simcard_info = "/api/user/saveSimCardInfo";
-    let post_send_update_phone_number_email = "/auth/updatePhoneNumber/v2/sendEmail"
-    
+    let post_save_simcard_info = "api/user/saveSimCardInfo";
+    let post_send_update_phone_number_email = "auth/updatePhoneNumber/v2/sendEmail"
+    let post_fetch_latest_alert_details = "api/user/alertDetail"
+
     let delete_sync_token = "api/user/deleteSyncBySyncId"
     
     var requestArray = NSMutableArray()
@@ -448,7 +450,14 @@ class UserService {
         });
     }
     
-    
+    func commonPostCall(postData: [String: Any],token :String, apiEndPoint: String,  complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiEndPoint)";
+        HttpService().postMethod(url: url, postData: postData, token: token, complete: {(response) in
+            complete(response);
+        });
+        
+    }
     
     /******************************   GET REQUESTS   ***********************************/
     func findUserSyncTokens(queryStr: String, token: String, complete: @escaping(NSDictionary) ->Void ) {
@@ -522,5 +531,14 @@ class UserService {
         HttpService().getMethodWithoutToken(url: url, complete: {(response) in
             complete(response);
         });
+    }
+    
+    func commonGetCall(queryStr :String, apiEndPoint: String, token: String, complete: @escaping(NSDictionary)->Void) {
+        
+        let url = "\(apiEndPoint)?\(queryStr)";
+        HttpService().getMethod(url: url, token: token, complete: {response in
+            complete(response);
+        });
+        
     }
 }

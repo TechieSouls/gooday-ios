@@ -46,7 +46,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
 //    private let persistentContainer = NSPersistentContainer(name: "Cenes")
 
     
-    class func MainViewController() -> UITabBarController{
+    class func MainViewController() -> UITabBarController {
         
         let tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tab") as! UITabBarController
         /*tabController.tabBar.items?[0].title = nil

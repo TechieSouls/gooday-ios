@@ -11,15 +11,15 @@ import Alamofire
 
 class NotificationService {
     
-    let get_mark_notification_as_read = "/api/notification//api/notification/markReadByUserIdAndNotifyId"; //userId,notificationTypeId
+    let get_mark_notification_as_read = "api/notification/markReadByUserIdAndNotifyId"; //userId,notificationTypeId
     
-    let mark_notification_as_read = "/api/notification/markReadByNotificationId"; //notification Id
+    let mark_notification_as_read = "api/notification/markReadByNotificationId"; //notification Id
     
-    let get_pageable_notifications = "/api/notification/byuserpageable"; //userId, pageNumber, offset
+    let get_pageable_notifications = "api/notification/byuserpageable"; //userId, pageNumber, offset
     
-    let get_notification_counts = "/api/notification/counts"; //userId
+    let get_notification_counts = "api/notification/counts"; //userId
     
-    let get_badge_counts = "/api/notification/getBadgeCounts"; //User Id
+    let get_badge_counts = "api/notification/getBadgeCounts"; //User Id
 
     var requestArray = NSMutableArray()
     

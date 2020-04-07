@@ -109,11 +109,17 @@
 		5E57873E224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */; };
 		5E578741224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */; };
 		5E578742224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E578740224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib */; };
+		5E5BAB582410BBEF006F56A5 /* FriendShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5BAB572410BBEF006F56A5 /* FriendShimmerView.swift */; };
+		5E5BAB5A2410BBFE006F56A5 /* FriendShimmerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E5BAB592410BBFE006F56A5 /* FriendShimmerView.xib */; };
+		5E5BAB5C241121DB006F56A5 /* IBRoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5BAB5B241121DB006F56A5 /* IBRoundedImageView.swift */; };
 		5E60A9712387AC9E00A1391D /* SqlliteDbManager+Crud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E60A9702387AC9E00A1391D /* SqlliteDbManager+Crud.swift */; };
 		5E60A9732387D76000A1391D /* SqlliteDbManager+EventMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E60A9722387D76000A1391D /* SqlliteDbManager+EventMember.swift */; };
 		5E60A975238802BE00A1391D /* SqlliteDbManager+CenesUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E60A974238802BE00A1391D /* SqlliteDbManager+CenesUser.swift */; };
 		5E6304EF2386E560002D875B /* SqliteDbStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6304EE2386E560002D875B /* SqliteDbStore.swift */; };
 		5E6304F12386E6EE002D875B /* SqliteDbStore+Crud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6304F02386E6EE002D875B /* SqliteDbStore+Crud.swift */; };
+		5E638A3924176C3C0064954E /* EventChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E638A3824176C3C0064954E /* EventChat.swift */; };
+		5E638A3E2418A2E90064954E /* AttendeeChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E638A3D2418A2E90064954E /* AttendeeChatView.swift */; };
+		5E638A402418A2F40064954E /* AttendeeChatView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E638A3F2418A2F40064954E /* AttendeeChatView.xib */; };
 		5E64C0F5228ECDE9000F2629 /* CountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */; };
 		5E64C0FB228F153E000F2629 /* CountryItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */; };
 		5E64C0FC228F153E000F2629 /* CountryItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */; };
@@ -146,11 +152,15 @@
 		5E7A7A522386EA7F008E84ED /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E7A7A512386EA7F008E84ED /* libsqlite3.tbd */; };
 		5E7A7A542386F0FB008E84ED /* SqlliteDbManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7A7A532386F0FB008E84ED /* SqlliteDbManager.swift */; };
 		5E82F529238BA79000688034 /* SqlliteDbManager+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */; };
+		5E8B7E48242F2433005DE1E5 /* NewHomeViewControllerBkup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8B7E47242F2433005DE1E5 /* NewHomeViewControllerBkup.swift */; };
 		5E95199E238F92D200C6D61A /* AuthenticateDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E95199D238F92D200C6D61A /* AuthenticateDto.swift */; };
 		5E985CFA232CEFF000BC1382 /* VersionUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E985CF9232CEFF000BC1382 /* VersionUpdateViewController.swift */; };
 		5E9DBBF22261BFCB000F9AA4 /* PersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */; };
 		5E9DBBF42261C1D2000F9AA4 /* NotificationPersistanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */; };
 		5E9DBBF622645A11000F9AA4 /* FriendListDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9DBBF522645A11000F9AA4 /* FriendListDto.swift */; };
+		5EABD7F12423573E00766A8C /* SqlliteDbManager+EventChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABD7F02423573E00766A8C /* SqlliteDbManager+EventChat.swift */; };
+		5EABD7F3242378B900766A8C /* ChatBlurbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EABD7F2242378B900766A8C /* ChatBlurbView.swift */; };
+		5EABD7F5242378C900766A8C /* ChatBlurbView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EABD7F4242378C900766A8C /* ChatBlurbView.xib */; };
 		5EAC6F58238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6F57238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift */; };
 		5EAC6F5A238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAC6F59238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift */; };
 		5EADEB21222BBF2600569864 /* GatheringDayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EADEB1F222BBF2600569864 /* GatheringDayTableViewCell.swift */; };
@@ -172,6 +182,16 @@
 		5EB43A0E238AA19B00069754 /* SqlliteDbManager+CenesContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EB43A0D238AA19B00069754 /* SqlliteDbManager+CenesContact.swift */; };
 		5EBC9CAA2279F7A5005946C4 /* NoGatheringTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC9CA82279F7A5005946C4 /* NoGatheringTableViewCell.swift */; };
 		5EBC9CAB2279F7A5005946C4 /* NoGatheringTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EBC9CA92279F7A5005946C4 /* NoGatheringTableViewCell.xib */; };
+		5EC1B7A323DC262500F32C40 /* HomeShimmerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC1B7A223DC262500F32C40 /* HomeShimmerView.xib */; };
+		5EC1B7A523DC280600F32C40 /* HomeShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC1B7A423DC280600F32C40 /* HomeShimmerView.swift */; };
+		5EC2E636241B6A5A0062E645 /* TapToChatView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC2E635241B6A5A0062E645 /* TapToChatView.xib */; };
+		5EC2E638241B71380062E645 /* TapToChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC2E637241B71380062E645 /* TapToChatView.swift */; };
+		5EC2E63A241BC7A00062E645 /* ChatBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC2E639241BC7A00062E645 /* ChatBoxView.swift */; };
+		5EC2E63C241BC7B50062E645 /* ChatBoxView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC2E63B241BC7B50062E645 /* ChatBoxView.xib */; };
+		5EC2E63E241CCCBA0062E645 /* ChatFeatureView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC2E63D241CCCB90062E645 /* ChatFeatureView.xib */; };
+		5EC2E640241CCCCB0062E645 /* ChatFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC2E63F241CCCCB0062E645 /* ChatFeatureView.swift */; };
+		5EC2E642241E06680062E645 /* SenderChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC2E641241E06680062E645 /* SenderChatView.swift */; };
+		5EC2E644241E06850062E645 /* SenderChatView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5EC2E643241E06850062E645 /* SenderChatView.xib */; };
 		5EC64E8D2285C594001FB7A7 /* CenesProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC64E8C2285C594001FB7A7 /* CenesProperty.swift */; };
 		5EC73CEF1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */; };
 		5EC7A167227DAC5A0010E804 /* BottomCurveDesignableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A166227DAC5A0010E804 /* BottomCurveDesignableView.swift */; };
@@ -188,6 +208,8 @@
 		5EC7A1832281AB090010E804 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A1822281AB090010E804 /* ProfileService.swift */; };
 		5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */; };
 		5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */; };
+		5ECE2CFB23FBCCE000593961 /* AppUpdateAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECE2CFA23FBCCE000593961 /* AppUpdateAlertView.swift */; };
+		5ECE2CFD23FBCCF300593961 /* AppUpdateAlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5ECE2CFC23FBCCF300593961 /* AppUpdateAlertView.xib */; };
 		5ECF814023B232D600777F8F /* ImagePanableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECF813F23B232D600777F8F /* ImagePanableViewController.swift */; };
 		5ED25FA8227188EF00C6CBD9 /* PredictiveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */; };
 		5ED340CF239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */; };
@@ -543,11 +565,17 @@
 		5E57873C224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeTwoLineTitleTableViewCell.xib; sourceTree = "<group>"; };
 		5E57873F224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeThreeLineTableViewCell.swift; sourceTree = "<group>"; };
 		5E578740224E203B00A48DE5 /* MeTimeThreeLineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeThreeLineTableViewCell.xib; sourceTree = "<group>"; };
+		5E5BAB572410BBEF006F56A5 /* FriendShimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendShimmerView.swift; sourceTree = "<group>"; };
+		5E5BAB592410BBFE006F56A5 /* FriendShimmerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendShimmerView.xib; sourceTree = "<group>"; };
+		5E5BAB5B241121DB006F56A5 /* IBRoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IBRoundedImageView.swift; sourceTree = "<group>"; };
 		5E60A9702387AC9E00A1391D /* SqlliteDbManager+Crud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+Crud.swift"; sourceTree = "<group>"; };
 		5E60A9722387D76000A1391D /* SqlliteDbManager+EventMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+EventMember.swift"; sourceTree = "<group>"; };
 		5E60A974238802BE00A1391D /* SqlliteDbManager+CenesUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+CenesUser.swift"; sourceTree = "<group>"; };
 		5E6304EE2386E560002D875B /* SqliteDbStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SqliteDbStore.swift; sourceTree = "<group>"; };
 		5E6304F02386E6EE002D875B /* SqliteDbStore+Crud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqliteDbStore+Crud.swift"; sourceTree = "<group>"; };
+		5E638A3824176C3C0064954E /* EventChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventChat.swift; sourceTree = "<group>"; };
+		5E638A3D2418A2E90064954E /* AttendeeChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendeeChatView.swift; sourceTree = "<group>"; };
+		5E638A3F2418A2F40064954E /* AttendeeChatView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttendeeChatView.xib; sourceTree = "<group>"; };
 		5E64C0F4228ECDE9000F2629 /* CountriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountriesViewController.swift; sourceTree = "<group>"; };
 		5E64C0F9228F153E000F2629 /* CountryItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryItemTableViewCell.swift; sourceTree = "<group>"; };
 		5E64C0FA228F153E000F2629 /* CountryItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountryItemTableViewCell.xib; sourceTree = "<group>"; };
@@ -580,11 +608,15 @@
 		5E7A7A512386EA7F008E84ED /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		5E7A7A532386F0FB008E84ED /* SqlliteDbManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SqlliteDbManager.swift; sourceTree = "<group>"; };
 		5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+Notification.swift"; sourceTree = "<group>"; };
+		5E8B7E47242F2433005DE1E5 /* NewHomeViewControllerBkup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHomeViewControllerBkup.swift; sourceTree = "<group>"; };
 		5E95199D238F92D200C6D61A /* AuthenticateDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticateDto.swift; sourceTree = "<group>"; };
 		5E985CF9232CEFF000BC1382 /* VersionUpdateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUpdateViewController.swift; sourceTree = "<group>"; };
 		5E9DBBF12261BFCB000F9AA4 /* PersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistanceManager.swift; sourceTree = "<group>"; };
 		5E9DBBF32261C1D2000F9AA4 /* NotificationPersistanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPersistanceManager.swift; sourceTree = "<group>"; };
 		5E9DBBF522645A11000F9AA4 /* FriendListDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListDto.swift; sourceTree = "<group>"; };
+		5EABD7F02423573E00766A8C /* SqlliteDbManager+EventChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+EventChat.swift"; sourceTree = "<group>"; };
+		5EABD7F2242378B900766A8C /* ChatBlurbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBlurbView.swift; sourceTree = "<group>"; };
+		5EABD7F4242378C900766A8C /* ChatBlurbView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatBlurbView.xib; sourceTree = "<group>"; };
 		5EAC6F57238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+MeTimeRecurringEvent.swift"; sourceTree = "<group>"; };
 		5EAC6F59238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+MeTimeRecurringPattern.swift"; sourceTree = "<group>"; };
 		5EADEB1F222BBF2600569864 /* GatheringDayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringDayTableViewCell.swift; sourceTree = "<group>"; };
@@ -606,6 +638,16 @@
 		5EB43A0D238AA19B00069754 /* SqlliteDbManager+CenesContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+CenesContact.swift"; sourceTree = "<group>"; };
 		5EBC9CA82279F7A5005946C4 /* NoGatheringTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoGatheringTableViewCell.swift; sourceTree = "<group>"; };
 		5EBC9CA92279F7A5005946C4 /* NoGatheringTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoGatheringTableViewCell.xib; sourceTree = "<group>"; };
+		5EC1B7A223DC262500F32C40 /* HomeShimmerView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeShimmerView.xib; sourceTree = "<group>"; };
+		5EC1B7A423DC280600F32C40 /* HomeShimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeShimmerView.swift; sourceTree = "<group>"; };
+		5EC2E635241B6A5A0062E645 /* TapToChatView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TapToChatView.xib; sourceTree = "<group>"; };
+		5EC2E637241B71380062E645 /* TapToChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToChatView.swift; sourceTree = "<group>"; };
+		5EC2E639241BC7A00062E645 /* ChatBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBoxView.swift; sourceTree = "<group>"; };
+		5EC2E63B241BC7B50062E645 /* ChatBoxView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatBoxView.xib; sourceTree = "<group>"; };
+		5EC2E63D241CCCB90062E645 /* ChatFeatureView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatFeatureView.xib; sourceTree = "<group>"; };
+		5EC2E63F241CCCCB0062E645 /* ChatFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFeatureView.swift; sourceTree = "<group>"; };
+		5EC2E641241E06680062E645 /* SenderChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SenderChatView.swift; sourceTree = "<group>"; };
+		5EC2E643241E06850062E645 /* SenderChatView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SenderChatView.xib; sourceTree = "<group>"; };
 		5EC64E8C2285C594001FB7A7 /* CenesProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenesProperty.swift; sourceTree = "<group>"; };
 		5EC73CEE1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldHolidayCalendarViewController.swift; sourceTree = "<group>"; };
 		5EC7A166227DAC5A0010E804 /* BottomCurveDesignableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCurveDesignableView.swift; sourceTree = "<group>"; };
@@ -622,6 +664,8 @@
 		5EC7A1822281AB090010E804 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMatchOnboardingViewController.swift; sourceTree = "<group>"; };
 		5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationOnboardingViewController.swift; sourceTree = "<group>"; };
+		5ECE2CFA23FBCCE000593961 /* AppUpdateAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateAlertView.swift; sourceTree = "<group>"; };
+		5ECE2CFC23FBCCF300593961 /* AppUpdateAlertView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppUpdateAlertView.xib; sourceTree = "<group>"; };
 		5ECF813F23B232D600777F8F /* ImagePanableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePanableViewController.swift; sourceTree = "<group>"; };
 		5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveData.swift; sourceTree = "<group>"; };
 		5ED340CD239109E1004CD85D /* NotificationGatheringTwoLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGatheringTwoLineTableViewCell.swift; sourceTree = "<group>"; };
@@ -1028,6 +1072,15 @@
 			name = cells;
 			sourceTree = "<group>";
 		};
+		5E5BAB562410BBD3006F56A5 /* views */ = {
+			isa = PBXGroup;
+			children = (
+				5E5BAB572410BBEF006F56A5 /* FriendShimmerView.swift */,
+				5E5BAB592410BBFE006F56A5 /* FriendShimmerView.xib */,
+			);
+			name = views;
+			sourceTree = "<group>";
+		};
 		5E6304ED2386E547002D875B /* sqllite */ = {
 			isa = PBXGroup;
 			children = (
@@ -1041,8 +1094,28 @@
 				5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */,
 				5EAC6F57238CD4A400C19F25 /* SqlliteDbManager+MeTimeRecurringEvent.swift */,
 				5EAC6F59238CE05B00C19F25 /* SqlliteDbManager+MeTimeRecurringPattern.swift */,
+				5EABD7F02423573E00766A8C /* SqlliteDbManager+EventChat.swift */,
 			);
 			name = sqllite;
+			sourceTree = "<group>";
+		};
+		5E638A3C2418A2C00064954E /* views */ = {
+			isa = PBXGroup;
+			children = (
+				5E638A3D2418A2E90064954E /* AttendeeChatView.swift */,
+				5E638A3F2418A2F40064954E /* AttendeeChatView.xib */,
+				5EC2E635241B6A5A0062E645 /* TapToChatView.xib */,
+				5EC2E637241B71380062E645 /* TapToChatView.swift */,
+				5EC2E639241BC7A00062E645 /* ChatBoxView.swift */,
+				5EC2E63B241BC7B50062E645 /* ChatBoxView.xib */,
+				5EC2E63D241CCCB90062E645 /* ChatFeatureView.xib */,
+				5EC2E63F241CCCCB0062E645 /* ChatFeatureView.swift */,
+				5EC2E641241E06680062E645 /* SenderChatView.swift */,
+				5EC2E643241E06850062E645 /* SenderChatView.xib */,
+				5EABD7F2242378B900766A8C /* ChatBlurbView.swift */,
+				5EABD7F4242378C900766A8C /* ChatBlurbView.xib */,
+			);
+			name = views;
 			sourceTree = "<group>";
 		};
 		5E64C0F3228ECD66000F2629 /* Onboarding */ = {
@@ -1158,6 +1231,15 @@
 			name = extension;
 			sourceTree = "<group>";
 		};
+		5ECE2CF923FBCC9C00593961 /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				5ECE2CFA23FBCCE000593961 /* AppUpdateAlertView.swift */,
+				5ECE2CFC23FBCCF300593961 /* AppUpdateAlertView.xib */,
+			);
+			name = CustomViews;
+			sourceTree = "<group>";
+		};
 		5ED6FED1224B841300E940DE /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -1237,6 +1319,9 @@
 				5E41ED182274218300E972E1 /* DataTableViewCell.xib */,
 				5E41ED1C2275AE9400E972E1 /* HomeFSCalendarTableViewCell.swift */,
 				5E41ED1D2275AE9400E972E1 /* HomeFSCalendarTableViewCell.xib */,
+				5EC1B7A223DC262500F32C40 /* HomeShimmerView.xib */,
+				5EC1B7A423DC280600F32C40 /* HomeShimmerView.swift */,
+				5E5BAB5B241121DB006F56A5 /* IBRoundedImageView.swift */,
 			);
 			name = HomeTableViewCells;
 			sourceTree = "<group>";
@@ -1278,6 +1363,7 @@
 		AE03511C1F5E8D80001A162B /* Gathering */ = {
 			isa = PBXGroup;
 			children = (
+				5E638A3C2418A2C00064954E /* views */,
 				5E20A49D226DD5E500F1DBC6 /* location */,
 				5E2E6337225DD207006F03CD /* invitation */,
 				5E69990E2222B58100A275B6 /* create */,
@@ -1414,6 +1500,7 @@
 				AE8184E31F960EC300D885A2 /* HomeUserCellLast.swift */,
 				AE8184E41F960EC300D885A2 /* HomeUserCellLast.xib */,
 				5EF84099223778740046E68D /* NewHomeViewController.swift */,
+				5E8B7E47242F2433005DE1E5 /* NewHomeViewControllerBkup.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -1438,6 +1525,7 @@
 		AEB0114E1F66B5EF00A5B520 /* InviteFriend */ = {
 			isa = PBXGroup;
 			children = (
+				5E5BAB562410BBD3006F56A5 /* views */,
 				5E2797CB222C02BC0098F295 /* FriendsViewController.swift */,
 				5E2797CF222C0BB60098F295 /* FriendListItemTableViewCell.swift */,
 				5E2797D0222C0BB60098F295 /* FriendListItemTableViewCell.xib */,
@@ -1576,6 +1664,7 @@
 		F4B871F11F0DDEF1001A9963 /* Cenes */ = {
 			isa = PBXGroup;
 			children = (
+				5ECE2CF923FBCC9C00593961 /* CustomViews */,
 				5E6304ED2386E547002D875B /* sqllite */,
 				5EC7A165227DAC320010E804 /* designable */,
 				5E41E95D2235519300CEECFB /* Dto */,
@@ -1642,6 +1731,7 @@
 				5ED25FA7227188EF00C6CBD9 /* PredictiveData.swift */,
 				5EC64E8C2285C594001FB7A7 /* CenesProperty.swift */,
 				5EED1A8E228B282200346C33 /* CalendarSyncToken.swift */,
+				5E638A3824176C3C0064954E /* EventChat.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1947,6 +2037,7 @@
 				AE46478A1F6FE03E00B5CB67 /* flag_de.png in Resources */,
 				5E51FD992268277400A86994 /* InnerTableHeaderTableViewCell.xib in Resources */,
 				AE4647A01F6FE03E00B5CB67 /* flag_pl.png in Resources */,
+				5EC2E636241B6A5A0062E645 /* TapToChatView.xib in Resources */,
 				5E1217C622981C260075961A /* NextCardTableViewCell.xib in Resources */,
 				AE7D84A51F90C214005ABB81 /* GoogleService-Info.plist in Resources */,
 				AE46478B1F6FE03E00B5CB67 /* flag_dk.png in Resources */,
@@ -1956,8 +2047,10 @@
 				AE8184DE1F95CB0200D885A2 /* HomeTableViewCell.xib in Resources */,
 				5EC7A16C227DBC4B0010E804 /* PeronalDetailsTableViewCell.xib in Resources */,
 				FA00904121F702D50038BF3D /* GatheringCardHeaderTableViewCell.xib in Resources */,
+				5ECE2CFD23FBCCF300593961 /* AppUpdateAlertView.xib in Resources */,
 				AE4647911F6FE03E00B5CB67 /* flag_hk.png in Resources */,
 				5E64C0FC228F153E000F2629 /* CountryItemTableViewCell.xib in Resources */,
+				5EC1B7A323DC262500F32C40 /* HomeShimmerView.xib in Resources */,
 				F4B872001F0DDEF1001A9963 /* LaunchScreen.storyboard in Resources */,
 				5E51FD9D2268673B00A86994 /* DatePanelTableViewCell.xib in Resources */,
 				5EBC9CAB2279F7A5005946C4 /* NoGatheringTableViewCell.xib in Resources */,
@@ -1975,6 +2068,7 @@
 				AE4647831F6FE03E00B5CB67 /* flag_ac.png in Resources */,
 				5EDEE1E92240A42300330F47 /* MeTimeDescTableViewCell.xib in Resources */,
 				5E44D1E122AFC1B0000288B5 /* MonthSeparatorTableViewCell.xib in Resources */,
+				5EC2E63C241BC7B50062E645 /* ChatBoxView.xib in Resources */,
 				5EECD1D8228D51FB00F9ADAF /* ShowHideHolidayTableViewCell.xib in Resources */,
 				AE8617FA1F5982C600F99D75 /* HomeTableViewCellHeader.xib in Resources */,
 				AE4647A41F6FE03E00B5CB67 /* flag_sg.png in Resources */,
@@ -1995,6 +2089,7 @@
 				AE4647A91F6FE03E00B5CB67 /* flag_za.png in Resources */,
 				AE4647951F6FE03E00B5CB67 /* flag_ir.png in Resources */,
 				5E51FDA62268802600A86994 /* GatheringInfoTableViewCell.xib in Resources */,
+				5E5BAB5A2410BBFE006F56A5 /* FriendShimmerView.xib in Resources */,
 				AEA1F9DA1F9E034500B32681 /* InvitationViewCell.xib in Resources */,
 				FA025A2B21F592AA00240E08 /* GatheringCardTableViewCell.xib in Resources */,
 				5E57873E224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.xib in Resources */,
@@ -2020,6 +2115,9 @@
 				AE92F0271F947F490051CCF6 /* DeleteCell.xib in Resources */,
 				5E51FD8F2265CC7300A86994 /* AllAndCenesContactsSwitchTableViewCell.xib in Resources */,
 				AE46479B1F6FE03E00B5CB67 /* flag_mx.png in Resources */,
+				5EABD7F5242378C900766A8C /* ChatBlurbView.xib in Resources */,
+				5EC2E644241E06850062E645 /* SenderChatView.xib in Resources */,
+				5EC2E63E241CCCBA0062E645 /* ChatFeatureView.xib in Resources */,
 				AE46479D1F6FE03E00B5CB67 /* flag_nw.png in Resources */,
 				AE4647991F6FE03E00B5CB67 /* flag_jp.png in Resources */,
 				5E20A496226A1D8400F1DBC6 /* FriendCollectionViewCell.xib in Resources */,
@@ -2029,6 +2127,7 @@
 				5EC7A17F2280492D0010E804 /* PasswordTableViewCell.xib in Resources */,
 				5E6F5730222036F50053C21A /* GatheringPreviewImageTableViewCell.xib in Resources */,
 				5EF840A12237C2280046E68D /* HomeEventTableViewCell.xib in Resources */,
+				5E638A402418A2F40064954E /* AttendeeChatView.xib in Resources */,
 				AEB0114D1F6697FB00A5B520 /* GatheringEventTableViewCell.xib in Resources */,
 				5EC7A17B228036E80010E804 /* UsernameTableViewCell.xib in Resources */,
 				AE4647A61F6FE03E00B5CB67 /* flag_tw.png in Resources */,
@@ -2137,6 +2236,7 @@
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
+				"${BUILT_PRODUCTS_DIR}/ShimmerSwift/ShimmerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSONModel/SwiftyJSONModel.framework",
@@ -2161,6 +2261,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ShimmerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSONModel.framework",
@@ -2184,8 +2285,10 @@
 				F40A899F1F1FD70A002BBC17 /* MailLogInViewController.swift in Sources */,
 				FA9FC42221CE93920066A446 /* AutheticateManager.swift in Sources */,
 				5ED747BA2226BAE900C3458A /* User.swift in Sources */,
+				5E8B7E48242F2433005DE1E5 /* NewHomeViewControllerBkup.swift in Sources */,
 				5E51FD982268277400A86994 /* InnerTableHeaderTableViewCell.swift in Sources */,
 				F4D2C1241F37C6E6005638D8 /* HomeTableViewCellTwo.swift in Sources */,
+				5EC2E642241E06680062E645 /* SenderChatView.swift in Sources */,
 				5E078D212236A6760082A013 /* GatheringManager.swift in Sources */,
 				B94B39941FA7D1AE00A806FE /* ReminderDetailTableViewCell.swift in Sources */,
 				5E6F572F222036F50053C21A /* GatheringPreviewImageTableViewCell.swift in Sources */,
@@ -2193,6 +2296,7 @@
 				FAC5314A21CBE63E00E033BB /* UIDatePicker+Customs.swift in Sources */,
 				5EDEE1F82240C75A00330F47 /* MetimeRecurringEvent.swift in Sources */,
 				FA110EC0215F8AD8007DB7EA /* CountryCodeTableViewCell.swift in Sources */,
+				5EABD7F12423573E00766A8C /* SqlliteDbManager+EventChat.swift in Sources */,
 				5EEE364D1F549C1C0095517C /* AddCalendarViewController.swift in Sources */,
 				5EF8409022375EA50046E68D /* UIButton+Custom.swift in Sources */,
 				5EDEE1EF2240A9DB00330F47 /* NewMeTimeViewController.swift in Sources */,
@@ -2246,6 +2350,7 @@
 				AE03511B1F5E87D7001A162B /* CreateGatheringViewController.swift in Sources */,
 				5EC7A1812281513C0010E804 /* ProfileDto.swift in Sources */,
 				B99D55CE1FC184F00020AC50 /* AlarmManager.swift in Sources */,
+				5E5BAB582410BBEF006F56A5 /* FriendShimmerView.swift in Sources */,
 				5EB12A9823C338AA00231206 /* MeTimeDto.swift in Sources */,
 				5E5408A8234634E300BC9BB5 /* CenesUserMO+CoreDataProperties.swift in Sources */,
 				5E95199E238F92D200C6D61A /* AuthenticateDto.swift in Sources */,
@@ -2268,6 +2373,7 @@
 				5E41ED1522741F4D00E972E1 /* InvitationTabsTableViewCell.swift in Sources */,
 				5E47C9F4225B16A800C738D3 /* UITabBarController+Customs.swift in Sources */,
 				5ECF814023B232D600777F8F /* ImagePanableViewController.swift in Sources */,
+				5EC2E638241B71380062E645 /* TapToChatView.swift in Sources */,
 				AE8F47151FB9B65500C153F0 /* DiaryViewController.swift in Sources */,
 				5E2797C5222BC2D20098F295 /* GatheringLocTableViewCell.swift in Sources */,
 				5EB2A3B1232763E100EF9FAA /* EventModel+CoreDataProp.swift in Sources */,
@@ -2285,6 +2391,7 @@
 				5E20A4A5226ED83900F1DBC6 /* LocationItemTableViewCell.swift in Sources */,
 				5EF8409C2237C14C0046E68D /* HomeViewController+extension.swift in Sources */,
 				FA025A3321F5FD9000240E08 /* NSMutableAttributedString.swift in Sources */,
+				5EC1B7A523DC280600F32C40 /* HomeShimmerView.swift in Sources */,
 				5EEE36431F50D78E0095517C /* BaseViewController.swift in Sources */,
 				AE8294D31FBACE2F000D381F /* PhotosCell.swift in Sources */,
 				F48F49C21F24DC2200825EAE /* HomeCenesEventTableViewCell.swift in Sources */,
@@ -2358,11 +2465,13 @@
 				5E2E6339225DD22B006F03CD /* GatheringInvitationViewController.swift in Sources */,
 				FA00904421F720ED0038BF3D /* MemberCollectionViewCell.swift in Sources */,
 				FA00904021F702D50038BF3D /* GatheringCardHeaderTableViewCell.swift in Sources */,
+				5ECE2CFB23FBCCE000593961 /* AppUpdateAlertView.swift in Sources */,
 				5EC73CEF1F4FFD9100D9679B /* WorldHolidayCalendarViewController.swift in Sources */,
 				5E237FF722A7806E00D4D033 /* OnboardingPageViewController.swift in Sources */,
 				5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */,
 				5EC7A1832281AB090010E804 /* ProfileService.swift in Sources */,
 				F47C358A1F17F93700CAE09A /* AppConstants.swift in Sources */,
+				5EC2E640241CCCCB0062E645 /* ChatFeatureView.swift in Sources */,
 				B99D55C91FC1358D0020AC50 /* Alarm+CoreDataClass.swift in Sources */,
 				B99D55CA1FC1358D0020AC50 /* Alarm+CoreDataProperties.swift in Sources */,
 				5E60A9732387D76000A1391D /* SqlliteDbManager+EventMember.swift in Sources */,
@@ -2406,6 +2515,7 @@
 				5E20A49A226DC3AE00F1DBC6 /* LocationService.swift in Sources */,
 				5E57873D224E020F00A48DE5 /* MeTimeTwoLineTitleTableViewCell.swift in Sources */,
 				F4103CC81F2AF4220071B3D6 /* Reminder.swift in Sources */,
+				5EABD7F3242378B900766A8C /* ChatBlurbView.swift in Sources */,
 				AE8423E91F8F55CD007DBACB /* CenesUser.swift in Sources */,
 				5E20CC442372CF83006F8CC5 /* MetimeRecurringEventMO+CoreDataProperties.swift in Sources */,
 				5EFFC0A4222D1B850037D2EC /* FriendCollectionTableViewCell.swift in Sources */,
@@ -2416,10 +2526,13 @@
 				5E28510422AA4C98004504D1 /* MyEditImageView.swift in Sources */,
 				5E9DBBF622645A11000F9AA4 /* FriendListDto.swift in Sources */,
 				F4F4DFDC1F0EC1BF00169990 /* SignUpViewController.swift in Sources */,
+				5E5BAB5C241121DB006F56A5 /* IBRoundedImageView.swift in Sources */,
 				FA2E3CFC213AA3A50010B8B0 /* SSBadgeButton.swift in Sources */,
 				B956ADB21FB04E00005B13CA /* RemindersModel+CoreDataProperties.swift in Sources */,
 				5E6304F12386E6EE002D875B /* SqliteDbStore+Crud.swift in Sources */,
 				5E40954722531CF500CA9700 /* NotificationDto.swift in Sources */,
+				5EC2E63A241BC7A00062E645 /* ChatBoxView.swift in Sources */,
+				5E638A3924176C3C0064954E /* EventChat.swift in Sources */,
 				5E1217C1229807F00075961A /* InvitationCardTableViewCell.swift in Sources */,
 				5EAF0CAC22893B4A00AE2264 /* SignupSuccessStep2ViewController.swift in Sources */,
 				5E40954422523ADD00CA9700 /* HeaderTableViewCell.swift in Sources */,
@@ -2446,6 +2559,7 @@
 				AE2F2EBD1F9DCC3200B05A92 /* NotificationData.swift in Sources */,
 				F4B1C72F1F2E94EC00174414 /* LocationViewController.swift in Sources */,
 				5EADEB21222BBF2600569864 /* GatheringDayTableViewCell.swift in Sources */,
+				5E638A3E2418A2E90064954E /* AttendeeChatView.swift in Sources */,
 				5E51FD9C2268673B00A86994 /* DatePanelTableViewCell.swift in Sources */,
 				5EDEE1FA2240CC7A00330F47 /* MeTimeManager.swift in Sources */,
 				5E51FDAB226982AA00A86994 /* PredictiveCalendarCellTableViewCell.swift in Sources */,
@@ -2641,16 +2755,18 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 50;
+				CURRENT_PROJECT_VERSION = 52;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.50;
+				MARKETING_VERSION = 2.2.52;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -2669,16 +2785,18 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 50;
+				CURRENT_PROJECT_VERSION = 52;
 				DEVELOPMENT_TEAM = XLW9C8866Y;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Cenes/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.2.50;
+				MARKETING_VERSION = 2.2.52;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cenesgroup.cenesapp01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
