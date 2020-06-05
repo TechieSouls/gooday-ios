@@ -56,7 +56,7 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
             cell.name.text = "Unknown";
         }
         
-        if (eventMember.user != nil) {
+        if (eventMember.user != nil && eventMember.user.userId != 0) {
             cell.profilePic.isHidden = false;
             cell.nonCenesUserView.isHidden = true;
             if (eventMember.user!.photo != nil) {
@@ -106,29 +106,38 @@ extension SelectedFriendsCollectionTableViewCell: UICollectionViewDelegate, UICo
         if (eventMember.userId != nil && eventMember.userId != 0 && createGatheringDelegate.event.isPredictiveOn == true) {
 
             if (createGatheringDelegate.createGathDto.availableFriendsList != "") {
-                let availableFriendsListArray = createGatheringDelegate.createGathDto.availableFriendsList.split(separator: ",");
-                
-                cell.availabilityMark.isHidden = false;
+                if (createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] == nil || createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] == false) {
+                    
+                    cell.availabilityMark.isHidden = true;
+                } else {
+                    let availableFriendsListArray = createGatheringDelegate.createGathDto.availableFriendsList.split(separator: ",");
+                    
+                    cell.availabilityMark.isHidden = false;
 
-                var ifUserAvailable: Bool = false;
-                for availableFriendsListArrayItem in availableFriendsListArray {
-                    if (eventMember.userId == Int32(availableFriendsListArrayItem)) {
-                        ifUserAvailable = true;
+                    var ifUserAvailable: Bool = false;
+                    for availableFriendsListArrayItem in availableFriendsListArray {
+                        if (eventMember.userId == Int32(availableFriendsListArrayItem)) {
+                            ifUserAvailable = true;
+                        }
+                    }
+                    
+                    if (ifUserAvailable == false) {
+                        cell.availabilityMark.backgroundColor = UIColor.red;
+                    } else {
+                        cell.availabilityMark.backgroundColor = UIColor.green;
                     }
                 }
-                
-                if (ifUserAvailable == false) {
-                    cell.availabilityMark.backgroundColor = UIColor.red;
-                } else {
-                    cell.availabilityMark.backgroundColor = UIColor.green;
-                }
             } else {
-                
-                cell.availabilityMark.backgroundColor = UIColor.red;
-                cell.availabilityMark.isHidden = false;
+                if (createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] == nil || createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] == false) {
+                    
+                    cell.availabilityMark.isHidden = true;
+                } else {
+                    cell.availabilityMark.backgroundColor = UIColor.red;
+                    cell.availabilityMark.isHidden = false;
+                }
             }
         } else {
-            cell.availabilityMark.isHidden = true;
+             cell.availabilityMark.isHidden = true;
         }
         
         return cell;

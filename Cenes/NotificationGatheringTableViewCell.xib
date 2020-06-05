@@ -47,13 +47,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1uO-of-dZv">
                         <rect key="frame" x="469" y="6" width="52" height="45"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vS3-Vc-GtJ">
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vS3-Vc-GtJ">
                                 <rect key="frame" x="0.0" y="0.0" width="52" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -73,8 +73,12 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="mdi_party_popper" translatesAutoresizingMaskIntoConstraints="NO" id="Rkh-FP-yVT">
+                        <rect key="frame" x="45" y="35" width="16" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </imageView>
                 </subviews>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
@@ -84,6 +88,7 @@
                 <outlet property="happen" destination="Kgq-fv-wiD" id="hdl-TY-ovv"/>
                 <outlet property="message" destination="BTn-9s-4vR" id="AGb-N6-Qgd"/>
                 <outlet property="messageAndNameView" destination="RUy-cd-fej" id="XUz-gZ-oco"/>
+                <outlet property="partyIcon" destination="Rkh-FP-yVT" id="Lzn-0T-deF"/>
                 <outlet property="profileImage" destination="Z2Y-17-f0q" id="5W7-Tk-i9E"/>
                 <outlet property="rightCornerView" destination="1uO-of-dZv" id="eT5-7I-0To"/>
                 <outlet property="title" destination="IcW-yi-YIf" id="s8a-86-gAv"/>
@@ -92,6 +97,7 @@
         </tableViewCell>
     </objects>
     <resources>
+        <image name="mdi_party_popper" width="16" height="16"/>
         <image name="profile_pic_no_image" width="666.66668701171875" height="666.66668701171875"/>
     </resources>
 </document>

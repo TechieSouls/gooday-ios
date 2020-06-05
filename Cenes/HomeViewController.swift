@@ -201,8 +201,8 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         super.viewWillAppear(animated)
 
         //Google Analytics Tracking
-        guard let tracker = GAI.sharedInstance().defaultTracker else { return }
-        tracker.set(kGAIScreenName, value: "HomeScreenIos")
+        //guard let tracker = GAI.sharedInstance().defaultTracker else { return }
+        //tracker.set(kGAIScreenName, value: "HomeScreenIos")
         
         
         
@@ -215,7 +215,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
             userLoggedInAs = setting.value(forKey: "email") as! String
         }
         //let email = setting.value(forKey: "email") as! String
-        tracker.send(GAIDictionaryBuilder.createEvent(withCategory: "User", action: "logged In", label: userLoggedInAs+" - ios", value: nil).build() as [NSObject : AnyObject])
+        //tracker.send(GAIDictionaryBuilder.createEvent(withCategory: "User", action: "logged In", label: userLoggedInAs+" - ios", value: nil).build() as [NSObject : AnyObject])
 
         self.profileImage = appDelegate?.getProfileImage()
         

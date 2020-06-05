@@ -13,37 +13,41 @@ class NotificationManager {
     
     func parseNotificationData(notifications: [NotificationData], notificationDtos: [NotificationDto]) -> [NotificationDto] {
         
-        var unreadNotifications: [NotificationData]!;
-        var readNotifications: [NotificationData]!;
+        var newNotifications: [NotificationData]!;
+        var earlierNotifications: [NotificationData]!;
 
-        unreadNotifications = [NotificationData]();
-        readNotifications = [NotificationData]();
+        newNotifications = [NotificationData]();
+        earlierNotifications = [NotificationData]();
 
         for notification in notifications {
-            if (notification.readStatus == "Read") {
-                if (readNotifications == nil) {
-                    readNotifications = [NotificationData]();
+            
+            //print(Date().millisecondsSince1970, notification.createdAt!)
+            let getWeekNumberFromToday = (Date().millisecondsSince1970 - notification.createdAt!)/(1000*60*60*24*7);
+            
+            if (getWeekNumberFromToday == 0) {
+                if (newNotifications == nil) {
+                    newNotifications = [NotificationData]();
                 }
-                readNotifications.append(notification);
+                newNotifications.append(notification);
             } else {
-                if (unreadNotifications == nil) {
-                    unreadNotifications = [NotificationData]();
+                if (earlierNotifications == nil) {
+                    earlierNotifications = [NotificationData]();
                 }
-                unreadNotifications.append(notification);
+                earlierNotifications.append(notification);
             }
         }
         
         var notificationDtos = [NotificationDto]();
-        if (unreadNotifications != nil && unreadNotifications.count > 0) {
+        if (newNotifications != nil && newNotifications.count > 0) {
             let notificationDto = NotificationDto();
             notificationDto.header = "New"
-            notificationDto.notifications = unreadNotifications;
+            notificationDto.notifications = newNotifications;
             notificationDtos.append(notificationDto);
         }
-        if (readNotifications != nil && readNotifications.count > 0) {
+        if (earlierNotifications != nil && earlierNotifications.count > 0) {
             let notificationDto = NotificationDto();
-            notificationDto.header = "Seen"
-            notificationDto.notifications = readNotifications;
+            notificationDto.header = "Earlier"
+            notificationDto.notifications = earlierNotifications;
             notificationDtos.append(notificationDto);
         }
         return notificationDtos;
@@ -96,7 +100,7 @@ class NotificationManager {
             readNotifications = readNotifications.sorted(by: { $0.createdAt > $1.createdAt });
             
             let notificationDto = NotificationDto();
-            notificationDto.header = "Seen"
+            notificationDto.header = "Earlier"
             notificationDto.notificationModels = readNotifications;
             notificationDtos.append(notificationDto);
         }

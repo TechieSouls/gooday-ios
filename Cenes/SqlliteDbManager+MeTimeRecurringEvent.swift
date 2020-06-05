@@ -83,6 +83,12 @@ extension SqlliteDbManager {
                     saveMeTimeRecurringPattern(metimeRecurringPattern: metimeRecurringPattern);
                 }
             }
+            
+            if (metimeRecurringEvent.recurringEventMembers.count > 0) {
+                for recurringEventMember in metimeRecurringEvent.recurringEventMembers {
+                    sqlDatabaseManager.saveRecurringEventMember(recurringEventMember: recurringEventMember);
+                }
+            }
         } catch {
             print("Error in saveMeTimeRecurringEvent : ", error)
         }
@@ -93,7 +99,7 @@ extension SqlliteDbManager {
         var metimeRecurringEvents = [MetimeRecurringEvent]();
         do {
             
-            for metimeRecurringEventDb in try database.prepare("SELECT * from metime_recurring_events") {
+            for metimeRecurringEventDb in try database.prepare("SELECT * from metime_recurring_events order by recurring_event_id desc ") {
                 let metimeRecurringEvent = MetimeRecurringEvent();
                 metimeRecurringEvent.recurringEventId = Int32(metimeRecurringEventDb[0] as! Int64);
                 metimeRecurringEvent.title = metimeRecurringEventDb[1] as? String;
@@ -110,6 +116,8 @@ extension SqlliteDbManager {
                 let metimeRecurringPatterns = findMeTimeRecurringPatternIdByRecurringEventId(recurringEventId: metimeRecurringEvent.recurringEventId);
                 metimeRecurringEvent.patterns = metimeRecurringPatterns;
                 
+                let metimeRecurringEventMembers = findRecurringEventMembersByRecurringEventId(recurringEventId: metimeRecurringEvent.recurringEventId);
+                metimeRecurringEvent.recurringEventMembers = metimeRecurringEventMembers;
                 metimeRecurringEvents.append(metimeRecurringEvent);
             }
         } catch {
@@ -136,6 +144,7 @@ extension SqlliteDbManager {
             
             //Lets delete all Patterns also
             deleteAllMeTimeRecurringPatterns();
+            deleteAllRecurringEventMembers();
         } catch {
             print("Error in deleteAllRecurringEvent", error)
         }

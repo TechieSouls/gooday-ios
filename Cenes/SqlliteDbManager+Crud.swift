@@ -11,6 +11,34 @@ import SQLite
 
 extension SqlliteDbManager {
     
+    func emptyDatabase() {
+        sqlDatabaseManager.deleteAllEvents();
+        sqlDatabaseManager.deleteAllEventMembers();
+        sqlDatabaseManager.deleteAllCenesUser();
+        sqlDatabaseManager.deleteAllUserContacts();
+        sqlDatabaseManager.deleteAllNotifications();
+        sqlDatabaseManager.deleteAllRecurringEvent();
+        sqlDatabaseManager.deleteAllMeTimeRecurringPatterns();
+        sqlDatabaseManager.deleteAllEventChats();
+        sqlDatabaseManager.deleteAllCalendarSyncTokens();
+        sqlDatabaseManager.deleteAllRecurringEventMembers();
+    }
+    
+    func createDatabase() {
+        
+        sqlDatabaseManager.createTableSplashRecords();
+        sqlDatabaseManager.createEventTable();
+        sqlDatabaseManager.createEventMemberTable();
+        sqlDatabaseManager.createTableCenesUser();
+        sqlDatabaseManager.createTableCenesContact();
+        sqlDatabaseManager.createTableNotifications();
+        sqlDatabaseManager.createTableMeTimeRecurringEvents();
+        sqlDatabaseManager.createTableMeTimeRecurringPatterns();
+        sqlDatabaseManager.createTableEventChats();
+        sqlDatabaseManager.createTableCalendarSyncToken();
+        sqlDatabaseManager.createTableRecurringEventMember();
+    }
+    
     func createEventTable() {
     
         do {
@@ -270,6 +298,7 @@ extension SqlliteDbManager {
             try stmt.run(eventFromApi.title, location, latitude, longitude, eventFromApi.startTime, eventFromApi.endTime, thumbnail, eventPicture, eventFromApi.isPredictiveOn, eventFromApi.isFullDay, placeId, eventFromApi.expired, description, Int64(eventId));
             
             if (eventFromApi.eventMembers != nil && eventFromApi.eventMembers.count > 0) {
+                deleteEventMembersByEventId(eventId: eventFromApi.eventId);
                 for apiEventMember in eventFromApi.eventMembers {
                     saveEventMembers(eventMember: apiEventMember);
                 }
@@ -348,10 +377,10 @@ extension SqlliteDbManager {
         
         var offlineEvents = [Event]();
         do {
-            let selectEventsQuery = "SELECT * from events where display_screen_at = ? order by start_time asc";
+            let selectEventsQuery = "SELECT * from events where display_screen_at = ? and schedule_as != ? order by start_time asc";
             print("Select Event Query : ",selectEventsQuery);
             let selectStmt = try database.prepare(selectEventsQuery);
-            for event in  try selectStmt.run(displayAtScreen) {
+            for event in  try selectStmt.run(displayAtScreen, EventScheduleAs.NOTIFICATION) {
                //print("Event Title : ", event[1]!);
                 let offlineEvent = processSqlLiveEventData(event: event);
                 offlineEvents.append(offlineEvent);
@@ -609,7 +638,9 @@ extension SqlliteDbManager {
     func deleteEventByEventId(eventId: Int32) {
      
         do {
-            let deleteStmt = try database.prepare("DELETE from events where event_id = ?");
+            let deleteQuery = "DELETE from events where event_id = ?";
+            print("Delet query : ",deleteQuery);
+            let deleteStmt = try database.prepare(deleteQuery);
             try deleteStmt.run(Int64(eventId));
             
             //Deleting EventMember By EventId
@@ -632,7 +663,39 @@ extension SqlliteDbManager {
             print("Delete All Events : ", error);
         }
     }
+    
+    //Delete All Events
+    func deleteAllEventsByScheduleAs(scheduleAs: String) {
+     
+        do {
+            let selectQuery = "SELECT * from events where schedule_as = ?";
+            print(selectQuery);
+            let selectStmt = try database.prepare(selectQuery);
+            for event in  try selectStmt.run(scheduleAs) {
+               let scheduleAsEvent = processSqlLiveEventData(event: event);
+                                
+                deleteEventByEventId(eventId: scheduleAsEvent.eventId);
+            }
+        } catch {
+            print("Delete All Events : ", error);
+        }
+    }
 
+    //Delete All Events
+    func deleteAllEventsBySourceAndScheduleAs(source: String, scheduleAs: String) {
+        do {
+            let selectQuery = "SELECT * from events where schedule_as = ? and source = ?";
+            print(selectQuery);
+            let selectStmt = try database.prepare(selectQuery);
+            for event in  try selectStmt.run(scheduleAs, source) {
+               let scheduleAsEvent = processSqlLiveEventData(event: event);
+                                
+                deleteEventByEventId(eventId: scheduleAsEvent.eventId);
+            }
+        } catch {
+            print("Delete All Events : ", error);
+        }
+    }
     //Delete All UnProcessed Events
     func deleteAllEventsByProcessedStatus(processed: Int8) {
      

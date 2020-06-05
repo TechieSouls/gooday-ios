@@ -54,7 +54,7 @@ class HomeDto {
     //When you scroll down to get next 20 events, There may be chance same month events
     //are fetched and month separator can be added again.
     var monthSeparatorList = [String]();
-    var fsCalendarCurrentDateTimestamp: Int = 0; //This is needed to track fscalendar scroll
+    var fsCalendarCurrentDateTimestamp: Int = Int(Date().millisecondsSince1970); //This is needed to track fscalendar scroll
     var startTimeStampToFetchPageableData: Int = Int(Date().millisecondsSince1970); //This is needed to track fscalendar scroll
 
 }

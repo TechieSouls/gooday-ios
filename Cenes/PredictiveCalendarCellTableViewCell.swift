@@ -162,10 +162,15 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
                 for prediction in self.predictionsData {
                     let predictiveDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: prediction.date));
                     
-                    if (selectedDateCompos.day == predictiveDateCompos.day && selectedDateCompos.month == predictiveDateCompos.month && selectedDateCompos.year == predictiveDateCompos.year) {
+                    print("selectedDateCompos.day == predictiveDateCompos.day", selectedDateCompos.day, predictiveDateCompos.day)
+                     print("selectedDateCompos.month == predictiveDateCompos.month", selectedDateCompos.month, predictiveDateCompos.month)
+                     print("selectedDateCompos.year == predictiveDateCompos.year", selectedDateCompos.year, predictiveDateCompos.year)
+                    if (selectedDateCompos.day! == predictiveDateCompos.day! && selectedDateCompos.month! == predictiveDateCompos.month! && selectedDateCompos.year! == predictiveDateCompos.year!) {
                         
-                        createGatheringDelegate.createGathDto.availableFriendsList =
-                            prediction.attendingFriendsList;
+                        print("Available Friens", prediction.attendingFriendsList);
+
+                        createGatheringDelegate.createGathDto.availableFriendsList = prediction.attendingFriendsList;
+                        
                         break;
                     }
                 }
@@ -366,7 +371,73 @@ func showPredictions() {
                     continue;
                 }
                 
+                
                 if (self.createGatheringDelegate.fsCalendarElements.month == dateComponents.month) {
+                    
+                    //Lets make the users free for the same time for which
+                    //the time was chosen earlier oon editing the event;
+                    let eventDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: self.createGatheringDelegate.event.startTime));
+                    
+                    if (self.createGatheringDelegate.event.eventId != nil) {
+                        
+                        let startTimeComp = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: self.createGatheringDelegate.event.startTime));
+                        let endTimeComp = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: self.createGatheringDelegate.event.endTime));
+
+                        let origStartTimeComp = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: self.createGatheringDelegate.createGathDto.originalEventStartTime));
+
+                        let origEndTimeComp = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: self.createGatheringDelegate.createGathDto.originalEventEndTime));
+
+                        if (dateComponents.date! == origStartTimeComp.date! && dateComponents.month! == origStartTimeComp.month! && startTimeComp.hour! == origStartTimeComp.hour! && endTimeComp.hour! == origEndTimeComp.hour!) {
+                            
+                        /*}
+                        if (self.createGatheringDelegate.event.eventId != nil && self.createGatheringDelegate.event.startTime == self.createGatheringDelegate.createGathDto.originalEventStartTime && self.createGatheringDelegate.event.endTime == self.createGatheringDelegate.createGathDto.originalEventEndTime) {*/
+                            
+                            var totalCenesMembers = 0;
+                            var totalEventAttendees = 0;
+                            let eventMembers = self.createGatheringDelegate.event.eventMembers;
+                            for eventMem in eventMembers! {
+                                if (eventMem.userId != nil) {
+                                    totalCenesMembers += 1;
+                                }
+                                if (eventMem.eventMemberId != nil && eventMem.userId != nil) {
+                                    totalEventAttendees += 1;
+                                }
+                            }
+                            prediction.predictivePercentage = Int((totalCenesMembers/totalEventAttendees)*100);
+                        
+                            var aviableFrndsArrTmp = [String]();
+                            let aviableFrndsArr = self.createGatheringDelegate.createGathDto.availableFriendsList.split(separator: ",");
+                            
+                            for eventMem in eventMembers! {
+                                var isUserAvailable: Bool = false;
+                                if (eventMem.eventMemberId != nil && eventMem.userId != nil) {
+                                    
+                                    for aviableFrndStr in aviableFrndsArr {
+                                        if (Int32(aviableFrndStr) == eventMem.userId) {
+                                            isUserAvailable = true;
+                                            break;
+                                        }
+                                    }
+                                    if (isUserAvailable ==  false) {
+                                        aviableFrndsArrTmp.append(String(eventMem.userId));
+                                    }
+                                    
+                                    if (aviableFrndsArrTmp.count > 0) {
+                                        if (self.createGatheringDelegate.createGathDto.availableFriendsList.count > 0) {
+                                            self.createGatheringDelegate.createGathDto.availableFriendsList = self.createGatheringDelegate.createGathDto.availableFriendsList + ",\(String(describing: eventMem.userId!))";
+
+                                            
+                                        } else {
+                                            self.createGatheringDelegate.createGathDto.availableFriendsList = self.createGatheringDelegate.createGathDto.availableFriendsList + "\(String(describing: eventMem.userId!))";
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            self.createGatheringDelegate.createGathDto.availableFriendsList = prediction.attendingFriendsList;
+                        }
+                    }
+                    
                     if (prediction.predictivePercentage == 0) {
                         self.selectedDates[predictiveFormatter.string(from: Date(milliseconds: Int(prediction.date)))] = CreateGatheringPredictiveColors.GRAYCOLOR
                     } else if (prediction.predictivePercentage >= 1 && prediction.predictivePercentage <= 33) {
@@ -382,11 +453,10 @@ func showPredictions() {
                         self.selectedDates[predictiveFormatter.string(from: Date(milliseconds: Int(prediction.date)))] = CreateGatheringPredictiveColors.GREENCOLOR
                         
                     }
-
                 }
-                
             }
             self.predictiveCalendar.reloadData();
+            self.createGatheringDelegate.createGathTableView.reloadData();
         }
     });
     }

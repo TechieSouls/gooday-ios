@@ -149,7 +149,7 @@ class EventMember {
         eventMemberJson["name"] = eventMember.name;
         eventMemberJson["userContactId"] = eventMember.userContactId;
         eventMemberJson["userId"] = eventMember.userId;
-        eventMemberJson["status"] = eventMember.status;
+        eventMemberJson["status"] = eventMember.status == "" ? nil : eventMember.status;
         
         return eventMemberJson;
     }

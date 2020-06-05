@@ -9,7 +9,6 @@
 import UIKit
 import EventKit
 import EventKitUI
-import Crashlytics
 import CoreTelephony
 import CoreData
 import Reachability
@@ -1537,6 +1536,9 @@ class NewHomeViewControllerBkup: UIViewController, UITabBarControllerDelegate, N
 
       case .none:
         print("Network not reachable")
+        
+      default:
+        print("none");
       }
     }
 

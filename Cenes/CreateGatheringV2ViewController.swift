@@ -96,6 +96,14 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             event.endTime = 0;
             event.createdById = self.loggedInUser.userId;
         } else {
+            
+            createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
+            let dbEvent = sqlDatabaseManager.findEventByEventId(eventId: self.event.eventId);
+            if (dbEvent.eventId != nil) {
+                createGathDto.originalEventStartTime = dbEvent.startTime;
+                createGathDto.originalEventEndTime = dbEvent.endTime;
+            }
+
             var eventMembers: [EventMember] = [EventMember]();
             for eventMem in event.eventMembers! {
                 
@@ -541,8 +549,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             self.showAlert(title: "Error", message: "Cannot upload from screenshot")
         }
     }
-    
-    func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage) {
+
+    func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage, transformation: Transformation) {
         if (self.gatheringInfoCellDelegate != nil) {
             self.gatheringInfoCellDelegate.imageSelected();
             //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);

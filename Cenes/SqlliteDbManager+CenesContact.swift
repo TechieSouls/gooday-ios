@@ -91,24 +91,34 @@ extension SqlliteDbManager {
 
     func findCenesUserContactByUserContactId(userContactId: Int32) -> UserContact {
         
-        let cenesUserContact = UserContact();
+        var cenesUserContact = UserContact();
 
         do {
             let stmt = try database.prepare("SELECT * from cenes_contacts where user_contact_id = ?");
             for cenesUserContactDb in try stmt.run(Int64(userContactId)) {
                     
-                cenesUserContact.userContactId = Int(cenesUserContactDb[0] as! Int64);
-                cenesUserContact.name = cenesUserContactDb[1] as? String;
-                cenesUserContact.userId = Int(cenesUserContactDb[2] as! Int64);
-                cenesUserContact.friendId = Int(cenesUserContactDb[3] as! Int64);
-                cenesUserContact.phone = cenesUserContactDb[4] as? String;
-                cenesUserContact.cenesMember = cenesUserContactDb[5] as? String;
-                cenesUserContact.status = cenesUserContactDb[6] as? String;
-                cenesUserContact.eventMemberId = Int32(cenesUserContactDb[7] as! Int64);
+                cenesUserContact = processSqlliteUserContactData(cenesUserContactDb: cenesUserContactDb);
 
             }
         } catch {
             print("Error in saveCenesUser : ", error)
+        }
+        return cenesUserContact;
+    }
+    
+    func findCenesUserContactByUserId(userId: Int32) -> UserContact {
+        
+        var cenesUserContact = UserContact();
+
+        do {
+            let stmt = try database.prepare("SELECT * from cenes_contacts where user_id = ?");
+            for cenesUserContactDb in try stmt.run(Int64(userId)) {
+                    
+                cenesUserContact = processSqlliteUserContactData(cenesUserContactDb: cenesUserContactDb);
+
+            }
+        } catch {
+            print("Error in findCenesUserContactByUserId : ", error)
         }
         return cenesUserContact;
     }
@@ -129,5 +139,20 @@ extension SqlliteDbManager {
         } catch {
             print(error)
         }
+    }
+    
+    func processSqlliteUserContactData(cenesUserContactDb: Statement.Element) -> UserContact {
+        
+        let cenesUserContact = UserContact();
+        cenesUserContact.userContactId = Int(cenesUserContactDb[0] as! Int64);
+        cenesUserContact.name = cenesUserContactDb[1] as? String;
+        cenesUserContact.userId = Int(cenesUserContactDb[2] as! Int64);
+        cenesUserContact.friendId = Int(cenesUserContactDb[3] as! Int64);
+        cenesUserContact.phone = cenesUserContactDb[4] as? String;
+        cenesUserContact.cenesMember = cenesUserContactDb[5] as? String;
+        cenesUserContact.status = cenesUserContactDb[6] as? String;
+        cenesUserContact.eventMemberId = Int32(cenesUserContactDb[7] as! Int64);
+        
+        return cenesUserContact;
     }
 }

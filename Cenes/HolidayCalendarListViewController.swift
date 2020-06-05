@@ -130,15 +130,17 @@ extension HolidayCalendarListViewController: UITableViewDelegate, UITableViewDat
             if (calendarSyncToken != nil) {
                 
                 self.activityIndicator.startAnimating();
+                sqlDatabaseManager.deleteAllEventsByScheduleAs(scheduleAs: EventScheduleAs.HOLIDAY);
+                sqlDatabaseManager.deleteCalendarSyncTokenByRefreshTokenId(refreshTokenId: calendarSyncToken.refreshTokenId);
+                
                 let queryStr = "calendarSyncTokenId=\(String(calendarSyncToken.refreshTokenId))";
                 UserService().deleteSyncTokenByTokenId(queryStr: queryStr, token: loggedInUser.token, complete: {(response) in
-                    
                     self.activityIndicator.stopAnimating();
 
                     if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                         
                         let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                        homeViewController?.refershDataFromOtherScreens();
+                        homeViewController?.refreshHomeScreenData();
                         
                     }
                 })
@@ -157,24 +159,33 @@ extension HolidayCalendarListViewController: UITableViewDelegate, UITableViewDat
                 postData["calendarId"] = (country!["value"] as! String);
                 postData["name"] = (country!["name"] as! String);
             
+                if (self.calendarSyncToken != nil) {
+                    sqlDatabaseManager.deleteAllEventsByScheduleAs(scheduleAs: EventScheduleAs.HOLIDAY);
+                    sqlDatabaseManager.deleteCalendarSyncTokenByRefreshTokenId(refreshTokenId: calendarSyncToken.refreshTokenId);
+                }
             
-                //DispatchQueue.global(qos: .background).async {
                 activityIndicator.startAnimating()
-                    UserService().syncHolidayCalendar(postData: postData, token: self.loggedInUser.token, complete: {(response) in
-                        self.activityIndicator.stopAnimating();
-                        
-                        if (self.tabBarController != nil) {
-                            if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
-                                
-                                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                                homeViewController?.refershDataFromOtherScreens();
-                                self.navigationController?.popViewController(animated: false);
-                                
-                            }
+                UserService().syncHolidayCalendar(postData: postData, token: self.loggedInUser.token, complete: {(response) in
+                    self.activityIndicator.stopAnimating();
+                    
+                    let success = response.value(forKey: "success") as! Bool;
+                    if (success == true) {
+                        let calendarSyncTokenDict = response.value(forKey: "data") as! NSDictionary;
+                        let calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncTokenDict);
+                        sqlDatabaseManager.saveCalendarSyncToken(calendarSyncToken: calendarSyncToken);
+                    }
+                    
+                    if (self.tabBarController != nil) {
+                        if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
+                            
+                            let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                            homeViewController?.refershDataFromOtherScreens();
+                            self.navigationController?.popViewController(animated: false);
+                            
                         }
-                        
-                    });
-                //}
+                    }
+                    
+                });
             }
         /*} else {
             let country = countryDataArrayTemp[indexPath.row - 1];

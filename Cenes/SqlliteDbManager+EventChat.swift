@@ -37,14 +37,27 @@ extension SqlliteDbManager {
     
     func saveEventChat(eventChat: EventChat) {
      
-        do {
-            let stmt = try database.prepare("INSERT into event_chats (event_chat_id, sender_id, event_id, chat, created_at, created_at, synced) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            
-            try stmt.run(Int64(eventChat.eventChatId), Int64(eventChat.senderId), Int64(eventChat.eventId), eventChat.chat, Int64(eventChat.createdAt), eventChat.chatStatus);
-            
-        } catch {
-            print("Error in saveEventChat : ", error);
+        if (eventChat.chat != nil) {
+            do {
+                let stmt = try database.prepare("INSERT into event_chats (event_chat_id, sender_id, event_id, chat, created_at, created_at, synced) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                
+                
+                if (eventChat.eventChatId == nil) {
+                    eventChat.eventChatId = Int32(truncatingIfNeeded: Date().millisecondsSince1970);
+                }
+                
+                if (eventChat.chatStatus == nil) {
+                    eventChat.chatStatus = EventChatStatus.READ;
+                }
+                
+                eventChat.synced = true;
+                try stmt.run(Int64(eventChat.eventChatId), Int64(eventChat.senderId), Int64(eventChat.eventId), eventChat.chat, Int64(eventChat.createdAt), eventChat.chatStatus, eventChat.synced);
+                
+            } catch {
+                print("Error in saveEventChat : ", error);
+            }
         }
+        
     }
     
     func findEventChatByEventId(eventId: Int32) -> [EventChat] {
@@ -79,4 +92,14 @@ extension SqlliteDbManager {
             print("Error in deleteEventChatByEventId : ", error);
         }
     }
+    
+    func deleteAllEventChats() {
+        do {
+            let stmt = try database.prepare("DELETE from event_chats");
+            try stmt.run();
+        } catch {
+            print("Error in deleteAllEventChats : ", error);
+        }
+    }
+
 }

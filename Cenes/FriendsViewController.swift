@@ -15,19 +15,30 @@ protocol CollectionFriendsProtocol {
 protocol CreateGatheringProtocol {
     func friendsDonePressed(eventMembers: [EventMember]);
 }
+
+protocol MeTimeAddViewControllerProtocol {
+    func friendsDonePressed(eventMembers: [EventMember]);
+}
 class FriendsViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var friendTableView: UITableView!;
     @IBOutlet weak var searchContactsField: UITextField!
     
+    @IBOutlet weak var cancelBtn: UIButton!;
+    @IBOutlet weak var doneButton: UIButton!;
+    @IBOutlet weak var friendsTitle: UILabel!;
+
     var collectionFriendsDelegate: CollectionFriendsProtocol?;
     var loggedInUser: User!;
     var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
     var isFirstTime: Bool = true;
     var createGatheringProtocolDelegate: CreateGatheringProtocol!;
+    var meTimeAddViewControllerProtocolDelegate: MeTimeAddViewControllerProtocol!;
     var eventId: Int32!
     var shimmerview: ShimmeringView!;
     var callMadeToApi: Bool = false;
+    var sourceViewController: UIViewController!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,6 +53,7 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         friendTableView.register(UINib(nibName: "HomeShimmerView", bundle: Bundle.main), forCellReuseIdentifier: "HomeShimmerView")
         friendTableView.register(UINib(nibName: "AllAndCenesContactsSwitchTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "AllAndCenesContactsSwitchTableViewCell")
         friendTableView.register(UINib(nibName: "FriendsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "FriendsTableViewCell")
+        friendTableView.register(UINib(nibName: "NoMeTimeFriendsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "NoMeTimeFriendsTableViewCell")
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
         self.setupNavigationBarItems();
@@ -54,8 +66,8 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
                     break;
                 }
             }
+            
             if (userExistsInList == false) {
-
                 let loggedInUserContact = Event().getLoggedInUserAsUserContact();
                 //print(loggedInUserContact.description);
                 inviteFriendsDto.selectedFriendCollectionViewList.append(loggedInUserContact);
@@ -91,10 +103,13 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         searchContactsField.addTarget(self, action: #selector(updateSearchResults), for: .editingChanged)
         
         self.hideKeyboardWhenTappedAround();
-    }
+}
     
     override func viewWillAppear(_ animated: Bool) {
         self.title = "Invite Guests";
+        if (self.meTimeAddViewControllerProtocolDelegate != nil) {
+            self.title = "Select Friends";
+        }
     }
     /*
     // MARK: - Navigation
@@ -362,6 +377,42 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         //self.selectedFriendsDelegate?.selectedUserList(userContacts: userContacts);
         self.navigationController?.popViewController(animated: true)
     }
+    
+    @IBAction func cancelButtonPressed() {
+        self.dismiss(animated: true, completion: nil);
+    }
+    
+    @IBAction func doneButtonPressed() {
+        var eventMembers = [EventMember]();
+       for userContact in self.inviteFriendsDto.selectedFriendCollectionViewList {
+           
+           let eventMember = EventMember();
+           if (userContact.userContactId != nil) {
+               eventMember.userContactId = Int32(userContact.userContactId);
+           }
+           if let friendId = userContact.friendId {
+               eventMember.userId = Int32(friendId);
+           }
+           eventMember.user = userContact.user;
+           eventMember.name = userContact.name;
+           eventMember.cenesMember = userContact.cenesMember;
+           if let eventMemberId = userContact.eventMemberId {
+               eventMember.eventMemberId = eventMemberId;
+           }
+           if let status = userContact.status {
+               eventMember.status = status;
+           }
+           if let phone = userContact.phone {
+              eventMember.phone = phone;
+           }
+            eventMember.userContact = userContact;
+           eventMembers.append(eventMember);
+       }
+
+        meTimeAddViewControllerProtocolDelegate.friendsDonePressed(eventMembers: eventMembers);
+        self.dismiss(animated: true, completion: nil);
+    }
+
 }
 
 extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -372,21 +423,21 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        inviteFriendsDto.totalNumberOfRows = 3;
+        inviteFriendsDto.totalNumberOfRows = 4;
         
-        if (inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
+        /*if (inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
             inviteFriendsDto.totalNumberOfRows = inviteFriendsDto.totalNumberOfRows - 1;
         }
         if (self.inviteFriendsDto.cenesContacts.count == 0) {
             inviteFriendsDto.totalNumberOfRows = inviteFriendsDto.totalNumberOfRows - 1;
-        }
+        }*/
         return inviteFriendsDto.totalNumberOfRows;
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-             if (inviteFriendsDto.totalNumberOfRows == 1) {
+             /*if (inviteFriendsDto.totalNumberOfRows == 1) {
                 return (self.view.frame.height -  150);
              }
              if (inviteFriendsDto.totalNumberOfRows == 2) {
@@ -396,10 +447,13 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                 if (self.inviteFriendsDto.cenesContacts.count != 0) {
                     return inviteFriendsDto.allAndCenesContactsSwitchCell;
                 }
+             }*/
+             if (inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
+                return 0;
              }
-             return inviteFriendsDto.friendCollectionViewCell;
+             return InviteFriendsCellHeight.friendsCollectionViewheight;
         case 1:
-            if (inviteFriendsDto.totalNumberOfRows == 2) {
+            /*if (inviteFriendsDto.totalNumberOfRows == 2) {
                 
                 var finalHeight = self.view.frame.height - 150;
                 if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
@@ -409,9 +463,37 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                 }
                 return finalHeight;
             }
-            return inviteFriendsDto.allAndCenesContactsSwitchCell;
+            return inviteFriendsDto.allAndCenesContactsSwitchCell;*/
+            
+            if (meTimeAddViewControllerProtocolDelegate != nil) {
+                return 0
+            }
+            if (inviteFriendsDto.cenesContacts.count == 0) {
+                return 0
+            }
+            return InviteFriendsCellHeight.allCenesContactsSwitchHeight;
+
         case 2:
-            return (self.view.frame.height - (inviteFriendsDto.friendCollectionViewCell + inviteFriendsDto.allAndCenesContactsSwitchCell + 150));
+            
+            var friendListViewHeight = self.view.frame.height - 150;
+            if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+                friendListViewHeight = friendListViewHeight - InviteFriendsCellHeight.friendsCollectionViewheight;
+            }
+            if (inviteFriendsDto.cenesContacts.count != 0 && meTimeAddViewControllerProtocolDelegate == nil) {
+                friendListViewHeight = friendListViewHeight - InviteFriendsCellHeight.allCenesContactsSwitchHeight
+            }
+            if (inviteFriendsDto.cenesContacts.count == 0 && meTimeAddViewControllerProtocolDelegate != nil) {
+                return 0;
+            }
+            //return (self.view.frame.height - (inviteFriendsDto.friendCollectionViewCell + inviteFriendsDto.allAndCenesContactsSwitchCell + 150));
+            
+            return friendListViewHeight;
+        case 3:
+            if (inviteFriendsDto.cenesContacts.count == 0 && meTimeAddViewControllerProtocolDelegate != nil) {
+                return 155;
+            }
+            
+            return 0;
         default:
             return 100;
         }
@@ -422,13 +504,125 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         //If we have no users selected
         //then we will have 1 row only
         switch indexPath.row {
+            
         case 0:
-            if (inviteFriendsDto.totalNumberOfRows == 1) {
+            if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
+                cell.friendsViewControllerDelegate = self;
+                cell.friendshorizontalColView.reloadData();
+                return cell;
+            }
+            return UITableViewCell();
+            
+        case 1:
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
+            
+            if (self.inviteFriendsDto.cenesContacts.count != 0 && meTimeAddViewControllerProtocolDelegate == nil) {
+                          
+                      if (self.inviteFriendsDto.isAllContactsView == true) {
+                          cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                      } else {
+                          cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                      }
+                      return cell
+            } else {
+                cell.isHidden = true;
+            }
+            return UITableViewCell();
+            
+            case 2:
+                if (meTimeAddViewControllerProtocolDelegate != nil && self.inviteFriendsDto.cenesContacts.count == 0) {
+                    return UITableViewCell();
+                }
                 let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
                 cell.friendViewControllerDelegate = self;
-                
-                if (callMadeToApi == true) {
+                cell.friendListInnerTable.reloadData();
+                return cell;
+            
+            case 3:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "NoMeTimeFriendsTableViewCell", for: indexPath) as! NoMeTimeFriendsTableViewCell
+                cell.friendsViewControllerDelegate = self;
+                cell.isHidden = true;
+
+                if (self.inviteFriendsDto.cenesContacts.count == 0 && callMadeToApi == true) {
+                    cell.isHidden = false;
+                    doneButton.isHidden = true
+                }
+                return cell;
+            default:
+                return UITableViewCell();
+            /*case 0:
+                if (inviteFriendsDto.totalNumberOfRows == 1) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
+                    cell.friendViewControllerDelegate = self;
                     
+                    if (callMadeToApi == true) {
+                        
+                        for sview in self.view.subviews {
+                           if (sview is ShimmeringView) {
+                               sview.removeFromSuperview();
+                           }
+                        }
+                        shimmerview.isShimmering = false;
+                    }
+                    cell.friendListInnerTable.reloadData();
+                    
+                    return cell
+                }
+                if (inviteFriendsDto.totalNumberOfRows == 2) {
+                    if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
+                        let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
+                        cell.friendsViewControllerDelegate = self;
+                        cell.friendshorizontalColView.reloadData();
+                        return cell;
+                    }
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
+                    
+                    if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                        
+                        if (self.inviteFriendsDto.isAllContactsView == true) {
+                            cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                        } else {
+                            cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                        }
+                    }
+                    return cell;
+                }
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
+                cell.friendsViewControllerDelegate = self;
+                cell.friendshorizontalColView.reloadData();
+                return cell;
+                
+            case 1:
+                if (inviteFriendsDto.totalNumberOfRows == 2) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
+                    cell.friendViewControllerDelegate = self;
+                    cell.friendListInnerTable.reloadData()
+                    
+                    return cell
+                }
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
+                
+                    if (self.inviteFriendsDto.cenesContacts.count != 0) {
+                              
+                          if (self.inviteFriendsDto.isAllContactsView == true) {
+                              cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                          } else {
+                              cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                          }
+                          return cell
+                      }
+                
+                return cell
+                
+            case 2:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
+                cell.friendViewControllerDelegate = self;
+                if (callMadeToApi == true) {
                     for sview in self.view.subviews {
                        if (sview is ShimmeringView) {
                            sview.removeFromSuperview();
@@ -437,77 +631,13 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                     shimmerview.isShimmering = false;
                 }
                 cell.friendListInnerTable.reloadData();
-                
                 return cell
-            }
-            if (inviteFriendsDto.totalNumberOfRows == 2) {
-                if (inviteFriendsDto.selectedFriendCollectionViewList.count != 0) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
-                    cell.friendsViewControllerDelegate = self;
-                    cell.friendshorizontalColView.reloadData();
-                    return cell;
-                }
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
-                
-                if (self.inviteFriendsDto.cenesContacts.count != 0) {
-                    
-                    if (self.inviteFriendsDto.isAllContactsView == true) {
-                        cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
-                    } else {
-                        cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
-                    }
-                }
-                return cell;
-            }
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCollectionTableViewCell", for: indexPath) as! FriendCollectionTableViewCell
-            cell.friendsViewControllerDelegate = self;
-            cell.friendshorizontalColView.reloadData();
-            return cell;
-            
-        case 1:
-            if (inviteFriendsDto.totalNumberOfRows == 2) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
-                cell.friendViewControllerDelegate = self;
-                cell.friendListInnerTable.reloadData()
-                
-                return cell
-            }
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "AllAndCenesContactsSwitchTableViewCell", for: indexPath) as! AllAndCenesContactsSwitchTableViewCell
-            
-                if (self.inviteFriendsDto.cenesContacts.count != 0) {
-                          
-                      if (self.inviteFriendsDto.isAllContactsView == true) {
-                          cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
-                      } else {
-                          cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
-                      }
-                      return cell
-                  }
-            
-            return cell
-            
-        case 2:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsTableViewCell", for: indexPath) as! FriendsTableViewCell
-            cell.friendViewControllerDelegate = self;
-            if (callMadeToApi == true) {
-                for sview in self.view.subviews {
-                   if (sview is ShimmeringView) {
-                       sview.removeFromSuperview();
-                   }
-                }
-                shimmerview.isShimmering = false;
-            }
-            cell.friendListInnerTable.reloadData();
-            return cell
-            
-        default:
-            return UITableViewCell();
+            default:
+                return UITableViewCell();
+            }*/
         }
     }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (self.inviteFriendsDto.totalNumberOfRows == 2) {
             if (indexPath.row == 0) {

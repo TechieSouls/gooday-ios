@@ -12,12 +12,12 @@ import GoogleSignIn
 import Mixpanel
 import MessageUI
 
-class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate, MFMailComposeViewControllerDelegate {
-    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+class ChoiceViewController: UIViewController, LoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate, MFMailComposeViewControllerDelegate {
+    func loginButton(_ loginButton: FBLoginButton!, didCompleteWith result: LoginManagerLoginResult!, error: Error!) {
         print("Done");
     }
     
-    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton!) {
         print("Done")
     }
     
@@ -40,7 +40,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     
     @IBOutlet weak var termsAndConditionsText: UILabel!
 
-    var fbLoginBtn : FBSDKLoginButton!
+    var fbLoginBtn : FBLoginButton!
     var signinType = "Facebook";
     
     class func MainViewController() -> UINavigationController{
@@ -144,12 +144,12 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
     
     @objc func facebookViewPressed() {
     
-        fbLoginBtn = FBSDKLoginButton();
+        fbLoginBtn = FBLoginButton();
         fbLoginBtn.delegate = self;
         
-        let loginManager = FBSDKLoginManager()
+        let loginManager = LoginManager()
         loginManager.logOut()
-        loginManager.logIn(withReadPermissions: [ "public_profile" , "email"], from: nil) {
+        loginManager.logIn(permissions: [ "public_profile" , "email"], from: nil) {
             (result, error) -> Void in
             //if we have an error display it and abort
             if let error = error {
@@ -161,7 +161,7 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
             //if cancelled nothing todo
             if result.isCancelled { return }
             else {
-                self.getFBUserData(facebookId: result.token.userID , accessToken: result.token.tokenString);
+                self.getFBUserData(facebookId: result.token!.userID , accessToken: result.token!.tokenString);
             }
         }
     }
@@ -181,8 +181,8 @@ class ChoiceViewController: UIViewController, FBSDKLoginButtonDelegate, GIDSignI
 
     //function is fetching the user data
     func getFBUserData(facebookId: String, accessToken: String) {
-        if((FBSDKAccessToken.current()) != nil){
-            FBSDKGraphRequest(graphPath: "\(facebookId)", parameters: ["fields": "id, name, gender, picture.type(large), email"]).start(completionHandler: { (connection, result, error) -> Void in
+        if((AccessToken.current) != nil){
+            GraphRequest(graphPath: "\(facebookId)", parameters: ["fields": "id, name, gender, picture.type(large), email"]).start(completionHandler: { (connection, result, error) -> Void in
                 if (error == nil){
                     print(result)
                     

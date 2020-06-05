@@ -67,3 +67,4 @@ let shareEventUrl = "https://betaweb.cenesgroup.com/event/invitation/"
 let faqLink = "https://www.cenesgroup.com/faq";
 let privacyPolicyLink = "https://www.cenesgroup.com/legal/privacy-policy";
 let termsandconditionsLink = "https://www.cenesgroup.com/legal/terms-and-conditions";
+let appStoreLink = "https://apps.apple.com/in/app/cenes/id1475664339";

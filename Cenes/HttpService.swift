@@ -61,6 +61,7 @@ class HttpService {
     
     func postMethod(url: String, postData: [String: Any], token: String, complete: @escaping(NSDictionary)->Void) {
         
+        print("API EndPoint : ",url);
         let Auth_header = [ "token" : token ]
 
         Alamofire.request("\(url)", method: .post , parameters: postData, encoding: JSONEncoding.default,headers: Auth_header).validate(statusCode: 200..<300).responseJSON { (response ) in
@@ -77,6 +78,8 @@ class HttpService {
                 responseDict["message"] = error.localizedDescription;
                 returnDict = responseDict as NSDictionary;
             }
+            
+            print("Response : ",returnDict);
             complete(returnDict)
         }
     }

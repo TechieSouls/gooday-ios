@@ -2,24 +2,19 @@
 //  AppDelegate.swift
 //  Cenes
 //
-//  Created by Sabita Rani Samal on 7/5/17.
-//  Copyright © 2017 Sabita Rani Samal. All rights reserved.
-//
 
 import UIKit
 import CoreData
 import FBSDKLoginKit
 import UserNotifications
-import Fabric
-import Crashlytics
 import GoogleSignIn
 import Google
 import SideMenu
 import Reachability
 import Mixpanel
- 
+
 let setting = UserDefaults.standard
-let reachability = Reachability()!
+var reachability: Reachability!
 var sqlDatabaseManager = SqlliteDbManager();
  
 @UIApplicationMain
@@ -45,29 +40,31 @@ var sqlDatabaseManager = SqlliteDbManager();
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         print("My App Launched on Termination**************************************");
-    
-        Mixpanel.initialize(token: "255bc3dcb4ae26b7202f5e997a66e4d9")
-        Fabric.with([Crashlytics.self])
-        
-        FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-        
-        sqlDatabaseManager.createEventTable();
-        sqlDatabaseManager.createEventMemberTable();
-        sqlDatabaseManager.createTableCenesUser();
-        sqlDatabaseManager.createTableCenesContact();
-        sqlDatabaseManager.createTableNotifications();
-        sqlDatabaseManager.createTableMeTimeRecurringEvents();
-        sqlDatabaseManager.createTableMeTimeRecurringPatterns();
-        
-        // Override point for customization after application launch.
-        let footprints = setting.string(forKey: "footprints")
-        if footprints == UserSteps.Authentication { //if Authentication Done Then go to home screen
+        do {
+            try reachability = Reachability();
+        } catch {
             
+        }
+        //Initialize MixPanel
+        Mixpanel.initialize(token: "255bc3dcb4ae26b7202f5e997a66e4d9")
+        
+        //Initialize Fabric
+        //Fabric.with([Crashlytics.self])
+        
+        //Inittializing Facebook SDK
+        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        
+        //Initialize Sql Database tables
+        sqlDatabaseManager.createDatabase();
+                
+        // Override point for customization after application launch.
+        /*let footprints = setting.string(forKey: "footprints")
+        if footprints == UserSteps.Authentication {//if Authentication Done Then go to home screen
             let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
             if (loggedInUser.name == nil || loggedInUser.name == "") {
                 window?.rootViewController = SignupSuccessStep2ViewController.MainViewController();
             } else {
-                window?.rootViewController = HomeViewController.MainViewController()
+                window?.rootViewController = NewHomeViewController.MainViewController()
             }
         }  else if footprints == UserSteps.PhoneVerification {//If Phone Verificaiton Done Then move to CHoice Screen
             //window?.rootViewController = LoginViewController.MainViewController()
@@ -75,10 +72,9 @@ var sqlDatabaseManager = SqlliteDbManager();
         } else if footprints == UserSteps.OnBoardingScreens {
             //window?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
             window?.rootViewController = PhoneVerificationStep1ViewController.MainViewController()
-
         } else {
              window?.rootViewController = OnboardingPageViewController.MainViewController()
-        }
+        }*/
         
         //User Notification
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {(accepted, error) in
@@ -100,17 +96,17 @@ var sqlDatabaseManager = SqlliteDbManager();
         assert(configureError == nil, "Error configuring Google services: \(String(describing: configureError))")
         
        //Google Analytics code
-        guard let gai = GAI.sharedInstance() else {
-            assert(false, "Google Analytics not configured correctly")
-            return true;
-        }
-        gai.tracker(withTrackingId: "UA-97875532-2")
+       // guard let gai = GAI.sharedInstance() else {
+        //    assert(false, "Google Analytics not configured correctly")
+        //    return true;
+        //}
+        //gai.tracker(withTrackingId: "UA-97875532-2")
         // Optional: automatically report uncaught exceptions.
-        gai.trackUncaughtExceptions = true
+        //gai.trackUncaughtExceptions = true
         
         // Optional: set Logger to VERBOSE for debug information.
         // Remove before app release.
-        gai.logger.logLevel = .verbose;
+        //gai.logger.logLevel = .verbose;
         
         //WebService().resetBadgeCount();
         
@@ -126,7 +122,9 @@ var sqlDatabaseManager = SqlliteDbManager();
                         self.cenesTabBar?.setTabBarDotVisible(visible: true);
                     }
                 }
-            })
+            });
+            //Mixpanel for App Launch
+            Mixpanel.mainInstance().track(event: "App Launch")
         } else {
             
             //Mixpanel for App Launch
@@ -171,19 +169,17 @@ var sqlDatabaseManager = SqlliteDbManager();
                 }
                 
                 WebService().resetBadgeCount();
-            })
+            });
         }
-        
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
-        
-        let loginManager: FBSDKLoginManager = FBSDKLoginManager()
+        let loginManager: LoginManager = LoginManager()
         loginManager.logOut()
-           }
+    }
 
     func application(_ application: UIApplication, didChangeStatusBarFrame oldStatusBarFrame: CGRect) {
         
@@ -198,7 +194,7 @@ var sqlDatabaseManager = SqlliteDbManager();
             let data = UserDefaults.standard.value(forKey: "profileImage") as! Data
             let image = UIImage(data: data)
             return image!
-        }else{
+        } else{
             return #imageLiteral(resourceName: "profile icon")
         }
     }
@@ -280,7 +276,7 @@ var sqlDatabaseManager = SqlliteDbManager();
         
             let isGoogleOpenUrl = GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
         
-            let isFacebookOpenUrl = FBSDKApplicationDelegate.sharedInstance().application(app, open: url, options: options)
+        let isFacebookOpenUrl = ApplicationDelegate.shared.application(app, open: url, options: options)
         
         if isGoogleOpenUrl {
             return true
@@ -325,7 +321,6 @@ var sqlDatabaseManager = SqlliteDbManager();
         print(deviceToken.base64EncodedString())
         //Save the device token in Parse
        
-        
         //Get the device token
         var token = ""
         for i in 0..<deviceToken.count {
@@ -337,29 +332,32 @@ var sqlDatabaseManager = SqlliteDbManager();
         userDefaults.setValue(token , forKey: "tokenData")
         userDefaults.synchronize()
         
-         self.setDeviceToken()
-        
+        self.setDeviceToken();
     }
     
-    
-    func setDeviceToken(){
+    func setDeviceToken() {
         let fprints = setting.string(forKey: "footprints")
         if fprints == UserSteps.Authentication {
-        
             WebService().setPushToken()
         }
     }
     
-    
-    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
+        print("[ Application : didReceiveRemoteNotification ]");
+        Mixpanel.mainInstance().track(event: "didReceiveRemoteNotification", properties:[ "Logs" : "\(userInfo["aps"])"]);
+
         print("RECIEVE PUSH ********** \(userInfo["aps"])")
         var dict = userInfo["aps"] as! NSDictionary;
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-
+        var notificationType = dict["type"] as? String;
+        if (notificationType != nil && notificationType == "Chat") {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadEventChat"), object: nil)
+        } else {
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil);
+        }
         //Conditio for silent push notification
         /*if (dict.value(forKey: "content-available") as! Int == 1) {
             let type = dict.value(forKey: "type") as! String;
@@ -387,7 +385,7 @@ var sqlDatabaseManager = SqlliteDbManager();
         return image
     }
     
-    func getDateFromTimestamp(timeStamp:NSNumber) -> String{
+    func getDateFromTimestamp(timeStamp:NSNumber) -> String {
         let timeinterval : TimeInterval = timeStamp.doubleValue / 1000 // convert it in to NSTimeInteral
         let dateFromServer = NSDate(timeIntervalSince1970:timeinterval) // you can the Date object from here
         let dateFormatter = DateFormatter()
@@ -403,7 +401,7 @@ var sqlDatabaseManager = SqlliteDbManager();
         date = dateFormatter.string(from: dateFromServer as Date).capitalized
         if NSCalendar.current.isDateInToday(dateobj!) == true {
             date = "TODAY \(date)"
-        }else if NSCalendar.current.isDateInTomorrow(dateobj!) == true {
+        } else if NSCalendar.current.isDateInTomorrow(dateobj!) == true {
             date = "TOMORROW \(date)"
         }
         return date
@@ -411,15 +409,13 @@ var sqlDatabaseManager = SqlliteDbManager();
     
     func fetchReminder(reminderID: NSNumber, title: String) {
         
-        var mutatedTitle = title
-        
+        var mutatedTitle = title;
         WebService().acceptReminderInvite(reminderId: String(describing: reminderID as NSNumber)) { (responseDict) in
             print(responseDict)
             
             if responseDict["Error"] as? Bool == true {
                 
-            }
-            else {
+            } else {
                 let reminderDict = responseDict["data"] as! [String: Any]
                 
                 if let reminderTime = reminderDict["reminderTime"] as? NSNumber {
@@ -430,7 +426,6 @@ var sqlDatabaseManager = SqlliteDbManager();
                 if let location = reminderDict["location"] as? String {
                     mutatedTitle.append(" in " + location)
                 }
-                
                 self.showReminderInvite(forTitle: mutatedTitle, reminderID: reminderID)
             }
         }
@@ -491,8 +486,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     //Delivers a notification to an app running in the foreground. UNNotificationPresentationOptions is the Badge, Sound or Alert. notification is the notification that was delivered.
     
+    //Methods in the Function will execute if App is opened, that is in foreground.**
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
+        print("[ UserNotificationCenter : willPresent ]");
+        Mixpanel.mainInstance().track(event: "willPresent", properties:[ "Logs" : "\(notification.request.content.userInfo["aps"]! as? NSDictionary)"]);
+
         self.cenesTabBar?.setTabBarDotVisible(visible: true);
         print("***************   ************  ",notification.request.content.userInfo)
         NSLog("%@",notification)
@@ -500,53 +499,53 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = notification.request.content.userInfo["aps"]! as? NSDictionary
         let alertDict = userInfo!["alert"] as! NSDictionary
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
-        
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil);
+        let notificationType = userInfo!["type"] as? String;
+        if (notificationType != nil && notificationType == "Chat") {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadEventChat"), object: nil)
+
+        } else {
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil);
+        }
         
         if alertDict["type"] as? String == "HomeRefresh" {
-                if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
-                    self.cenesTabBar?.selectedIndex = 0
-                    
-                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                    homeViewController?.refreshHomeScreenData();
-                }
-            } else {
-                if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
-                    self.cenesTabBar?.selectedIndex = 0
-                    
-                    let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                    homeViewController?.refreshHomeScreenData();
-                }
-            
-                completionHandler([.alert, .sound])
+            if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
+                self.cenesTabBar?.selectedIndex = 0
+                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
+                homeViewController?.refreshHomeScreenData();
             }
-        
-        let visibleVC = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController;
-        if (visibleVC is GatheringInvitationViewController) {
-            GatheringInvitationViewController().getAllEventChat();
+        } else {
+            completionHandler([.alert, .sound])
         }
     }
     
     
-    //  When the user responds to a notification, the system calls this method with the results. You use this method to perform the task associated with that action, if at all.
+    //Methods in this function will execure if app is minnimized..
     
+    //  When the user responds to a notification, the system calls this method with the results. You use this method to perform the task associated with that action, if at all.
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
+        print("[ UserNotificationCenter : didReceive ]");
+        Mixpanel.mainInstance().track(event: "didReceive", properties:[ "Logs" : "\(response.notification.request.content.userInfo["aps"]! as? NSDictionary)"]);
+
         print(response.notification.request.content.userInfo)
         if response.notification.request.content.userInfo.count == 0 {
             return
         }
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
 
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
         
-        let visibleVC = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController;
-        if (visibleVC is GatheringInvitationViewController) {
-            GatheringInvitationViewController().getAllEventChat();
+        
+        let notificationType = userInfo!["type"] as? String;
+        if (notificationType != nil && notificationType == "Chat") {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadEventChat"), object: nil)
+        } else {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadNotificationScreen"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
         }
+        
         if userInfo!["type"] as? String == "HomeRefresh" {
 
             /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
@@ -560,8 +559,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
         } else if userInfo!["type"] as? String == "Gathering" {
             
-            //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-            
             if let eventId = userInfo!["id"] as? Int32 {
                 
                 let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
@@ -573,48 +570,26 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 self.window?.makeKeyAndVisible();
                 
             }
-            
-            
-            /*if let cenesTabBarViewControllers = cenesTabBar?.viewControllers {
-                self.cenesTabBar?.selectedIndex = 0
-                
-                //let notificationViewController = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? NotificationViewController
-                //notificationViewController?.initilize();
-                let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                homeViewController?.refreshHomeScreenData();
-                /*let gathering = (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers.first as? GatheringViewController
-                
-                if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == true{
-//                if SideMenuManager.menuLeftNavigationController.isHidden == true{
-                
-                gathering?.dismiss(animated: false, completion: nil)
-                }else{
-                    
-                    let side = SideMenuManager.default.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
-                   side.dismiss(animated: true, completion: nil)
-                }
-                (cenesTabBarViewControllers[2] as? UINavigationController)?.viewControllers = [gathering!]
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                gathering?.isNewInvite = true
-                
-                let eventId = "\((userInfo!["id"] as? NSNumber)!)"
-                let invitationData = CenesCalendarData()
-                    invitationData.eventId = eventId
-                gathering?.invitationData = invitationData
-                //gathering?.setInvitation()
-                }*/
-            }*/
-        }
+        } else if userInfo!["type"] as? String == "Chat" {
+                   
+                   if let eventId = userInfo!["id"] as? Int32 {
+                       
+                       let storyBoard = UIStoryboard.init(name: "Main", bundle: nil);
+                       let viewContro = storyBoard.instantiateViewController(withIdentifier: "GatheringInvitationViewController") as! GatheringInvitationViewController;
+                       viewContro.fromPushNotificaiton = true;
+                       viewContro.event = Event();
+                       viewContro.event.eventId = eventId;
+                       self.window?.rootViewController = viewContro
+                       self.window?.makeKeyAndVisible();
+                       
+                   }
+               }
         
         if userInfo!["type"] as? String == "Reminder" {
-//            print(userInfo)
             
             let alertDict = userInfo?.object(forKey: "alert") as? NSDictionary
             var invitationTitle = alertDict?.object(forKey: "title") as? String
             if SideMenuManager.default.menuLeftNavigationController?.isNavigationBarHidden == false{
-
-//            if SideMenuManager.menuLeftNavigationController.isHidden == false{
                 
                 let side = SideMenuManager.default.menuLeftNavigationController?.viewControllers.first as! SideMenuViewController
                 side.dismiss(animated: true, completion: nil)

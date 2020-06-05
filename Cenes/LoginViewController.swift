@@ -20,7 +20,7 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
     //    @IBOutlet weak var displayLabele: UILabel!
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
-    var fbLoginBtn : FBSDKLoginButton!
+    var fbLoginBtn : FBLoginButton!
     
     class func MainViewController() -> UINavigationController{
         
@@ -53,14 +53,14 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
         loginBtn.layer.borderColor = UIColor.white.cgColor
         
         let buttonText = NSAttributedString(string: "Join us with Facebook")
-        fbLoginBtn = FBSDKLoginButton(frame:fbLoginBtnPlaceholder.frame)
+        fbLoginBtn = FBLoginButton(frame:fbLoginBtnPlaceholder.frame)
         fbLoginBtn.setAttributedTitle(buttonText, for: .normal)
         fbLoginBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         fbLoginBtn.setImage(nil, for: UIControlState.normal)
         fbLoginBtn.setBackgroundImage(nil, for: .normal)
         fbLoginBtn.backgroundColor = UIColor.clear
         fbLoginBtnPlaceholder.addSubview(fbLoginBtn)
-        fbLoginBtn.readPermissions = ["public_profile", "email", "user_friends","user_events", "user_mobile_phone"];
+        fbLoginBtn.permissions = ["public_profile", "email", "user_friends","user_events", "user_mobile_phone"];
         fbLoginBtn.delegate = self
 
 //        accountAskLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
@@ -92,14 +92,14 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
  
 }
 
-extension LoginViewController : FBSDKLoginButtonDelegate {
+extension LoginViewController : LoginButtonDelegate {
     ///FBSDKLoginButtonDelegate method implimentation
     
-    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+    func loginButton(_ loginButton: FBLoginButton!, didCompleteWith result: LoginManagerLoginResult!, error: Error!) {
         
         guard (error == nil) else {return}
         
-        if ((FBSDKAccessToken.current()) != nil) {
+        if ((AccessToken.current) != nil) {
             // User is logged in, do work such as go to next view controller.
             getFBUserInfo()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -108,7 +108,7 @@ extension LoginViewController : FBSDKLoginButtonDelegate {
         }
     }
     
-    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton!) {
         
     }
     

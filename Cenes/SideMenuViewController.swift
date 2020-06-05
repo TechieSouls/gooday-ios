@@ -189,7 +189,7 @@ class SideMenuViewController: UIViewController,NVActivityIndicatorViewable {
                 let tokenPush = UserDefaults.standard.object(forKey: "tokenData") as? String
                 imageFacebookURL = nil
                 GIDSignIn.sharedInstance().signOut()
-                let loginManager = FBSDKLoginManager()
+                        let loginManager = LoginManager()
                 loginManager.logOut()
                 print("Logut from App")
                 let domain = Bundle.main.bundleIdentifier!

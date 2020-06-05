@@ -116,4 +116,14 @@ extension SqlliteDbManager {
             print("Error in saveCenesUser : ", error)
         }
     }
+    
+    func deleteAllCenesUser() {
+        do {
+            let stmt = try database.prepare("DELETE from cenes_users");
+            try stmt.run();
+        } catch {
+            print("Error in deleteAllCenesUser : ", error)
+        }
+    }
+
 }

@@ -17,7 +17,7 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     @IBOutlet weak var meTimeItemsTableView: UITableView!
     
     @IBOutlet weak var addNewMeTimeBtn: UIImageView!
-    
+        
     var loggedInUser: User!;
     var metimeEvents = [MetimeRecurringEvent]();
     
@@ -95,25 +95,25 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
 
         if (Connectivity.isConnectedToInternet) {
             
-            let queryStr = "userId=\(String(self.loggedInUser.userId))";
+            let queryStr = "createdById=\(String(self.loggedInUser.userId))";
             
             MeTimeService().getMeTimes(queryStr: queryStr, token: self.loggedInUser.token, complete: {(response) in
                 
                 if (response["success"] as! Bool == true) {
                     
                     let meTimeArray = response["data"] as! NSArray;
-                    
-                    print(meTimeArray);
-                    self.metimeEvents = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
-                    
                     //Lets refresh the list locally.
                     sqlDatabaseManager.deleteAllRecurringEvent();
-                    for metimeRecurringEvent in self.metimeEvents {
+                    sqlDatabaseManager.deleteAllRecurringEventMembers();
+                    let metimeEventsTmp = MetimeRecurringEvent().loadMetimeRecurringEvents(meTimeArray: meTimeArray);
+                    for metimeRecurringEvent in metimeEventsTmp {
                         sqlDatabaseManager.saveMeTimeRecurringEvent(metimeRecurringEvent: metimeRecurringEvent);
                     }
-                    //MetimeRecurringEventModel().deleteAllRecurringEvent();
-                    //self.metimeEvents = MetimeRecurringEventModel().saveMetimeRecurringEventsMOFromNSArray(recurringEvents: meTimeArray);
-                    self.meTimeItemsTableView.reloadData();
+                    //if (self.metimeEvents.count == 0) {
+                        self.metimeEvents = metimeEventsTmp;
+                    //}
+                    //self.meTimeItemsTableView.reloadData();
+
                 } else {
                     let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);
                     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

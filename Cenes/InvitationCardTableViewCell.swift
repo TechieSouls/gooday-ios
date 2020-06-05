@@ -164,6 +164,7 @@ class InvitationCardTableViewCell: UITableViewCell {
                     isScrollViewPresent = true;
                 }
             }
+            
             if (isScrollViewPresent == true) {
                 for uiview in self.gatheringInvitaionViewControllerDelegate.view.subviews {
                     if (uiview is ChatFeatureView) {
@@ -172,11 +173,15 @@ class InvitationCardTableViewCell: UITableViewCell {
                 }
                 self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
                 self.descriptionView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
-            } else {
                 
+                self.gatheringInvitaionViewControllerDelegate.invitationCardTableView.isScrollEnabled = true;
+
+            } else {
+
                 if (gatheringInvitaionViewControllerDelegate.event.expired == false && gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
                     gatheringInvitaionViewControllerDelegate.addChatScrollView();
                     gatheringInvitaionViewControllerDelegate.makeMessagesAsRead();
+                    self.gatheringInvitaionViewControllerDelegate.invitationCardTableView.isScrollEnabled = false;
                 } else {
                     if (self.descriptionUILabelHolder.isHidden) {
                         
@@ -223,7 +228,7 @@ class InvitationCardTableViewCell: UITableViewCell {
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(resp) in
                 self.descriptionView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
                 self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
-            }))
+            }));
             gatheringInvitaionViewControllerDelegate.present(alert, animated: true)
         }
     }

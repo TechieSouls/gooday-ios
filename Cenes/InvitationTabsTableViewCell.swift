@@ -47,7 +47,8 @@ class InvitationTabsTableViewCell: UITableViewCell {
         declinedBtn.unselectedBottomBorderBtn();
         activateSelectedTabData(selectedTab: HomeInvitationTabs.Pending);
         newHomeViewControllerDelegate.homeDtoList = newHomeViewControllerDelegate.homescreenDto.pendingGatherings;
-    
+        newHomeViewControllerDelegate.totalPageCounts = newHomeViewControllerDelegate.homescreenDto.pageable.totalPendingCounts;
+
         newHomeViewControllerDelegate.homeTableView.reloadData();
         //newHomeViewControllerDelegate.dataTableViewCellProtocolDelegate.reloadTableToTop();
         //newHomeViewControllerDelegate.loadGatheringDataByStatus(status: "pending")
@@ -59,7 +60,7 @@ class InvitationTabsTableViewCell: UITableViewCell {
         pendingBtn.unselectedBottomBorderBtn();
         activateSelectedTabData(selectedTab: HomeInvitationTabs.Declined);
         newHomeViewControllerDelegate.homeDtoList = newHomeViewControllerDelegate.homescreenDto.declinedGatherings;
-
+        newHomeViewControllerDelegate.totalPageCounts = newHomeViewControllerDelegate.homescreenDto.pageable.totalDeclinedCounts;
         newHomeViewControllerDelegate.homeTableView.reloadData();
         //newHomeViewControllerDelegate.dataTableViewCellProtocolDelegate.reloadTableToTop();
         //newHomeViewControllerDelegate.loadGatheringDataByStatus(status: "NotGoing")

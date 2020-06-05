@@ -52,7 +52,25 @@ class CalendarsViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         calendarSyncTokens = [CalendarSyncToken]();
-        loadUserProperties();
+        
+        let calendarSyncTokensTemp = sqlDatabaseManager.findAllCalendarSyncToken();
+        if (calendarSyncTokensTemp.count == 0) {
+            loadUserProperties();
+        } else {
+            self.calendarSyncTokens = calendarSyncTokensTemp;
+            var isHolidayCalendarFound = false;
+            for calendarSyncToken in self.calendarSyncTokens {
+                if (calendarSyncToken.accountType == SelectedCalendar.HolidayCalendar) {
+                    self.holidayCalendarLabel.text = "Holiday: \(calendarSyncToken.emailId!)";
+                    isHolidayCalendarFound = true;
+                    break;
+                }
+            }
+            
+            if (isHolidayCalendarFound == false) {
+                self.holidayCalendarLabel.text = "Select Holiday Calendar";
+            }
+        }
     }
     /*
     // MARK: - Navigation
@@ -141,6 +159,9 @@ class CalendarsViewController: UIViewController {
                     }
                 }
                 
+                for calendarSyncTokenObj in self.calendarSyncTokens {
+                    sqlDatabaseManager.saveCalendarSyncToken(calendarSyncToken: calendarSyncTokenObj);
+                }
             } else {
                 self.showAlert(title: "Error", message: response.value(forKey: "message") as! String);
             }

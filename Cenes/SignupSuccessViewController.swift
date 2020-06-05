@@ -41,7 +41,7 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
     let picController = UIImagePickerController()
     let userService = UserService();
     var photoUploaded: Bool = false;
-    var fbLoginBtn : FBSDKLoginButton!;
+    var fbLoginBtn : FBLoginButton!;
     var pImage : UIImage!
     var facebookPictureUrl: String? = nil;
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
@@ -195,18 +195,17 @@ class SignupSuccessViewController: UIViewController, UIActionSheetDelegate, UIIm
             }
         } */
         
-        let fbLoginManager : FBSDKLoginManager = FBSDKLoginManager()
-        fbLoginManager.logIn(withReadPermissions: ["public_profile", "email"], from: self) { (result, error) -> Void in
+        let fbLoginManager : LoginManager = LoginManager()
+        fbLoginManager.logIn(permissions: ["public_profile", "email"], from: self) { (result, error) -> Void in
             if (error == nil){
-                let fbloginresult : FBSDKLoginManagerLoginResult = result!
+                //let fbloginresult = LoginManagerLoginResult;
                 // if user cancel the login
                 if (result?.isCancelled)!{
                     return
                 }
-                if(fbloginresult.grantedPermissions.contains("email"))
-                {
-                    if((FBSDKAccessToken.current()) != nil){
-                        FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, picture.type(large), email"]).start(completionHandler: { (connection, result, error) -> Void in
+                if(result!.grantedPermissions.contains("email")) {
+                    if((AccessToken.current) != nil){
+                        GraphRequest(graphPath: "me", parameters: ["fields": "id, name, first_name, last_name, picture.type(large), email"]).start(completionHandler: { (connection, result, error) -> Void in
                             if (error == nil){
                                 //everything works print the user data
                                 let fbDetails = result as! NSDictionary

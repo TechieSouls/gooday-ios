@@ -72,16 +72,30 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     }
     
     func removeEventFromHomeDtoList(eventId: Int32) {
+        
+        var noEventsLeft = false;
+        var homeDtoListIndex = 0;
         for homeDataTmp in newHomeViewControllerDelegate.homeDtoList {
             
             var index = 0;
             for sectionObj in homeDataTmp.sectionObjects {
                 if (sectionObj.eventId == eventId) {
                     homeDataTmp.sectionObjects.remove(at: index);
+                    
+                    if (homeDataTmp.sectionObjects.count == 0) {
+                        noEventsLeft = true;
+                    }
                     index += 1;
                     break;
                 }
             }
+            
+            //Not lets remove the header
+            if (noEventsLeft == true) {
+                newHomeViewControllerDelegate.homeDtoList.remove(at: homeDtoListIndex);
+                break;
+            }
+            homeDtoListIndex += 1;
         }
     }
 
@@ -111,9 +125,9 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     }
     
     func refreshInnerTable() {
-        DispatchQueue.main.async {
+        //DispatchQueue.main.async {
             self.dataTableView.reloadData();
-        }
+        //}
     }
     
     func initializeHomeDtoList() {
@@ -123,6 +137,7 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
     }
     
     func scrollTableToDesiredIndex(rowIndex: Int, sectionIndex: Int) {
+        print("scrollTableToDesiredIndex() : rowIndex : ",rowIndex,", sectionIndex: ", sectionIndex);
         let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.dataTableView.scrollToRow(at: indexPath, at: .
@@ -256,7 +271,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             
             let totalRows = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects.count;
             let event = self.newHomeViewControllerDelegate.homeDtoList[indexPath.section].sectionObjects[indexPath.row];
-            print(event);
+            print("[ DataTableViewCell - cellForRowAt ]", event.title!);
             if (newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
                 
                 if (event.scheduleAs == "Gathering") {
@@ -392,7 +407,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     if (newHomeViewControllerDelegate.loggedInUser.userId == host.userId) {
                         cell.ownerLabel.text = "Me";
                     } else {
-                        if (host.user != nil && host.user!.name != nil) {
+                        if (host.user != nil && host.user!.name != nil && host.user!.name != "") {
                             cell.ownerLabel.text = String(host.user!.name!.split(separator: " ")[0]);
                         } else {
                             cell.ownerLabel.text = String(host.name!.split(separator: " ")[0]);
@@ -489,9 +504,11 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if (self.newHomeViewControllerDelegate != nil && self.newHomeViewControllerDelegate.homeDtoList.count > 0) {
-            let event = self.newHomeViewControllerDelegate.homeDtoList[section].sectionObjects[0];
-            if (event.scheduleAs == "MonthSeparator") {
-                return 0;
+            if (self.newHomeViewControllerDelegate.homeDtoList[section].sectionObjects.count > 0) {
+                let event = self.newHomeViewControllerDelegate.homeDtoList[section].sectionObjects[0];
+                if (event.scheduleAs == "MonthSeparator") {
+                    return 0;
+                }
             }
         }
         return 30;
@@ -587,13 +604,13 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
             for homeData in self.newHomeViewControllerDelegate.homeDtoList {
                 gatheringsCount = gatheringsCount + homeData.sectionObjects.count;
             };
-            print("Gatheinrg Count : ", gatheringsCount, "total Page Counts", self.newHomeViewControllerDelegate.totalPageCounts, "Past Counts : ",self.newHomeViewControllerDelegate.homescreenDto.allPastEvents.count);
+            print("Gatheinrg Count : ", gatheringsCount, ", total Page Counts", self.newHomeViewControllerDelegate.totalPageCounts, ", Past Counts : ",self.newHomeViewControllerDelegate.homescreenDto.allPastEvents.count);
             
             var eventCounts = (gatheringsCount - self.newHomeViewControllerDelegate.homescreenDto.allPastEvents.count);
             if (self.newHomeViewControllerDelegate.homescreenDto.headerTabsActive == HomeHeaderTabs.InvitationTab) {
                 eventCounts = gatheringsCount;
             }
-            if (eventCounts < self.newHomeViewControllerDelegate.totalPageCounts) {
+            if (!(eventCounts < 0) && eventCounts < self.newHomeViewControllerDelegate.totalPageCounts) {
                 //self.spinner.startAnimating()
                 //self.spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
                 
@@ -713,6 +730,14 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
                     
                     
                 } else if (event.scheduleAs == "Event") {
+                    
+                    if (event.source == SelectedCalendar.GoogleCalendar) {
+                        sqlDatabaseManager.deleteAllEventsByScheduleAs(scheduleAs: EventSource.GOOGLE)
+                    } else if (event.source == SelectedCalendar.OutlookCalendar) {
+                        sqlDatabaseManager.deleteAllEventsByScheduleAs(scheduleAs: EventSource.OUTLOOK)
+                    } else if (event.source == SelectedCalendar.AppleCalendar) {
+                        sqlDatabaseManager.deleteAllEventsByScheduleAs(scheduleAs: EventSource.APPLE)
+                    }
                     
                     let deleteButton = UITableViewRowAction(style: .default, title: "Hide") { (action, indexPath) in
                         

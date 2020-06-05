@@ -21,7 +21,8 @@ class MetimeRecurringEvent {
     var processed: Int!;
     var photo: String!;
     var patterns: [MeTimeRecurringPattern] = [MeTimeRecurringPattern]();
-    
+    var recurringEventMembers: [RecurringEventMember] = [RecurringEventMember]();
+
     func loadMetimeRecurringEvents(meTimeArray: NSArray) -> [MetimeRecurringEvent] {
         var recurringEvents = [MetimeRecurringEvent]();
         for recurringEvent in meTimeArray {
@@ -45,7 +46,13 @@ class MetimeRecurringEvent {
         metimeRecurringEvent.processed = meTimeDict["processed"] as? Int;
         metimeRecurringEvent.photo = meTimeDict["photo"] as? String;
         
-        metimeRecurringEvent.patterns = MeTimeRecurringPattern().loadRecurringPatterns(patterns: meTimeDict["recurringPatterns"] as! NSArray, meTimeDict: meTimeDict);
+        if let pattensTmpArr = meTimeDict["recurringPatterns"] as? NSArray {
+            metimeRecurringEvent.patterns = MeTimeRecurringPattern().loadRecurringPatterns(patterns: pattensTmpArr, meTimeDict: meTimeDict);
+        }
+        
+        if let recurringEventMemTmp = meTimeDict.value(forKey: "recurringEventMembers") as? NSArray {
+            metimeRecurringEvent.recurringEventMembers = RecurringEventMember().loadRecurringEventMemberFromNSArray(recurringEventMemberArr: recurringEventMemTmp);
+        }
         
         return metimeRecurringEvent;
     }
@@ -97,9 +104,19 @@ class MetimeRecurringEvent {
             meTimeEventTemp["endTime"] = selectedEndDate.millisecondsSince1970;
             meTimeEventTemp["dayOfWeek"] = metimeEvent.dayOfWeek;
             meTimeEventTemp["title"] = self.title;
+            
+            
             events.append(meTimeEventTemp);
         }
         recurringEventJson["events"] = events;
+        //Adding Recurring Event Member Dict
+        if (self.recurringEventMembers.count > 0) {
+            var rrecurringEventMemDict = [[String: Any]]();
+            for recurringEventMemTmp in self.recurringEventMembers {
+                rrecurringEventMemDict.append(recurringEventMemTmp.toDictionary());
+            }
+            recurringEventJson["recurringEventMembers"] = rrecurringEventMemDict;
+        }
         return recurringEventJson;
         
     }

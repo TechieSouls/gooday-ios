@@ -17,7 +17,8 @@ class NotificationGatheringTableViewCell: UITableViewCell {
     @IBOutlet weak var circleButtonView: UIView!;
     @IBOutlet weak var circleButtonDot: UIButton!;
     @IBOutlet weak var messageAndNameView: UIView!
-    
+    @IBOutlet weak var partyIcon: UIImageView!
+
     @IBOutlet weak var rightCornerView: UIView!
     
     override func awakeFromNib() {

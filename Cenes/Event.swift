@@ -240,6 +240,14 @@ class Event {
     
 }
 
+class EventSource {
+    static let CENES = "Cenes";
+    static let GOOGLE = "Google";
+    static let OUTLOOK = "Outlook";
+    static let APPLE = "Apple";
+}
+
+
 class EventRequestType {
     static let NewEvent = "NEW";
     static let EditEvent = "EDIT";

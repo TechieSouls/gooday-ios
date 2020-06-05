@@ -57,7 +57,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
             let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! UserContact;
             print("Array : \(userContact)")
             
-            if (userContact.user != nil || userContact.cenesMember == "yes") {
+            if ((userContact.user != nil && userContact.user.userId != 0) || userContact.cenesMember == "yes") {
                 
                 cell.nonCenesUiViewLabel.isHidden = true;
                 cell.profilePic.isHidden = false;

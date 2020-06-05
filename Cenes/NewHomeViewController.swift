@@ -9,12 +9,13 @@
 import UIKit
 import EventKit
 import EventKitUI
-import Crashlytics
 import CoreTelephony
 import CoreData
 import Reachability
 import Mixpanel
 import ShimmerSwift;
+import MessageUI
+import Messages
 
 protocol DataTableViewCellProtocol {
     func reloadTableToTop();
@@ -32,7 +33,11 @@ protocol DateDroDownCellProtocol {
 protocol HomeFSCalendarCellProtocol {
     func updateCalendarToTodayMonth();
 }
-class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHomeViewProtocol {
+class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHomeViewProtocol, MFMessageComposeViewControllerDelegate {
+    
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil);
+    }
     
     @IBOutlet weak var homeTableView: UITableView!
     @IBOutlet weak var calendrStatusToast: UILabel!
@@ -58,13 +63,28 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     class MyTapRecognizer : UITapGestureRecognizer {
         var playtoreUrl: String!;
     }
+    
+    class func MainViewController() -> UITabBarController {
+        
+        let tabController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "tab") as! UITabBarController
+            cenesDelegate.cenesTabBar = tabController
+            tabController.tabBar.tintColor = cenesLabelBlue;
+        return tabController
+        
+    }
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //self.calendarView.backgroundColor = themeColor;
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshHomeScreenFromNotification), name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil);
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshEventChatOnPush), name: NSNotification.Name(rawValue: "reloadEventChat"), object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateExistingEventOnServer), name: NSNotification.Name(rawValue: "updateExistingEventOnServer"), object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(self.createNewExistingEventOnServer), name: NSNotification.Name(rawValue: "createNewExistingEventOnServer"), object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.createNewExistingEventOnServer), name: NSNotification.Name(rawValue: "refreshInvitaitonTabsLocally"), object: nil);
+
 
         
         calendrStatusToast.layer.cornerRadius = 10;
@@ -264,7 +284,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 return CTCarrier();
             }
         }
-
     }
     
     func checkForAppAlert() {
@@ -349,8 +368,35 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         //This method is to load the invitation tabs data.
         //self.initilizeInvitationTabsData();
+        
+        
+    }
+    
+    @objc func refreshEventChatOnPush() {
+        
+        if let wd = UIApplication.shared.delegate?.window {
+            var vc = wd!.rootViewController
+            if(vc is UITabBarController) {
+                var vcs = (vc as! UITabBarController).viewControllers
+                for viewController in vcs! {
+                    print("Is Gathering View COntroller", viewController  is UINavigationController);
+                    if (viewController  is UINavigationController) {
+                        var visible = (viewController  as! UINavigationController).visibleViewController
+                        if (visible is GatheringInvitationViewController) {
+                            (visible as! GatheringInvitationViewController).refreshChatScreen();
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 
+    
+    @objc func refreshInvitaitonTabsLocally() {
+        initilizeInvitationTabsData();
+    }
     
     func refreshHomeScreenData() {
         
@@ -362,10 +408,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         //This method is to load the invitation tabs data.
         //self.initilizeInvitationTabsData();
-    }
-    
-    func refreshOfflineData() {
-        
     }
     
     /**
@@ -448,6 +490,17 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.navigationItem.rightBarButtonItems = [calendarBarButton, refreshCalBarButton]
        
         
+    }
+    
+    func unregisterçells() -> Void {
+        
+        homeTableView.register(nil as UINib?, forCellReuseIdentifier: "DateDropDownTableViewCell");
+        homeTableView.register(nil as UINib?, forCellReuseIdentifier: "InvitationTabsTableViewCell");
+        homeTableView.register(nil as UINib?, forCellReuseIdentifier: "HomeFSCalendarTableViewCell");
+        homeTableView.register(nil as UINib?, forCellReuseIdentifier: "DataTableViewCell");
+        
+        homeTableView.reloadData();
+
     }
     
     func registerTableCells() ->Void {
@@ -648,7 +701,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             self.hideShimmerView();
             self.homeTableView.isHidden = false;
             
-            self.homescreenDto.pageable.calendarDataPageNumber = 0;
+            sqlDatabaseManager.deleteAllEvents();
+            sqlDatabaseManager.deleteAllEventMembers();
+            self.homescreenDto = HomeDto();
+            self.homeDtoList = [HomeData]();
+            /*self.homescreenDto.pageable.calendarDataPageNumber = 0;
             self.homescreenDto.calendarData = [HomeData]();
             self.homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
             self.homescreenDto.pageableMonthToAdd = 0;
@@ -658,7 +715,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             self.homescreenDto.monthTrackerForDataLoad = [String]();
             self.homescreenDto.monthScrollIndex = [String: MonthScrollDto]();
             self.homescreenDto.totalEventsList = [Int32]();
-            self.homescreenDto.monthSeparatorList = [String]();
+            self.homescreenDto.monthSeparatorList = [String]();*/
 
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
@@ -699,6 +756,12 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 self.totalPageCounts = totalCounts;
                 self.loadCalendarDots(events: self.homescreenDto.allCalendarTabEvents);
                 
+                let homeScreenDataHolder = HomeManager().parseResultsForHomeEvents(homescreenDto: self.homescreenDto, events: self.homescreenDto.allCalendarTabEvents);
+                self.homeDtoList = homeScreenDataHolder.homeDataList;
+                self.homescreenDto = homeScreenDataHolder.homescreenDto;
+                self.homescreenDto.calendarData = self.homeDtoList;
+                
+                self.homeTableView.reloadData();
                 self.loadHomeData(pageNumber: 0, offSet: self.homescreenDto.pageable.calendarDataOffset);
                 //}
             } else {
@@ -734,7 +797,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
 
             if self.homescreenDto.allCalendarTabEvents.count > 0 {
-                self.scrollToCurrentDateAtHomeScreen();
+                //self.scrollToCurrentDateAtHomeScreen();
                 self.homeTableView.isHidden = false;
             }
         });
@@ -767,17 +830,21 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         let queryStr = "userId=\(String(loggedInUser.userId))&timestamp=\(String(homescreenDto.startTimeStampToFetchPageableData))&pageNumber=\(String(pageNumber))&offSet=\(String(offSet))";
         
         HomeService().getHomeEvents(queryStr: queryStr, token: loggedInUser.token) {(returnedDict) in
-        
+            if (pageNumber == 0) {
+                self.callMadeToApi = true;
+                self.homeTableView.reloadData();
+            }
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
                                 
-                
                 var initialEvent: Event!;
                 
                 //Lets iterate the events from server and save any new event.
                 let resultArray = returnedDict["data"] as! NSArray;
                 
                 if (resultArray.count > 0) {
+                    
+                    self.homescreenDto.pageable.calendarDataPageNumber = self.homescreenDto.pageable.calendarDataPageNumber + self.homescreenDto.pageable.calendarDataOffset;
                     
                     for i : Int in (0..<resultArray.count) {
                         
@@ -804,17 +871,15 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         }
                     }
                        
-                    if (returnedDict.count > 0) {
-                        self.homescreenDto.pageable.calendarDataPageNumber = self.homescreenDto.pageable.calendarDataPageNumber + self.homescreenDto.pageable.calendarDataOffset;
-                        
-                    }
+                    self.loadCalendarDots(events: self.homescreenDto.allCalendarTabEvents);
+
                     //Now lets organize events into date wise
                     let homeScreenDataHolder = HomeManager().parseResultsForHomeEvents(homescreenDto: self.homescreenDto, events: self.homescreenDto.allCalendarTabEvents);
 
                     let calendarData = homeScreenDataHolder.homeDataList!;
                     //self.homescreenDto = homeScreenDataHolder.homescreenDto;
                     self.homescreenDto.totalEventsList = homeScreenDataHolder.homescreenDto.totalEventsList;
-                        if (calendarData.count > 0) {
+                    if (calendarData.count > 0) {
                         
                         var calendarDataTemp = self.homescreenDto.calendarData;
                         for homeDataTmp in calendarData {
@@ -827,9 +892,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         //So that the screen scrolls to first event which will be today's event
                         if (pageNumber == 0) {
                             
-                            
                             var firstHomeData = calendarData[0];
-                            var sectionObjectEvent = initialEvent;
+                            var sectionObjectEvent =
+                            initialEvent;
                             for calendarDataItem in calendarData {
                                 firstHomeData = calendarDataItem;
                                 
@@ -860,42 +925,57 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                             self.homescreenDto.scrollToMonthStartSectionAtHomeButton.append(monthScrollDto);
                         }
                         
-                        self.homescreenDto.pageable.calendarDataPageNumber = self.homescreenDto.pageable.calendarDataPageNumber + self.homescreenDto.pageable.calendarDataOffset;
-                        
                         let compos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(milliseconds: self.homescreenDto.timeStamp));
                                             
-                           self.homescreenDto.pageable.totalCalendarCounts =  Int(returnedDict["totalCounts"]  as! Int);
-                        
-                           let currentMonth = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
-                            
-                            if (Int(compos.month!) < Int(currentMonth.month!) && Int(compos.year!) <= Int(currentMonth.year!)) {
-                                
-                                self.homescreenDto.calendarData = HomeManager().mergePreviousDataAtTop(currentList: self.homescreenDto.calendarData, previous: calendarData);
-                                
-                            } else {
-                                self.homescreenDto.calendarData = HomeManager().mergeCurrentAndFutureList(currentList: self.homescreenDto.calendarData, futureList: calendarData);
-                            }
-                            
-                            if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
-                                self.homeDtoList = self.homescreenDto.calendarData;
-                                self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts;
-                                //self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-                                
-                                if (pageNumber == 0) {
-                                    self.scrollToCurrentDateAtHomeScreen();
-                                } else {
-                                    self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-                                }
-                                
-                                self.homeTableView.isHidden = false;
-                            }
-                        }
+                       self.homescreenDto.pageable.totalCalendarCounts =  Int(returnedDict["totalCounts"]  as! Int);
                     
-                    self.makeInvitationTabApiCall();
+                       let currentMonth = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
+                        
+                        if (Int(compos.month!) < Int(currentMonth.month!) && Int(compos.year!) <= Int(currentMonth.year!)) {
+                            
+                            self.homescreenDto.calendarData = HomeManager().mergePreviousDataAtTop(currentList: self.homescreenDto.calendarData, previous: calendarData);
+                            
+                        } else {
+                            self.homescreenDto.calendarData = HomeManager().mergeCurrentAndFutureList(currentList: self.homescreenDto.calendarData, futureList: calendarData);
+                        }
+                        
+                        if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
+                            self.homeDtoList = self.homescreenDto.calendarData;
+                            self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts;
+                            //self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+                            
+                            if (pageNumber == 0) {
+                                self.makeInvitationTabApiCall();
+                                self.homeTableView.reloadData();
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                                    self.scrollToCurrentDateAtHomeScreen();
+                                });
+                            } else {
+                                self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+                            }
+                            
+                            self.homeTableView.isHidden = false;
+                        }
+                    }
+                    
+                } else {
+                    self.homeTableView.isHidden = false;
+                    if (pageNumber == 0) {
+                        //Show Empty Screen
+                        self.makeInvitationTabApiCall();
+                        self.scrollToCurrentDateAtHomeScreen();
+                    } else {
+                        self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+                    }
                 }
-                
             } else {
                 //Show Empty Screen
+                self.homeTableView.isHidden = false;
+                if (pageNumber == 0) {
+                    self.scrollToCurrentDateAtHomeScreen();
+                } else {
+                    self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+                }
             }
         }
     }
@@ -1153,11 +1233,12 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     }
     
     func initilizeCalendarData() {
+        
         print("Refreshing screeeeeeeen")
         self.callMadeToApi = false;
         self.homescreenDto = HomeDto();
         self.homeDtoList = [HomeData]();
-        homescreenDto.pageable.calendarDataPageNumber = 0;
+        /*homescreenDto.pageable.calendarDataPageNumber = 0;
         homescreenDto.calendarData = [HomeData]();
         homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
                 
@@ -1176,7 +1257,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         print("Loading home data by Page Wise....")
         if (self.dataTableViewCellProtocolDelegate != nil) {
             self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-        }
+        }*/
         
         self.loadCalendarTabOfflineData();
         self.loadPastEvents();
@@ -1418,12 +1499,22 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     }
     
     @objc func calendarTabPressed() {
+        self.homescreenDto = HomeDto();
         self.homescreenDto.headerTabsActive = HomeHeaderTabs.CalendarTab;
-        
         self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = false;
 
-        self.homeDtoList = self.homescreenDto.calendarData;
-        self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts;
+        let events = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.HOME);
+        print("Total Offline Events Present : ",events.count)
+        for eveee in events {
+            print(eveee.eventId, eveee.title);
+        }
+        
+        self.homescreenDto.totalEventsList = [Int32]();
+        self.showOfflineData(events: events, totalCountsParam: events.count);
+        self.loadCalendarDots(events: events);
+
+        //self.homeDtoList = self.homescreenDto.calendarData;
+        //self.totalPageCounts = self.homescreenDto.pageable.totalCalendarCounts;
 
         self.setUpNavBarImages();
         
@@ -1432,6 +1523,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         if (self.homescreenDto.scrollToMonthStartSectionAtHomeButton.count > 0) {
             self.dateDroDownCellProtocolDelegate.updateDate(milliseconds: self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0].timestamp);
+            self.homescreenDto.fsCalendarCurrentDateTimestamp = self.homescreenDto.scrollToMonthStartSectionAtHomeButton[0].timestamp;
             if (self.homeFSCalendarCellProtocol != nil) {
                 self.homeFSCalendarCellProtocol.updateCalendarToTodayMonth();
             }
@@ -1448,6 +1540,10 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
 
         self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = true;
         self.homescreenDto.invitationTabs = HomeInvitationTabs.Accepted;
+
+        let acceptedEvents = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.ACCEPTED);
+        homescreenDto.pageable.acceptedGathetingPageNumber = acceptedEvents.count;
+        homescreenDto.acceptedGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: acceptedEvents);
 
         self.homeDtoList = homescreenDto.acceptedGatherings;
         self.totalPageCounts = self.homescreenDto.pageable.totalAcceptedCounts;
@@ -1674,16 +1770,20 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
       let reachability = note.object as! Reachability
 
       switch reachability.connection {
-      case .wifi:
-        print("Reachable via WiFi");
-        createGatheringForOfflineCreatedEvents();
+          case .wifi:
+            print("Reachable via WiFi");
+            createGatheringForOfflineCreatedEvents();
 
-      case .cellular:
-        print("Reachable via Cellular");
-        createGatheringForOfflineCreatedEvents();
+          case .cellular:
+            print("Reachable via Cellular");
+            createGatheringForOfflineCreatedEvents();
 
-      case .none:
-        print("Network not reachable")
+          case .none:
+            print("Network not reachable")
+        
+        default:
+            print("Default");
+
       }
     }
 
@@ -1833,7 +1933,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                 sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
                 
                 let unprocessedEvents = sqlDatabaseManager.findUnprocessedEvents();
-                                
+                           
                 let dataDict = response.value(forKey: "data") as! NSDictionary;
                 let eventId = dataDict.value(forKey: "eventId") as! Int32;
                 let eventTemp = Event().loadEventData(eventDict: dataDict);
@@ -1854,24 +1954,24 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     sqlDatabaseManager.saveEvent(event: eventTemp);
                     
                     if (nonCenesMembers.count == 0) {
-                        //self.navigationController?.popToRootViewController(animated: false);
                         //This is called when the user is from home screen
-                        print("After saving Going to Refresh Screens");
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                            //UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController()
-                            self.refreshHomeScreenData();
-                        });
+                            print("Loading home data by Page Wise....")
+                            //self.homeTableView.reloadData();
+                            if (self.dataTableViewCellProtocolDelegate != nil) {
+                                self.dataTableViewCellProtocolDelegate.refreshInnerTable();
+                            }
+                        
+                            print("Loading After Home data....")
                             
-                        }
                     }
                 }
+            }
         });
     }
     
     
     @objc func updateExistingEventOnServer() {
-        
-        print("Refreshing screeeeeeeen")
+        /*print("Refreshing screeeeeeeen")
         self.callMadeToApi = false;
         self.homescreenDto = HomeDto();
         self.homeDtoList = [HomeData]();
@@ -1900,76 +2000,183 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         print("Loading home data by Page Wise....")
         if (self.dataTableViewCellProtocolDelegate != nil) {
             self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-        }
+        }*/
 
         let unProcessedEvents = sqlDatabaseManager.findUnprocessedEvents();
-        
-        for unProcessedEvent in unProcessedEvents {
-            if (unProcessedEvent.displayScreenAt == EventDisplayScreen.HOME) {
-                
-                let eventDict = Event().toDictionary(event: unProcessedEvent);
-                print(eventDict);
+        var newEventToUpdate: Event!;
+        if (unProcessedEvents.count > 0) {
+            for unProcessedEvent in unProcessedEvents {
+                if (unProcessedEvent.displayScreenAt == EventDisplayScreen.HOME) {
+                    newEventToUpdate = unProcessedEvent;
+                    for unprocessEventMem in unProcessedEvent.eventMembers {
+                        if (unprocessEventMem.userId == 0) {
+                            unprocessEventMem.userId = nil;
+                        }
+                        if (unprocessEventMem.eventMemberId == 0) {
+                            unprocessEventMem.eventMemberId = nil;
+                        }
+                    }
+                    let eventDict = Event().toDictionary(event: unProcessedEvent);
+                    print(eventDict);
 
-                createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: [EventMember]());
+                    createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: [EventMember]());
+                }
             }
+            
+            var nonCenesMembers = [EventMember]();
+            if (newEventToUpdate.eventMembers != nil) {
+                for mem in newEventToUpdate.eventMembers! {
+                    if ((mem.eventMemberId == 0 || mem.eventMemberId == nil) && (mem.userId == nil || mem.userId == 0 && mem.phone != nil)) {
+                        nonCenesMembers.append(mem);
+                    }
+                }
+            }
+            var eventOwner = Event().getLoggedInUserAsEventMember();
+            if (newEventToUpdate.eventMembers != nil) {
+                for eventMember in newEventToUpdate.eventMembers {
+                    //We have to check user id, because there may be users which are non cenes users
+                    if (eventMember.userId != nil && eventMember.userId != 0 && newEventToUpdate.createdById == eventMember.userId) {
+                        eventOwner = eventMember;
+                        break;
+                    }
+                }
+            }
+            
+            //DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+            //DispatchQueue.main.async {
+            if (nonCenesMembers.count > 0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+
+                    if MFMessageComposeViewController.canSendText() {
+                        var shareLinkActualtext = String(shareLinkText).replacingOccurrences(of: "[Host]", with: String(eventOwner.user!.name!));
+                        
+                        shareLinkActualtext = shareLinkActualtext.replacingOccurrences(of: "[Title]", with: newEventToUpdate.title!);
+                        
+                        let composeVC = MFMessageComposeViewController()
+                        composeVC.messageComposeDelegate = self
+                        
+                        // Configure the fields of the interface.
+                        var phoneNumbers = [String]();
+                        for nmem in nonCenesMembers {
+                            phoneNumbers.append("\(nmem.phone!)")
+                        }
+                        composeVC.recipients = phoneNumbers;
+                        composeVC.body = "\(shareLinkActualtext)\r\n\(shareEventUrl)\(newEventToUpdate.key)"
+                        
+                        // Present the view controller modally.
+                        var topMostViewController = UIApplication.shared.keyWindow?.rootViewController
+
+                        while let presentedViewController = topMostViewController?.presentedViewController {
+                            topMostViewController = presentedViewController
+                        }
+                        topMostViewController?.present(composeVC, animated: true, completion: nil);
+                    }
+                });
+            }
+                
+            sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
         }
+        
     }
     
     @objc func createNewExistingEventOnServer() {
-        
-        print("Refreshing screeeeeeeen")
-        self.callMadeToApi = false;
-        self.homescreenDto = HomeDto();
-        self.homeDtoList = [HomeData]();
-        homescreenDto.pageable.calendarDataPageNumber = 0;
-        homescreenDto.calendarData = [HomeData]();
-        homescreenDto.fsCalendarCurrentDateTimestamp = Int(Date().millisecondsSince1970);
-                
-        //let currentMonth = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
-        self.homescreenDto.allCalendarTabEvents = [Event]();
-        self.homescreenDto.allPastEvents = [Event]();
-        self.homescreenDto.pageableMonthToAdd = 0;
-        self.homescreenDto.pageableMonthTimestamp = Int(Date().millisecondsSince1970);
-        self.homescreenDto.pageable.totalCalendarCounts = 0;
-        self.homescreenDto.topHeaderDateIndex = [String: MonthScrollDto]();
-        self.homescreenDto.monthTrackerForDataLoad = [String]();
-        self.homescreenDto.monthScrollIndex = [String: MonthScrollDto]();
-        self.homescreenDto.totalEventsList = [Int32]();
-        self.homescreenDto.monthSeparatorList = [String]();
-            
-        print("Loading home data by Page Wise....")
-        if (self.dataTableViewCellProtocolDelegate != nil) {
-            self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-        }
-        self.loadCalendarTabOfflineData();
-        self.initilizeInvitationTabsData() ;
-        print("Loading home data by Page Wise....")
-        if (self.dataTableViewCellProtocolDelegate != nil) {
-            self.dataTableViewCellProtocolDelegate.refreshInnerTable();
-        }
 
         let unProcessedEvents = sqlDatabaseManager.findUnprocessedEvents();
-        
-        for unProcessedEvent in unProcessedEvents {
-            if (unProcessedEvent.displayScreenAt == EventDisplayScreen.HOME) {
-                unProcessedEvent.eventId = nil;
-                for unprocessEventMem in unProcessedEvent.eventMembers {
-                    unprocessEventMem.eventMemberId = nil;
-                    unprocessEventMem.eventId = nil;
+        if (unProcessedEvents.count > 0) {
+            var newEventToCreate = Event();
+                for unProcessedEvent in unProcessedEvents {
+                    if (unProcessedEvent.displayScreenAt == EventDisplayScreen.HOME) {
+                        unProcessedEvent.eventId = nil;
+                        
+                        newEventToCreate = unProcessedEvent;
+                        
+                        for unprocessEventMem in unProcessedEvent.eventMembers {
+                            unprocessEventMem.eventMemberId = nil;
+                            unprocessEventMem.eventId = nil;
+                            if (unprocessEventMem.userId == 0) {
+                                unprocessEventMem.userId = nil;
+                            }
+                        }
+                        let eventDict = Event().toDictionary(event: unProcessedEvent);
+                        print(eventDict);
+
+                        createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: [EventMember]());
+                    }
                 }
-                let eventDict = Event().toDictionary(event: unProcessedEvent);
-                print(eventDict);
+                
+                var nonCenesMembers = [EventMember]();
+                if (newEventToCreate.eventId != nil && newEventToCreate.eventId != 0) {
+                    if (newEventToCreate.eventMembers != nil) {
+                        for mem in newEventToCreate.eventMembers! {
+                            if ((mem.eventMemberId == nil || mem.eventMemberId == 0) && mem.userId == nil || mem.userId == 0 && mem.phone != nil) {
+                                nonCenesMembers.append(mem);
+                            }
+                        }
+                    }
+                } else {
+                    if (newEventToCreate.eventMembers != nil) {
+                        for mem in newEventToCreate.eventMembers! {
+                            if (mem.userId == nil || mem.userId == 0 && mem.phone != nil) {
+                                nonCenesMembers.append(mem);
+                            }
+                        }
+                    }
+                }
+                
+                var eventOwner = Event().getLoggedInUserAsEventMember();
+                if (newEventToCreate.eventMembers != nil) {
+                    for eventMember in newEventToCreate.eventMembers {
+                        //We have to check user id, because there may be users which are non cenes users
+                        if (eventMember.userId != nil && eventMember.userId != 0 && newEventToCreate.createdById == eventMember.userId) {
+                            eventOwner = eventMember;
+                            break;
+                        }
+                    }
+                }
+                
+                //DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+                //DispatchQueue.main.async {
+            if (nonCenesMembers.count > 0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
 
-                createGatheringAfterInvitation(postData: eventDict, nonCenesMembers: [EventMember]());
+                    if MFMessageComposeViewController.canSendText() {
+                        var shareLinkActualtext = String(shareLinkText).replacingOccurrences(of: "[Host]", with: String(eventOwner.user!.name!));
+                        
+                        shareLinkActualtext = shareLinkActualtext.replacingOccurrences(of: "[Title]", with: newEventToCreate.title!);
+                        
+                        let composeVC = MFMessageComposeViewController()
+                        composeVC.messageComposeDelegate = self
+                        
+                        // Configure the fields of the interface.
+                        var phoneNumbers = [String]();
+                        for nmem in nonCenesMembers {
+                            phoneNumbers.append("\(nmem.phone!)")
+                        }
+                        composeVC.recipients = phoneNumbers;
+                        composeVC.body = "\(shareLinkActualtext)\r\n\(shareEventUrl)\(newEventToCreate.key)"
+                        
+                        // Present the view controller modally.
+                        var topMostViewController = UIApplication.shared.keyWindow?.rootViewController
 
+                        while let presentedViewController = topMostViewController?.presentedViewController {
+                            topMostViewController = presentedViewController
+                        }
+                        topMostViewController?.present(composeVC, animated: true, completion: nil);
+                    }
+                });
             }
+                
+            sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
         }
         
-        let unprocessedEventsBefore = sqlDatabaseManager.findUnprocessedEvents();
-        for unprocessEvent in unprocessedEventsBefore {
-            self.dataTableViewCellProtocolDelegate.removeEventFromHomeDtoList(eventId: unprocessEvent.eventId);
-        }
-        sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
+        /*DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+            let unprocessedEventsBefore = sqlDatabaseManager.findUnprocessedEvents();
+            for unprocessEvent in unprocessedEventsBefore {
+                self.dataTableViewCellProtocolDelegate.removeEventFromHomeDtoList(eventId: unprocessEvent.eventId);
+            }
+            sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
+        });*/
+        
     }
     // UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {

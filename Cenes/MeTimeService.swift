@@ -11,7 +11,7 @@ import Foundation
 class MeTimeService {
     
     //GET
-    let get_metimeData: String  = "api/user/getmetimes";
+    let get_metimeData: String  = "api/recurring/byCreatdById";
     
     //PUT
     let put_deleteByRecurringId: String = "api/user/metime/deleteByRecurringId";

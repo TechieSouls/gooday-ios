@@ -61,7 +61,6 @@ class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVAc
                             break;
                         }
                     }
-                    
                     self.appSettingsEditTableView.reloadData();
                 })
             }
@@ -124,10 +123,11 @@ class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVAc
                 let message = response.value(forKey: "message") as! String;
                 self.showAlert(title: "Alert", message: message);
             } else {
+                
+                sqlDatabaseManager.emptyDatabase();
                 self.resetDefaults();
-                
-                
                 UIApplication.shared.keyWindow?.rootViewController = PhoneVerificationStep1ViewController.MainViewController();
+            
             }
         })
     }

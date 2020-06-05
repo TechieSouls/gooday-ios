@@ -66,8 +66,17 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         activityIndicator.center = view.center;
         self.view.addSubview(activityIndicator);
         
-        loadUserProperties();
-        
+        let calendarSyncTmps = sqlDatabaseManager.findAllCalendarSyncToken();
+        if (calendarSyncTmps.count > 0) {
+            for calSyncTok in calendarSyncTmps {
+                if (calSyncTok.accountType == self.calendarSelected) {
+                    self.calendarSyncToken = calSyncTok;
+                    break;
+                }
+            }
+        } else {
+            loadUserProperties();
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -169,6 +178,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                     let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                                     
                                     self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                                    sqlDatabaseManager.saveCalendarSyncToken(calendarSyncToken: self.calendarSyncToken);
                                 }
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
@@ -314,6 +324,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                                                   properties:[ "CalendarType" : "Apple", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
                                     
                                     self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                                    sqlDatabaseManager.saveCalendarSyncToken(calendarSyncToken: self.calendarSyncToken);
+
                                 }
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
@@ -353,6 +365,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                                     let calendarSyncDict = response.value(forKey: "data") as! NSDictionary;
                                     
                                     self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                                    sqlDatabaseManager.saveCalendarSyncToken(calendarSyncToken: self.calendarSyncToken);
                                 }
                                 
                             })
@@ -413,6 +426,8 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                         Mixpanel.mainInstance().track(event: "SyncCalendar",
                                                       properties:[ "CalendarType" : "Google", "Action" : "Sync Success", "UserEmail": "\(self.loggedInUser.email!)", "UserName": "\(self.loggedInUser.name!)"]);
                         self.calendarSyncToken = CalendarSyncToken().loadCalendarSyncToken(calendarSyncTokenDict: calendarSyncDict);
+                        sqlDatabaseManager.saveCalendarSyncToken(calendarSyncToken: self.calendarSyncToken);
+                        
                     }
                     
                     
@@ -447,6 +462,16 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         activityIndicator.startAnimating();
         UIApplication.shared.beginIgnoringInteractionEvents()
 
+        if (self.calendarSelected == SelectedCalendar.GoogleCalendar) {
+            sqlDatabaseManager.deleteAllEventsBySourceAndScheduleAs(source: EventSource.GOOGLE, scheduleAs: EventScheduleAs.EVENT)
+        } else if (self.calendarSelected == SelectedCalendar.OutlookCalendar) {
+            sqlDatabaseManager.deleteAllEventsBySourceAndScheduleAs(source: EventSource.OUTLOOK, scheduleAs: EventScheduleAs.EVENT)
+        } else if (self.calendarSelected == SelectedCalendar.AppleCalendar) {
+            sqlDatabaseManager.deleteAllEventsBySourceAndScheduleAs(source: EventSource.APPLE, scheduleAs: EventScheduleAs.EVENT)
+        }
+        
+        sqlDatabaseManager.deleteCalendarSyncTokenByRefreshTokenId(refreshTokenId: syncId);
+        
         let queryStr = "calendarSyncTokenId=\(String(syncId))";
         UserService().deleteSyncTokenByTokenId(queryStr: queryStr, token: loggedInUser.token) {(response) in
             print("Deleted");
@@ -463,7 +488,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
                 if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                     
                     let homeViewController = (cenesTabBarViewControllers[0] as? UINavigationController)?.viewControllers.first as? NewHomeViewController
-                    homeViewController?.refershDataFromOtherScreens();
+                    homeViewController?.refreshHomeScreenData();
                 }
             });
         }
@@ -474,6 +499,5 @@ class SelectedCalendar {
     static let HolidayCalendar: String = "Holiday";
     static let GoogleCalendar: String = "Google";
     static let OutlookCalendar: String = "Outlook";
-    static let AppleCalendar: String = "Apple"
-    
+    static let AppleCalendar: String = "Apple";
 }

@@ -95,6 +95,7 @@ extension NewHomeViewController :UITableViewDataSource,UITableViewDelegate{
                         dataTableViewCellProtocolDelegate.addRemoveSubViewOnHeaderTabSelected(selectedTab: HomeHeaderTabs.InvitationTab)
                     }
                 
+                    cell.newHomeViewControllerDelegate.homeDtoList = self.homeDtoList;
                     cell.dataTableView.reloadData();
                     return cell;
             }

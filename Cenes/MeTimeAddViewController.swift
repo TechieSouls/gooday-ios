@@ -13,7 +13,7 @@ import Photos
 import CoreData
 import Mixpanel
 
-class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate {
+class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, NVActivityIndicatorViewable, UITextFieldDelegate, UIScrollViewDelegate, MeTimeAddViewControllerProtocol {
 
     @IBOutlet weak var meTimeCard: UIView!
     
@@ -25,15 +25,14 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     @IBOutlet weak var lblMeTimeTitle: UILabel!
     
-    @IBOutlet weak var startTimeView: UIView!
+   /* @IBOutlet weak var startTimeView: UIView!
     @IBOutlet weak var startTimeLabel: UILabel!
    
     @IBOutlet weak var endTimeView: UIView!
-    @IBOutlet weak var endTimeLabel: UILabel!
+    @IBOutlet weak var endTimeLabel: UILabel!*/
     
     @IBOutlet weak var btnDelete: UIButton!
     @IBOutlet weak var btnSave: UIButton!
-    
     
     @IBOutlet weak var timepPickerView: UIView!
     
@@ -45,17 +44,23 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     
     @IBOutlet weak var meTimeImageView: UIImageView!
     
-    @IBOutlet weak var sunday: UIButton!
+    @IBOutlet weak var metimeScrollView: UIScrollView!;
+    
+    @IBOutlet weak var uipageControlDots: UIPageControl!;
+
+    /*@IBOutlet weak var sunday: UIButton!
     @IBOutlet weak var monday: UIButton!
     @IBOutlet weak var tuesday: UIButton!
     @IBOutlet weak var wednesday: UIButton!
     @IBOutlet weak var thursday: UIButton!
     @IBOutlet weak var friday: UIButton!
-    @IBOutlet weak var saturday: UIButton!
+    @IBOutlet weak var saturday: UIButton!*/
     
     @IBOutlet weak var photoUploadSpinner: UIActivityIndicatorView!
     
     var metimeRecurringEvent: MetimeRecurringEvent!;
+    var meTimeDaysView: MeTimeDaysView!;
+    var meTimeFriendsView: MeTimeFriendsView!;
     
     var dateSelected = "";
     var daySelectUnselectMap:[String: Bool] = [:];
@@ -67,6 +72,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView();
     var context: NSManagedObjectContext!;
     var metimeFiels = MeTimeFields();
+    var inviteFriendsDto: InviteFriendsDto = InviteFriendsDto();
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,17 +118,41 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         let imageTapGesture = UITapGestureRecognizer(target: self, action: #selector(photoIconClicked))
         withoutimageView.addGestureRecognizer(imageTapGesture)
         
-        startTimeView.layer.borderWidth = 2;
-        startTimeView.layer.borderColor = UIColor.white.cgColor
-        startTimeView.layer.cornerRadius = 25
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(startTimeViewPressed))
-        startTimeView.addGestureRecognizer(tapGesture)
+        configurePageControl();
+        
+        metimeScrollView.frame = CGRect.init(x: metimeScrollView.frame.origin.x, y: metimeScrollView.frame.origin.y, width: self.meTimeCard.frame.width, height: metimeScrollView.frame.height);
+        uipageControlDots.addTarget(self, action: #selector(self.changePage(sender:)), for: UIControlEvents.valueChanged)
 
-        endTimeView.layer.borderWidth = 2;
+        meTimeDaysView = MeTimeDaysView.instanceFromNib() as! MeTimeDaysView;
+        meTimeDaysView.frame = CGRect.init(x: 0, y: 0, width: metimeScrollView.frame.width, height: metimeScrollView.frame.height);
+        meTimeDaysView.metimeAddViewController = self;
+        metimeScrollView.addSubview(meTimeDaysView);
+        
+        //MeTime Friend View
+        meTimeFriendsView = MeTimeFriendsView.instanceFromNib() as! MeTimeFriendsView;
+        meTimeFriendsView.frame = CGRect.init(x: metimeScrollView.frame.width, y: 0, width: metimeScrollView.frame.width - 20, height: metimeScrollView.frame.height);
+        
+        let placeholderTapGesture = UITapGestureRecognizer(target: self, action: #selector(profilePicPlaceholderPressed))
+        meTimeFriendsView.profilePicPlaceholder.addGestureRecognizer(placeholderTapGesture)
+
+        let plusIconTapGesture = UITapGestureRecognizer(target: self, action: #selector(profilePicPlaceholderPressed))
+        meTimeFriendsView.addMoreFriendsIcon.addGestureRecognizer(plusIconTapGesture);
+        
+        meTimeFriendsView.recurringEventMembers = [RecurringEventMember]();
+        metimeScrollView.addSubview(meTimeFriendsView);
+        metimeScrollView.contentSize.width = 2*metimeScrollView.frame.width;
+        
+        /*startTimeView.layer.borderWidth = 2;
+        startTimeView.layer.borderColor = UIColor.white.cgColor
+        startTimeView.layer.cornerRadius = 25*/
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(startTimeViewPressed))
+        meTimeDaysView.startTimeView.addGestureRecognizer(tapGesture)
+
+        /*endTimeView.layer.borderWidth = 2;
         endTimeView.layer.borderColor = UIColor.white.cgColor;
-        endTimeView.layer.cornerRadius = 25
+        endTimeView.layer.cornerRadius = 25*/
         let endTapGesture = UITapGestureRecognizer(target: self, action: #selector(endTimeViewPressed))
-        endTimeView.addGestureRecognizer(endTapGesture)
+        meTimeDaysView.endTimeView.addGestureRecognizer(endTapGesture)
 
         btnSave.backgroundColor = cenesLabelBlue
         btnDelete.backgroundColor = cenesLabelBlue
@@ -137,13 +167,13 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         self.meTimeCard.layer.mask = rectShape
         self.meTimeCard.center.y += self.meTimeCard.bounds.height;
 
-        self.setupDayButtons(button: sunday);
-        self.setupDayButtons(button: monday);
-        self.setupDayButtons(button: tuesday);
-        self.setupDayButtons(button: wednesday);
-        self.setupDayButtons(button: thursday);
-        self.setupDayButtons(button: friday);
-        self.setupDayButtons(button: saturday);
+        self.setupDayButtons(button: meTimeDaysView.sunday);
+        self.setupDayButtons(button: meTimeDaysView.monday);
+        self.setupDayButtons(button: meTimeDaysView.tuesday);
+        self.setupDayButtons(button: meTimeDaysView.wednesday);
+        self.setupDayButtons(button: meTimeDaysView.thursday);
+        self.setupDayButtons(button: meTimeDaysView.friday);
+        self.setupDayButtons(button: meTimeDaysView.saturday);
         
         if (metimeRecurringEvent == nil) {
             metimeRecurringEvent = MetimeRecurringEvent();
@@ -152,9 +182,57 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: {
             self.showMeTimeCardView();
         });
+                
     }
     
     override func viewWillAppear(_ animated: Bool) {
+    }
+    
+    override func viewDidLayoutSubviews() {
+        uipageControlDots.transform = CGAffineTransform(scaleX: 2, y: 2)
+    }
+
+    @objc func profilePicPlaceholderPressed() {
+        
+        //self.view.isHidden = true;
+        if (metimeRecurringEvent.recurringEventMembers.count > 0) {
+            self.inviteFriendsDto = InviteFriendsDto();
+            let userContact = UserContact();
+            userContact.cenesMember = "Yes";
+            userContact.friendId = Int(loggedInUser.userId);
+            userContact.userId = Int(loggedInUser.userId);
+            userContact.cenesName = loggedInUser.name;
+            userContact.name = loggedInUser.name;
+            userContact.photo = loggedInUser.photo;
+            userContact.phone = loggedInUser.phone;
+            userContact.user = loggedInUser;
+            self.inviteFriendsDto.selectedFriendCollectionViewList.append(userContact);
+            
+            for recurringEventMember in metimeRecurringEvent.recurringEventMembers {
+                
+                let userContact = UserContact();
+                userContact.cenesMember = "Yes";
+                userContact.friendId = Int(recurringEventMember.userId);
+                userContact.userId = Int(recurringEventMember.userId);
+                if let userContactTmp = recurringEventMember.userContact {
+                    userContact.userContactId = userContactTmp.userContactId;
+                    userContact.cenesName = userContactTmp.name;
+                    userContact.name = userContactTmp.name;
+                    userContact.photo = userContactTmp.photo;
+                    userContact.phone = userContactTmp.phone;
+                    userContact.user = userContactTmp.user;
+                }
+                self.inviteFriendsDto.selectedFriendCollectionViewList.append(userContact);
+                self.inviteFriendsDto.checkboxStateHolder[userContact.userContactId] = true;
+            }
+        }
+        
+        
+        let friendsViewController = self.storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController;
+        friendsViewController.inviteFriendsDto = inviteFriendsDto;
+        friendsViewController.meTimeAddViewControllerProtocolDelegate = self;
+        self.present(friendsViewController, animated: true, completion: nil);
+        
     }
     
     @objc func startTimeViewPressed() {
@@ -192,11 +270,11 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
           //  print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.metimeRecurringEvent.startTime = self.timePicker.clampedDate.millisecondsSince1970;
            // print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
-            self.startTimeLabel.text = "START  \(self.timePicker.clampedDate.hmma())";
+            self.meTimeDaysView.startTimeLabel.text = "START  \(self.timePicker.clampedDate.hmma())";
             if (metimeFiels.endTime == false) {
                 let endDate = Calendar.current.date(byAdding: .minute, value: 60, to: Date(millis: self.metimeRecurringEvent.startTime));
                 self.metimeRecurringEvent.endTime = endDate?.millisecondsSince1970;
-                self.endTimeLabel.text = "FINISH  \(endDate!.hmma())";
+                self.meTimeDaysView.endTimeLabel.text = "FINISH  \(endDate!.hmma())";
                 metimeFiels.endTime = true;
             }
             
@@ -204,7 +282,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             metimeFiels.endTime = true;
           //  print(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count);
             self.metimeRecurringEvent.endTime = self.timePicker.clampedDate.millisecondsSince1970;
-            self.endTimeLabel.text = "FINISH  \(self.timePicker.clampedDate.hmma())";
+            self.meTimeDaysView.endTimeLabel.text = "FINISH  \(self.timePicker.clampedDate.hmma())";
           //  print("FINISH  \(MetimeRecurringEventModel().findAllMetimeRecurringEvents().count)");
 
         }
@@ -320,47 +398,18 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
 
     }
     
-    @IBAction func dayCirclePressed(_ sender: Any) {
-        guard let button = sender as? UIButton else {
-            return
-        }
-        switch button.tag {
-        case 0:
-            self.handleDayCirclePressed(button: button, label: "Sunday");
-            break;
-        case 1:
-            self.handleDayCirclePressed(button: button, label: "Monday");
-            break;
-        case 2:
-            self.handleDayCirclePressed(button: button, label: "Tuesday");
-            break;
-        case 3:
-            self.handleDayCirclePressed(button: button, label: "Wednesday");
-            break;
-        case 4:
-            self.handleDayCirclePressed(button: button, label: "Thursday");
-            break;
-        case 5:
-            self.handleDayCirclePressed(button: button, label: "Friday");
-            break;
-        case 6:
-            self.handleDayCirclePressed(button: button, label: "Saturday");
-            break;
-        default:
-            print("Unknown language")
-            return
-        }
-    }
-    
     func showTimePicker() -> Void {
         let currentDate = Date();
         self.timePicker.setDate(currentDate, animated: true);
         
         self.timepPickerView.isHidden = false;
+        self.timepPickerView.frame = CGRect.init( x: self.timepPickerView.frame.origin.x, y: self.view.frame.height - self.timepPickerView.frame.height, width: self.timepPickerView.frame.width, height: self.timepPickerView.frame.height);
+        self.meTimeCard.frame = CGRect.init(x: self.meTimeCard.frame.origin.x, y: self.view.frame.height - (self.timepPickerView.frame.height + self.meTimeCard.frame.height), width: self.meTimeCard.frame.width, height: self.meTimeCard.frame.height);
     }
     
     func hideTimePicker() -> Void {
         self.timepPickerView.isHidden = true;
+        self.meTimeCard.frame = CGRect.init(x: self.meTimeCard.frame.origin.x, y: self.view.frame.height - (self.meTimeCard.frame.height), width: self.meTimeCard.frame.width, height: self.meTimeCard.frame.height);
     }
     
     func setupDayButtons(button: UIButton) -> Void {
@@ -495,7 +544,6 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             self.photoUploadSpinner.isHidden = false;
             self.photoUploadSpinner.startAnimating();
             
-
             MeTimeService().uploadMeTimeImageVersion2(image: self.imageToUpload, userId: loggedInUser.userId, token: self.loggedInUser.token, complete: {(response) in
                 self.view.isUserInteractionEnabled = true;
                 self.photoUploadSpinner.isHidden = true;
@@ -532,38 +580,74 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             for pattern in self.metimeRecurringEvent.patterns {
                 
                 if (pattern.dayOfWeek == 1) {
-                    sunday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.sunday.backgroundColor = selectedColor;
                     daySelectUnselectMap["Sunday"] = true;
                 } else if (pattern.dayOfWeek == 2) {
                     
                     daySelectUnselectMap["Monday"] = true;
-                    monday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.monday.backgroundColor = selectedColor;
                 } else if (pattern.dayOfWeek == 3) {
                     
                     daySelectUnselectMap["Tuesday"] = true;
-                    tuesday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.tuesday.backgroundColor = selectedColor;
                 } else if (pattern.dayOfWeek == 4) {
                     
                     daySelectUnselectMap["Wednesday"] = true;
-                    wednesday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.wednesday.backgroundColor = selectedColor;
                 } else if (pattern.dayOfWeek == 5) {
                     
                     daySelectUnselectMap["Thursday"] = true;
-                    thursday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.thursday.backgroundColor = selectedColor;
                 } else if (pattern.dayOfWeek == 6) {
                     
                     daySelectUnselectMap["Friday"] = true;
-                    friday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.friday.backgroundColor = selectedColor;
                 } else if (pattern.dayOfWeek == 7) {
                     
                     daySelectUnselectMap["Saturday"] = true;
-                    saturday.backgroundColor = selectedColor;
+                    self.meTimeDaysView.saturday.backgroundColor = selectedColor;
                 }
             }
             
-            self.startTimeLabel.text = "START  \(Date(millis: self.metimeRecurringEvent.startTime).hmma())";
-            self.endTimeLabel.text = "FINISH  \(Date(millis: self.metimeRecurringEvent.endTime).hmma())";
+            self.meTimeDaysView.startTimeLabel.text = "START  \(Date(millis: self.metimeRecurringEvent.startTime).hmma())";
+            self.meTimeDaysView.endTimeLabel.text = "FINISH  \(Date(millis: self.metimeRecurringEvent.endTime).hmma())";
 
+        }
+        
+        if (metimeRecurringEvent.recurringEventMembers.count > 0) {
+            
+            let userContact = UserContact();
+            userContact.cenesMember = "Yes";
+            userContact.friendId = Int(loggedInUser.userId);
+            userContact.userId = Int(loggedInUser.userId);
+            userContact.cenesName = loggedInUser.name;
+            userContact.name = loggedInUser.name;
+            userContact.photo = loggedInUser.photo;
+            userContact.phone = loggedInUser.phone;
+            userContact.user = loggedInUser;
+            self.inviteFriendsDto.selectedFriendCollectionViewList.append(userContact);
+            
+            for recurringEventMember in metimeRecurringEvent.recurringEventMembers {
+                
+                let userContact = UserContact();
+                userContact.cenesMember = "Yes";
+                userContact.friendId = Int(recurringEventMember.userId);
+                userContact.userId = Int(recurringEventMember.userId);
+                if let userContactTmp = recurringEventMember.userContact {
+                    userContact.userContactId = userContactTmp.userContactId;
+                    userContact.cenesName = userContactTmp.name;
+                    userContact.name = userContactTmp.name;
+                    userContact.photo = userContactTmp.photo;
+                    userContact.phone = userContactTmp.phone;
+                    userContact.user = userContactTmp.user;
+                }
+               
+                if (userContact.userContactId != nil) {
+                    self.inviteFriendsDto.selectedFriendCollectionViewList.append(userContact);
+                    self.inviteFriendsDto.checkboxStateHolder[userContact.userContactId] = true;
+                }
+            }
+        
         }
     }
     
@@ -609,10 +693,9 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         }, completion: {(_ completed: Bool) -> Void in
             
         });
-        
     }
     
-    func hideMetimeCardView() -> Void{
+    func hideMetimeCardView() -> Void {
         UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear],
                        animations: {
                         self.meTimeCard.center.y += self.meTimeCard.bounds.height
@@ -625,8 +708,79 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
             self.dismiss(animated: false, completion: nil);
         })
     }
-}
+    
+    func configurePageControl() {
+        // The total number of pages that are available is based on how many available colors we have.
+        self.uipageControlDots.numberOfPages = 2
+        self.uipageControlDots.currentPage = 0
+    }
+    
+    // MARK : TO CHANGE WHILE CLICKING ON PAGE CONTROL
+    @objc func changePage(sender: AnyObject) {
+        let x = CGFloat(uipageControlDots.currentPage) * metimeScrollView.frame.size.width
+        metimeScrollView.setContentOffset(CGPoint(x: x,y :0), animated: true)
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let pageNumber = round(scrollView.contentOffset.x / scrollView.frame.size.width)
+        self.uipageControlDots.currentPage = Int(pageNumber)
+        if (pageNumber == 1) {
+            if (metimeRecurringEvent.recurringEventMembers.count > 0) {
+                meTimeFriendsView.recurringEventMembers = metimeRecurringEvent.recurringEventMembers;
+                meTimeFriendsView.profilePicBackgroundView.isHidden = true;
+                meTimeFriendsView.metimeFriendlistView.isHidden = false;
+                meTimeFriendsView.friendlistCollectionView.reloadData();
+            }
+        }
+    }
 
+    func friendsDonePressed(eventMembers: [EventMember]) {
+        print("Friends Done Pressed.....");
+        self.metimeRecurringEvent.recurringEventMembers = [RecurringEventMember]();
+        if (eventMembers.count > 1) {
+            self.inviteFriendsDto = InviteFriendsDto();
+            for eventMemberTmp in eventMembers {
+                if (eventMemberTmp.userId == loggedInUser.userId) {
+                    continue;
+                }
+                let recurringEventMember = RecurringEventMember();
+                recurringEventMember.userId = eventMemberTmp.userId;
+                recurringEventMember.user = eventMemberTmp.user;
+                recurringEventMember.userContact = eventMemberTmp.userContact;
+                self.metimeRecurringEvent.recurringEventMembers.append(recurringEventMember);
+                
+                    
+                let userContact = UserContact();
+                userContact.cenesMember = "Yes";
+                userContact.friendId = Int(eventMemberTmp.userId);
+                userContact.userId = Int(eventMemberTmp.userId);
+                if let userContactTmp = recurringEventMember.userContact {
+                    userContact.userContactId = userContactTmp.userContactId;
+                    userContact.cenesName = userContactTmp.name;
+                    userContact.name = userContactTmp.name;
+                    userContact.photo = userContactTmp.photo;
+                    userContact.phone = userContactTmp.phone;
+                    userContact.user = userContactTmp.user;
+                }
+                self.inviteFriendsDto.selectedFriendCollectionViewList.append(userContact);
+                self.inviteFriendsDto.checkboxStateHolder[userContact.userContactId] = true;
+            }
+            
+            meTimeFriendsView.metimeFriendlistView.isHidden = false;
+            meTimeFriendsView.profilePicBackgroundView.isHidden = true;
+            
+            meTimeFriendsView.recurringEventMembers = self.metimeRecurringEvent.recurringEventMembers;
+            meTimeFriendsView.friendlistCollectionView.reloadData();
+        } else {
+            
+            self.inviteFriendsDto = InviteFriendsDto();
+            meTimeFriendsView.metimeFriendlistView.isHidden = true;
+            meTimeFriendsView.profilePicBackgroundView.isHidden = false;
+            //meTimeFriendsView.recurringEventMembers = self.metimeRecurringEvent.recurringEventMembers;
+            //meTimeFriendsView.friendlistCollectionView.reloadData();
+        }
+    }
+}
 
 extension MeTimeAddViewController: UITextViewDelegate {
     

@@ -49,7 +49,7 @@ extension SqlliteDbManager {
     func saveEventMembers(eventMember: EventMember) {
     
         if (eventMember.eventMemberId == nil) {
-            eventMember.eventMemberId = Int32(truncatingIfNeeded: Date().millisecondsSince1970);
+            eventMember.eventMemberId = 0;
         }
         let eventMemberFromDatabase = findEventMembersByEventMemberId(eventMemberId: eventMember.eventMemberId);
         if (eventMemberFromDatabase.eventMemberId == nil || eventMemberFromDatabase.eventMemberId == 0) {

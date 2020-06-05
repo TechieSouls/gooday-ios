@@ -64,14 +64,17 @@ class DeleteAccountTableViewCell: UITableViewCell, UITextFieldDelegate {
                 phoneNumberWithoutInitialZero = String(phoneNumberWithoutInitialZero.suffix(phoneNumberWithoutInitialZero.count - 1))
             }
             
-            
-            var postData = [String: Any]();
-            postData["userId"] = appSettingsEditViewControllerDelegate.loggedInUser.userId!
-            postData["phone"] = "\(String(countryCode.text!))\(phoneNumberWithoutInitialZero)";
-            if (passwordAvailable == true) {
-                postData["password"] = "\(String(password.text!))";
+            if (startIndexCharacter == "+") {
+                appSettingsEditViewControllerDelegate.showAlert(title: "Alert", message: "Please donot append country code.")
+            } else {
+                var postData = [String: Any]();
+                postData["userId"] = appSettingsEditViewControllerDelegate.loggedInUser.userId!
+                postData["phone"] = "\(String(countryCode.text!))\(phoneNumberWithoutInitialZero)";
+                if (passwordAvailable == true) {
+                    postData["password"] = "\(String(password.text!))";
+                }
+                appSettingsEditViewControllerDelegate.deleteUserRequest(postData: postData);
             }
-            appSettingsEditViewControllerDelegate.deleteUserRequest(postData: postData);
         }
     }
     

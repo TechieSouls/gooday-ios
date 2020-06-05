@@ -19,6 +19,10 @@ class CreateGathDto {
     var barSelected = [CreateGatheringBars.startBar: false, CreateGatheringBars.endBar: false, CreateGatheringBars.dateBar : false];
     
     var trackGatheringDataFilled = [CreateGatheringFields.titleField: false, CreateGatheringFields.startTimeField: false, CreateGatheringFields.endTimeField: false, CreateGatheringFields.dateField: false, CreateGatheringFields.locationField: false, CreateGatheringFields.messageField: false, CreateGatheringFields.imageField : false];
+    
+    var originalEventStartTime: Int64 = Date().millisecondsSince1970;
+    var originalEventEndTime: Int64 = Date().millisecondsSince1970;
+
 }
 
 class CreateGatheringRows {

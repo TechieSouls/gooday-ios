@@ -21,7 +21,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
     var nactvityIndicatorView = NVActivityIndicatorView.init(frame: cgRectSizeLoading, type: NVActivityIndicatorType.lineScaleParty, color: UIColor.white, padding: 0.0);
     
     @IBOutlet weak var fbLoginBtnPlaceholder: UIButton!
-    var fbLoginBtn : FBSDKLoginButton!
+    var fbLoginBtn : FBLoginButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,7 +32,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
         // start here
         //cusom uielements
         let buttonText = NSAttributedString(string: "LOGIN WITH FACEBOOK")
-        fbLoginBtn = FBSDKLoginButton(frame:fbLoginBtnPlaceholder.frame)
+        fbLoginBtn = FBLoginButton(frame:fbLoginBtnPlaceholder.frame)
         fbLoginBtn.setAttributedTitle(buttonText, for: .normal)
         fbLoginBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         fbLoginBtn.setImage(nil, for: UIControlState.normal)
@@ -40,7 +40,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
         fbLoginBtn.backgroundColor = UIColor.clear
         fbLoginBtnPlaceholder.addSubview(fbLoginBtn)
         
-        fbLoginBtn.readPermissions = ["public_profile", "email", "user_friends","user_events"];
+        fbLoginBtn.permissions = ["public_profile", "email", "user_friends","user_events"];
         fbLoginBtn.delegate = self
         configureTextField(withImage: #imageLiteral(resourceName: "loginusername"), textfield: user)
         configureTextField(withImage: #imageLiteral(resourceName: "loginPasswords"), textfield: password)
@@ -183,28 +183,28 @@ extension MailLogInViewController: UITextFieldDelegate{
     
 }
 
-extension MailLogInViewController : FBSDKLoginButtonDelegate {
+extension MailLogInViewController : LoginButtonDelegate {
     ///FBSDKLoginButtonDelegate method implimentation
     
-    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
+    func loginButton(_ loginButton: FBLoginButton!, didCompleteWith result: LoginManagerLoginResult!, error: Error!) {
         
         guard (error == nil) else {return}
         
-        if ((FBSDKAccessToken.current()) != nil) {
+        if ((AccessToken.current) != nil) {
             // User is logged in, do work such as go to next view controller.
             getFBUserInfo()
         }
     }
     
-    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton!) {
         
     }
     
     func getFBUserInfo() {
         startAnimating(loadinIndicatorSize, message: "Loading...", type: self.nactvityIndicatorView.type)
 
-        let request = FBSDKGraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"]);
-        request!.start(completionHandler: { (connection, result, error) -> Void in
+        let request = GraphRequest(graphPath: "me", parameters: ["fields":"id,name,email,gender,picture.type(large)"]);
+        request.start(completionHandler: { (connection, result, error) -> Void in
             
             if ((error) != nil) {
                 print(error)
@@ -212,10 +212,10 @@ extension MailLogInViewController : FBSDKLoginButtonDelegate {
 
             } else {
                 let dictValue = result as! [String: Any];
-                let tokenStr = FBSDKAccessToken.current().tokenString
+                let tokenStr = AccessToken.current!.tokenString
                 imageFacebookURL = ((dictValue["picture"] as! [String: Any])["data"] as! [String: Any])["url"] as! String;
                 let webServ = WebService()
-                webServ.facebookSignUp(facebookAuthToken:tokenStr!, facebookID: dictValue["id"]! as! String , complete: { (returnedDict) in
+                webServ.facebookSignUp(facebookAuthToken:tokenStr, facebookID: dictValue["id"]! as! String , complete: { (returnedDict) in
                     
                     self.stopAnimating()
 

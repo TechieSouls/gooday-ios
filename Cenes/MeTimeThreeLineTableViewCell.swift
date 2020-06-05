@@ -17,7 +17,10 @@ class MeTimeThreeLineTableViewCell: UITableViewCell {
     @IBOutlet weak var meTimeHours: UILabel!
     @IBOutlet weak var meTimeViewNoImage: UIView!
     @IBOutlet weak var meTimeNoImageLabel: UILabel!
-    
+    @IBOutlet weak var meTimeFriendCollection: UICollectionView!
+
+    var metimeRecurringEvent: MetimeRecurringEvent!;
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -39,6 +42,8 @@ class MeTimeThreeLineTableViewCell: UITableViewCell {
         
         meTimeDays.textColor = selectedColor
         meTimeHours.textColor = selectedColor
+        
+        meTimeFriendCollection.register(UINib.init(nibName: "MeTimeFriendImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "MeTimeFriendImageCollectionViewCell");
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -47,4 +52,43 @@ class MeTimeThreeLineTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+}
+
+
+extension MeTimeThreeLineTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if (metimeRecurringEvent == nil) {
+            return 0;
+        }
+        if (metimeRecurringEvent.recurringEventMembers.count > 3) {
+            return 4;
+        }
+        return metimeRecurringEvent.recurringEventMembers.count;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let recurringEventMember = metimeRecurringEvent.recurringEventMembers[indexPath.row];
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MeTimeFriendImageCollectionViewCell", for: indexPath) as! MeTimeFriendImageCollectionViewCell;
+        
+        cell.profilePic.isHidden = false;
+        cell.memberCountView.isHidden = true;
+        
+        if (indexPath.row == 3) {
+            cell.profilePic.isHidden = true;
+            cell.memberCountView.isHidden = false;
+            cell.memberCountLabel.text = "+\(metimeRecurringEvent.recurringEventMembers.count - 3)"
+        } else {
+            if (recurringEventMember.user != nil && recurringEventMember.user.photo != nil) {
+                cell.profilePic.sd_setImage(with: URL.init(string: recurringEventMember.user.photo), placeholderImage: UIImage.init(named: "profile_pic_no_image"), completed: nil);
+            } else {
+                cell.profilePic.image = UIImage.init(named: "profile_pic_no_image");
+            }
+        }
+        return cell;
+    }
 }

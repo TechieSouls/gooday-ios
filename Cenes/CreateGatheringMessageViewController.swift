@@ -47,11 +47,26 @@ class CreateGatheringMessageViewController: UIViewController, UITextViewDelegate
         let currentText = textView.text ?? ""
         guard let stringRange = Range(range, in: currentText) else { return false }
         
-        descriptionMsg = currentText.replacingCharacters(in: stringRange, with: text)
-        
-        charaterCountLabel.text = "\(150 - descriptionMsg.count) Characters Remain";
-        
-        return descriptionMsg.count < 150
+        if (text.count > 1) {
+            print(text.count);
+            var textToAdd = "";
+            if ((currentText.count + text.count) > 150) {
+                let existingCharacterCount = currentText.count;
+                let remainingCharacters = 150 - existingCharacterCount;
+                textToAdd = String(text.prefix(upTo: String.Index.init(encodedOffset: remainingCharacters)));
+                print(textToAdd.count);
+            }
+            descriptionMsg = currentText + textToAdd;
+            textView.text = currentText + textToAdd;
+            charaterCountLabel.text = "\(150 - descriptionMsg.count) Characters Remain";
+            return false
+
+        } else {
+            descriptionMsg = currentText.replacingCharacters(in: stringRange, with: text)
+            charaterCountLabel.text = "\(150 - descriptionMsg.count) Characters Remain";
+            return descriptionMsg.count < 150
+        }
+        return true
     }
     
     @IBAction func cancelButtonPressed(_ sender: Any) {

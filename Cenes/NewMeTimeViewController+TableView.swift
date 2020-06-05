@@ -65,7 +65,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         finalCell.meTimeHours.text = hoursStr;
                     
                         //Setting Image
-                        if (meTimeEventObj.photo == nil) {
+                        if (meTimeEventObj.photo == nil || meTimeEventObj.photo == "") {
                             finalCell.meTimeImage.isHidden = true;
                             finalCell.meTimeViewNoImage.isHidden = false;
                             
@@ -78,7 +78,16 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                             let imageUrl = "\(imageUploadDomain)\(meTimeEventObj.photo!)";
                             finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                         }
-                        return finalCell;
+                    
+                    if (meTimeEventObj.recurringEventMembers.count > 0) {
+                        finalCell.metimeRecurringEvent = meTimeEventObj;
+                        finalCell.meTimeFriendCollection.isHidden = false;
+                    } else {
+                        finalCell.meTimeFriendCollection.isHidden = true;
+                    }
+                    finalCell.meTimeFriendCollection.reloadData();
+
+                    return finalCell;
                 
                 } else if (cellType == 1) {
                     let identifier = "MeTimeTwoLineTitleTableViewCell";
@@ -93,7 +102,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                     finalCell.meTimeHours.text = hoursStr;
                     
                     //Setting Image
-                    if (meTimeEventObj.photo == nil) {
+                    if (meTimeEventObj.photo == nil || meTimeEventObj.photo == "") {
                         finalCell.meTimeImage.isHidden = true;
                         finalCell.meTimeViewNoImage.isHidden = false;
                         
@@ -106,6 +115,14 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         let imageUrl = "\(imageUploadDomain)\(meTimeEventObj.photo!)";
                         finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                     }
+                    
+                    if (meTimeEventObj.recurringEventMembers.count > 0) {
+                        finalCell.metimeRecurringEvent = meTimeEventObj;
+                        finalCell.meTimeFriendCollection.isHidden = false;
+                    } else {
+                        finalCell.meTimeFriendCollection.isHidden = true;
+                    }
+
                     
                         return finalCell;
                 } else {
@@ -120,7 +137,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                     finalCell.meTimeHours.text = hoursStr;
                     
                     //Setting Image
-                    if (meTimeEventObj.photo == nil) {
+                    if (meTimeEventObj.photo == nil || meTimeEventObj.photo == "") {
                         finalCell.meTimeImage.isHidden = true;
                         finalCell.meTimeViewNoImage.isHidden = false;
                         
@@ -134,6 +151,13 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
                         finalCell.meTimeImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage.init(named: "profile_pic_no_image"));
                     }
                     
+                    if (meTimeEventObj.recurringEventMembers.count > 0) {
+                        finalCell.metimeRecurringEvent = meTimeEventObj;
+                        finalCell.meTimeFriendCollection.isHidden = false;
+                    } else {
+                        finalCell.meTimeFriendCollection.isHidden = true;
+                    }
+
                     return finalCell;
                 }
             
@@ -160,12 +184,16 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
             let leftAndRightEmptySpaceAroundTitle: CGFloat = 130.0;
             let cellType = Int((size.width/(tableView.frame.width - leftAndRightEmptySpaceAroundTitle)));
             
-            if (cellType == 0) {
-                return 110;
-            } else if (cellType == 1) {
-                return 135;
+            var recurringEventMembersSize = 0;
+            if (meTimeEventObj.recurringEventMembers.count > 0) {
+                recurringEventMembersSize = 30;
             }
-            return 170;
+            if (cellType == 0) {
+                return (CGFloat(130 + recurringEventMembersSize));
+            } else if (cellType == 1) {
+                return (CGFloat(155 + recurringEventMembersSize));
+            }
+            return (CGFloat(185 + recurringEventMembersSize));
         }
         
     }

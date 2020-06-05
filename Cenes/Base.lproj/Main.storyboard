@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Z4R-Ke-SW6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="xGH-1e-8q1">
     <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -2392,7 +2392,7 @@ ALREADY
                     <connections>
                         <outlet property="addNewMeTimeBtn" destination="Go2-WJ-DKo" id="4nl-g6-RbI"/>
                         <outlet property="meTimeItemsTableView" destination="Kpp-ew-0Jv" id="VA2-mS-5Vb"/>
-                        <segue destination="eQo-bi-N6y" kind="presentation" identifier="showAddMetimeModal" animates="NO" modalPresentationStyle="overCurrentContext" modalTransitionStyle="coverVertical" id="DUA-Kb-0v3"/>
+                        <segue destination="eQo-bi-N6y" kind="presentation" identifier="showAddMetimeModal" animates="NO" id="DUA-Kb-0v3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lEV-Sw-h82" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2464,34 +2464,19 @@ ALREADY
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RWg-x7-uxc">
-                                        <rect key="frame" x="81" y="270" width="250" height="50"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="START  00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U3P-hC-TBA">
-                                                <rect key="frame" x="8" y="9" width="234" height="33"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="24"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IMy-Cl-3Es">
-                                        <rect key="frame" x="81" y="355" width="250" height="50"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="FINISH  00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YoM-DL-DcC">
-                                                <rect key="frame" x="8" y="9" width="234" height="33"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="24"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uZj-5j-jzt">
+                                        <rect key="frame" x="8" y="143" width="398" height="309"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                        <viewLayoutGuide key="contentLayoutGuide" id="2Vw-Et-8n9"/>
+                                        <viewLayoutGuide key="frameLayoutGuide" id="vlV-VX-ZTk"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="eQo-bi-N6y" id="6Im-1Y-54i"/>
+                                        </connections>
+                                    </scrollView>
+                                    <pageControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="2" translatesAutoresizingMaskIntoConstraints="NO" id="vQY-Pc-rUi">
+                                        <rect key="frame" x="187" y="410" width="45" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    </pageControl>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aLf-dj-HAg">
                                         <rect key="frame" x="0.0" y="460" width="414" height="60"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -2523,96 +2508,12 @@ ALREADY
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uj2-0E-ElH">
-                                        <rect key="frame" x="50" y="180" width="315" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lug-Mh-Rml">
-                                                <rect key="frame" x="25" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="S">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="zAC-Rx-l7x"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GqD-Cq-mnm">
-                                                <rect key="frame" x="65" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="M">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="U64-9P-qSu"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4CI-Sa-Tlp">
-                                                <rect key="frame" x="105" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="T">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="1NI-fe-A1n"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="3" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j6G-uo-7yo">
-                                                <rect key="frame" x="145" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="W">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="hIt-zv-1Id"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kNh-TQ-tD1">
-                                                <rect key="frame" x="185" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="T">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="DGm-Ik-1ap"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="5" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7hm-41-J3v">
-                                                <rect key="frame" x="225" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="F">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="Wx5-AF-Xxf"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="6" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vNP-nj-fHo">
-                                                <rect key="frame" x="265" y="0.0" width="30" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="18"/>
-                                                <state key="normal" title="S">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="dayCirclePressed:" destination="eQo-bi-N6y" eventType="touchUpInside" id="ija-Dn-hrJ"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.58823529411764708" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8n8-wj-MUO" userLabel="TimePickerView">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="374"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rjO-tb-CmB">
                                         <rect key="frame" x="346" y="39" width="47" height="30"/>
@@ -2645,7 +2546,7 @@ ALREADY
                         <viewLayoutGuide key="safeArea" id="U0S-n3-uJl"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <nil key="simulatedTopBarMetrics"/>
+                    <navigationItem key="navigationItem" id="YOO-cu-CZe"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="backButtonView" destination="hLg-l4-RXk" id="R6m-PW-3UL"/>
@@ -2653,24 +2554,15 @@ ALREADY
                         <outlet property="btnSave" destination="65U-kO-eEg" id="JiI-MJ-7Zn"/>
                         <outlet property="cancelTimePickerBtn" destination="DJ1-Iw-WJ7" id="Qlh-sH-92L"/>
                         <outlet property="doneTimePickerButton" destination="rjO-tb-CmB" id="HFt-Xm-I73"/>
-                        <outlet property="endTimeLabel" destination="YoM-DL-DcC" id="LFv-V2-X5S"/>
-                        <outlet property="endTimeView" destination="IMy-Cl-3Es" id="JtK-zp-hMk"/>
-                        <outlet property="friday" destination="7hm-41-J3v" id="TvY-13-YJy"/>
                         <outlet property="lblMeTimeTitle" destination="xhx-8b-rFX" id="1w0-2w-Bz5"/>
                         <outlet property="meTimeCard" destination="5wd-kC-PPc" id="rbh-LL-sTE"/>
                         <outlet property="meTimeImageView" destination="qgX-JT-6Cn" id="vXi-H7-w4q"/>
-                        <outlet property="monday" destination="GqD-Cq-mnm" id="dxm-Ak-6oP"/>
+                        <outlet property="metimeScrollView" destination="uZj-5j-jzt" id="M9g-Zh-rop"/>
                         <outlet property="photoUploadSpinner" destination="zMK-po-6al" id="0lt-ks-Tm9"/>
-                        <outlet property="saturday" destination="vNP-nj-fHo" id="7qo-Le-rM4"/>
-                        <outlet property="startTimeLabel" destination="U3P-hC-TBA" id="8SI-rc-6xQ"/>
-                        <outlet property="startTimeView" destination="RWg-x7-uxc" id="bVn-eW-BeD"/>
-                        <outlet property="sunday" destination="lug-Mh-Rml" id="2K0-eu-HXa"/>
-                        <outlet property="thursday" destination="kNh-TQ-tD1" id="Zp4-c4-uku"/>
                         <outlet property="timePicker" destination="oFt-yB-7Ts" id="pKV-mS-GEN"/>
                         <outlet property="timepPickerView" destination="8n8-wj-MUO" id="nG8-ZR-0Al"/>
                         <outlet property="titletextField" destination="ueT-zB-Djv" id="nVU-1S-DHV"/>
-                        <outlet property="tuesday" destination="4CI-Sa-Tlp" id="F3D-xm-kZo"/>
-                        <outlet property="wednesday" destination="j6G-uo-7yo" id="3f2-gF-xYB"/>
+                        <outlet property="uipageControlDots" destination="vQY-Pc-rUi" id="LDG-Qe-46E"/>
                         <outlet property="withoutimageView" destination="All-UE-RQ4" id="H0t-MR-2bq"/>
                     </connections>
                 </viewController>
@@ -2868,6 +2760,30 @@ ALREADY
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kh9-8p-0se" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-6409" y="-1586"/>
+        </scene>
+        <!--Splash View Controller-->
+        <scene sceneID="fDy-Z4-CdY">
+            <objects>
+                <viewController storyboardIdentifier="SplashViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="xGH-1e-8q1" customClass="SplashViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="bFs-mI-GTj">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZlZ-fq-Qzi">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="O65-70-pQt"/>
+                    </view>
+                    <connections>
+                        <outlet property="splashImageView" destination="ZlZ-fq-Qzi" id="b95-u6-yEd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1Ly-h6-hxX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-10759.420289855074" y="-927.45535714285711"/>
         </scene>
         <!--Side Menu Navigation Controller-->
         <scene sceneID="24m-mL-Ej9">
@@ -3388,7 +3304,7 @@ ALREADY
         <!--Cenes Tab Controller-->
         <scene sceneID="L6q-pA-7YQ">
             <objects>
-                <tabBarController storyboardIdentifier="tab" extendedLayoutIncludesOpaqueBars="YES" id="Z4R-Ke-SW6" customClass="CenesTabController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="tab" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Z4R-Ke-SW6" customClass="CenesTabController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="8bw-cV-Deo">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -4966,7 +4882,7 @@ ALREADY
                                 </connections>
                             </tableView>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search Contacts" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Wgd-hD-F0n">
-                                <rect key="frame" x="10" y="90" width="384" height="35"/>
+                                <rect key="frame" x="10" y="90" width="396" height="35"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.94999999999999996" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -4975,12 +4891,38 @@ ALREADY
                                     <outlet property="delegate" destination="JMm-T2-aez" id="thX-kQ-n7b"/>
                                 </connections>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEn-f6-vfv">
+                                <rect key="frame" x="10" y="42" width="48" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Cancel"/>
+                                <connections>
+                                    <action selector="cancelButtonPressed" destination="JMm-T2-aez" eventType="touchUpInside" id="nDw-gY-yx4"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UK5-zD-GlF">
+                                <rect key="frame" x="360" y="41" width="34" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Save"/>
+                                <connections>
+                                    <action selector="doneButtonPressed" destination="JMm-T2-aez" eventType="touchUpInside" id="wLh-v5-qc4"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select Friends" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pEN-ak-hZC">
+                                <rect key="frame" x="100" y="44" width="215" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="iH5-KZ-BBK"/>
                     </view>
                     <connections>
+                        <outlet property="cancelBtn" destination="nEn-f6-vfv" id="9kh-HG-KQg"/>
+                        <outlet property="doneButton" destination="UK5-zD-GlF" id="POi-fD-RzQ"/>
                         <outlet property="friendTableView" destination="sE2-oa-aGP" id="g4s-Jk-vYR"/>
+                        <outlet property="friendsTitle" destination="pEN-ak-hZC" id="TuB-lW-aHz"/>
                         <outlet property="searchContactsField" destination="Wgd-hD-F0n" id="sfa-tp-TeE"/>
                     </connections>
                 </viewController>
@@ -5461,6 +5403,6 @@ ALREADY
         <segue reference="HSP-rP-a3L"/>
         <segue reference="rJU-vW-0nc"/>
         <segue reference="OYa-35-IV8"/>
-        <segue reference="DDM-i0-nof"/>
+        <segue reference="itz-x1-Tm4"/>
     </inferredMetricsTieBreakers>
 </document>

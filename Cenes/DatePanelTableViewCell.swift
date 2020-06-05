@@ -212,7 +212,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
                 
                 //If EndBar Opened
                 if (createGatheringDelegate.event.eventId != nil) {
-                    createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = false;
+                    //createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = false;
                     //createGatheringDelegate.showHidePreviewGatheringButton();
                 }
             }
@@ -361,7 +361,7 @@ class DatePanelTableViewCell: UITableViewCell, TimePickerDoneProtocol, DateClick
         }
        
         //This is to close predictive calendar
-createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
+        createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.predictiveCalendarRow] = false;
         
         createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGatheringRows.eventInfoPanelRow] = true
         
@@ -417,9 +417,51 @@ createGatheringDelegate.createGathDto.createGatheringRowsVisibility[CreateGather
         createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;
         createGatheringDelegate.showHidePreviewGatheringButton(show: true);
         
+        if (createGatheringDelegate.event.isPredictiveOn) {
+            //Lets make the users free for the same time for which
+            //the time was chosen earlier oon editing the event;
+            let eventDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date(millis: createGatheringDelegate.createGathDto.originalEventStartTime));
+            
+            let predictiveDateCompos =  Calendar.current.dateComponents(in: TimeZone.current, from: date);
+            print("Available Friens Condition !", (predictiveDateCompos.day!) == (eventDateCompos.day!));
+            print("Available Friens Condition 2", createGatheringDelegate.event.startTime == createGatheringDelegate.createGathDto.originalEventStartTime && createGatheringDelegate.event.endTime == createGatheringDelegate.createGathDto.originalEventEndTime);
+
+            if ((predictiveDateCompos.day!) == (eventDateCompos.day!) && createGatheringDelegate.event.eventId != nil && createGatheringDelegate.event.startTime == createGatheringDelegate.createGathDto.originalEventStartTime && createGatheringDelegate.event.endTime == createGatheringDelegate.createGathDto.originalEventEndTime) {
+                
+                var aviableFrndsArrTmp = [String]();
+                let aviableFrndsArr = createGatheringDelegate.createGathDto.availableFriendsList.split(separator: ",");
+                let eventMembers = createGatheringDelegate.event.eventMembers;
+                
+                for eventMem in eventMembers! {
+                    var isUserAvailable: Bool = false;
+                    if (eventMem.eventMemberId != nil && eventMem.userId != nil) {
+                        
+                        for aviableFrndStr in aviableFrndsArr {
+                            if (Int32(aviableFrndStr) == eventMem.userId) {
+                                isUserAvailable = true;
+                                break;
+                            }
+                        }
+                        if (isUserAvailable ==  false) {
+                            aviableFrndsArrTmp.append(String(eventMem.userId));
+                        }
+                        
+                        if (aviableFrndsArrTmp.count > 0) {
+                            if (createGatheringDelegate.createGathDto.availableFriendsList.count > 0) {
+                                createGatheringDelegate.createGathDto.availableFriendsList = createGatheringDelegate.createGathDto.availableFriendsList + ",\(String(describing: eventMem.userId!))";
+
+                                
+                            } else {
+                                createGatheringDelegate.createGathDto.availableFriendsList = createGatheringDelegate.createGathDto.availableFriendsList + "\(String(describing: eventMem.userId!))";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
         createGatheringDelegate.createGathTableView.reloadData();
-        
-        
         //If StartBar Closed
         if (createGatheringDelegate.event.eventId != nil && createGatheringDelegate.event.eventId != 0) {
             createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.dateField] = true;

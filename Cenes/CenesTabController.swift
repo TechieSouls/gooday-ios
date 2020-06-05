@@ -17,17 +17,17 @@ class CenesTabController: UITabBarController{
         appDelegate?.cenesTabBar = self
         
         if SideMenuManager.default.menuLeftNavigationController == nil {
-            let leftMenu = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
+            //let leftMenu = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
         
-            SideMenuManager.default.menuLeftNavigationController = leftMenu
+           // SideMenuManager.default.menuLeftNavigationController = leftMenu
         }else{
             
             //let pvc = SideMenuManager.default.menuLeftNavigationController?.presentedViewController
               SideMenuManager.default.menuLeftNavigationController?.dismiss(animated: false, completion: nil)
             
-            let leftMenu = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
+            //let leftMenu = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
             
-            SideMenuManager.default.menuLeftNavigationController = leftMenu
+            //SideMenuManager.default.menuLeftNavigationController = leftMenu
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 let home = (self.viewControllers![0] as? UINavigationController)?.viewControllers.first as? HomeViewController
