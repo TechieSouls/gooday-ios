@@ -548,6 +548,7 @@ class UserService {
         if (queryStr != "") {
             url = url + "?\(queryStr)";
         }
+        print("Url :", url);
         HttpService().getMethodWithoutToken(url: url, complete: {response in
             complete(response);
         });

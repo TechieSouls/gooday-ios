@@ -68,7 +68,7 @@ class DataTableViewCell: UITableViewCell, DataTableViewCellProtocol {
         let bottomInset = tableHeight - table40pcHeight - 90
         let topInset = table40pcHeight
         
-        self.dataTableView.contentInset = UIEdgeInsetsMake(topInset, 0, bottomInset, 0)
+        self.dataTableView.contentInset = UIEdgeInsets.init(top: topInset, left: 0, bottom: bottomInset, right: 0)
     }
     
     func removeEventFromHomeDtoList(eventId: Int32) {
@@ -767,7 +767,7 @@ extension DataTableViewCell: UITableViewDelegate, UITableViewDataSource {
         return [UITableViewRowAction]();
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if (editingStyle == .delete) {
 

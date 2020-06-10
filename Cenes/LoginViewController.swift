@@ -56,7 +56,7 @@ class LoginViewController: UIViewController,NVActivityIndicatorViewable {
         fbLoginBtn = FBLoginButton(frame:fbLoginBtnPlaceholder.frame)
         fbLoginBtn.setAttributedTitle(buttonText, for: .normal)
         fbLoginBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        fbLoginBtn.setImage(nil, for: UIControlState.normal)
+        fbLoginBtn.setImage(nil, for: UIControl.State.normal)
         fbLoginBtn.setBackgroundImage(nil, for: .normal)
         fbLoginBtn.backgroundColor = UIColor.clear
         fbLoginBtnPlaceholder.addSubview(fbLoginBtn)

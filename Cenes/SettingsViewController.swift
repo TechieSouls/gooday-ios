@@ -43,7 +43,7 @@ class SettingsViewController: UITableViewController {
         let profileButton = UIButton.init(type: .custom)
         let image = self.profileImage?.compressImage(newSizeWidth: 35, newSizeHeight: 35, compressionQuality: 1.0)
         profileButton.imageView?.contentMode = .scaleAspectFill
-        profileButton.setBackgroundImage(image, for: UIControlState.normal)
+        profileButton.setBackgroundImage(image, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         profileButton.clipsToBounds = true
@@ -68,8 +68,8 @@ class SettingsViewController: UITableViewController {
         
         let calendarButton = UIButton.init(type: .custom)
         
-        calendarButton.setImage(Ionicons.iosCalendarOutline.image(25, color: UIColor.lightGray), for: UIControlState.normal)
-        calendarButton.setImage(Ionicons.iosCalendarOutline.image(25, color: commonColor), for: UIControlState.selected)
+        calendarButton.setImage(Ionicons.iosCalendarOutline.image(25, color: UIColor.lightGray), for: UIControl.State.normal)
+        calendarButton.setImage(Ionicons.iosCalendarOutline.image(25, color: commonColor), for: UIControl.State.selected)
         calendarButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
         calendarButton.layer.cornerRadius = calendarButton.frame.height/2
         calendarButton.clipsToBounds = true

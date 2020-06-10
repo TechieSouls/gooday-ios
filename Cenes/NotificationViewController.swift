@@ -35,7 +35,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
     var notificationDtos = [NotificationDto]();
     var pageNumber = 0;
     var totalNotificationCounts = 0;
-    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    let spinner = UIActivityIndicatorView(style: .gray)
 
     private let refreshControl = UIRefreshControl()
 
@@ -260,14 +260,14 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
     
     func getTitleCell(sender : String ,title : String , message: String) -> NSAttributedString{
         
-        var attributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14, weight: .semibold),
-                          NSAttributedStringKey.foregroundColor: UIColor.black]
+        var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .semibold),
+                          NSAttributedString.Key.foregroundColor: UIColor.black]
         
         let first = NSMutableAttributedString(string:"\(sender) ", attributes: attributes)
         let second = NSMutableAttributedString(string:" \(title)", attributes: attributes)
         
-        attributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13, weight: .medium),
-                      NSAttributedStringKey.foregroundColor: UIColor.darkGray]
+        attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .medium),
+                      NSAttributedString.Key.foregroundColor: UIColor.darkGray]
         
         let third = NSMutableAttributedString(string:message, attributes: attributes)
         
@@ -364,7 +364,7 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
         
         let profileButton = UIButton.init(type: .custom)
         profileButton.imageView?.contentMode = .scaleAspectFill
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         profileButton.clipsToBounds = true

@@ -54,8 +54,8 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
         configureTextField(withImage: #imageLiteral(resourceName: "loginemail"), textfield: emailTextField)
         configureTextField(withImage: #imageLiteral(resourceName: "signup_phone"), textfield: phoneTextField)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(SignUpViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(SignUpViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SignUpViewController.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SignUpViewController.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -158,7 +158,7 @@ class SignUpViewController: UIViewController,NVActivityIndicatorViewable {
     
     func alertMessage (message :String)
     {
-        let alertController = UIAlertController(title: "Validation", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "Validation", message: message, preferredStyle: UIAlertController.Style.alert)
         
         let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
             print ("Ok")

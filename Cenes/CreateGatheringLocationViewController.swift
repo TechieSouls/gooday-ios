@@ -81,16 +81,16 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: UIResponder.keyboardWillHideNotification, object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
 
     @objc func keyboardWillAppear(notification: NSNotification){
         // Do something here
         print("Opened");
         var keyboardHeight: CGFloat = 210;
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             keyboardHeight = CGFloat(keyboardSize.height) + 70
             print(keyboardHeight)
         }
@@ -186,7 +186,7 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
         let backButton = UIButton();
         backButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40);
         backButton.setImage(UIImage.init(named: "abondan_event_icon"), for: .normal);
-        backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControlEvents.touchUpInside)
+        backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControl.Event.touchUpInside)
         
         let backButtonBarButton = UIBarButtonItem.init(customView: backButton)
         

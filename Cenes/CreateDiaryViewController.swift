@@ -44,7 +44,7 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
         super.viewDidLoad()
         cellHeightDiary = CellHeightDiary.First
         
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         let gradient = CAGradientLayer()
@@ -56,8 +56,8 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
         self.navigationController?.navigationBar.setBackgroundImage(cenesDelegate.creatGradientImage(layer: gradient), for: .default)
         createDiaryTableView.register(UINib(nibName: "DiaryCellOne", bundle: Bundle.main), forCellReuseIdentifier: "DiaryCellOne")
         // Do any additional setup after loading the view.
-        NotificationCenter.default.addObserver(self, selector: #selector(CreateDiaryViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(CreateDiaryViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CreateDiaryViewController.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CreateDiaryViewController.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         
         if self.isEditMode == true {
@@ -298,7 +298,7 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
     
     
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             self.tableViewBottomConstraint.constant = keyboardSize.height
             
         }
@@ -462,8 +462,8 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
     }
     
     func takePicture() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
-            picController.sourceType = UIImagePickerControllerSourceType.camera
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+            picController.sourceType = UIImagePickerController.SourceType.camera
             picController.allowsEditing = true
             picController.delegate = self
             picController.mediaTypes = [kUTTypeImage as String]
@@ -472,16 +472,19 @@ class CreateDiaryViewController: UIViewController,UIImagePickerControllerDelegat
     }
     
     func selectPicture() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
             picController.delegate = self
-            picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
+            picController.sourceType = UIImagePickerController.SourceType.photoLibrary;
             picController.allowsEditing = true
             picController.mediaTypes = [kUTTypeImage as String]
             self.present(picController, animated: true, completion: nil)
         }
     }
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+        if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage {
             let photoModel = PhotoModel()
             photoModel.diaryPhoto = image
             self.diaryData.diaryPhotoModel.append(photoModel)
@@ -671,4 +674,14 @@ extension CreateDiaryViewController :UITableViewDataSource,UITableViewDelegate
     
     
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
 }

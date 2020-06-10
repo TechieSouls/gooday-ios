@@ -98,33 +98,72 @@ class InvitationCardTableViewCell: UITableViewCell {
         self.locationViewLocationIcon.image = UIImage.init(named: "location_on_icon")
         self.locationView.backgroundColor = UIColor.white;
         
-        if gatheringInvitaionViewControllerDelegate.event.latitude != nil {
+        if (gatheringInvitaionViewControllerDelegate.event.latitude != nil && gatheringInvitaionViewControllerDelegate.event.latitude != "") {
             
-            let alert = UIAlertController(title: nil, message: gatheringInvitaionViewControllerDelegate.event.location, preferredStyle: .alert);
-            alert.addAction(UIAlertAction(title: "Get Directions", style: .default, handler: {(resp) in
-                self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
-                self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")
+            if (gatheringInvitaionViewControllerDelegate.locationPhotos.count > 0) {
                 
-                
-                //Working in Swift new versions.
-                if (UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!)) {UIApplication.shared.openURL(NSURL(string:"comgooglemaps://?saddr=&daddr=\(Float(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!))),\(Float(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!)))&directionsmode=driving")! as URL)
-                } else {
-                    NSLog("Can't use com.google.maps://");
-                    if (UIApplication.shared.canOpenURL(NSURL(string:"https://maps.google.com")! as URL))  {
-                        
-                        let url: String = String("https://maps.google.com?daddr=\(String(self.gatheringInvitaionViewControllerDelegate.event.location!).replacingOccurrences(of: " ", with: "+"))&center=\(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!)),\(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!))&zoom=15");
-                        
-                        print(url)
-                        let finalURL: URL = NSURL(string: url)! as URL;
-                        UIApplication.shared.open(finalURL, options: [:], completionHandler: nil);
-                        
+                for locAlertView in gatheringInvitaionViewControllerDelegate.view.subviews {
+                    if (locAlertView is LocationAlertView) {
+                        locAlertView.removeFromSuperview();
                     }
                 }
-            }))
-            gatheringInvitaionViewControllerDelegate.present(alert, animated: true) {
-                alert.view.superview?.isUserInteractionEnabled = true
-                alert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
+                let locationAlertView = LocationAlertView.instanceFromNib() as! LocationAlertView;
+                locationAlertView.frame = gatheringInvitaionViewControllerDelegate.view.frame;
+                locationAlertView.lblLocation.text = gatheringInvitaionViewControllerDelegate.event.location;
+                
+                let backDroptapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backDropPressed));
+                locationAlertView.alertBackdropView.addGestureRecognizer(backDroptapGesture);
+                
+                let getDirectionsTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(getDirectionsPressed));
+                locationAlertView.lblGetDirections.addGestureRecognizer(getDirectionsTapGesture);
+
+                
+                var scrollViewContentSize: CGFloat  = 0.0;
+                var photoIndex: Int = 0;
+                for locationPhoto in gatheringInvitaionViewControllerDelegate.locationPhotos {
+                    
+                    let locationPhotoView = LocationAlertView.locationPhotoInstanceFromNib() as! LocationAlertView;
+                    locationPhotoView.frame = CGRect.init(x: scrollViewContentSize, y: locationPhotoView.frame.origin.y, width: locationPhotoView.frame.width, height: locationPhotoView.frame.height)
+                    locationPhotoView.ivLocationPhoto.sd_setImage(with: URL.init(string: "\(GOOGLE_PLACE_THUMBNAIL_PHOTOS_API)\(locationPhoto.photoReference!)"));
+                    
+                    let onImageTapListener = LocationImageTagGesture.init(target: self, action: #selector(locationImagePressed(sender: )));
+                    onImageTapListener.selectedImageIndex = photoIndex; locationPhotoView.ivLocationPhoto.addGestureRecognizer(onImageTapListener);
+                    
+                    scrollViewContentSize = scrollViewContentSize + locationPhotoView.frame.width;
+                    locationAlertView.scrollViewPlacePhotos.addSubview(locationPhotoView);
+                    
+                    photoIndex = photoIndex +  1;
+                }
+                locationAlertView.scrollViewPlacePhotos.contentSize.width = scrollViewContentSize;
+                gatheringInvitaionViewControllerDelegate.view.addSubview(locationAlertView);
+            } else {
+                let alert = UIAlertController(title: nil, message: gatheringInvitaionViewControllerDelegate.event.location, preferredStyle: .alert);
+                alert.addAction(UIAlertAction(title: "Get Directions", style: .default, handler: {(resp) in
+                    self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
+                    self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")
+                    
+                    
+                    //Working in Swift new versions.
+                    if (UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!)) {UIApplication.shared.openURL(NSURL(string:"comgooglemaps://?saddr=&daddr=\(Float(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!))),\(Float(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!)))&directionsmode=driving")! as URL)
+                    } else {
+                        NSLog("Can't use com.google.maps://");
+                        if (UIApplication.shared.canOpenURL(NSURL(string:"https://maps.google.com")! as URL))  {
+                            
+                            let url: String = String("https://maps.google.com?daddr=\(String(self.gatheringInvitaionViewControllerDelegate.event.location!).replacingOccurrences(of: " ", with: "+"))&center=\(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!)),\(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!))&zoom=15");
+                            
+                            print(url)
+                            let finalURL: URL = NSURL(string: url)! as URL;
+                            UIApplication.shared.open(finalURL, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil);
+                            
+                        }
+                    }
+                }))
+                gatheringInvitaionViewControllerDelegate.present(alert, animated: true) {
+                    alert.view.superview?.isUserInteractionEnabled = true
+                    alert.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertControllerBackgroundTapped)))
+                }
             }
+            
         } else {
             
             var location = "No Location Selected";
@@ -274,6 +313,17 @@ class InvitationCardTableViewCell: UITableViewCell {
         gatheringInvitaionViewControllerDelegate.resetScreenToDefaultPosition();
     }
     
+    @objc func locationImagePressed(sender: LocationImageTagGesture) {
+        var locationImages = [String]();
+        for locImg in gatheringInvitaionViewControllerDelegate.locationPhotos {
+            locationImages.append("\(GOOGLE_PLACE_SLIDER_PHOTOS_API)\(locImg.photoReference!)");
+        }
+        let viewController = gatheringInvitaionViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "ImageSliderViewController") as! ImageSliderViewController;
+        viewController.photos = locationImages;
+        viewController.selectedIndex = sender.selectedImageIndex
+        gatheringInvitaionViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+    }
+    
     func heightForViewDesc(text:String, font:UIFont, width:CGFloat) -> CGFloat{
         let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.descriptionUILabel.frame.width, height: CGFloat.greatestFiniteMagnitude))
         label.numberOfLines = 0
@@ -309,6 +359,43 @@ class InvitationCardTableViewCell: UITableViewCell {
             gatheringInvitaionViewControllerDelegate.present(guestListViewController, animated: true, completion: nil);
     }
     
+    @objc func backDropPressed() {
+        for locAlertView in gatheringInvitaionViewControllerDelegate.view.subviews {
+            if (locAlertView is LocationAlertView) {
+                locAlertView.removeFromSuperview();
+            }
+        }
+        self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
+        self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")
+    }
+    
+    @objc func getDirectionsPressed() {
+        
+        for locAlertView in gatheringInvitaionViewControllerDelegate.view.subviews {
+            if (locAlertView is LocationAlertView) {
+                locAlertView.removeFromSuperview();
+            }
+        }
+        self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
+        self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")
+        
+        
+        //Working in Swift new versions.
+        if (UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!)) {UIApplication.shared.openURL(NSURL(string:"comgooglemaps://?saddr=&daddr=\(Float(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!))),\(Float(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!)))&directionsmode=driving")! as URL)
+        } else {
+            NSLog("Can't use com.google.maps://");
+            if (UIApplication.shared.canOpenURL(NSURL(string:"https://maps.google.com")! as URL))  {
+                
+                let url: String = String("https://maps.google.com?daddr=\(String(self.gatheringInvitaionViewControllerDelegate.event.location!).replacingOccurrences(of: " ", with: "+"))&center=\(String(self.gatheringInvitaionViewControllerDelegate.event.latitude!)),\(String(self.gatheringInvitaionViewControllerDelegate.event.longitude!))&zoom=15");
+                
+                print(url)
+                let finalURL: URL = NSURL(string: url)! as URL;
+                UIApplication.shared.open(finalURL, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil);
+                
+            }
+        }
+        
+    }
     
     func populateCardDetails () {
         
@@ -377,4 +464,13 @@ class InvitationCardTableViewCell: UITableViewCell {
             gatheringInvitaionViewControllerDelegate.rejectedImageiew.isHidden = false;
         }
     }
+}
+
+public class LocationImageTagGesture: UITapGestureRecognizer {
+    var selectedImageIndex: Int!;
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

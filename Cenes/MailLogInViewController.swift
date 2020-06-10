@@ -35,7 +35,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
         fbLoginBtn = FBLoginButton(frame:fbLoginBtnPlaceholder.frame)
         fbLoginBtn.setAttributedTitle(buttonText, for: .normal)
         fbLoginBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        fbLoginBtn.setImage(nil, for: UIControlState.normal)
+        fbLoginBtn.setImage(nil, for: UIControl.State.normal)
         fbLoginBtn.setBackgroundImage(nil, for: .normal)
         fbLoginBtn.backgroundColor = UIColor.clear
         fbLoginBtnPlaceholder.addSubview(fbLoginBtn)
@@ -107,7 +107,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
                 
                 WebService().setPushToken();
                 
-                let refreshAlert = UIAlertController(title: "Sync Contacts", message: "Would you like to sync contacts.", preferredStyle: UIAlertControllerStyle.alert)
+                let refreshAlert = UIAlertController(title: "Sync Contacts", message: "Would you like to sync contacts.", preferredStyle: UIAlertController.Style.alert)
                 
                 refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
                     //print("Handle Ok logic here")
@@ -134,7 +134,7 @@ class MailLogInViewController: UIViewController,NVActivityIndicatorViewable {
     
     func alertMessage (message :String)
     {
-        let alertController = UIAlertController(title: "Validation", message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "Validation", message: message, preferredStyle: UIAlertController.Style.alert)
         
         let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
             print ("Ok")
@@ -223,7 +223,7 @@ extension MailLogInViewController : LoginButtonDelegate {
                         self.alertMessage(message: (returnedDict["ErrorMsg"] as? String)!)
                     } else{
                     
-                        let refreshAlert = UIAlertController(title: "Sync Contacts", message: "Would you like to sync contacts.", preferredStyle: UIAlertControllerStyle.alert)
+                        let refreshAlert = UIAlertController(title: "Sync Contacts", message: "Would you like to sync contacts.", preferredStyle: UIAlertController.Style.alert)
                         
                         refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
                             //print("Handle Ok logic here")

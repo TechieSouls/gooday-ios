@@ -112,7 +112,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
                             
                             let alertBody = "Do you want to update your phone number to \(phoneNumberToDisplay) ??";
                             
-                            let alertController = UIAlertController(title: returnedDict.value(forKey: "ErrorMsg") as! String, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                            let alertController = UIAlertController(title: returnedDict.value(forKey: "ErrorMsg") as! String, message: alertBody, preferredStyle: UIAlertController.Style.alert)
                             
                             let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
                                 print ("Ok")
@@ -197,7 +197,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
                             
                             let alertBody = "Do you want to update your phone number to \(phoneNumberToDisplay) ??";
                             
-                            let alertController = UIAlertController(title: returnedDict.value(forKey: "ErrorMsg") as! String, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                            let alertController = UIAlertController(title: returnedDict.value(forKey: "ErrorMsg") as! String, message: alertBody, preferredStyle: UIAlertController.Style.alert)
                             
                             let okAction = UIAlertAction(title: "Yes", style: .default) { (UIAlertAction) in
                                 print ("Ok")
@@ -259,7 +259,7 @@ class SignInViewController: UIViewController, UITextFieldDelegate, NVActivityInd
         }
         
         let confirmMessage = "A verification email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
-        let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
+        let confirmAlertController = UIAlertController(title: "", message: confirmMessage, preferredStyle: UIAlertController.Style.alert)
         
         let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (UIAlertAction) in
             print ("Ok");

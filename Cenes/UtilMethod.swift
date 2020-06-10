@@ -121,7 +121,7 @@ class Util{
     
     class func isPwdLenth(password: String) -> Bool {
         
-        if password.characters.count >= 4 {
+        if password.count >= 4 {
             return true
         }else{
             return false
@@ -130,7 +130,7 @@ class Util{
     
     class func isnameLenth(name: String) -> Bool {
         
-        if name.characters.count > 0 {
+        if name.count > 0 {
             return true
         }else{
             return false
@@ -138,7 +138,7 @@ class Util{
     }
     
     class func isPhoneLength(phone: String) -> Bool {
-        if phone.characters.count > 0 {
+        if phone.count > 0 {
             return true
         } else {
             return false
@@ -276,7 +276,7 @@ extension UIViewController
 {
     func showAlert(title : String ,message : String)
     {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
 
         let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
             print ("Ok")
@@ -326,7 +326,7 @@ extension UIImage {
     
     func compressImage(newSizeWidth: Float, newSizeHeight: Float, compressionQuality: Float) -> UIImage {
         let image = self
-        let imgData: Data? = UIImageJPEGRepresentation(image, 1)
+        let imgData: Data? = image.jpegData(compressionQuality: 1)
         //1 it represents the quality of the image.
         
         print("Size of Image(bytes):\(UInt((imgData?.count)!))")
@@ -363,7 +363,7 @@ extension UIImage {
         UIGraphicsBeginImageContext(rect.size)
         image.draw(in: rect)
         let img: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
-        var imageData: Data? = UIImageJPEGRepresentation(img!, CGFloat(compressionQuality))
+        var imageData: Data? = img!.jpegData(compressionQuality: CGFloat(compressionQuality))
         UIGraphicsEndImageContext()
         
         print("Size of Image(bytes):\(UInt((imageData?.count)!))")

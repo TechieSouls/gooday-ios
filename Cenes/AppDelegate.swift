@@ -37,7 +37,7 @@ var sqlDatabaseManager = SqlliteDbManager();
         })
     }*/
         
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         print("My App Launched on Termination**************************************");
         do {
@@ -186,7 +186,7 @@ var sqlDatabaseManager = SqlliteDbManager();
     }
     
     func profileImageSet(image:UIImage){
-        UserDefaults.standard.set(UIImageJPEGRepresentation(image, 1), forKey: "profileImage")
+        UserDefaults.standard.set(image.jpegData(compressionQuality: 1), forKey: "profileImage")
     }
     
     func getProfileImage()-> UIImage {
@@ -268,10 +268,10 @@ var sqlDatabaseManager = SqlliteDbManager();
     
     ///it is used to control flow once user successfully logged in through Facebook and returning back to demo application.
     
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         
-        let sourceApplication = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String
-        let annotation = options[UIApplicationOpenURLOptionsKey.annotation]
+        let sourceApplication = options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String
+        let annotation = options[UIApplication.OpenURLOptionsKey.annotation]
         
         
             let isGoogleOpenUrl = GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
@@ -432,7 +432,7 @@ var sqlDatabaseManager = SqlliteDbManager();
     }
     
     func showReminderInvite(forTitle: String, reminderID: NSNumber) {
-        let alertController = UIAlertController(title: "Reminder Invitation", message: forTitle, preferredStyle: UIAlertControllerStyle.alert)
+        let alertController = UIAlertController(title: "Reminder Invitation", message: forTitle, preferredStyle: UIAlertController.Style.alert)
         
         let acceptAction = UIAlertAction(title: "Accept", style: .default) { (UIAlertAction) in
             

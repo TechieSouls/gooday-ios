@@ -34,7 +34,7 @@ class AddAlarmViewController: UIViewController {
     
     //MARK: - Configure UI
     func configureUI() {
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         let gradient = CAGradientLayer()
@@ -81,8 +81,8 @@ class AddAlarmViewController: UIViewController {
         let hours: [String] = timesOfTheDay[0]
         let minutes: [String] = timesOfTheDay[2]
         
-        pickerView.selectRow(hours.index(of: selectedHour)!, inComponent: 0, animated: true)
-        pickerView.selectRow(minutes.index(of: selectedMin)!, inComponent: 2, animated: true)
+        pickerView.selectRow(hours.firstIndex(of: selectedHour)!, inComponent: 0, animated: true)
+        pickerView.selectRow(minutes.firstIndex(of: selectedMin)!, inComponent: 2, animated: true)
     }
 
     
@@ -136,8 +136,8 @@ class AddAlarmViewController: UIViewController {
                 
                 selectedDays = selectedAlarm.weekdays!
                 
-                pickerView.selectRow(hours.index(of: selectedHour)!, inComponent: 0, animated: true)
-                pickerView.selectRow(minutes.index(of: selectedMin)!, inComponent: 2, animated: true)
+                pickerView.selectRow(hours.firstIndex(of: selectedHour)!, inComponent: 0, animated: true)
+                pickerView.selectRow(minutes.firstIndex(of: selectedMin)!, inComponent: 2, animated: true)
                 
 //                alarmInfo = [("Repeat", selectedAlarm.weekdaysName!), ("Label", selectedAlarm.alarmName!), ("Sound",selectedAlarm.sound!)]
                 alarmInfo = [("Repeat", selectedAlarm.weekdaysName!), ("Label", selectedAlarm.alarmName!)]

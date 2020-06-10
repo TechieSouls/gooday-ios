@@ -45,6 +45,11 @@ class VersionUpdateViewController: UIViewController {
 
     @objc func openAppStoreLink() {
         
-        UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/cenes/id1475664339")!, options: [String:String](), completionHandler: nil);
+        UIApplication.shared.open(URL(string: "https://apps.apple.com/us/app/cenes/id1475664339")!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([String:String]()), completionHandler: nil);
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

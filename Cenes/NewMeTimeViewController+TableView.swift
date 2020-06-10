@@ -47,7 +47,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 
                 let font = UIFont(name: "Avenir Medium", size: 20)
-                let fontAttributes = [NSAttributedStringKey.font: font]
+                let fontAttributes = [NSAttributedString.Key.font: font]
                 let myText = meTimeEventObj.title
                 let size = (myText as! NSString).size(withAttributes: fontAttributes)
                 
@@ -177,7 +177,7 @@ extension NewMeTimeViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             let meTimeEventObj = self.metimeEvents[indexPath.row - 1];
             let font = UIFont(name: "Avenir Medium", size: 20)
-            let fontAttributes = [NSAttributedStringKey.font: font]
+            let fontAttributes = [NSAttributedString.Key.font: font]
             let myText = meTimeEventObj.title
             let size = (myText as! NSString).size(withAttributes: fontAttributes)
             

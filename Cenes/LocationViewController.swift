@@ -22,7 +22,7 @@ class LocationViewController: UIViewController ,CLLocationManagerDelegate  {
     override func viewDidLoad() {
        
         super.viewDidLoad()
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : commonColor]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : commonColor]
         self.navigationController?.navigationBar.tintColor = commonColor
         // Do any additional setup after loading the view.
         locationManager.delegate = self
@@ -50,9 +50,9 @@ class LocationViewController: UIViewController ,CLLocationManagerDelegate  {
                 self.coord = placemark.location!.coordinate
                 let latDelta:CLLocationDegrees = 0.01
                 let longDelta:CLLocationDegrees = 0.01
-                let theSpan:MKCoordinateSpan = MKCoordinateSpanMake(latDelta, longDelta)
+                let theSpan:MKCoordinateSpan = MKCoordinateSpan.init(latitudeDelta: latDelta, longitudeDelta: longDelta)
                 let pointLocation:CLLocationCoordinate2D = CLLocationCoordinate2DMake(self.coord!.latitude, self.coord!.longitude)
-                let region:MKCoordinateRegion = MKCoordinateRegionMake(pointLocation, theSpan)
+                let region:MKCoordinateRegion = MKCoordinateRegion.init(center: pointLocation, span: theSpan)
                 self.map.setRegion(region, animated: true)
 
                 let annotation = MKPointAnnotation()
@@ -60,7 +60,7 @@ class LocationViewController: UIViewController ,CLLocationManagerDelegate  {
                 self.map.addAnnotation(annotation)
                 // 5. setup circle
                 let circle = MKCircle(center: self.coord!, radius: self.regionRadius)
-                self.map.add(circle)
+                self.map.addOverlay(circle)
                 done(true)
 
          }

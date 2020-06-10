@@ -86,9 +86,9 @@ class AppSettingsEditViewController: UIViewController, AppSettingsProtocol, NVAc
         self.navigationController?.navigationBar.isHidden = false;
         
         let backButton = UIButton.init(type: .custom)
-        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControlState.normal)
-        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControlState.selected)
-        backButton.addTarget(self, action:#selector(backButtonPressed), for: UIControlEvents.touchUpInside)
+        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControl.State.normal)
+        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControl.State.selected)
+        backButton.addTarget(self, action:#selector(backButtonPressed), for: UIControl.Event.touchUpInside)
         backButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
         let backBarButton = UIBarButtonItem.init(customView: backButton)
         

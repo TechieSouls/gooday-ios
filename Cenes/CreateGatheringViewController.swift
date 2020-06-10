@@ -99,7 +99,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         gatheringTableView.register(UINib(nibName: "DeleteCell", bundle: Bundle.main), forCellReuseIdentifier: "DeleteCell")
         // Do any additional setup after loading the view.
         
-        gatheringTableView.rowHeight = UITableViewAutomaticDimension
+        gatheringTableView.rowHeight = UITableView.automaticDimension
         gatheringTableView.estimatedRowHeight = 140
         gatheringTableView.keyboardDismissMode = .interactive
                     
@@ -126,7 +126,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         if self.editSummary == true {
             let backButton = UIButton.init(type: .custom)
             self.title = "Edit Gathering"
-            backButton.setTitle("Cancel", for: UIControlState.normal)
+            backButton.setTitle("Cancel", for: UIControl.State.normal)
             backButton.setTitleColor(UIColor.black, for: .normal)
             backButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             backButton.layer.cornerRadius = backButton.frame.height/2
@@ -152,7 +152,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         
         let backButton = UIButton.init(type: .custom)
         self.title = "Gathering Summary"
-        backButton.setImage(#imageLiteral(resourceName: "leftArrow"), for: UIControlState.normal)
+        backButton.setImage(#imageLiteral(resourceName: "leftArrow"), for: UIControl.State.normal)
         backButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
         backButton.layer.cornerRadius = backButton.frame.height/2
         backButton.clipsToBounds = true
@@ -195,7 +195,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
             
             let nextButton = UIButton.init(type: .custom)
             
-            nextButton.setTitle("Preview", for: UIControlState.normal)
+            nextButton.setTitle("Preview", for: UIControl.State.normal)
             nextButton.setTitleColor(cenesLabelBlue, for: .normal)
             nextButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             nextButton.layer.cornerRadius = nextButton.frame.height/2
@@ -226,7 +226,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     override func viewDidAppear(_ animated: Bool) {
         self.view.backgroundColor = themeColor;
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.black]
         self.navigationController?.navigationBar.backgroundColor = themeColor
         self.navigationController?.navigationBar.tintColor = themeColor;
     }
@@ -234,8 +234,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //self.gatheringTableView.reloadData()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     
@@ -250,7 +250,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     
     
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             self.tableViewBottomConstraint.constant = keyboardSize.height
             
         }
@@ -261,8 +261,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
     @IBAction func stopButtonPressed(_ sender: Any) {
@@ -282,7 +282,7 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
         activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         
         // exclude some activity types from the list (optional)
-        activityViewController.excludedActivityTypes = [ UIActivityType.airDrop, UIActivityType.postToFacebook ]
+        activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
         
         // present the view controller
         self.present(activityViewController, animated: true, completion: nil)
@@ -595,8 +595,8 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     }
     
      func takePicture() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
-            picController.sourceType = UIImagePickerControllerSourceType.camera
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+            picController.sourceType = UIImagePickerController.SourceType.camera
             picController.allowsEditing = true
             picController.delegate = self
             picController.mediaTypes = [kUTTypeImage as String]
@@ -605,16 +605,19 @@ class CreateGatheringViewController: UIViewController,UIImagePickerControllerDel
     }
     
      func selectPicture() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
             picController.delegate = self
-            picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
+            picController.sourceType = UIImagePickerController.SourceType.photoLibrary;
             picController.allowsEditing = true
             picController.mediaTypes = [kUTTypeImage as String]
             self.present(picController, animated: true, completion: nil)
         }
     }
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+        if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage {
             self.gatheringImage = image
             self.gatheringImageURL = nil
             self.gatheringDelegate.setEventImage!(image: image)
@@ -939,3 +942,13 @@ extension CreateGatheringViewController: CollectionFriendsProtocol {
 }
  */
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

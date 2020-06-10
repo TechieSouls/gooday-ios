@@ -85,7 +85,7 @@ class CenesUserContactModel {
         fetchRequest.predicate = NSPredicate(format: "friendId != %i", user.userId)
 
         do {
-            let cenesContactsMO = try context.fetch(fetchRequest) as! [CenesUserContactMO]
+            let cenesContactsMO = try context.fetch(fetchRequest) 
             for userContactMO in cenesContactsMO {
                 if (userContactMO.name != nil) {
                     userContactsList.append(userContactMO);
@@ -116,7 +116,7 @@ class CenesUserContactModel {
         // Configure Fetch Request
         fetchRequest.predicate = NSPredicate(format: "userContactId == %i", userContactId)
         do {
-            let userContacts = try context.fetch(fetchRequest) as! [CenesUserContactMO]
+            let userContacts = try context.fetch(fetchRequest) 
             if (userContacts.count > 0) {
                 for userCon in userContacts {
                     if (userCon.name != nil) {

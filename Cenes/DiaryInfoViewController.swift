@@ -123,7 +123,7 @@ class DiaryInfoViewController: UIViewController {
     func setUpNavBar() {
        
             let backButton = UIButton.init(type: .custom)
-            backButton.setTitle("Cancel", for: UIControlState.normal)
+            backButton.setTitle("Cancel", for: UIControl.State.normal)
             backButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
             backButton.layer.cornerRadius = backButton.frame.height/2
             backButton.clipsToBounds = true

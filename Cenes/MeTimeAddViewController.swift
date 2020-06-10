@@ -106,7 +106,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         let bottomLine = CALayer()
         bottomLine.frame = CGRect.init(x: 0, y: titletextField.frame.size.height - 1, width: titletextField.frame.size.width, height: 1)
         bottomLine.backgroundColor = UIColor.white.cgColor
-        titletextField.borderStyle = UITextBorderStyle.none
+        titletextField.borderStyle = UITextField.BorderStyle.none
         titletextField.layer.addSublayer(bottomLine)
         //show keyboard
         titletextField.delegate = self;
@@ -121,7 +121,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         configurePageControl();
         
         metimeScrollView.frame = CGRect.init(x: metimeScrollView.frame.origin.x, y: metimeScrollView.frame.origin.y, width: self.meTimeCard.frame.width, height: metimeScrollView.frame.height);
-        uipageControlDots.addTarget(self, action: #selector(self.changePage(sender:)), for: UIControlEvents.valueChanged)
+        uipageControlDots.addTarget(self, action: #selector(self.changePage(sender:)), for: UIControl.Event.valueChanged)
 
         meTimeDaysView = MeTimeDaysView.instanceFromNib() as! MeTimeDaysView;
         meTimeDaysView.frame = CGRect.init(x: 0, y: 0, width: metimeScrollView.frame.width, height: metimeScrollView.frame.height);
@@ -466,8 +466,8 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     }
     
     func takePicture() {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
-            self.picController.sourceType = UIImagePickerControllerSourceType.camera
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+            self.picController.sourceType = UIImagePickerController.SourceType.camera
             self.picController.allowsEditing = true
             self.picController.delegate = self
             self.picController.mediaTypes = [kUTTypeImage as String]
@@ -478,17 +478,20 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
     func selectPicture() {
         //self.checkPermission();
         
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
             self.picController.delegate = self
-            self.picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
+            self.picController.sourceType = UIImagePickerController.SourceType.photoLibrary;
             self.picController.allowsEditing = true
             self.picController.mediaTypes = [kUTTypeImage as String]
             self.present(picController, animated: true, completion: nil)
         }
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+        if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage {
             self.withoutimageView.isHidden = true;
             
             
@@ -657,7 +660,7 @@ class MeTimeAddViewController: UIViewController, UIImagePickerControllerDelegate
         cgPoint.y = cgPoint.y/2
         self.activityIndicator.center = cgPoint;
         self.activityIndicator.hidesWhenStopped = true;
-        self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray;
+        self.activityIndicator.style = UIActivityIndicatorView.Style.gray;
         self.backButtonView.addSubview(activityIndicator);
         
         activityIndicator.startAnimating();
@@ -796,3 +799,13 @@ extension MeTimeAddViewController: UITextViewDelegate {
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

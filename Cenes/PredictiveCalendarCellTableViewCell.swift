@@ -241,16 +241,16 @@ class PredictiveCalendarCellTableViewCell: UITableViewCell, FSCalendarDelegate, 
             
             if (createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] == false && createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.endTimeField] == false) {
                 
-                let alert = UIAlertController(title: "Alert?", message: "Plaese select Start and End Time.", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
+                let alert = UIAlertController(title: "Alert?", message: "Plaese select Start and End Time.", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: {(action:UIAlertAction!) in
                     self.predictiveSwitch.isOn = false;
                     self.createGatheringDelegate.event.isPredictiveOn = self.predictiveSwitch.isOn;
                 }))
                 
                 createGatheringDelegate.present(alert, animated: true, completion: nil)
             } else if (createGatheringDelegate.createGathDto.trackGatheringDataFilled[CreateGatheringFields.startTimeField] == false) {
-                let alert = UIAlertController(title: "Alert?", message: "Plaese select End Time.", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
+                let alert = UIAlertController(title: "Alert?", message: "Plaese select End Time.", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: {(action:UIAlertAction!) in
                     self.predictiveSwitch.isOn = false;
                     self.createGatheringDelegate.event.isPredictiveOn = self.predictiveSwitch.isOn;
                 }))

@@ -25,7 +25,7 @@ class Scheduler {
             content.title = "Cenes"
             content.body = alarmName
 //            content.sound = UNNotificationSound(named: "Bell.aiff")
-            content.sound = UNNotificationSound.default()
+            content.sound = UNNotificationSound.default
             
             let notificationIdentifier = String(format:"%@%d", identifier, weekday)
             // make sure you give each request a unique identifier. (nextTriggerDate description)

@@ -5141,86 +5141,56 @@ ALREADY
             </objects>
             <point key="canvasLocation" x="1911.594202898551" y="-737.27678571428567"/>
         </scene>
-        <!--Gathering Image Picker View Controller-->
-        <scene sceneID="S0u-5L-kge">
+        <!--Image Slider View Controller-->
+        <scene sceneID="4QK-dW-48t">
             <objects>
-                <viewController storyboardIdentifier="GatheringImagePickerViewController" id="g8X-HL-4fZ" customClass="GatheringImagePickerViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="flS-Kk-t6Y">
+                <viewController storyboardIdentifier="ImageSliderViewController" id="wyY-xq-CAy" customClass="ImageSliderViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Jf2-Tn-5KF">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OXH-RM-7Yq">
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cro-Vz-YmF">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hdi-Nc-PMw">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                        <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="invitation_card" translatesAutoresizingMaskIntoConstraints="NO" id="s1n-8V-dJO">
-                                                <rect key="frame" x="0.0" y="153" width="414" height="585"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="585" id="etH-e1-hnD"/>
-                                                </constraints>
-                                            </imageView>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="s1n-8V-dJO" firstAttribute="leading" secondItem="hdi-Nc-PMw" secondAttribute="leading" id="Gaf-9S-pDT"/>
-                                            <constraint firstAttribute="trailing" secondItem="s1n-8V-dJO" secondAttribute="trailing" id="J1K-dZ-kdt"/>
-                                            <constraint firstItem="s1n-8V-dJO" firstAttribute="centerX" secondItem="hdi-Nc-PMw" secondAttribute="centerX" id="bmd-mi-GZ7"/>
-                                            <constraint firstItem="s1n-8V-dJO" firstAttribute="top" secondItem="hdi-Nc-PMw" secondAttribute="top" constant="153" id="c0I-Fc-bal"/>
-                                            <constraint firstAttribute="bottom" secondItem="s1n-8V-dJO" secondAttribute="bottom" constant="158" id="dOv-of-HrL"/>
-                                        </constraints>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r36-in-3hN">
+                                        <rect key="frame" x="0.0" y="103" width="414" height="694"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <viewLayoutGuide key="contentLayoutGuide" id="L1x-zK-Kz5"/>
+                                        <viewLayoutGuide key="frameLayoutGuide" id="VNC-fZ-jw4"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="wyY-xq-CAy" id="0dQ-iw-vmm"/>
+                                        </connections>
                                     </scrollView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rhp-TH-erS">
-                                        <rect key="frame" x="40" y="780" width="53" height="36"/>
-                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
-                                        <state key="normal" title="Cancel">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dS5-Pa-hTo">
+                                        <rect key="frame" x="20" y="60" width="25" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <inset key="imageEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                        <state key="normal" image="back_icon_white"/>
                                         <connections>
-                                            <action selector="cancelCropping:" destination="g8X-HL-4fZ" eventType="touchUpInside" id="wFo-Ee-kY2"/>
+                                            <action selector="closeButtonPressedWithSender:" destination="wyY-xq-CAy" eventType="touchUpInside" id="IR7-pp-Bex"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZKQ-Xx-m03">
-                                        <rect key="frame" x="306" y="780" width="60" height="36"/>
-                                        <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
-                                        <state key="normal" title="Choose">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="cropping:" destination="g8X-HL-4fZ" eventType="touchUpInside" id="Tx3-Dy-VZV"/>
-                                        </connections>
-                                    </button>
+                                    <pageControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="byu-FF-EIl">
+                                        <rect key="frame" x="188" y="817" width="39" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </pageControl>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="hdi-Nc-PMw" secondAttribute="trailing" id="6ir-5J-FVS"/>
-                                    <constraint firstAttribute="trailing" secondItem="ZKQ-Xx-m03" secondAttribute="trailing" constant="48" id="Da5-YG-22T"/>
-                                    <constraint firstItem="hdi-Nc-PMw" firstAttribute="top" secondItem="OXH-RM-7Yq" secondAttribute="top" id="N4h-Km-Xls"/>
-                                    <constraint firstItem="rhp-TH-erS" firstAttribute="baseline" secondItem="ZKQ-Xx-m03" secondAttribute="baseline" id="PWe-hG-x6X"/>
-                                    <constraint firstAttribute="bottom" secondItem="hdi-Nc-PMw" secondAttribute="bottom" id="ZYf-WZ-e45"/>
-                                    <constraint firstItem="rhp-TH-erS" firstAttribute="leading" secondItem="OXH-RM-7Yq" secondAttribute="leading" constant="40" id="gqf-VE-DBF"/>
-                                    <constraint firstAttribute="bottom" secondItem="rhp-TH-erS" secondAttribute="bottom" constant="80" id="klL-Mw-tWe"/>
-                                    <constraint firstItem="hdi-Nc-PMw" firstAttribute="leading" secondItem="OXH-RM-7Yq" secondAttribute="leading" id="lYN-y3-w26"/>
-                                </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="OXH-RM-7Yq" firstAttribute="top" secondItem="flS-Kk-t6Y" secondAttribute="top" id="VzQ-MO-ljy"/>
-                            <constraint firstAttribute="bottom" secondItem="OXH-RM-7Yq" secondAttribute="bottom" id="Yzn-XU-bej"/>
-                            <constraint firstItem="OXH-RM-7Yq" firstAttribute="leading" secondItem="flS-Kk-t6Y" secondAttribute="leading" id="bzR-Cp-cks"/>
-                            <constraint firstAttribute="trailing" secondItem="OXH-RM-7Yq" secondAttribute="trailing" id="dsF-wX-jA2"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="4qT-cK-KbN"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Vjw-t5-yKc"/>
                     </view>
                     <connections>
-                        <outlet property="imageView" destination="s1n-8V-dJO" id="m8p-0t-aZ8"/>
-                        <outlet property="scroll" destination="hdi-Nc-PMw" id="MRl-Nw-I52"/>
+                        <outlet property="backButton" destination="dS5-Pa-hTo" id="a07-kr-RnX"/>
+                        <outlet property="imageSliderPageControl" destination="byu-FF-EIl" id="Dxk-fy-7Ed"/>
+                        <outlet property="imageSliderScrollView" destination="r36-in-3hN" id="kRk-vR-Bna"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="sRf-Ht-c3s" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tKu-GD-EHH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2828.985507246377" y="-736.60714285714278"/>
+            <point key="canvasLocation" x="2769.5652173913045" y="-736.60714285714278"/>
         </scene>
         <!--Image Panable View Controller-->
         <scene sceneID="Yle-Ca-FeM">
@@ -5246,53 +5216,6 @@ ALREADY
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WT1-RZ-e1Z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3634.7826086956525" y="-1491.2946428571429"/>
-        </scene>
-        <!--My Image Cropper View Controller-->
-        <scene sceneID="Qj4-gF-7gG">
-            <objects>
-                <viewController storyboardIdentifier="MyImageCropperViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="XtS-7F-V5j" customClass="MyImageCropperViewController" customModule="Cenes" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="xLK-N7-NVm">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pVo-yY-eUv">
-                                <rect key="frame" x="33" y="44" width="48" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Cancel">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="cancelBtnPressed:" destination="XtS-7F-V5j" eventType="touchUpInside" id="jFE-NO-OpC"/>
-                                </connections>
-                            </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b1d-dv-g1y" customClass="CropPickerView" customModule="CropPickerView">
-                                <rect key="frame" x="0.0" y="141" width="414" height="520"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jzH-4I-Mvy">
-                                <rect key="frame" x="324" y="44" width="53" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Choose">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="chooseBtnPressed:" destination="XtS-7F-V5j" eventType="touchUpInside" id="oq8-hS-9H9"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <viewLayoutGuide key="safeArea" id="0dd-hv-p3f"/>
-                    </view>
-                    <connections>
-                        <outlet property="cancelButton" destination="pVo-yY-eUv" id="zHy-Kv-fgI"/>
-                        <outlet property="chooseBtn" destination="jzH-4I-Mvy" id="8Wj-jg-Eds"/>
-                        <outlet property="cropPickerView" destination="b1d-dv-g1y" id="usa-za-x5r"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="wmb-Df-onP" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3702.898550724638" y="-722.54464285714278"/>
         </scene>
         <!--What's New-->
         <scene sceneID="FJm-vT-YTK">
@@ -5373,7 +5296,6 @@ ALREADY
         <image name="homeUnselected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="image_white_default" width="40.666667938232422" height="36.666667938232422"/>
         <image name="instabug_report" width="33.333332061767578" height="38.666667938232422"/>
-        <image name="invitation_card" width="400" height="266.66665649414062"/>
         <image name="invitation_loader_spinner" width="33.333332061767578" height="33.333332061767578"/>
         <image name="metimeSelected" width="24.333333969116211" height="23.333333969116211"/>
         <image name="metimeUnSelected" width="22.333333969116211" height="23.333333969116211"/>

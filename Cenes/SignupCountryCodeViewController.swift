@@ -103,7 +103,7 @@ class SignupCountryCodeViewController: UIViewController, UITableViewDataSource, 
         // Do any additional setup after loading the view.
         
         self.seacrhInputText.delegate = self;
-        self.seacrhInputText.leftViewMode = UITextFieldViewMode.always
+        self.seacrhInputText.leftViewMode = UITextField.ViewMode.always
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         imageView.image = #imageLiteral(resourceName: "search_icon")
         self.seacrhInputText.leftView = imageView

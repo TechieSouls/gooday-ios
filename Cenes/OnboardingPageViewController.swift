@@ -81,7 +81,7 @@ class OnboardingPageViewController: UIViewController, UIPageViewControllerDataSo
         }
         
         pageViewController = swipePageController;
-        addChildViewController(pageViewController);
+        addChild(pageViewController);
         self.view.addSubview(pageViewController.view);
     }
     

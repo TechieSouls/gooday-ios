@@ -180,7 +180,7 @@ extension AlarmInfoViewController: UITableViewDelegate {
                 selectedDays.append(day)
             }
             else {
-                if let index = selectedDays.index(where: {$0 == day}) {
+                if let index = selectedDays.firstIndex(where: {$0 == day}) {
                     selectedDays.remove(at: index)
                 }
             }

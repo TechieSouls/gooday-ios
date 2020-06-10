@@ -172,7 +172,7 @@ class WorldHolidayCalendarViewController: UIViewController,NVActivityIndicatorVi
         
         let profileButton = UIButton.init(type: .custom)
         profileButton.imageView?.contentMode = .scaleAspectFill
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         profileButton.clipsToBounds = true
@@ -215,7 +215,7 @@ extension WorldHolidayCalendarViewController : UITextFieldDelegate{
         return true
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         //self.countryPickerView.isHidden = true
         //self.setUpNavBar(set: false)
     }

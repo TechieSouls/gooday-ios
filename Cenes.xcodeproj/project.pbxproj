@@ -18,7 +18,6 @@
 		5E1217C522981C260075961A /* NextCardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217C322981C260075961A /* NextCardTableViewCell.swift */; };
 		5E1217C622981C260075961A /* NextCardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E1217C422981C260075961A /* NextCardTableViewCell.xib */; };
 		5E1217C92299A7640075961A /* VerticalCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217C82299A7640075961A /* VerticalCropView.swift */; };
-		5E1217CB2299B1840075961A /* GatheringImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */; };
 		5E1217CD229A64F00075961A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1217CC229A64F00075961A /* UIImage+Custom.swift */; };
 		5E123C8022B0DC9A00BB7E6E /* UITableView+Customs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E123C7F22B0DC9A00BB7E6E /* UITableView+Customs.swift */; };
 		5E19E509245BD59900C08653 /* RecurringEventMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E19E508245BD59900C08653 /* RecurringEventMember.swift */; };
@@ -60,7 +59,6 @@
 		5E2797D1222C0BB60098F295 /* FriendListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2797CF222C0BB60098F295 /* FriendListItemTableViewCell.swift */; };
 		5E2797D2222C0BB60098F295 /* FriendListItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E2797D0222C0BB60098F295 /* FriendListItemTableViewCell.xib */; };
 		5E28510422AA4C98004504D1 /* MyEditImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E28510322AA4C98004504D1 /* MyEditImageView.swift */; };
-		5E28510622AA5A23004504D1 /* MyImageCropperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E28510522AA5A23004504D1 /* MyImageCropperViewController.swift */; };
 		5E2E6339225DD22B006F03CD /* GatheringInvitationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2E6338225DD22B006F03CD /* GatheringInvitationViewController.swift */; };
 		5E3913A7243DA52700651F8D /* SqlliteDbManager+CalendarSyncToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3913A6243DA52700651F8D /* SqlliteDbManager+CalendarSyncToken.swift */; };
 		5E40954422523ADD00CA9700 /* HeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E40954222523ADD00CA9700 /* HeaderTableViewCell.swift */; };
@@ -160,6 +158,9 @@
 		5E82F529238BA79000688034 /* SqlliteDbManager+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E82F528238BA79000688034 /* SqlliteDbManager+Notification.swift */; };
 		5E83A0AF248782AB0007FA1E /* SelectedEventChatDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E83A0AE248782AB0007FA1E /* SelectedEventChatDto.swift */; };
 		5E8B7E48242F2433005DE1E5 /* NewHomeViewControllerBkup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8B7E47242F2433005DE1E5 /* NewHomeViewControllerBkup.swift */; };
+		5E8D0871248DFC92009D8DB9 /* LocationPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D0870248DFC91009D8DB9 /* LocationPhoto.swift */; };
+		5E8D0875248E070B009D8DB9 /* LocationAlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E8D0874248E070B009D8DB9 /* LocationAlertView.xib */; };
+		5E8D0877248E071D009D8DB9 /* LocationAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D0876248E071D009D8DB9 /* LocationAlertView.swift */; };
 		5E926A99245934C800C1AC59 /* SqlliteDbManager+SplashRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E926A98245934C800C1AC59 /* SqlliteDbManager+SplashRecords.swift */; };
 		5E926A9B245994AE00C1AC59 /* MeTimeDaysView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5E926A9A245994AE00C1AC59 /* MeTimeDaysView.xib */; };
 		5E926A9D245994CA00C1AC59 /* MeTimeDaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E926A9C245994CA00C1AC59 /* MeTimeDaysView.swift */; };
@@ -218,6 +219,7 @@
 		5EC7A1832281AB090010E804 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC7A1822281AB090010E804 /* ProfileService.swift */; };
 		5EC919A422DC496D002E9A3A /* TimeMatchOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */; };
 		5EC919A622DC561D002E9A3A /* InvitationOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */; };
+		5ECDDE672490A07900A374AC /* ImageSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECDDE662490A07900A374AC /* ImageSliderViewController.swift */; };
 		5ECE2CFB23FBCCE000593961 /* AppUpdateAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECE2CFA23FBCCE000593961 /* AppUpdateAlertView.swift */; };
 		5ECE2CFD23FBCCF300593961 /* AppUpdateAlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5ECE2CFC23FBCCF300593961 /* AppUpdateAlertView.xib */; };
 		5ECE42F4246039FF00276833 /* NoMeTimeFriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECE42F2246039FE00276833 /* NoMeTimeFriendsTableViewCell.swift */; };
@@ -493,7 +495,6 @@
 		5E1217C322981C260075961A /* NextCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextCardTableViewCell.swift; sourceTree = "<group>"; };
 		5E1217C422981C260075961A /* NextCardTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NextCardTableViewCell.xib; sourceTree = "<group>"; };
 		5E1217C82299A7640075961A /* VerticalCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalCropView.swift; sourceTree = "<group>"; };
-		5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringImagePickerViewController.swift; sourceTree = "<group>"; };
 		5E1217CC229A64F00075961A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
 		5E123C7F22B0DC9A00BB7E6E /* UITableView+Customs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Customs.swift"; sourceTree = "<group>"; };
 		5E19E508245BD59900C08653 /* RecurringEventMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringEventMember.swift; sourceTree = "<group>"; };
@@ -535,7 +536,6 @@
 		5E2797CF222C0BB60098F295 /* FriendListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListItemTableViewCell.swift; sourceTree = "<group>"; };
 		5E2797D0222C0BB60098F295 /* FriendListItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendListItemTableViewCell.xib; sourceTree = "<group>"; };
 		5E28510322AA4C98004504D1 /* MyEditImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyEditImageView.swift; sourceTree = "<group>"; };
-		5E28510522AA5A23004504D1 /* MyImageCropperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyImageCropperViewController.swift; sourceTree = "<group>"; };
 		5E2E6338225DD22B006F03CD /* GatheringInvitationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatheringInvitationViewController.swift; sourceTree = "<group>"; };
 		5E3913A6243DA52700651F8D /* SqlliteDbManager+CalendarSyncToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+CalendarSyncToken.swift"; sourceTree = "<group>"; };
 		5E40954222523ADD00CA9700 /* HeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTableViewCell.swift; sourceTree = "<group>"; };
@@ -636,6 +636,9 @@
 		5E83A0AE248782AB0007FA1E /* SelectedEventChatDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedEventChatDto.swift; sourceTree = "<group>"; };
 		5E83A0B02488BE920007FA1E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E8B7E47242F2433005DE1E5 /* NewHomeViewControllerBkup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHomeViewControllerBkup.swift; sourceTree = "<group>"; };
+		5E8D0870248DFC91009D8DB9 /* LocationPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPhoto.swift; sourceTree = "<group>"; };
+		5E8D0874248E070B009D8DB9 /* LocationAlertView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocationAlertView.xib; sourceTree = "<group>"; };
+		5E8D0876248E071D009D8DB9 /* LocationAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAlertView.swift; sourceTree = "<group>"; };
 		5E926A98245934C800C1AC59 /* SqlliteDbManager+SplashRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SqlliteDbManager+SplashRecords.swift"; sourceTree = "<group>"; };
 		5E926A9A245994AE00C1AC59 /* MeTimeDaysView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeTimeDaysView.xib; sourceTree = "<group>"; };
 		5E926A9C245994CA00C1AC59 /* MeTimeDaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeTimeDaysView.swift; sourceTree = "<group>"; };
@@ -694,6 +697,7 @@
 		5EC7A1822281AB090010E804 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		5EC919A322DC496D002E9A3A /* TimeMatchOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMatchOnboardingViewController.swift; sourceTree = "<group>"; };
 		5EC919A522DC561D002E9A3A /* InvitationOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationOnboardingViewController.swift; sourceTree = "<group>"; };
+		5ECDDE662490A07900A374AC /* ImageSliderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSliderViewController.swift; sourceTree = "<group>"; };
 		5ECE2CFA23FBCCE000593961 /* AppUpdateAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateAlertView.swift; sourceTree = "<group>"; };
 		5ECE2CFC23FBCCF300593961 /* AppUpdateAlertView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppUpdateAlertView.xib; sourceTree = "<group>"; };
 		5ECE42F2246039FE00276833 /* NoMeTimeFriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoMeTimeFriendsTableViewCell.swift; sourceTree = "<group>"; };
@@ -1167,6 +1171,8 @@
 				5EC2E643241E06850062E645 /* SenderChatView.xib */,
 				5EABD7F2242378B900766A8C /* ChatBlurbView.swift */,
 				5EABD7F4242378C900766A8C /* ChatBlurbView.xib */,
+				5E8D0874248E070B009D8DB9 /* LocationAlertView.xib */,
+				5E8D0876248E071D009D8DB9 /* LocationAlertView.swift */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -1282,6 +1288,14 @@
 				5E6DA42C22854B9F006D86D9 /* SelectedCalendarViewController+TableView.swift */,
 			);
 			name = extension;
+			sourceTree = "<group>";
+		};
+		5ECDDE652490A02A00A374AC /* common */ = {
+			isa = PBXGroup;
+			children = (
+				5ECDDE662490A07900A374AC /* ImageSliderViewController.swift */,
+			);
+			name = common;
 			sourceTree = "<group>";
 		};
 		5ECE2CF923FBCC9C00593961 /* CustomViews */ = {
@@ -1451,9 +1465,7 @@
 				AEEF8A781FA885360032D7B4 /* InvitationAcceptView.swift */,
 				5E41E95922337D1200CEECFB /* GatheringExpiredViewController.swift */,
 				5E1217C82299A7640075961A /* VerticalCropView.swift */,
-				5E1217CA2299B1840075961A /* GatheringImagePickerViewController.swift */,
 				5E28510322AA4C98004504D1 /* MyEditImageView.swift */,
-				5E28510522AA5A23004504D1 /* MyImageCropperViewController.swift */,
 			);
 			name = Gathering;
 			sourceTree = "<group>";
@@ -1808,6 +1820,7 @@
 				5E638A3824176C3C0064954E /* EventChat.swift */,
 				5E7A78CC2453056500AD78C2 /* SplashRecord.swift */,
 				5E19E508245BD59900C08653 /* RecurringEventMember.swift */,
+				5E8D0870248DFC91009D8DB9 /* LocationPhoto.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1815,6 +1828,7 @@
 		F4F4DFDA1F0EA94900169990 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5ECDDE652490A02A00A374AC /* common */,
 				5E64C0F8228F14BC000F2629 /* Country */,
 				5E64C0F3228ECD66000F2629 /* Onboarding */,
 				5ED6FED1224B841300E940DE /* Profile */,
@@ -2029,7 +2043,7 @@
 					F4B871EE1F0DDEF1001A9963 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = XLW9C8866Y;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -2045,14 +2059,15 @@
 					};
 					F4B872051F0DDEF1001A9963 = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Manual;
 						TestTargetID = F4B871EE1F0DDEF1001A9963;
 					};
 					F4B872101F0DDEF2001A9963 = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 0900;
-						ProvisioningStyle = Manual;
+						DevelopmentTeam = XLW9C8866Y;
+						LastSwiftMigration = 1100;
+						ProvisioningStyle = Automatic;
 						TestTargetID = F4B871EE1F0DDEF1001A9963;
 					};
 				};
@@ -2161,6 +2176,7 @@
 				AE4647971F6FE03E00B5CB67 /* flag_it.png in Resources */,
 				5E41ED1F2275AE9400E972E1 /* HomeFSCalendarTableViewCell.xib in Resources */,
 				5E2797D2222C0BB60098F295 /* FriendListItemTableViewCell.xib in Resources */,
+				5E8D0875248E070B009D8DB9 /* LocationAlertView.xib in Resources */,
 				AE8294D41FBACE2F000D381F /* PhotosCell.xib in Resources */,
 				5EF840A52237C2550046E68D /* HomeEventHeaderViewCell.xib in Resources */,
 				5E20A4AC226F21B800F1DBC6 /* LocationItemsHeaderViewCell.xib in Resources */,
@@ -2366,7 +2382,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n";
+			shellScript = "
+";
 		};
 		8513B021278CF235AD8A707A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2443,7 +2460,6 @@
 				5E64C10922927CE1000F2629 /* ChoiceViewController+Facebook.swift in Sources */,
 				5E20A4AB226F21B800F1DBC6 /* LocationItemsHeaderViewCell.swift in Sources */,
 				5EC7A16B227DBC4B0010E804 /* PeronalDetailsTableViewCell.swift in Sources */,
-				5E1217CB2299B1840075961A /* GatheringImagePickerViewController.swift in Sources */,
 				AE8617F91F5982C600F99D75 /* HomeTableViewCellHeader.swift in Sources */,
 				FA025A2A21F592AA00240E08 /* GatheringCardTableViewCell.swift in Sources */,
 				5E20CC4A2372E458006F8CC5 /* CenesUserContactModel+CoreDataManager.swift in Sources */,
@@ -2463,13 +2479,13 @@
 				5E51FDA2226874E700A86994 /* CreateGatheringV2ViewController+UITableView.swift in Sources */,
 				5EFFC0AC222ED6030037D2EC /* NotificationGatheringTableViewCell.swift in Sources */,
 				F42AC09D1F27858E009FF9FA /* Services.swift in Sources */,
-				5E28510622AA5A23004504D1 /* MyImageCropperViewController.swift in Sources */,
 				FA204940214C35EE004F1A13 /* ChoiceViewController.swift in Sources */,
 				FA110EC521614B94007DB7EA /* SignupSuccessViewController.swift in Sources */,
 				5E20A4A1226ED77100F1DBC6 /* CreateGatheringLocation+UITableView.swift in Sources */,
 				5E6AE0C42241F2320076A275 /* MeTimeUnscheduleTableViewCell.swift in Sources */,
 				FA5D275421861238005EF27A /* HomeService.swift in Sources */,
 				5E2797D1222C0BB60098F295 /* FriendListItemTableViewCell.swift in Sources */,
+				5E8D0871248DFC92009D8DB9 /* LocationPhoto.swift in Sources */,
 				AE7AD0361F9EFABB007B50F7 /* InvitationViewCell.swift in Sources */,
 				5E7A7A542386F0FB008E84ED /* SqlliteDbManager.swift in Sources */,
 				AE5BA7D01FAB283A00EBF76B /* SideMenuViewController.swift in Sources */,
@@ -2688,6 +2704,7 @@
 				5E6DA425228544AA006D86D9 /* CalendarsViewController.swift in Sources */,
 				5E1217C522981C260075961A /* NextCardTableViewCell.swift in Sources */,
 				5EC64E8D2285C594001FB7A7 /* CenesProperty.swift in Sources */,
+				5ECDDE672490A07900A374AC /* ImageSliderViewController.swift in Sources */,
 				942C76D31F9937F100817FD6 /* AlarmInfoTableViewCell.swift in Sources */,
 				5E64C100228F31AD000F2629 /* AppSettingsViewController.swift in Sources */,
 				AE8184E51F960EC300D885A2 /* HomeUserCellLast.swift in Sources */,
@@ -2716,6 +2733,7 @@
 				5E51FDA52268802600A86994 /* GatheringInfoTableViewCell.swift in Sources */,
 				5E51FD842265891900A86994 /* InviteFriendsDto.swift in Sources */,
 				FA52377621FB3A5800055B8D /* UINavigationBar+Customs.swift in Sources */,
+				5E8D0877248E071D009D8DB9 /* LocationAlertView.swift in Sources */,
 				5E41ED192274218300E972E1 /* DataTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2828,7 +2846,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2881,7 +2899,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -2916,7 +2934,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -2945,7 +2963,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Cenes/Cenes-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -2963,7 +2981,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cenes.app/Cenes";
 			};
 			name = Debug;
@@ -2982,7 +3000,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cenes.app/Cenes";
 			};
 			name = Release;
@@ -2992,15 +3010,18 @@
 			baseConfigurationReference = F965675E44AA513DEEBA32F4 /* Pods-CenesUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = CenesUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.blogspot.iosmite.CenesUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Cenes;
 			};
 			name = Debug;
@@ -3010,15 +3031,18 @@
 			baseConfigurationReference = C23F23AABCD50C191B8366C6 /* Pods-CenesUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XLW9C8866Y;
 				INFOPLIST_FILE = CenesUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.blogspot.iosmite.CenesUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Cenes;
 			};
 			name = Release;

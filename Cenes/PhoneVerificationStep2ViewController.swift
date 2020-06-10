@@ -37,7 +37,7 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
             phoneNumber.text = "\(countryCode)\(phoneNumberStr)";
         }
         resendCodeText.isUserInteractionEnabled = false;
-        codeField1.addTarget(self, action: #selector(userPressedKey(textField:)), for: UIControlEvents.editingChanged);
+        codeField1.addTarget(self, action: #selector(userPressedKey(textField:)), for: UIControl.Event.editingChanged);
         
         codeField1.becomeFirstResponder();
         
@@ -67,17 +67,17 @@ class PhoneVerificationStep2ViewController: UIViewController, UITextFieldDelegat
         self.navigationController?.navigationBar.isHidden = false;
         
         let backButton = UIButton.init(type: .custom)
-        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControlState.normal)
-        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControlState.selected)
-        backButton.addTarget(self, action:#selector(backButtonPressed), for: UIControlEvents.touchUpInside)
+        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControl.State.normal)
+        backButton.setImage(#imageLiteral(resourceName: "abondan_event_icon"), for: UIControl.State.selected)
+        backButton.addTarget(self, action:#selector(backButtonPressed), for: UIControl.Event.touchUpInside)
         backButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
         let backBarButton = UIBarButtonItem.init(customView: backButton)
         
         self.navigationItem.leftBarButtonItem = backBarButton
         
         let instabugButton = UIButton.init(type: .custom)
-        instabugButton.setImage(#imageLiteral(resourceName: "instabug_report"), for: UIControlState.normal)
-        instabugButton.setImage(#imageLiteral(resourceName: "instabug_report"), for: UIControlState.selected)
+        instabugButton.setImage(#imageLiteral(resourceName: "instabug_report"), for: UIControl.State.normal)
+        instabugButton.setImage(#imageLiteral(resourceName: "instabug_report"), for: UIControl.State.selected)
     
         let bugTapGuesture = UITapGestureRecognizer.init(target: self, action: #selector(bugButtonPressed));
         instabugButton.addGestureRecognizer(bugTapGuesture);

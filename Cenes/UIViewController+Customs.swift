@@ -91,7 +91,7 @@ extension UIViewController {
             //self.selectPicture();
             //if let requestUrl = NSURL(string: "\(faqLink)") {
                 //UIApplication.shared.openURL(requestUrl as URL)
-                UIApplication.shared.open(URL.init(string: faqLink)!, options: [String:Any](), completionHandler: nil);
+                UIApplication.shared.open(URL.init(string: faqLink)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([String:Any]()), completionHandler: nil);
             }
         
         let handfAction: UIAlertAction = UIAlertAction(title: "Help & Feedback", style: .default) { action -> Void in
@@ -166,4 +166,9 @@ extension UIViewController {
     class GatheringTapGesture: UITapGestureRecognizer {
         var chatMessage: String!;
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

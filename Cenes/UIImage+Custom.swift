@@ -31,7 +31,7 @@ extension UIImage {
     
     
     public func fixedOrientation() -> UIImage {
-        if imageOrientation == UIImageOrientation.up {
+        if imageOrientation == UIImage.Orientation.up {
             return self
         }
         

@@ -106,7 +106,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         tabBarController?.delegate = self;
         
-        activityIndicator.activityIndicatorViewStyle = .gray;
+        activityIndicator.style = .gray;
         activityIndicator.center = view.center;
         self.view.addSubview(activityIndicator);
 
@@ -231,7 +231,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                  
                     let alertBody = "Cenes has detected a new phone number. Please logout and login again.";
                     
-                    let alertController = UIAlertController(title: "Alert", message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                    let alertController = UIAlertController(title: "Alert", message: alertBody, preferredStyle: UIAlertController.Style.alert)
                     
                     let okAction = UIAlertAction(title: "Logout", style: .default) { (UIAlertAction) in
                         print ("Ok")
@@ -445,7 +445,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         homeButton.titleLabel?.font = .systemFont(ofSize: 15, weight: UIFont.Weight.medium)
         homeButton.setTitleColor(UIColor.black, for: .normal)
         homeButton.frame = CGRect.init(x: 10, y: 0, width: 65 , height: 25)
-        homeButton.addTarget(self, action:#selector(calendarTabPressed), for: UIControlEvents.touchUpInside)
+        homeButton.addTarget(self, action:#selector(calendarTabPressed), for: UIControl.Event.touchUpInside)
 
         if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.CalendarTab) {
             let lineView = UIView(frame: CGRect(x: 0, y: homeButton.frame.size.height, width: homeButton.frame.size.width, height: 1))
@@ -458,7 +458,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         gatheringButton.titleLabel?.font = .systemFont(ofSize: 15, weight: UIFont.Weight.medium)
         gatheringButton.setTitleColor(UIColor.black, for: .normal)
         gatheringButton.frame = CGRect.init(x: 0, y: 0, width: 70 , height: 25)
-        gatheringButton.addTarget(self, action:#selector(invitationTabPressed), for: UIControlEvents.touchUpInside)
+        gatheringButton.addTarget(self, action:#selector(invitationTabPressed), for: UIControl.Event.touchUpInside)
 
         if (self.homescreenDto.headerTabsActive == HomeHeaderTabs.InvitationTab) {
             let gatheringLineView = UIView(frame: CGRect(x: 0, y: gatheringButton.frame.size.height, width: gatheringButton.frame.size.width, height: 1))
@@ -473,17 +473,17 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         //Right Side Button  ****************************/
         refreshCalButton = UIButton.init(type: .custom)
-        refreshCalButton.setImage(UIImage.init(named: "refresh_cal_icon"), for: UIControlState.normal)
+        refreshCalButton.setImage(UIImage.init(named: "refresh_cal_icon"), for: UIControl.State.normal)
         refreshCalButton.frame = CGRect.init(x: 0, y: 0, width: 24, height: 24)
-        refreshCalButton.addTarget(self, action:#selector(refreshButtonPressed), for: UIControlEvents.touchUpInside)
+        refreshCalButton.addTarget(self, action:#selector(refreshButtonPressed), for: UIControl.Event.touchUpInside)
         
         let refreshCalBarButton = UIBarButtonItem.init(customView: refreshCalButton)
 
         
-        createGathButton.setImage(UIImage.init(named: "plus_icon"), for: UIControlState.normal)
+        createGathButton.setImage(UIImage.init(named: "plus_icon"), for: UIControl.State.normal)
         //calendarButton.setImage(UIImage.init(named: "plus_icon"),, for: UIControlState.selected)
         createGathButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
-        createGathButton.addTarget(self, action:#selector(plusButtonPressed), for: UIControlEvents.touchUpInside)
+        createGathButton.addTarget(self, action:#selector(plusButtonPressed), for: UIControl.Event.touchUpInside)
         
         let calendarBarButton = UIBarButtonItem.init(customView: createGathButton)
 

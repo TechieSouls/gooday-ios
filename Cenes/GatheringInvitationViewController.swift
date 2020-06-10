@@ -72,6 +72,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var inputChatMessageText: String = "";
     var selectedEventChatDto : SelectedEventChatDto!;
     var chatViewItemAndHeight = [[CGFloat: String]]();
+    var locationPhotos = [LocationPhoto]();
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -123,9 +124,9 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             isNewEvent = true;
         }
                 
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil);
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil);
         
         self.hideKeyboardWhenTappedAround();
         self.hideKeyboardWhenTappedOnTableviewAround(tableViewArea: invitationCardTableView);
@@ -134,7 +135,6 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             event.expired = true;
             sqlDatabaseManager.updateExpiredStatusByEventId(event: event);
         }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -152,6 +152,9 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         tabBarController?.tabBar.isHidden = true;
         self.loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
 
+        if (event.placeId != nil && event.placeId != "") {
+            self.fetchLocationPhotos(placeId: event.placeId);
+        }
         if (event.eventId != nil && event.eventId != 0) {
             
             let apiEndpoint = "\(apiUrl)\(GatheringService().get_gathering_data)";
@@ -236,6 +239,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         }
                         self.invitationCardTableView.reloadData();
                         self.getAllEventChat();
+                        
+                        if (eventTemp.placeId != nil && eventTemp.placeId != "") {
+                            self.fetchLocationPhotos(placeId: eventTemp.placeId);
+                        }
                     }
                 }
             });
@@ -326,6 +333,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                         }
                         self.invitationCardTableView.reloadData();
                         self.getAllEventChat();
+                        
+                        if (eventTemp.placeId != nil) {
+                            self.fetchLocationPhotos(placeId: eventTemp.placeId);
+                        }
                     }
                 }
             });
@@ -345,7 +356,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         print("State : ", sender.state.rawValue);
         
         //This marks the beginning of Gesture Begin.
-        if (sender.state == UIGestureRecognizerState.began) {
+        if (sender.state == UIGestureRecognizer.State.began) {
             
             self.acceptedSendInvitationLoaderView.isHidden = true;
             self.rejectedInvitationLoaderView.isHidden = true;
@@ -364,7 +375,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         }
         
         //This will be called when card is swiped.
-        if (sender.state == UIGestureRecognizerState.changed) {
+        if (sender.state == UIGestureRecognizer.State.changed) {
             //print(translation.x)
             /*if (translation.x < 5 && translation.x > -5 && translation.y < 0) {
              swipeCardView.center = CGPoint(x: view.center.x , y: view.center.y + translation.y);
@@ -412,7 +423,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
          
         //The inviation card will move to center when the finger is up
         //This stated will be achieved when user takes away his hand from screen
-        if (sender.state == UIGestureRecognizerState.ended) {
+        if (sender.state == UIGestureRecognizer.State.ended) {
             
             print("xFromCenter : ", xFromCenter, "Swipe Card Center : ",swipeCardView.center.x);
             print("Swipe Center", swipeCardView.center.x, "View Center" ,view.center.x)
@@ -770,7 +781,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                                if (self.tabBarController != nil) {
                                                    if let cenesTabBarViewControllers = self.tabBarController!.viewControllers {
                                                        
-                                                        var isNewControllerFound: Bool = false;
+                                                    let isNewControllerFound: Bool = false;
                                                         for viewController in cenesTabBarViewControllers {
                                                            if (viewController is NewHomeViewController) {
                                                                //isNewControllerFound = true;
@@ -1019,7 +1030,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     
     func declinedInvitationConfirmAlert() {
         
-        let declineAlert = UIAlertController(title: "Message", message: "Are you sure to decline this event?", preferredStyle: UIAlertControllerStyle.alert)
+        let declineAlert = UIAlertController(title: "Message", message: "Are you sure to decline this event?", preferredStyle: UIAlertController.Style.alert)
 
         declineAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
             print("Handle Ok logic here");
@@ -1037,7 +1048,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     
     func declinedInvitationSendMessageAlert() {
         
-        let declineAlert = UIAlertController(title: "Decline Event", message: "Do you want to leave a note to ", preferredStyle: UIAlertControllerStyle.alert)
+        let declineAlert = UIAlertController(title: "Decline Event", message: "Do you want to leave a note to ", preferredStyle: UIAlertController.Style.alert)
 
         //2. Add the text field. You can configure it however you need.
         declineAlert.addTextField { (textField) in
@@ -1193,6 +1204,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 }
             }
             self.getAllEventChat();
+            self.locationPhotos = [LocationPhoto]();
+            if (self.event.placeId != nil && self.event.placeId != "") {
+                self.fetchLocationPhotos(placeId: self.event.placeId);
+            }
         } else {
             
             if (self.isLoggedInUserInMemberList == false) {
@@ -1272,7 +1287,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         
         for eventChatDateKey in self.eventChatDateKeys {
             
-            let chatBlurbView: ChatBlurbView = ChatBlurbView.instanceFromNib() as! ChatBlurbView!;
+            let chatBlurbView: ChatBlurbView = ChatBlurbView.instanceFromNib() as! ChatBlurbView;
             
             let yesterdayKey = Calendar.current.date(byAdding: .day, value: -1, to: Date())?.EMMMd();
             if (eventChatDateKey == Date().EMMMd()) {
@@ -1507,16 +1522,16 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         var descriptionHeight = descriptionHeightParam;
         
         //Lets load different view in case the text if from logged In User
-        let senderChatView: SenderChatView = SenderChatView.instanceFromNib() as! SenderChatView!;
+        let senderChatView: SenderChatView = SenderChatView.instanceFromNib() as! SenderChatView;
 
         let chatTime = Date.init(millis: eventChat.createdAt).hmma();
         let timeConstraintRect = CGSize(width: .greatestFiniteMagnitude, height: senderChatView.chatTime.frame.height);
-        let timeBoundingBox = chatTime.boundingRect(with: timeConstraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: senderChatView.chatTime.font], context: nil);
+        let timeBoundingBox = chatTime.boundingRect(with: timeConstraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: senderChatView.chatTime.font], context: nil);
 
         //Lets find the number of lines for Chat Message
         let heightOfDesc = self.heightForView(text: eventChat.chat!, font: senderChatView.chatMessage.font, width: self.chatFeatureView.chatMessageScrollView.frame.width - (100));
         let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: heightOfDesc)
-        let boundingBox = eventChat.chat.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: senderChatView.chatMessage.font], context: nil)
+        let boundingBox = eventChat.chat.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: senderChatView.chatMessage.font], context: nil)
                
         //Setting Frame for Chat Message *******
         //Lets find the number of lines of chat message uilabel
@@ -1630,12 +1645,12 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         let heightOfDesc = self.heightForView(text: eventChat.chat, font: attandeeChatView.chatLbl.font, width: self.chatFeatureView.chatMessageScrollView.frame.width - (20 + 30  + attandeeChatView.chatTime.intrinsicContentSize.width + 20));
 
         let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: heightOfDesc)
-        let boundingBox = eventChat.chat.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: attandeeChatView.chatLbl.font], context: nil)
+        let boundingBox = eventChat.chat.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: attandeeChatView.chatLbl.font], context: nil)
         
         //Lets fetch the bounds of Chat Time
         let chatTime = Date.init(millis: eventChat.createdAt).hmma();
         let timeConstraintRect = CGSize(width: .greatestFiniteMagnitude, height: attandeeChatView.chatTime.frame.height);
-        let timeBoundingBox = chatTime.boundingRect(with: timeConstraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: attandeeChatView.chatTime.font], context: nil);
+        let timeBoundingBox = chatTime.boundingRect(with: timeConstraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: attandeeChatView.chatTime.font], context: nil);
 
         //Lets find the number of lines of chat message uilabel
         if (eventChat.chatEdited == EventChatEdited.YES) {
@@ -1668,7 +1683,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             
             print("Multi Line Chat : ", eventChat.chat);
              attandeeChatView.chatLblView.frame = CGRect.init(x: attandeeChatView.chatLblView.frame.origin.x
-                , y: 9, width: self.chatFeatureView.chatMessageScrollView.frame.width - (20 + 30 + 10 + 10), height: heightOfDesc + 2*paddingBetweenChatTextAndBubble);
+                , y: 9, width: self.chatFeatureView.chatMessageScrollView.frame.width - (20 + 30), height: heightOfDesc + 2*paddingBetweenChatTextAndBubble);
                             
         }
         
@@ -1753,13 +1768,13 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         // Call self.layoutIfNeeded() if your view uses auto layout
         let myText = label.text! as NSString
         let rect = CGSize(width: label.bounds.width, height: CGFloat.greatestFiniteMagnitude)
-        let labelSize = myText.boundingRect(with: rect, options: .usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: label.font], context: nil)
+        let labelSize = myText.boundingRect(with: rect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: label.font], context: nil)
         return Int(ceil(CGFloat(labelSize.height) / label.font.lineHeight))
     }
 
     func expandTextField() {
 
-        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.curveEaseIn, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIView.AnimationOptions.curveEaseIn, animations: {
                 //Frame Option 1:
             self.chatBoxView.frame = CGRect(x: 0, y: self.view.frame.height - 230, width: self.view.frame.width, height: self.chatBoxView.frame.height);
             print("Final Width : ",self.chatBoxView.frame.width);
@@ -1770,6 +1785,18 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         });
     }
     
+    func fetchLocationPhotos(placeId: String) {
+        let queryStr = "place_id=\(placeId)&fields=photos&key=\(googleMapApiKey)";
+        
+        UserService().commonGetWithoutAuthCall(queryStr: queryStr, apiEndPoint: LocationService().get_place_details_api, token: "", complete: {response in
+            
+            let resultDict = response.value(forKey: "result") as! NSDictionary;
+            let photoArr = resultDict.value(forKey: "photos") as! NSArray;
+            
+            self.locationPhotos = LocationPhoto().loadLocationPhotoByArray(locArr: photoArr);
+            
+        });
+    }
     @objc func tapToChatPressed() {
         //expandTextField();
         if (isKeyboardVisible == false) {
@@ -1807,7 +1834,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         
         self.invitationCardTableView.isScrollEnabled = false;
 
-        if let keyboardRect = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardRect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
               print(keyboardRect.height)
             
             for chatBoxViewTemp in self.view.subviews {
@@ -1880,6 +1907,8 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             postEventChat(chatMessage: self.chatBoxView.sendMessageTextField.text!);
         }
     }
+    
+    
 }
 
 extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDataSource {

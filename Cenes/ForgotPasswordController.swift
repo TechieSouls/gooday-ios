@@ -168,7 +168,7 @@ class ForgotPasswordController: UIViewController, UITextFieldDelegate, MFMailCom
                     
                     if (success == true) {
                         
-                        let alertController = UIAlertController(title: "Reset Successful", message: "", preferredStyle: UIAlertControllerStyle.alert)
+                        let alertController = UIAlertController(title: "Reset Successful", message: "", preferredStyle: UIAlertController.Style.alert)
                         
                     let okAction = UIAlertAction(title: "LOGIN", style: .default) { (UIAlertAction) in
                             print ("Ok")

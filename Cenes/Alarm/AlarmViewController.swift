@@ -75,7 +75,7 @@ class AlarmViewController: UIViewController {
     }()
 
     func configureNavigationBar() {
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         let gradient = CAGradientLayer()
@@ -148,14 +148,14 @@ class AlarmViewController: UIViewController {
         
         profileButton.imageView?.contentMode = .scaleAspectFill
         
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         
         profileButton.clipsToBounds = true
         profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
         profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
+        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControl.Event.touchUpInside)
         profileButton.backgroundColor = UIColor.white
         profileButton.badge = badgeCount;
         profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
@@ -333,7 +333,7 @@ extension AlarmViewController: UITableViewDelegate {
     }
     
     // Override to support editing the table view.
-   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             do {
                 let alarm = self.fetchedResultsController.fetchedObjects![indexPath.row]

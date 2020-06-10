@@ -90,7 +90,7 @@ class WebService
     func uploadProfilePic(image :UIImage?, complete: @escaping(NSMutableDictionary)->Void)
     {
         guard image != nil else { return }
-        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let imgData = image!.jpegData(compressionQuality: 0.2)!
         let id = setting.integer(forKey: "userId")
         let token =  setting.string(forKey: "token")
         guard token != nil else { return }
@@ -735,7 +735,7 @@ class WebService
     func uploadDiaryImage(image : UIImage? , complete: @escaping(NSMutableDictionary)->Void)
     {
         guard image != nil else { return }
-        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let imgData = image!.jpegData(compressionQuality: 0.2)!
         let id = setting.integer(forKey: "userId")
         let token =  setting.string(forKey: "token")
         guard token != nil else { return }

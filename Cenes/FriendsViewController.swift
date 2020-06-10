@@ -90,7 +90,7 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         }
         
         searchContactsField.layer.cornerRadius = 10
-        searchContactsField.leftViewMode = UITextFieldViewMode.always
+        searchContactsField.leftViewMode = UITextField.ViewMode.always
 
         let imageView = UIImageView(frame: CGRect(x: 10, y: 0, width: 20, height: 20))
         let image = UIImage(named: "search_icon")

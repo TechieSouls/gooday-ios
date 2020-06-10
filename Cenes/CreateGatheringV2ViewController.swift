@@ -25,7 +25,7 @@ protocol GatheringInfoCellProtocol {
     );
     func uploadImageLabelOnly();
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CreateGatherigV2Protocol, CropViewControllerDelegate {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CropViewControllerDelegate {
 
     @IBOutlet weak var createGathTableView: UITableView!
     
@@ -184,7 +184,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         let backButton = UIButton();
         backButton.frame = CGRect(x: 0, y: 0, width: 40, height: 40);
         backButton.setImage(UIImage.init(named: "abondan_event_icon"), for: .normal);
-        backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControlEvents.touchUpInside)
+        backButton.addTarget(self, action: #selector(backButtonPressed), for: UIControl.Event.touchUpInside)
         
         let backButtonBarButton = UIBarButtonItem.init(customView: backButton)
         
@@ -196,19 +196,19 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             NSAttributedString.Key.foregroundColor.rawValue : UIColor.black,
             NSAttributedString.Key.font.rawValue : UIFont.init(name: "AvenirNext-Bold", size: 18) // Note the !
         ];
-        textfield.defaultTextAttributes = attributes // call in viewDidLoad
+        textfield.defaultTextAttributes = convertToNSAttributedStringKeyDictionary(attributes) // call in viewDidLoad
 
         if (event.eventId != nil && event.eventId != 0) {
             let attributes = [
-                NSAttributedStringKey.foregroundColor: UIColor.black,
-                NSAttributedStringKey.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
+                NSAttributedString.Key.foregroundColor: UIColor.black,
+                NSAttributedString.Key.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
             ]
             textfield.attributedText = NSAttributedString(string: "\(event.title!)", attributes:attributes);
         } else {
             
             let attributes = [
-                NSAttributedStringKey.foregroundColor: UIColor.lightGray,
-                NSAttributedStringKey.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
+                NSAttributedString.Key.foregroundColor: UIColor.lightGray,
+                NSAttributedString.Key.font : UIFont(name: "AvenirNext-Bold", size: 18)! // Note the !
             ]
             textfield.attributedPlaceholder = NSAttributedString(string: "Event Name", attributes:attributes)
 
@@ -234,7 +234,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
             return false;
         }
         
-        event.title = updatedTextString as! String;
+        event.title = updatedTextString as String;
         
         if (event.title!.count != 0) {
             //Code to show hide Event Preview Button.
@@ -251,8 +251,8 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     func takePicture() {
         imageSelectedOption = "Camera";
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
-            picController.sourceType = UIImagePickerControllerSourceType.camera
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+            picController.sourceType = UIImagePickerController.SourceType.camera
             //picController.allowsEditing = true
             picController.delegate = self
             picController.mediaTypes = [kUTTypeImage as String]
@@ -264,17 +264,20 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
         //self.checkPermission();
         imageSelectedOption = "Gallery";
 
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
             picController.delegate = self
-            picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
+            picController.sourceType = UIImagePickerController.SourceType.photoLibrary;
             //picController.allowsEditing = true
             picController.mediaTypes = [kUTTypeImage as String]
             self.present(picController, animated: true, completion: nil)
         }
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+        if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage {
             picker.dismiss(animated: true, completion: nil);
             let cropViewController = Mantis.cropViewController(image: image)
             cropViewController.delegate = self
@@ -479,11 +482,11 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     
     @objc func backButtonPressed() {
         
-        let alert = UIAlertController(title: "Abandon Event?", message: "If you decide to leave this page, all \nprogress will be lost.", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Leave", style: UIAlertActionStyle.default, handler: {(action:UIAlertAction!) in
+        let alert = UIAlertController(title: "Abandon Event?", message: "If you decide to leave this page, all \nprogress will be lost.", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Leave", style: UIAlertAction.Style.default, handler: {(action:UIAlertAction!) in
             self.navigationController?.popToRootViewController(animated: false);
         }))
-        alert.addAction(UIAlertAction(title: "Stay", style: UIAlertActionStyle.default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Stay", style: UIAlertAction.Style.default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
         // number of lines
@@ -542,7 +545,7 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
                 gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
             } else {
                 
-                self.event.eventPictureBinary = UIImagePNGRepresentation(image)!;
+                self.event.eventPictureBinary = image.pngData()!;
                 gatheringInfoCellDelegate.uploadImageLabelOnly();
             }
         } else {
@@ -551,23 +554,45 @@ class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UI
     }
 
     func cropViewControllerDidCrop(_ cropViewController: CropViewController, cropped: UIImage, transformation: Transformation) {
-        if (self.gatheringInfoCellDelegate != nil) {
-            self.gatheringInfoCellDelegate.imageSelected();
-            //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
-            self.imageToUpload = cropped;//.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
-            
-            if (Connectivity.isConnectedToInternet) {
-                gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
-            } else {
+        cropViewController.dismiss(animated: true, completion: {
+            if (self.gatheringInfoCellDelegate != nil) {
+                self.gatheringInfoCellDelegate.imageSelected();
+                //event.imageToUpload = UIImage(data: UIImageJPEGRepresentation(image, UIImage.JPEGQuality.lowest.rawValue)!);
+                self.imageToUpload = cropped;//.compressImage(newSizeWidth: 768, newSizeHeight: 1308, compressionQuality: Float(UIImage.JPEGQuality.highest.rawValue));
                 
-                self.event.eventPictureBinary = UIImagePNGRepresentation(cropped)!;
-                gatheringInfoCellDelegate.uploadImageLabelOnly();
+                if (Connectivity.isConnectedToInternet) {
+                    self.gatheringInfoCellDelegate.uploadImageAndGetUrl(imageToUpload: self.imageToUpload);
+                } else {
+                    
+                    self.event.eventPictureBinary = cropped.pngData()!;
+                    self.gatheringInfoCellDelegate.uploadImageLabelOnly();
+                }
+            } else {
+                self.showAlert(title: "Error", message: "Cannot upload from screenshot")
             }
-        } else {
-            self.showAlert(title: "Error", message: "Cannot upload from screenshot")
-        }
+        });
+        
     }
     func cropViewControllerDidFailToCrop(_ cropViewController: CropViewController, original: UIImage) {}
-    func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {}
+    func cropViewControllerDidCancel(_ cropViewController: CropViewController, original: UIImage) {
+        cropViewController.dismiss(animated: true, completion: {
+            
+        });
+    }
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]) -> [NSAttributedString.Key: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
 }

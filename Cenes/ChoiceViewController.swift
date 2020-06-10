@@ -349,9 +349,9 @@ class ChoiceViewController: UIViewController, LoginButtonDelegate, GIDSignInDele
                         
                         let alertBody = "Do you want to update your phone number to \(phoneNumberToDisplay) ??";
                         
-                        let alertController = UIAlertController(title: message, message: alertBody, preferredStyle: UIAlertControllerStyle.alert)
+                        let alertController = UIAlertController(title: message, message: alertBody, preferredStyle: UIAlertController.Style.alert)
                         
-                        let okAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { (UIAlertAction) in
+                        let okAction = UIAlertAction(title: "Yes", style: UIAlertAction.Style.default) { (UIAlertAction) in
                             print ("Ok")
                             
                             alertController.dismiss(animated: true, completion: nil);
@@ -360,7 +360,7 @@ class ChoiceViewController: UIViewController, LoginButtonDelegate, GIDSignInDele
                         }
                         
                         
-                        let noAction = UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { (UIAlertAction) in
+                        let noAction = UIAlertAction(title: "No", style: UIAlertAction.Style.cancel) { (UIAlertAction) in
                             print ("No")
                         }
                         alertController.addAction(okAction)
@@ -389,9 +389,9 @@ class ChoiceViewController: UIViewController, LoginButtonDelegate, GIDSignInDele
         }
         
         let confirmMessage = "A verificaiton email has been sent to \(prefixChars)\(suffixChars)@\(emailToVerify)";
-        let confirmAlertController = UIAlertController(title: "Verification", message: confirmMessage, preferredStyle: UIAlertControllerStyle.alert)
+        let confirmAlertController = UIAlertController(title: "Verification", message: confirmMessage, preferredStyle: UIAlertController.Style.alert)
         
-        let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertActionStyle.default) { (UIAlertAction) in
+        let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (UIAlertAction) in
             print ("Ok")
             
             var updatPostData = [String: Any]();

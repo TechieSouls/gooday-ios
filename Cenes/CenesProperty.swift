@@ -17,7 +17,7 @@ class CenesProperty {
     func loadCenesProperty(cenesPropertyDict: NSDictionary) -> CenesProperty {
         
         let cenesProperty = CenesProperty();
-        cenesProperty.cenesPropertyId = cenesPropertyDict.value(forKey: "cenesPropertyId") as! Int32!
+        cenesProperty.cenesPropertyId = cenesPropertyDict.value(forKey: "cenesPropertyId") as! Int32?
         cenesProperty.name = cenesPropertyDict.value(forKey: "name") as! String;
         
         let cenesPropertyValueDict = cenesPropertyDict.value(forKey: "cenesPropertyValue") as! NSDictionary;
@@ -29,10 +29,10 @@ class CenesProperty {
     
     func loadCenesPropertyValue(cenesPropertyValueDict: NSDictionary) -> CenesPropertyValue {
         let cenesPropertyValue = CenesPropertyValue();
-        cenesPropertyValue.cenesPropertyId = cenesPropertyValueDict.value(forKey: "cenesPropertyId") as! Int32!
-        cenesPropertyValue.cenesPropertyValueId = cenesPropertyValueDict.value(forKey: "cenesPropertyValueId") as! Int32!
-        cenesPropertyValue.entityId = cenesPropertyValueDict.value(forKey: "entityId") as! Int32!
-        cenesPropertyValue.value = cenesPropertyValueDict.value(forKey: "value") as! String!
+        cenesPropertyValue.cenesPropertyId = cenesPropertyValueDict.value(forKey: "cenesPropertyId") as! Int32?
+        cenesPropertyValue.cenesPropertyValueId = cenesPropertyValueDict.value(forKey: "cenesPropertyValueId") as! Int32?
+        cenesPropertyValue.entityId = cenesPropertyValueDict.value(forKey: "entityId") as! Int32?
+        cenesPropertyValue.value = cenesPropertyValueDict.value(forKey: "value") as! String?
 
         return cenesPropertyValue;
     }

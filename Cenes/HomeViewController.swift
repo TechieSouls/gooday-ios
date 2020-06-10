@@ -137,7 +137,7 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         //tableView.register(UINib(nibName: "HomeTableViewCellTwo", bundle: Bundle.main), forCellReuseIdentifier: "cellTwo")
         tableView.register(UINib(nibName: "HomeTableViewCellHeader", bundle: Bundle.main), forCellReuseIdentifier: "HeaderCell")
         
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 58
         tableView.estimatedSectionHeaderHeight = 42
         
@@ -788,14 +788,14 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
        
         profileButton.imageView?.contentMode = .scaleAspectFill
         
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         
         profileButton.clipsToBounds = true
         profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
         profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
+        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControl.Event.touchUpInside)
         profileButton.backgroundColor = UIColor.white
         profileButton.badge = badgeCount;
         profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
@@ -816,9 +816,9 @@ class HomeViewController: BaseViewController ,NVActivityIndicatorViewable{
         
         //let calendarImage = UIImage(named: "noun_999728_cc")
         let calendarButton = UIButton.init(type: .custom)
-        calendarButton.setImage(#imageLiteral(resourceName: "calendarNavBarUnselected"), for: UIControlState.normal)
-        calendarButton.setImage(#imageLiteral(resourceName: "calendarNavBarSelected"), for: UIControlState.selected)
-        calendarButton.addTarget(self, action:#selector(togglePressed), for: UIControlEvents.touchUpInside)
+        calendarButton.setImage(#imageLiteral(resourceName: "calendarNavBarUnselected"), for: UIControl.State.normal)
+        calendarButton.setImage(#imageLiteral(resourceName: "calendarNavBarSelected"), for: UIControl.State.selected)
+        calendarButton.addTarget(self, action:#selector(togglePressed), for: UIControl.Event.touchUpInside)
         calendarButton.frame = CGRect.init(x: 0, y: 0, width: 25, height: 25)
         let calendarBarButton = UIBarButtonItem.init(customView: calendarButton)
         

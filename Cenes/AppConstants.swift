@@ -59,6 +59,9 @@ let inviteFriendInvitationSms = "Check out Cenes for your smartphone. Download i
 //THIRD PARTY TOKENS
 let instabugToken = "d81ee39bd8a6ea5c21f101ae80daef5a";
 
+//Google Map Api Key
+let googleMapApiKey = "AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58";
+
 //SETTINGS SCREEN
 let aboutUsVersionUpdateLink = "https://cenesgroup.com";
 let cenesWebUrl = "https://betaweb.cenesgroup.com";
@@ -68,3 +71,8 @@ let faqLink = "https://www.cenesgroup.com/faq";
 let privacyPolicyLink = "https://www.cenesgroup.com/legal/privacy-policy";
 let termsandconditionsLink = "https://www.cenesgroup.com/legal/terms-and-conditions";
 let appStoreLink = "https://apps.apple.com/in/app/cenes/id1475664339";
+let GOOGLE_PLACE_LARGE_PHOTOS_API: String = "https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&maxwidth=1200&photoreference=";
+let GOOGLE_PLACE_SLIDER_PHOTOS_API: String = "https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&maxwidth=600&photoreference=";
+
+let  GOOGLE_PLACE_THUMBNAIL_PHOTOS_API: String = "https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&maxwidth=200&photoreference=";
+let  GOOGLE_PLACE_SMALL_THUMBNAIL_PHOTOS_API: String = "https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&maxwidth=100&photoreference=";

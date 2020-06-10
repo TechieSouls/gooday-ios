@@ -15,7 +15,7 @@ class CenesUtilFunc: UIViewController, NVActivityIndicatorViewable {
     func yesNoAlert(title: String, message: String) {
     
         var takeAction: Bool = false;
-        let refreshAlert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let refreshAlert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         
         refreshAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
             print("Handle Ok logic here")

@@ -21,7 +21,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
         
             //print("Message : ", notification.message);
             let font = UIFont(name: "Avenir-Medium", size: 15.0)
-            let fontAttributes = [NSAttributedStringKey.font: font]
+            let fontAttributes = [NSAttributedString.Key.font: font]
             let myText = notification.message!
             let size = (myText as NSString).size(withAttributes: fontAttributes)
             if (size.width > 250) {
@@ -75,8 +75,8 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                     let attributed = NSMutableAttributedString(string: notification.message!)
                     do {
                         let regex = try! NSRegularExpression(pattern: searchString,options: .caseInsensitive)
-                        for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.characters.count)) as [NSTextCheckingResult] {
-                            attributed.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: match.range)
+                        for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.count)) as [NSTextCheckingResult] {
+                            attributed.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.orange, range: match.range)
                         }
                         cell.message.attributedText = attributed
                     }
@@ -163,8 +163,8 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 let attributed = NSMutableAttributedString(string: notification.message!)
                 do {
                     let regex = try! NSRegularExpression(pattern: searchString,options: .caseInsensitive)
-                    for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.characters.count)) as [NSTextCheckingResult] {
-                        attributed.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.orange, range: match.range)
+                    for match in regex.matches(in: notification.message!, options: NSRegularExpression.MatchingOptions(), range: NSRange(location: 0, length: notification.message!.count)) as [NSTextCheckingResult] {
+                        attributed.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.orange, range: match.range)
                     }
                     cell.message.attributedText = attributed
                 }
@@ -266,7 +266,7 @@ extension NotificationViewController : UITableViewDelegate , UITableViewDataSour
                 let notificationsTemp = self.notificationDtos[indexPath.section].notifications
                 let notification = notificationsTemp![indexPath.row];
             if let font = UIFont(name: "Avenir-Medium", size: 15.0) {
-               let fontAttributes = [NSAttributedStringKey.font: font]
+               let fontAttributes = [NSAttributedString.Key.font: font]
                 let myText = notification.message!
                let size = (myText as NSString).size(withAttributes: fontAttributes)
                 if (size.width > 250) {

@@ -26,7 +26,7 @@ class Reminders :NSObject ,UNUserNotificationCenterDelegate{
         let content = extractedExpr
         content.title = "Cenes Reminder"
         content.body = reminderTitle
-        content.sound = UNNotificationSound.default()
+        content.sound = UNNotificationSound.default
         
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
@@ -43,7 +43,7 @@ class Reminders :NSObject ,UNUserNotificationCenterDelegate{
         let content = UNMutableNotificationContent()
         content.title = "Cenes Reminder"
         content.body = "At your location"
-        content.sound = UNNotificationSound.default()
+        content.sound = UNNotificationSound.default
         
         let request = UNNotificationRequest(identifier: "textNotification", content: content, trigger: trigger)
         

@@ -258,7 +258,7 @@ class AddOrEditReminderViewController: BaseViewController, NVActivityIndicatorVi
     }
     
     func configureNavigationBar() {
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         let gradient = CAGradientLayer()

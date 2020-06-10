@@ -119,8 +119,8 @@ class ProfileViewController: UIViewController,UIImagePickerControllerDelegate ,U
 
 
 func takePicture() {
-    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
-        picController.sourceType = UIImagePickerControllerSourceType.camera
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+        picController.sourceType = UIImagePickerController.SourceType.camera
         picController.allowsEditing = true
         picController.delegate = self
         picController.mediaTypes = [kUTTypeImage as String]
@@ -129,9 +129,9 @@ func takePicture() {
 }
 
 func selectPicture() {
-    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
         picController.delegate = self
-        picController.sourceType = UIImagePickerControllerSourceType.photoLibrary;
+        picController.sourceType = UIImagePickerController.SourceType.photoLibrary;
         picController.allowsEditing = true
         picController.mediaTypes = [kUTTypeImage as String]
         self.present(picController, animated: true, completion: nil)
@@ -140,8 +140,11 @@ func selectPicture() {
 
 
 
-func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-    if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+    if let image = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage {
         self.pImage = image
         self.profileImage.image = image
         picChange = true
@@ -279,7 +282,7 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
                             setting.setValue(self.genderTF.text!, forKey: "gender")
                             setting.setValue(eventPictureUrl, forKey: "photo")
                             
-                            let alertController = UIAlertController(title: "Success", message: "Profile Updated", preferredStyle: UIAlertControllerStyle.alert)
+                            let alertController = UIAlertController(title: "Success", message: "Profile Updated", preferredStyle: UIAlertController.Style.alert)
                             
                             let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
                                 print ("Ok")
@@ -307,7 +310,7 @@ func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMe
                     
                 }else{
                     
-                    let alertController = UIAlertController(title: "Success", message: "Profile Updated", preferredStyle: UIAlertControllerStyle.alert)
+                    let alertController = UIAlertController(title: "Success", message: "Profile Updated", preferredStyle: UIAlertController.Style.alert)
                     
                     let okAction = UIAlertAction(title: "Ok", style: .default) { (UIAlertAction) in
                         print ("Ok")
@@ -403,3 +406,13 @@ extension ProfileViewController : UITextFieldDelegate{
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

@@ -106,7 +106,7 @@ class GatheringService {
     func uploadEventImage(image : UIImage? , complete: @escaping(NSMutableDictionary)->Void)
     {
         guard image != nil else { return }
-        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let imgData = image!.jpegData(compressionQuality: 0.2)!
         let id = setting.integer(forKey: "userId")
         let token =  setting.string(forKey: "token")
         guard token != nil else { return }
@@ -156,7 +156,7 @@ class GatheringService {
     func uploadEventImageV2(image : UIImage?, eventId: Int32, loggedInUser: User , complete: @escaping(NSMutableDictionary)->Void)
     {
         guard image != nil else { return }
-        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let imgData = image!.jpegData(compressionQuality: 0.2)!
         let Auth_header    = ["token" : loggedInUser.token]
         
         
@@ -204,7 +204,7 @@ class GatheringService {
     func uploadEventImageV3(image : UIImage?, loggedInUser: User , complete: @escaping(NSDictionary)->Void)
     {
         guard image != nil else { return }
-        let imgData = UIImageJPEGRepresentation(image!, 0.2)!
+        let imgData = image!.jpegData(compressionQuality: 0.2)!
         let Auth_header    = ["token" : loggedInUser.token]
         
         var returnedDict = NSDictionary()

@@ -31,7 +31,7 @@ class HolidayCalendarListViewController: UIViewController {
         
         alphabeticStrip = ProfileManager().getAlphabeticStrip();
         
-        activityIndicator.activityIndicatorViewStyle = .gray;
+        activityIndicator.style = .gray;
         activityIndicator.center = view.center;
         self.view.addSubview(activityIndicator);
     }

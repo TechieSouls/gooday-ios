@@ -32,7 +32,7 @@ class DiaryViewController: UIViewController,NVActivityIndicatorViewable {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "My Diary"
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
         let gradient = CAGradientLayer()
@@ -218,7 +218,7 @@ class DiaryViewController: UIViewController,NVActivityIndicatorViewable {
            
             if dict.value(forKey: key) != nil {
                 
-                var array = dict.value(forKey: key) as! [DiaryData]!
+                var array = dict.value(forKey: key) as! [DiaryData]?
                 array?.append(diaryObject)
                 
                 dict.setValue(array, forKey: key)
@@ -271,14 +271,14 @@ class DiaryViewController: UIViewController,NVActivityIndicatorViewable {
         
         profileButton.imageView?.contentMode = .scaleAspectFill
         
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         
         profileButton.clipsToBounds = true
         profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
         profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
+        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControl.Event.touchUpInside)
         profileButton.backgroundColor = UIColor.white
         profileButton.badge = badgeCount;
         profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
@@ -446,7 +446,7 @@ extension DiaryViewController : UICollectionViewDataSource , UICollectionViewDel
         
         let sectionTitle = dataObjectArray[indexPath.section].sectionName
         
-        let cell = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DiaryHeaderView", for: indexPath) as! DiaryHeaderView
+        let cell = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "DiaryHeaderView", for: indexPath) as! DiaryHeaderView
         cell.HeaderTitleLabel.text = sectionTitle
         return cell
     }

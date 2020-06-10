@@ -97,7 +97,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         gatheringTableView.register(UINib(nibName: "InvitationViewCell", bundle: Bundle.main), forCellReuseIdentifier: "InvitationViewCell")
         
         
-        gatheringTableView.rowHeight = UITableViewAutomaticDimension
+        gatheringTableView.rowHeight = UITableView.automaticDimension
         gatheringTableView.estimatedRowHeight = 140
         gatheringTableView.estimatedSectionHeaderHeight = 42
         
@@ -157,7 +157,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.black]
         self.navigationController?.navigationBar.backgroundColor = themeColor
         self.navigationController?.navigationBar.tintColor = themeColor;
         
@@ -254,14 +254,14 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         
         profileButton.imageView?.contentMode = .scaleAspectFill
         
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 40 , height: 40)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         
         profileButton.clipsToBounds = true
         profileButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true
         profileButton.heightAnchor.constraint(equalToConstant: 40.0).isActive = true
-        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControlEvents.touchUpInside)
+        profileButton.addTarget(self, action:#selector(profileButtonPressed), for: UIControl.Event.touchUpInside)
         profileButton.backgroundColor = UIColor.white
         profileButton.badge = badgeCount;
         profileButton.badgeEdgeInsets = UIEdgeInsets(top: 35, left: 0, bottom: 0, right: 10)
@@ -272,7 +272,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
         
         
         let editButton = UIButton.init(type: .custom)
-        editButton.setImage(UIImage.init(named: "plus.png"), for: UIControlState.normal)
+        editButton.setImage(UIImage.init(named: "plus.png"), for: UIControl.State.normal)
         editButton.addTarget(self, action:#selector(createGathering), for:.touchUpInside)
         editButton.frame = CGRect.init(x: 0, y: 0, width: 40, height: 40) //CGRectMake(0, 0, 30, 30)
         let rightEditButton = UIBarButtonItem.init(customView: editButton)
@@ -282,7 +282,7 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
           self.navigationItem.rightBarButtonItem = rightEditButton
         }
         
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.black]
         self.navigationController?.navigationBar.tintColor = themeColor
         self.navigationController?.navigationBar.barTintColor = themeColor
         
@@ -434,13 +434,13 @@ class GatheringViewController: BaseViewController,NVActivityIndicatorViewable {
     
     func getInvitationText(sender : String) -> NSAttributedString{
         
-        var attributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13, weight: .medium),
-                          NSAttributedStringKey.foregroundColor: UIColor.blue]
+        var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .medium),
+                          NSAttributedString.Key.foregroundColor: UIColor.blue]
         
         let first = NSMutableAttributedString(string:"\(sender) ", attributes: attributes)
         
-        attributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 13, weight: .medium),
-                      NSAttributedStringKey.foregroundColor: UIColor.darkGray]
+        attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .medium),
+                      NSAttributedString.Key.foregroundColor: UIColor.darkGray]
         
         let second = NSMutableAttributedString(string:" invited you", attributes: attributes)
         
@@ -624,7 +624,7 @@ extension GatheringViewController :UITableViewDataSource,UITableViewDelegate
         
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath)
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
         let obj = dataObjectArray[indexPath.section].sectionObjects[indexPath.row]
         //  /api/event/delete?event_id={select event id}

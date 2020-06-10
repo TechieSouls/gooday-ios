@@ -62,7 +62,7 @@ class SelectedCalendarViewController: UIViewController, GIDSignInUIDelegate, GID
         //New Beta
         //54828242588-8qk7si330grto3qo9ddek6e5q2j0dmdh.apps.googleusercontent.com
 
-        activityIndicator.activityIndicatorViewStyle = .gray;
+        activityIndicator.style = .gray;
         activityIndicator.center = view.center;
         self.view.addSubview(activityIndicator);
         

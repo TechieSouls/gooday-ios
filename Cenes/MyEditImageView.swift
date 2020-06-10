@@ -85,7 +85,7 @@ class MyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
         let frame = AVMakeRect(aspectRatio: imageView.frame.size, insideRect: self.frame);
         imageView.frame = frame
         originImageViewFrame = frame
-        NSLog("initWithImage %@", NSStringFromCGRect(originImageViewFrame))
+        NSLog("initWithImage %@", NSCoder.string(for: originImageViewFrame))
         imageZoomScale = 1.0
         commitInit()
     }
@@ -187,9 +187,9 @@ class MyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
     @objc fileprivate func handlePinchGesture(sender: UIPinchGestureRecognizer)  {
         NSLog("pinch")
         adjustAnchorPointForGesture(sender: sender)
-        if sender.state == UIGestureRecognizerState.began {
+        if sender.state == UIGestureRecognizer.State.began {
             
-        } else if sender.state == UIGestureRecognizerState.changed {
+        } else if sender.state == UIGestureRecognizer.State.changed {
             imageZoomScale = imageView.frame.size.height / originImageViewFrame.size.height
             if imageZoomScale > 0.5 {
                 imageView.transform = imageView.transform.scaledBy(x: sender.scale, y: sender.scale)
@@ -216,15 +216,15 @@ class MyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
                 updateCropViewLayout()
                 adjustOverLayView()
             }
-        } else if sender.state == UIGestureRecognizerState.ended
-            || sender.state == UIGestureRecognizerState.cancelled {
+        } else if sender.state == UIGestureRecognizer.State.ended
+            || sender.state == UIGestureRecognizer.State.cancelled {
             
             animationAfterZoom(zoomScale: imageZoomScale)
         }
     }
     
     private func adjustAnchorPointForGesture(sender: UIGestureRecognizer) {
-        if sender.state == UIGestureRecognizerState.began {
+        if sender.state == UIGestureRecognizer.State.began {
             let piceView = imageView
             let locationInView = sender.location(in: piceView)
             let locationInSuperView = sender.location(in: piceView?.superview)
@@ -255,18 +255,18 @@ class MyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
     // MARK: Handle Pan Gesture for CropView / ImageView
     @objc fileprivate func handlePanGesture(sender: UIPanGestureRecognizer) {
         let piceView = sender.view
-        if sender.state == UIGestureRecognizerState.began {
+        if sender.state == UIGestureRecognizer.State.began {
             NSLog("gesture on view %d",cropView.getCropViewTag())
         }
-        if sender.state == UIGestureRecognizerState.changed {
+        if sender.state == UIGestureRecognizer.State.changed {
             if piceView?.tag == CROP_VIEW_TAG {
                 handleCropViewPanGesture(sender: sender)
             } else if piceView?.tag == IMAGE_VIEW_TAG {
                 panImageView(sender: sender)
             }
         }
-        if sender.state == UIGestureRecognizerState.ended
-            || sender.state == UIGestureRecognizerState.cancelled {
+        if sender.state == UIGestureRecognizer.State.ended
+            || sender.state == UIGestureRecognizer.State.cancelled {
             cropView.resetHightLightView()
         }
     }
@@ -541,7 +541,7 @@ class MyEditImageView: UIView, UIGestureRecognizerDelegate, CropViewDelegate {
         adjustOverLayView()
     }
     
-    func rotateImage(source: UIImage, withOrientation orientation: UIImageOrientation) -> UIImage {
+    func rotateImage(source: UIImage, withOrientation orientation: UIImage.Orientation) -> UIImage {
         UIGraphicsBeginImageContext(source.size)
         let context = UIGraphicsGetCurrentContext()
         if orientation == .right {
@@ -817,7 +817,7 @@ private class OverLayView: UIView {
         super.init(frame: frame)
         self.isUserInteractionEnabled = false;
         self.backgroundColor = UIColor.clear;
-        blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+        blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
         blurEffectView = UIVisualEffectView(effect: blurEffect)
         delayTask = DispatchWorkItem { [unowned self] in
             UIView.animate(withDuration: 0.5, animations: {

@@ -127,7 +127,7 @@ class HttpService {
     
     func postMultipartImage(url: String, image: UIImage, recurringEventId: Int32, token: String, complete: @escaping(NSDictionary)->Void) {
         
-        let imgData = UIImageJPEGRepresentation(image, 0.2)!
+        let imgData = image.jpegData(compressionQuality: 0.2)!
         
         let Auth_header = ["token" : token]
         
@@ -170,7 +170,7 @@ class HttpService {
     
     func postMultipartImageProfilePic(url: String, image: UIImage, userId: Int32, token: String, complete: @escaping(NSDictionary)->Void) {
         
-        let imgData = UIImageJPEGRepresentation(image, 0.2)!
+        let imgData = image.jpegData(compressionQuality: 0.2)!
         
         let Auth_header = ["token" : token]
         

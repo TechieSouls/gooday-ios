@@ -179,8 +179,8 @@ extension RemindersViewController: UITableViewDataSource {
             
             let reminder = closedReminders[indexPath.row]
             let attributedString: NSMutableAttributedString =  NSMutableAttributedString(string: reminder.title)
-            attributedString.addAttribute(NSAttributedStringKey.strikethroughStyle, value: 2, range: NSMakeRange(0, attributedString.length))
-            attributedString.addAttribute(NSAttributedStringKey.foregroundColor, value: UIColor.lightGray, range: NSRange(location: 0, length: reminder.title.count))
+            attributedString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributedString.length))
+            attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.lightGray, range: NSRange(location: 0, length: reminder.title.count))
             
             reminderCell?.reminderButton.setImage(#imageLiteral(resourceName: "RemindersCompleted"), for: .normal)
             reminderCell?.reminderLabel.attributedText = attributedString
@@ -256,7 +256,7 @@ extension RemindersViewController: UITableViewDelegate {
         return 30
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             
             switch indexPath.section {

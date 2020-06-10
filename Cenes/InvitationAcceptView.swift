@@ -83,7 +83,7 @@ class InvitationAcceptView: UIViewController,NVActivityIndicatorViewable {
              DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 var region = MKCoordinateRegion()
                 
-                let viewRegion = MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: self.locationModel.latitude as! CLLocationDegrees, longitude: self.locationModel.longitude as! CLLocationDegrees), 300, 300)
+                let viewRegion = MKCoordinateRegion.init(center: CLLocationCoordinate2D(latitude: self.locationModel.latitude as! CLLocationDegrees, longitude: self.locationModel.longitude as! CLLocationDegrees), latitudinalMeters: 300, longitudinalMeters: 300)
                 
                 let adjsutedRegion = self.mapView.regionThatFits(viewRegion)
                 self.mapView.setRegion(adjsutedRegion, animated: true)

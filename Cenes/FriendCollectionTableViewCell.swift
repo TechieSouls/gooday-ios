@@ -54,7 +54,7 @@ extension FriendCollectionTableViewCell: UICollectionViewDelegate, UICollectionV
             let cell: SelectedFriendCollectionViewCell = friendshorizontalColView.dequeueReusableCell(withReuseIdentifier: "SelectedFriendCollectionViewCell", for: indexPath) as! SelectedFriendCollectionViewCell;
 
             //let key = Array(self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.keys)[indexPath.row]
-            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] as! UserContact;
+            let userContact = self.friendsViewControllerDelegate.inviteFriendsDto.selectedFriendCollectionViewList.reversed()[indexPath.row] ;
             print("Array : \(userContact)")
             
             if ((userContact.user != nil && userContact.user.userId != 0) || userContact.cenesMember == "yes") {

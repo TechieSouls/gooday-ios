@@ -268,7 +268,7 @@ class EventModel {
         fetchRequest.sortDescriptors = sortDescriptors;
         do {
             var eventIdTracking = [Int32: Bool]();
-            let eventsMOTemp = try context.fetch(fetchRequest) as! [EventMO]
+            let eventsMOTemp = try context.fetch(fetchRequest) 
             if (eventsMOTemp.count > 0) {
                 for eventMoTemp in eventsMOTemp {
                     if (eventMoTemp.eventId != 0 && eventMoTemp.title != nil) {
@@ -394,7 +394,7 @@ class EventModel {
         fetchRequest.predicate = NSPredicate(format: "eventId == %i", eventDict.value(forKey: "eventId") as! Int32);
         fetchRequest.relationshipKeyPathsForPrefetching = ["eventMembers"];
         do {
-            let eventMos = try context.fetch(fetchRequest) as! [EventMO];
+            let eventMos = try context.fetch(fetchRequest) ;
             if (eventMos.count > 0) {
                 for eventM in eventMos {
                     //print(eventM.eventId, eventM.description)

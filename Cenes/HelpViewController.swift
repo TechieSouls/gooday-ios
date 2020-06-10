@@ -82,7 +82,7 @@ class HelpViewController: UIViewController,NVActivityIndicatorViewable {
         
         let profileButton = UIButton.init(type: .custom)
         profileButton.imageView?.contentMode = .scaleAspectFill
-        profileButton.setImage(self.profileImage, for: UIControlState.normal)
+        profileButton.setImage(self.profileImage, for: UIControl.State.normal)
         profileButton.frame = CGRect.init(x: 0, y: 0, width: 35, height: 35)
         profileButton.layer.cornerRadius = profileButton.frame.height/2
         profileButton.clipsToBounds = true

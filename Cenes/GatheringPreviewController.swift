@@ -40,7 +40,7 @@ class GatheringPreviewController: UIViewController,NVActivityIndicatorViewable, 
         gatheringPreviewTable.register(UINib(nibName: "GatheringLocTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringLocTableViewCell")
         gatheringPreviewTable.register(UINib(nibName: "GatheringGuestTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: "GatheringGuestTableViewCell")
         
-        gatheringPreviewTable.rowHeight = UITableViewAutomaticDimension
+        gatheringPreviewTable.rowHeight = UITableView.automaticDimension
         
         loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
 
@@ -284,7 +284,7 @@ class GatheringPreviewController: UIViewController,NVActivityIndicatorViewable, 
        
         let params = Event().toDictionary(event: self.event!);
         
-        GatheringService().createGathering(uploadDict: params as! [String : Any], complete: { (returnedDict) in
+        GatheringService().createGathering(uploadDict: params , complete: { (returnedDict) in
             self.stopAnimating()
             
             if returnedDict.value(forKey: "Error") as? Bool == true {

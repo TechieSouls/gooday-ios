@@ -7,8 +7,9 @@ target 'Cenes' do
 
   # Pods for Cenes
   # Pods for Project
-  pod 'FBSDKCoreKit'
-  pod 'FBSDKLoginKit'
+  
+  pod 'FBSDKCoreKit', '~> 5.13.0'
+  pod 'FBSDKLoginKit', '~> 5.13.0'
   pod 'IoniconsSwift'
   pod 'FSCalendar'
   pod 'Alamofire', '~> 4.4'
@@ -26,7 +27,6 @@ target 'Cenes' do
   pod 'ReachabilitySwift'
   pod 'SQLite.swift'
   pod 'Mixpanel-swift'
-  
   pod 'ShimmerSwift'
 
   target 'CenesTests' do

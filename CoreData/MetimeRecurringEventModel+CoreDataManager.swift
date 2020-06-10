@@ -111,7 +111,7 @@ class MetimeRecurringEventModel {
         //fetchRequest.entity = entityDescription
 
         do {
-            let metimeRecurringEventMOs = try context.fetch(fetchRequest) as! [MetimeRecurringEventMO]
+            let metimeRecurringEventMOs = try context.fetch(fetchRequest) 
             for metimeRecurringEventMO in metimeRecurringEventMOs {
                 print(metimeRecurringEventMO.description)
                 if (metimeRecurringEventMO.title != nil) {

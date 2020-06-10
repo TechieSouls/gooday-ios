@@ -79,7 +79,7 @@ extension AddAlarmViewController: UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let pickerLabel = UILabel()
         let data = timesOfTheDay[component][row]
-        let string =  NSAttributedString(string: data, attributes: [NSAttributedStringKey.font:UIFont(name: "Lato-Regular", size: 90)!, NSAttributedStringKey.foregroundColor:Util.colorWithHexString(hexString: "004346")])
+        let string =  NSAttributedString(string: data, attributes: [NSAttributedString.Key.font:UIFont(name: "Lato-Regular", size: 90)!, NSAttributedString.Key.foregroundColor:Util.colorWithHexString(hexString: "004346")])
         pickerLabel.attributedText = string
         pickerLabel.textAlignment = .center
         
