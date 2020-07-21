@@ -84,7 +84,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateExistingEventOnServer), name: NSNotification.Name(rawValue: "updateExistingEventOnServer"), object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(self.createNewExistingEventOnServer), name: NSNotification.Name(rawValue: "createNewExistingEventOnServer"), object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(self.createNewExistingEventOnServer), name: NSNotification.Name(rawValue: "refreshInvitaitonTabsLocally"), object: nil);
-
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loadPastEvents), name: NSNotification.Name(rawValue: "loadFromServer"), object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.checkAppleCalendarUpdates), name: NSNotification.Name(rawValue: "checkAppleCalendarUpdates"), object: nil);
 
         
         calendrStatusToast.layer.cornerRadius = 10;
@@ -143,6 +144,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         //Mixpanel.mainInstance().track(event: "HomeScreen",
           //                            properties:[ "User" : "\(loggedInUser.name!)"])
         checkForAppAlert();
+        
+        loadAllEventCategories();
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -375,13 +378,13 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     @objc func refreshEventChatOnPush() {
         
         if let wd = UIApplication.shared.delegate?.window {
-            var vc = wd!.rootViewController
+            let vc = wd!.rootViewController
             if(vc is UITabBarController) {
-                var vcs = (vc as! UITabBarController).viewControllers
+                let vcs = (vc as! UITabBarController).viewControllers
                 for viewController in vcs! {
                     print("Is Gathering View COntroller", viewController  is UINavigationController);
                     if (viewController  is UINavigationController) {
-                        var visible = (viewController  as! UINavigationController).visibleViewController
+                        let visible = (viewController  as! UINavigationController).visibleViewController
                         if (visible is GatheringInvitationViewController) {
                             (visible as! GatheringInvitationViewController).refreshChatScreen();
                         }
@@ -478,7 +481,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         refreshCalButton.addTarget(self, action:#selector(refreshButtonPressed), for: UIControl.Event.touchUpInside)
         
         let refreshCalBarButton = UIBarButtonItem.init(customView: refreshCalButton)
-
         
         createGathButton.setImage(UIImage.init(named: "plus_icon"), for: UIControl.State.normal)
         //calendarButton.setImage(UIImage.init(named: "plus_icon"),, for: UIControlState.selected)
@@ -487,8 +489,9 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         
         let calendarBarButton = UIBarButtonItem.init(customView: createGathButton)
 
-        self.navigationItem.rightBarButtonItems = [calendarBarButton, refreshCalBarButton]
-       
+        //self.navigationItem.rightBarButtonItems = [calendarBarButton, refreshCalBarButton]
+        self.navigationItem.rightBarButtonItems = [calendarBarButton]
+
         
     }
     
@@ -661,7 +664,8 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
     func fetchOfflineDataAndShowOnScreen() {
         //let events = EventModel().fetchOfflineEvents();
         //sqlDatabaseManager.deleteAllEvents();
-        let events = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.HOME);
+        let events = sqlDatabaseManager.findHomeScreenEvents(userId: loggedInUser.userId);
+
         print("Total Offline Events Present : ",events.count)
         for eveee in events {
             print(eveee.eventId, eveee.title);
@@ -739,7 +743,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     }
                     
                     if (isAnyNewEventToSaveLocally == true) {
-                        event.displayScreenAt = EventDisplayScreen.HOME;
+                        //event.displayScreenAt = EventDisplayScreen.HOME;
                         sqlDatabaseManager.saveEvent(event: event);
                         allCalendarTabEvents.append(event);
                         self.homescreenDto.allCalendarTabEvents = allCalendarTabEvents;
@@ -779,7 +783,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         //let events = EventModel().fetchOfflineEvents();
         //sqlDatabaseManager.deleteAllEvents();
         
-        self.homescreenDto.allCalendarTabEvents = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.HOME)
+        self.homescreenDto.allCalendarTabEvents = sqlDatabaseManager.findHomeScreenEvents(userId: loggedInUser.userId);
         print("Total Offline Events Present : ",self.homescreenDto.allCalendarTabEvents.count);
         
         var currentDateCompos = Calendar.current.dateComponents(in: TimeZone.current, from: Date());
@@ -804,7 +808,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         loadCalendarDots(events: self.homescreenDto.allCalendarTabEvents);
     }
     
-    func loadPastEvents() -> Void {
+    @objc func loadPastEvents() -> Void {
         //If user is connected to internet, then we will fetch the past events from api
         if Connectivity.isConnectedToInternet {
             
@@ -864,7 +868,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         }
                         
                         if (isAnyNewEventToSaveLocally == true) {
-                            event.displayScreenAt = EventDisplayScreen.HOME;
+                            //event.displayScreenAt = EventDisplayScreen.HOME;
                             sqlDatabaseManager.saveEvent(event: event);
                             allCalendarTabEvents.append(event);
                             self.homescreenDto.allCalendarTabEvents = allCalendarTabEvents;
@@ -1001,11 +1005,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         let event = Event().loadEventData(eventDict: eventDictTmp as! NSDictionary);
                         eventBOs.append(event);
                         if (status == EventMemberStatus.GOING) {
-                             event.displayScreenAt = EventDisplayScreen.ACCEPTED
+                             //event.displayScreenAt = EventDisplayScreen.ACCEPTED
                          } else if (status == EventMemberStatus.PENDING) {
-                             event.displayScreenAt = EventDisplayScreen.PENDING
+                             //event.displayScreenAt = EventDisplayScreen.PENDING
                          } else if (status == EventMemberStatus.NOTGOING) {
-                             event.displayScreenAt = EventDisplayScreen.DECLINED;
+                             //event.displayScreenAt = EventDisplayScreen.DECLINED;
                         }
                          sqlDatabaseManager.saveEvent(event: event);
                         
@@ -1164,14 +1168,14 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             
             //No Error then populate the table
             if (returnedDict["success"] as? Bool == true) {
-                var calendarEventsData = returnedDict["data"] as! NSArray
+                let calendarEventsData = returnedDict["data"] as! NSArray
                 
                 let calendarEventDataDto = self.homescreenDto.calendarEventsData;
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd";
                 
                 for calendarEventTemp in calendarEventsData {
-                    var calendarEventDict = calendarEventTemp as! NSDictionary;
+                    let calendarEventDict = calendarEventTemp as! NSDictionary;
                 
                     let eventDateMillis: Int = calendarEventDict.value(forKey: "start_time") as! Int;
                     let eventDateStr = dateFormatter.string(from: Date(milliseconds: eventDateMillis));
@@ -1277,15 +1281,15 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         currentTimestampCompos.second = 0;
         currentTimestampCompos.nanosecond = 0;
         let currentTimestamp = currentTimestampCompos.date!.millisecondsSince1970
-        let acceptedEvents = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.ACCEPTED);
+        let acceptedEvents = sqlDatabaseManager.findAcceptedEvents(userId: loggedInUser.userId);
         homescreenDto.pageable.acceptedGathetingPageNumber = acceptedEvents.count;
         homescreenDto.acceptedGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: acceptedEvents);
         
-        let declinedEvents = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.DECLINED);
+        let declinedEvents = sqlDatabaseManager.findDeclinedEvents(userId: loggedInUser.userId);
         homescreenDto.pageable.pendingGathetingPageNumber = declinedEvents.count;
         homescreenDto.declinedGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: declinedEvents);
 
-        let pendingEvents = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.PENDING);
+        let pendingEvents = sqlDatabaseManager.findPendingEvents(userId: loggedInUser.userId);
         homescreenDto.pageable.declinedGathetingPageNumber = pendingEvents.count;
         homescreenDto.pendingGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: pendingEvents);
         
@@ -1503,7 +1507,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.homescreenDto.headerTabsActive = HomeHeaderTabs.CalendarTab;
         self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = false;
 
-        let events = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.HOME);
+        let events = sqlDatabaseManager.findHomeScreenEvents(userId: loggedInUser.userId);
         print("Total Offline Events Present : ",events.count)
         for eveee in events {
             print(eveee.eventId, eveee.title);
@@ -1541,7 +1545,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         self.homescreenDto.homeRowsVisibility[HomeRows.ThreeTabs] = true;
         self.homescreenDto.invitationTabs = HomeInvitationTabs.Accepted;
 
-        let acceptedEvents = sqlDatabaseManager.findEventsByDisplayAtScreen(displayAtScreen: EventDisplayScreen.ACCEPTED);
+        let acceptedEvents = sqlDatabaseManager.findAcceptedEvents(userId: loggedInUser.userId);
         homescreenDto.pageable.acceptedGathetingPageNumber = acceptedEvents.count;
         homescreenDto.acceptedGatherings = HomeManager().parseInvitationResultsForEventManagedObject(eventBOs: acceptedEvents);
 
@@ -1554,9 +1558,63 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
         //self.loadGatheringDataByStatus(status: "Going");
     }
     
+    @objc func eventOptionBackdropPressed() {
+        
+        for subView in UIApplication.shared.keyWindow!.subviews {
+            if (subView is EventOptionTypeView) {
+                subView.removeFromSuperview();
+                break;
+            }
+        }
+    }
+    
+    @objc func privateEventBtnPressed() {
+        
+        for subView in UIApplication.shared.keyWindow!.subviews {
+            if (subView is EventOptionTypeView) {
+                subView.removeFromSuperview();
+                break;
+            }
+        }
+
+        let friendsViewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
+        navigationController?.pushViewController(friendsViewController, animated: true);
+    }
+    
+    @objc func publicEventBtnPressed() {
+        
+        for subView in UIApplication.shared.keyWindow!.subviews {
+            if (subView is EventOptionTypeView) {
+                subView.removeFromSuperview();
+                break;
+            }
+        }
+
+        let eventCategoriesViewController: EventCategoriesViewController = storyboard?.instantiateViewController(withIdentifier: "EventCategoriesViewController") as! EventCategoriesViewController
+        navigationController?.pushViewController(eventCategoriesViewController, animated: true);
+    }
+    
     @objc func plusButtonPressed() {
+        
         let friendsViewController: FriendsViewController = storyboard?.instantiateViewController(withIdentifier: "FriendsViewController") as! FriendsViewController
         navigationController?.pushViewController(friendsViewController, animated: true)
+        
+        /*let eventOptionTypeView = EventOptionTypeView.instanceFromNib() as! EventOptionTypeView;
+        
+        
+        let backDropTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(eventOptionBackdropPressed)); eventOptionTypeView.privateEventBackdropView.addGestureRecognizer(backDropTapGesture);
+        
+       
+        let privateEventTapGesture = UITapGestureRecognizer.init(target: self, action: Selector.init("privateEventBtnPressed")); eventOptionTypeView.privateEventUIView.addGestureRecognizer(privateEventTapGesture);
+        
+        let publicEventTapGesture = UITapGestureRecognizer.init(target: self, action: Selector.init("publicEventBtnPressed")); eventOptionTypeView.publicEventUIView.addGestureRecognizer(publicEventTapGesture);
+
+        let currentWindow: UIWindow? = UIApplication.shared.keyWindow
+        
+        eventOptionTypeView.frame = CGRect.init(x: (currentWindow?.frame.origin.x)!, y: (currentWindow?.frame.origin.y)!, width: (currentWindow?.frame.width)!, height: (currentWindow?.frame.height)! - (self.tabBarController?.tabBar.frame.height)!);
+
+        currentWindow!.addSubview(eventOptionTypeView);*/
+
     }
 
     @objc func refreshButtonPressed() {
@@ -1628,7 +1686,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
             eventStore.requestAccess(to: .event) { (granted, error) in
                 
-                
                 if (granted == true && error == nil) {
                     
                     print("granted \(granted)")
@@ -1638,7 +1695,7 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     
                     var datecomponent = DateComponents()
                     datecomponent.year = 1
-                    var endDate = calendar.date(byAdding: datecomponent, to: Date())
+                    let endDate = calendar.date(byAdding: datecomponent, to: Date())
                     
                     let calendars = eventStore.calendars(for: .event)
                     
@@ -1650,8 +1707,6 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                         }
                         newCalendar.append(calendar)
                     }
-                    
-                    
                     
                     let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
                     
@@ -1947,11 +2002,11 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                     sqlDatabaseManager.deleteEventByEventId(eventId: eventTemp.eventId);
                     
                     //Now after deleting lets add the event again to display at Home and Accepted screen
-                    eventTemp.displayScreenAt = EventDisplayScreen.HOME;
+                    //eventTemp.displayScreenAt = EventDisplayScreen.HOME;
                     sqlDatabaseManager.saveEvent(event: eventTemp);
                     
-                    eventTemp.displayScreenAt = EventDisplayScreen.ACCEPTED;
-                    sqlDatabaseManager.saveEvent(event: eventTemp);
+                    //eventTemp.displayScreenAt = EventDisplayScreen.ACCEPTED;
+                    //sqlDatabaseManager.saveEvent(event: eventTemp);
                     
                     if (nonCenesMembers.count == 0) {
                         //This is called when the user is from home screen
@@ -1965,6 +2020,20 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
                             
                     }
                 }
+            }
+        });
+    }
+    
+    func loadAllEventCategories() {
+        let eventCatAPI = "\(apiUrl)\(GatheringService().get_event_categories)";
+        GatheringService().gatheringCommonGetAPI(api: eventCatAPI, queryStr: "", token: loggedInUser.token, complete: {(response) in
+            
+            let data = response.value(forKey: "data") as! NSArray;
+            let eventCategories = EventCategory().loadDataFromNSArray(eventCategoriesArr: data);
+            
+            sqlDatabaseManager.deleteAllEventCategories();
+            for eventCat in eventCategories {
+                sqlDatabaseManager.saveEventCategories(eventCategory: eventCat);
             }
         });
     }
@@ -2177,6 +2246,95 @@ class NewHomeViewController: UIViewController, UITabBarControllerDelegate, NewHo
             sqlDatabaseManager.deleteAllEventsByProcessedStatus(processed: 0);
         });*/
         
+    }
+    
+    @objc func checkAppleCalendarUpdates() {
+        print("Store Change.......");
+        var params : [String:Any]
+        do {
+            guard let eventStore : EKEventStore = try EKEventStore() else {
+                return;
+            }
+
+            let name = "\(String(loggedInUser.name.split(separator: " ")[0]))'s iPhone";
+            eventStore.requestAccess(to: .event) { (granted, error) in
+                
+                if (granted == true && error == nil) {
+                    
+                    print("granted \(granted)")
+                    print("error \(error)")
+                    
+                    let calendar = Calendar.current
+                    
+                    var datecomponent = DateComponents()
+                    datecomponent.year = 1
+                    let endDate = calendar.date(byAdding: datecomponent, to: Date())
+                    
+                    let calendars = eventStore.calendars(for: .event)
+                    
+                    var newCalendar = [EKCalendar]()
+                    
+                    for calendar in calendars {
+                        if calendar.title == "Work" || calendar.title == "Home"{
+                            //      newCalendar.append(calendar)
+                        }
+                        newCalendar.append(calendar)
+                    }
+                    
+                    let predicate = eventStore.predicateForEvents(withStart: Date(), end: endDate!, calendars: newCalendar)
+                    
+                    let eventArray = eventStore.events(matching: predicate)
+                    
+                    if eventArray.count > 0 {
+                        
+                        var arrayDict = [NSMutableDictionary]()
+                        
+                        for event  in eventArray {
+                            
+                            let event = event as EKEvent
+                            
+                            if (event.isAllDay == true) {
+                                continue;
+                            }
+                            let nowDateMillis = Date().millisecondsSince1970
+                            if (event.startDate.millisecondsSince1970 < nowDateMillis) {
+                                continue;
+                            }
+                            let iCalEvent = ICalEvent().populateICalEventFromDict(icalEventDict: event);
+                        
+                            
+                            let postData: NSMutableDictionary = ["title":iCalEvent.title,"description":iCalEvent.description,"location":iCalEvent.location,"source":"Apple","createdById":"\(self.loggedInUser.userId!)","timezone":"\(TimeZone.current.identifier)","scheduleAs":"Event","startTime":iCalEvent.startTime,"endTime":iCalEvent.endTime,"sourceEventId":"\(event.eventIdentifier!)\(String(describing: iCalEvent.startTime))", "processed": "\(1)"]
+                            print(postData);
+                            arrayDict.append(postData);
+                        }
+                        
+                        var params =  [String:Any]();
+                        params["data"]  = arrayDict;
+                        params["userId"] = self.loggedInUser.userId;
+                        params["name"] = name;
+                        
+                        //Running In Background
+                        //DispatchQueue.global(qos: .background).async {
+                        // your code here
+                        UserService().refreshDeviceEvents(postData: params, token: self.loggedInUser.token, complete: {(response) in
+                            print("Device Synced.");
+                            let success = response.value(forKey: "success") as! Bool;
+                            if (success == true) {
+                                if let eventArr = response.value(forKey: "data") as? NSArray {
+                                    if (eventArr.count > 0) {
+                                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "loadFromServer"), object: nil);
+                                    }
+                                }
+                                
+                            }
+                        });
+                    }
+                }
+            }
+
+        } catch {
+            print(error)
+        }
     }
     // UITabBarControllerDelegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {

@@ -86,7 +86,8 @@ class UserContact {
         var userContactsToReturn: [UserContact] = [];
         for userContact in userContacts {
             
-            if (userContact.cenesName != nil && userContact.cenesName.lowercased().starts(with: predicate.lowercased())) {
+            //Filtering by both Cenes Name and Phone Book Name
+            if ((userContact.cenesName != nil && userContact.cenesName.lowercased().starts(with: predicate.lowercased())) || userContact.name != nil && (userContact.name.lowercased().starts(with: predicate.lowercased()))) {
                 userContactsToReturn.append(userContact);
             }
         }

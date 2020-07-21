@@ -87,6 +87,7 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
     }
     
     func loadMeTimeData() -> Void {
+        //sqlDatabaseManager.deleteAllRecurringEvent();
 
         self.metimeEvents = sqlDatabaseManager.findAllMeTimeRecurringEvent();
         //self.metimeEvents = MetimeRecurringEventModel().findAllMetimeRecurringEvents();
@@ -112,7 +113,7 @@ class NewMeTimeViewController: UIViewController, NVActivityIndicatorViewable {
                     //if (self.metimeEvents.count == 0) {
                         self.metimeEvents = metimeEventsTmp;
                     //}
-                    //self.meTimeItemsTableView.reloadData();
+                    self.meTimeItemsTableView.reloadData();
 
                 } else {
                     let alert = UIAlertController(title: "Error", message: response["message"] as! String, preferredStyle: .alert);

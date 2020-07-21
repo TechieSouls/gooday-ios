@@ -10,6 +10,7 @@ import Foundation
 
 class CreateGathDto {
     
+    var isCovidMapOpened : Bool = false;
     var timeMatchIconOn : Bool = false;
     var availableFriendsList: String = "";
     var createGatheringRowsOrder = [CreateGatheringRows.friendsCollectionRow, CreateGatheringRows.datePanelRow, CreateGatheringRows.predictiveInfoRow, CreateGatheringRows.predictiveCalendarRow,CreateGatheringRows.eventInfoPanelRow];

@@ -14,6 +14,7 @@ import NVActivityIndicatorView
 import Mantis
 import CoreData
 import Mixpanel
+import GoogleMaps
 
 protocol TimePickerDoneProtocol : class {
     func timePickerDoneButtonPressed(timeInMillis: Int)
@@ -25,7 +26,7 @@ protocol GatheringInfoCellProtocol {
     );
     func uploadImageLabelOnly();
 }
-class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CropViewControllerDelegate {
+class CreateGatheringV2ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate,CreateGatheringProtocol, NVActivityIndicatorViewable, CropViewControllerDelegate, GMSMapViewDelegate {
 
     @IBOutlet weak var createGathTableView: UITableView!
     
@@ -595,4 +596,8 @@ fileprivate func convertToNSAttributedStringKeyDictionary(_ input: [String: Any]
 // Helper function inserted by Swift 4.2 migrator.
 fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
 	return input.rawValue
+}
+
+class CovidShowHideTapGesture: UITapGestureRecognizer {
+    var showCovidData: Bool!;
 }

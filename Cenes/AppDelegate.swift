@@ -8,15 +8,18 @@ import CoreData
 import FBSDKLoginKit
 import UserNotifications
 import GoogleSignIn
-import Google
 import SideMenu
 import Reachability
 import Mixpanel
+import GoogleMaps
+import GooglePlaces
+import Google
 
 let setting = UserDefaults.standard
 var reachability: Reachability!
 var sqlDatabaseManager = SqlliteDbManager();
- 
+let googleApiKey = "AIzaSyCwk1PW9TAix5uOW5M9mJ4XiGbeQiuZXi0"
+
 @UIApplicationMain
     class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -45,12 +48,17 @@ var sqlDatabaseManager = SqlliteDbManager();
         } catch {
             
         }
+        
+        //Initialize Google Maps
+        GMSServices.provideAPIKey(googleApiKey)
+        GMSPlacesClient.provideAPIKey(googleApiKey)
+
         //Initialize MixPanel
         Mixpanel.initialize(token: "255bc3dcb4ae26b7202f5e997a66e4d9")
         
         //Initialize Fabric
         //Fabric.with([Crashlytics.self])
-        
+
         //Inittializing Facebook SDK
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         
@@ -146,7 +154,6 @@ var sqlDatabaseManager = SqlliteDbManager();
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
         //WebService().resetBadgeCount();
-
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -170,6 +177,20 @@ var sqlDatabaseManager = SqlliteDbManager();
                 
                 WebService().resetBadgeCount();
             });
+            
+            let calUpdateQueryStr = "userId=\(String(loggedInUser.userId))";
+            let jsonUrl = "\(apiUrl)api/google/checkUpdates";
+
+            UserService().commonGetCall(queryStr: calUpdateQueryStr, apiEndPoint: jsonUrl, token: loggedInUser.token, complete: {response in
+                
+                if (response.value(forKey: "success") as! Bool != false) {
+                    let needUpdate = response.value(forKey: "data") as! Bool
+                    if (needUpdate == true) {
+                       NotificationCenter.default.post(name: NSNotification.Name(rawValue: "loadFromServer"), object: nil);
+                    }
+                }
+            });
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "checkAppleCalendarUpdates"), object: nil);
         }
     }
 
@@ -534,9 +555,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             return
         }
         
-
         let userInfo = response.notification.request.content.userInfo["aps"]! as? NSDictionary
-        
         
         let notificationType = userInfo!["type"] as? String;
         if (notificationType != nil && notificationType == "Chat") {

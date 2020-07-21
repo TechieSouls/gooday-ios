@@ -39,9 +39,11 @@ class Event {
     var synced: Bool = true;
     var createdAt: Int64!;
     var updateAt: Int64!;
+    var eventCategoryId: Int32!;
     var displayScreenAt: String = "Home";
     var processed: Int8 = 1;
     var eventMembers: [EventMember]!;
+    var eventCategory: EventCategory!;
     
     func createdByUserId() -> Int32 {
         let loggedInUser = User().loadUserDataFromUserDefaults(userDataDict: setting);
@@ -83,6 +85,11 @@ class Event {
         event.createdAt = eventDict.value(forKey: "createdAt") as? Int64 ?? nil;
         event.updateAt = eventDict.value(forKey: "updateAt") as? Int64 ?? nil;
 
+        if let eventCategoryId = eventDict.value(forKey: "eventCategoryId") as? Int32 {
+            event.eventCategoryId = eventCategoryId;
+            event.eventCategory = sqlDatabaseManager.findEventCategoryByEventCategoryId(eventCategoryId: eventCategoryId);
+        }
+        
         if (eventDict.value(forKey: "eventMembers") != nil) {
              event.eventMembers = EventMember().loadEventMembers(eventMemberArray: eventDict.value(forKey: "eventMembers") as! NSArray)
         }

@@ -195,6 +195,8 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
 
     }
 
+    
+    //This will locate the near by locations
     func loadNearbyLocations(searchText: String) -> Void {
         let url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&location=\(currentLatitude),\(currentLongitude)&radius=5000&name=\(searchText.replacingOccurrences(of: " ", with: "+"))";
         
@@ -267,12 +269,14 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                     
                     
                     if (finalnbList.count > 0) {
-                        var locationDto = LocationDto();
+                        let locationDto = LocationDto();
                         locationDto.sectionName = "Suggested Locations";
                         locationDto.sectionObjects = finalnbList;
                         self.locationDtos.append(locationDto);
                         self.nearByLocations = finalnbList;
                         
+                        let locs = self.nearByLocations.sorted(by: { CGFloat(($0.kilometers as NSString).floatValue) < CGFloat(($1.kilometers as NSString).floatValue) });
+                        self.nearByLocations = locs;
                         self.locationTableView.reloadData();
                     } else {
                         self.loadWorldWideLocations(searchText: searchText);
@@ -383,13 +387,16 @@ class CreateGatheringLocationViewController: UIViewController, CLLocationManager
                         let distanceInMeters = coordinateUser.distance(from: coordinateDestination);
                         print("distanceInMeters : ", distanceInMeters/1000, String(format: "%.1f", distanceInMeters/1000))
                         
-                        let distInKms = Int(String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: prevLoc.latitudeDouble, destLongitude: prevLoc.longitudeDouble)));
+                        let distInKms = String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: prevLoc.latitudeDouble, destLongitude: prevLoc.longitudeDouble));
                         
-                            prevLoc.kilometers = "";
+                            prevLoc.kilometers = "\(distInKms)";
                             //prevLoc.kilometers = "\(String(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: prevLoc.latitudeDouble, destLongitude: prevLoc.longitudeDouble)))";
                         self.previousLoactions.append(prevLoc);
                     }
-                    
+                    let locs = self.previousLoactions.sorted(by: { CGFloat(($0.kilometers as NSString).floatValue) < CGFloat(($1.kilometers as NSString).floatValue) });
+                    self.previousLoactions = locs;
+
+
                     self.nearByLocations = self.previousLoactions;
                     self.locationTableView.isHidden = false;
                     self.locationTableView.reloadData();

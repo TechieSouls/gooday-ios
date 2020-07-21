@@ -73,6 +73,8 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     var selectedEventChatDto : SelectedEventChatDto!;
     var chatViewItemAndHeight = [[CGFloat: String]]();
     var locationPhotos = [LocationPhoto]();
+    var cardOnlySkipped: Bool = true;
+    var locationBo: Location!;
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -656,10 +658,11 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                                         }
                                     }
                                     
+                                    let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                                    let eventKey = String((0..<32).map{ _ in letters.randomElement()! })
+                                    self.event.key = "\(eventKey)";
+
                                     if (nonCenesMembers.count > 0) {
-                                        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                                        let eventKey = String((0..<32).map{ _ in letters.randomElement()! })
-                                        self.event.key = "\(eventKey)";
 
                                         //DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
                                         /*DispatchQueue.main.async {
@@ -882,9 +885,13 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             }
             //self.navigationController?.popViewController(animated: false);
             
+            let deleteEvent = sqlDatabaseManager.findEventByEventId(eventId: self.event.eventId);
+            sqlDatabaseManager.deleteEventByEventId(eventId: deleteEvent.eventId);
+            
             //This is called when the user is from home screen
             if (self.newHomeViewControllerDeglegate != nil) {
-                self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                self.newHomeViewControllerDeglegate.initilizeCalendarData();
+                self.newHomeViewControllerDeglegate.initilizeInvitationTabsData();
                 self.navigationController?.popViewController(animated: false);
                 
             } else {
@@ -936,12 +943,18 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 sqlDatabaseManager.deleteEventByEventId(eventId: acceptedEvent.eventId);
                 
                 //Display Event At Home Screen
-                acceptedEvent.displayScreenAt = EventDisplayScreen.HOME;
-                sqlDatabaseManager.saveEvent(event: acceptedEvent);
+                //acceptedEvent.displayScreenAt = EventDisplayScreen.HOME;
+                let eventMems = event.eventMembers;
+                for eveM in eventMems! {
+                    if (eveM.userId != nil && eveM.userId == loggedInUser.userId) {
+                        eveM.status = EventMemberStatus.GOING;
+                    }
+                }
+                sqlDatabaseManager.saveEvent(event: event);
                 
                 //Display Event At Accepted Screen
-                acceptedEvent.displayScreenAt = EventDisplayScreen.ACCEPTED;
-                sqlDatabaseManager.saveEvent(event: acceptedEvent);
+                //acceptedEvent.displayScreenAt = EventDisplayScreen.ACCEPTED;
+                //sqlDatabaseManager.saveEvent(event: acceptedEvent);
             }
             
             let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=Going";
@@ -982,7 +995,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                     });
                 } else {
                     if (self.newHomeViewControllerDeglegate != nil) {
-                        self.newHomeViewControllerDeglegate.refershDataFromOtherScreens();
+                        self.newHomeViewControllerDeglegate.initilizeInvitationTabsData();
                         self.navigationController?.popViewController(animated: true);
                         
                     } else {
@@ -1004,22 +1017,24 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     
     func declineInvitationCall() {
         
-        self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x - 200, y: self.swipeCardView.center.y);
-        self.swipeCardView.alpha = 0;
-        
         if (self.event.scheduleAs == EventScheduleAs.NOTIFICATION) {
             self.navigationController?.popViewController(animated: true);
         } else {
             
             //Update EventMEmber status in CoreData EventMember table
-            sqlDatabaseManager.updateEventMemberStatusByUserId(eventMemberStatus: "NotGoing", userId: self.loggedInUser.userId);
+            //sqlDatabaseManager.updateEventMemberStatusByUserId(eventMemberStatus: "NotGoing", userId: self.loggedInUser.userId);
 
             let declinedEvent = sqlDatabaseManager.findEventByEventId(eventId: event.eventId);
             sqlDatabaseManager.deleteEventByEventId(eventId: declinedEvent.eventId);
             
             //Display Event At Home Screen
-            declinedEvent.displayScreenAt = EventDisplayScreen.DECLINED;
-            sqlDatabaseManager.saveEvent(event: declinedEvent);
+            let eventMems = event.eventMembers;
+            for eveM in eventMems! {
+                if (eveM.userId != nil && eveM.userId == loggedInUser.userId) {
+                    eveM.status = EventMemberStatus.NOTGOING;
+                }
+            }
+            sqlDatabaseManager.saveEvent(event: event);
                     
             let acceptQueryStr = "eventId=\(String(self.event.eventId))&userId=\(String(self.loggedInUser.userId))&status=NotGoing";
             GatheringService().updateGatheringStatus(queryStr: acceptQueryStr, token: self.loggedInUser.token, complete: {(response) in
@@ -1035,7 +1050,6 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         declineAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
             print("Handle Ok logic here");
             self.declinedInvitationSendMessageAlert();
-            self.declineInvitationCall();
           }))
 
         declineAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction!) in
@@ -1060,19 +1074,28 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             let textField = declineAlert.textFields![0] // Force unwrapping because we know it exists.
             print("Text field: \(textField.text)")
             if (textField.text != "") {
+                self.declineInvitationCall();
+
+                self.swipeCardView.center = CGPoint(x: self.swipeCardView.center.x - 200, y: self.swipeCardView.center.y);
+                self.swipeCardView.alpha = 0;
                 
                 self.rejectedInvitationLoaderView.startRotatingView(duration: 0.5, repeatCount: 1, clockwise: true);
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     // your code here
+                    self.cardOnlySkipped = false;
                     self.rejectedInvitationLoaderView.stopRotatingView();
-                    self.self.resetScreenToDefaultPosition();
+                    self.skipCard();
                 }
                 self.postEventChat(chatMessage: textField.text!);
+            } else {
+                self.resetScreenToDefaultPosition();
             }
         }));
 
         declineAlert.addAction(UIAlertAction(title: "Skip", style: .cancel, handler: { (action: UIAlertAction!) in
                 print("Handle Cancel Logic here");
+            self.declineInvitationCall();
+
             self.resetScreenToDefaultPosition();
             //self.moveToHomeScreen();
             self.pendingEventIndex = self.pendingEventIndex + 1;
@@ -1095,9 +1118,9 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
                 if (self.fromPushNotificaiton == true) {
                     
                     UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                    /*DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
                         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadHomeScreen"), object: nil)
-                    });
+                    });*/
                 } else {
                     self.moveToHomeScreen();
                 }
@@ -1233,6 +1256,10 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             if (fromPushNotificaiton == true) {
                 UIApplication.shared.keyWindow?.rootViewController = HomeViewController.MainViewController();
             } else {
+                if (self.newHomeViewControllerDeglegate != nil &&                     self.cardOnlySkipped == false) {
+                    self.newHomeViewControllerDeglegate.loadCalendarTabOfflineData();
+                    self.newHomeViewControllerDeglegate.initilizeInvitationTabsData();
+                }
                 self.navigationController?.popViewController(animated: false);
             }
         }
@@ -1252,7 +1279,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             self.deleteImageView.alpha = 0;
             self.editImageView.alpha = 0;
             self.sendInvitationImageView.alpha = 0;
-        })
+        });
     }
     
     func messageComposeViewController(_ controller: MFMessageComposeViewController,
@@ -1780,21 +1807,97 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
             print("Final Width : ",self.chatBoxView.frame.width);
             
             },completion: { finish in
+                self.invitationCardTableView.isScrollEnabled = false;
                 self.chatBoxView.sendMessageTextField.becomeFirstResponder();
            
         });
     }
     
     func fetchLocationPhotos(placeId: String) {
-        let queryStr = "place_id=\(placeId)&fields=photos&key=\(googleMapApiKey)";
+        let queryStr = "place_id=\(placeId)&key=\(googleMapApiKey)";
         
         UserService().commonGetWithoutAuthCall(queryStr: queryStr, apiEndPoint: LocationService().get_place_details_api, token: "", complete: {response in
             
-            let resultDict = response.value(forKey: "result") as! NSDictionary;
-            let photoArr = resultDict.value(forKey: "photos") as! NSArray;
-            
-            self.locationPhotos = LocationPhoto().loadLocationPhotoByArray(locArr: photoArr);
-            
+            if let resultDict = response.value(forKey: "result") as? NSDictionary {
+                
+                self.locationBo = Location();
+                if let photoArr = resultDict.value(forKey: "photos") as? NSArray {
+                   self.locationPhotos = LocationPhoto().loadLocationPhotoByArray(locArr: photoArr);
+                }
+                
+                if let openingHours = resultDict.value(forKey: "opening_hours") as? NSDictionary {
+                    self.locationBo.openNow = (openingHours.value(forKey: "open_now") as! Bool);
+                }
+                
+                if let internationalPhoneNumber = resultDict.value(forKey: "international_phone_number") as? String {
+                    self.locationBo.phoneNumber = internationalPhoneNumber;
+                } else if let formattedPhoneNumber = resultDict.value(forKey: "formatted_phone_number") as? String {
+                    self.locationBo.phoneNumber = formattedPhoneNumber;
+                }
+                
+                //Lets find out country, state, county
+                if let addressComponents = resultDict.value(forKey: "address_components") as? NSArray {
+                    
+                    for addressItem in addressComponents {
+                        let addressItemDict = addressItem as! NSDictionary;
+                        if let types = addressItemDict.value(forKey: "types") as? NSArray {
+                            
+                            for typeItem in types {
+                                let typeOfAddress = typeItem as! String;
+                                
+                                //Finding Country
+                                if (typeOfAddress == "country") {
+                                    
+                                    self.locationBo.country = (addressItemDict.value(forKey: "long_name") as! String);
+                                    self.locationBo.countryISO2Code = (addressItemDict.value(forKey: "short_name") as! String);
+                                } else if (typeOfAddress == "administrative_area_level_1") {                             //Finding State
+                                    self.locationBo.state = (addressItemDict.value(forKey: "long_name") as! String);
+                                } else if (typeOfAddress == "administrative_area_level_2") {//Finding County
+                                    //Finding County
+                                    self.locationBo.county = (addressItemDict.value(forKey: "long_name") as! String);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                let api = "\(apiUrl)\(GatheringService().post_covid_stats)";
+                var postData = [String: Any]();
+                postData["covidTimestamp"] = Date().millisecondsSince1970;
+                if let countryName = self.locationBo.country {
+                    postData["countryCode"] = countryName;
+                }
+                if let state = self.locationBo.state {
+                    postData["state"] = state;
+                }
+                if let county = self.locationBo.county  {
+                    postData["county"] = county;
+                }
+                
+                GatheringService().gatheringCommonPostAPI(api: api, postData: postData, token: self.loggedInUser.token, complete: {(response) in
+                           let success = response.value(forKey: "success") as! Bool
+                           if (success == true) {
+                                                        
+                                let covidDataDict = response.value(forKey: "data") as! NSDictionary;
+                                if let cityDict = covidDataDict.value(forKey: "city") as? NSDictionary {
+                                    self.locationBo.newCases = (cityDict.value(forKey: "newCases") as! String);
+                                    self.locationBo.markerSnippet = "Confirmed \t \(cityDict.value(forKey: "confirmed") as! String)\nRecovered\t \(cityDict.value(forKey: "recovered") as! String)\nDeaths   \t\t    \(cityDict.value(forKey: "deaths") as! String)"
+
+                                
+                                } else  if let state = covidDataDict.value(forKey: "state") as? NSDictionary {
+                                    self.locationBo.newCases = (state.value(forKey: "newCases") as! String);
+                                    
+                                    self.locationBo.markerSnippet = "Confirmed \t \(state.value(forKey: "confirmed") as! String)\nRecovered\t \(state.value(forKey: "recovered") as! String)\nDeaths   \t\t    \(state.value(forKey: "deaths") as! String)"
+                                    
+                                } else  if let country = covidDataDict.value(forKey: "country") as? NSDictionary {
+                                    self.locationBo.newCases = (country.value(forKey: "newCases") as! String);
+                                    
+                                    self.locationBo.markerSnippet = "Confirmed \t \(country.value(forKey: "confirmed") as! String)\nRecovered\t \(country.value(forKey: "recovered") as! String)\nDeaths\t\t    \(country.value(forKey: "deaths") as! String)"
+                               }
+                            }
+                });
+            }
+           
         });
     }
     @objc func tapToChatPressed() {
@@ -1831,8 +1934,7 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     }
     
     @objc func keyboardWillShow(_ notification: NSNotification) {
-        
-        self.invitationCardTableView.isScrollEnabled = false;
+        print("keyboardWillShow Called");
 
         if let keyboardRect = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
               print(keyboardRect.height)
@@ -1875,13 +1977,15 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
     
     @objc func keyboardWillHide(_ notification: NSNotification) {
         
-        self.invitationCardTableView.isScrollEnabled = false;
+        print("keyboardWillHide Called");
 
         self.inputChatMessageText = self.chatBoxView.sendMessageTextField.text!;
 
         isKeyboardVisible = false;
         for chatBoxView in self.view.subviews {
             if (chatBoxView is ChatBoxView) {
+                self.invitationCardTableView.isScrollEnabled = false;
+
                 chatBoxView.removeFromSuperview();
             }
         }
@@ -1908,7 +2012,31 @@ class GatheringInvitationViewController: UIViewController, UIGestureRecognizerDe
         }
     }
     
-    
+    func setSwipeRestrictions() {
+        //If the event is not owner of event
+        //And guest is viewing the card.
+        var loggedInUserEventMemObj = EventMember();
+        for eventMember in self.event.eventMembers! {
+            //We have to check user id, because there may be users which are non cenes users
+            if (eventMember.userId != nil && eventMember.userId != 0 && self.loggedInUser!.userId == eventMember.userId) {
+                loggedInUserEventMemObj = eventMember;
+                break;
+            }
+        }
+        
+        self.leftToRightGestureEnabled = true;
+        self.rightToLeftGestureEnabled = true;
+        //Restricting swipe guestre
+        //if user already accepted the card then disable left to right gesture
+        if (loggedInUserEventMemObj.status == nil || event.eventId == nil) {
+            self.leftToRightGestureEnabled = true;
+            self.rightToLeftGestureEnabled = true;
+        } else if (loggedInUserEventMemObj.status == "Going") {
+            self.leftToRightGestureEnabled = false;
+        } else if (loggedInUserEventMemObj.status == "NotGoing") {
+            self.rightToLeftGestureEnabled = false;
+        }
+    }
 }
 
 extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDataSource {
@@ -2123,7 +2251,7 @@ extension GatheringInvitationViewController: UITableViewDelegate, UITableViewDat
             let uiTapGuestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(cardPressed));
             cell.topHeaderView.addGestureRecognizer(uiTapGuestureRecognizer)
         
-            if (selectedEventChatDto != nil && selectedEventChatDto.showChatWindow == true) {
+            if (event.expired == false && selectedEventChatDto != nil && selectedEventChatDto.showChatWindow == true) {
                 selectedEventChatDto.showChatWindow = false;
                 cell.descriptionViewPressed();
             }

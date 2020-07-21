@@ -11,8 +11,8 @@ import Alamofire
 
 class HomeService {
     
-    let get_month_wise_events: String = "/api/getEventsMonthWise/v3";
-    let get_home_events: String = "/api/getEvents/android/v2";
+    let get_month_wise_events: String = "api/getEventsMonthWise/v3";
+    let get_home_events: String = "api/getEvents/android/v2";
     let get_past_home_events: String = "api/getPastEvents/v2";
     let get_home_calendar_events: String = "api/homeCalendarEvents/v2";
     let get_delete_event: String = "api/event/delete";

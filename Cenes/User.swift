@@ -20,6 +20,7 @@ class User {
     var birthDay: Int64!;
     var birthDayStr: String!;
     var token: String!;
+    var showCovidLocationData: Bool!;
     
     func loadUserData(userDataDict: NSDictionary) -> User {
         
@@ -35,6 +36,7 @@ class User {
         user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
         user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
         user.token = userDataDict.value(forKey: "token") as? String;
+        user.showCovidLocationData = userDataDict.value(forKey: "showCovidLocationData") as? Bool;
 
         return user;
     }
@@ -56,6 +58,11 @@ class User {
             user.birthDay = userDataDict.value(forKey: "birthDay") as? Int64;
             user.token = userDataDict.value(forKey: "token") as? String;
             user.birthDayStr = userDataDict.value(forKey: "birthDayStr") as? String;
+            if let showCovidLocationData = userDataDict.value(forKey: "showCovidLocationData") as? Bool {
+                user.showCovidLocationData = showCovidLocationData;
+            } else {
+                user.showCovidLocationData = false;
+            }
         }
         
         //user.token = "1572598392173eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcmVlZDEzMzcxNTcyNTExOTkyMTczIn0.UXV_9a5S3lisJYv76k4rFLxY6awm2zWE98Xkjg0OL4CYN3wgChLUlxTwY_J0_6FQ2R8t4V4L80H9J82xXXn4tQ"
@@ -65,6 +72,7 @@ class User {
         //user.userId = 616 //Louisa
         //user.userId = 45 //Sharon Shun
         //user.userId = 847;
+        //user.userId = 859;//Robot
         //user.phone = "";
 
         return user;
@@ -91,6 +99,9 @@ class User {
         if (user.photo != nil) {
             setting.setValue(user.photo, forKeyPath: "photo")
         }
+        
+        if (user.showCovidLocationData != nil) {
+            setting.setValue(user.showCovidLocationData, forKeyPath: "showCovidLocationData")
+        }
     }
-    
 }

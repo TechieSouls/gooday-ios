@@ -19,7 +19,15 @@ class Location {
     var placeId: String!;
     var photo: String!;
     var kilometers: String!;
-    
+    var openNow: Bool!;
+    var phoneNumber: String!;
+    var countryISO2Code: String!;
+    var country: String!;
+    var state: String!;
+    var county: String!;
+    var newCases: String!;
+    var markerSnippet: String!;
+
     func loadLocationData(locationDict: NSDictionary) -> Location {
         let locationObj = Location();
         
@@ -30,7 +38,7 @@ class Location {
         locationObj.placeId = locationDict.value(forKey: "placeId") as? String;
         locationObj.photo = locationDict.value(forKey: "photo") as? String;
         locationObj.kilometers = locationDict.value(forKey: "kilometers") as? String;
-
+        
         return locationObj;
     }
     

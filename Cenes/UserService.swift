@@ -20,7 +20,7 @@ class UserService {
     let get_country_by_ip_address = "auth/getCountryByIpAddress";
     let get_simcard_info_by_userId = "api/user/findSimCardByUserId";//userId
     let get_user_profile_data = "api/user/profileById";//userId
-    let get_splash_records = "/api/splashRecord/findEnabled";
+    let get_splash_records = "api/splashRecord/findEnabled";
 
     
     let post_signup_user_step1 = "api/users/signupstep1";

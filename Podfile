@@ -2,12 +2,10 @@
 # platform :ios, '9.0'
 
 target 'Cenes' do
-  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
   # Pods for Cenes
-  # Pods for Project
-  
   pod 'FBSDKCoreKit', '~> 5.13.0'
   pod 'FBSDKLoginKit', '~> 5.13.0'
   pod 'IoniconsSwift'
@@ -15,7 +13,7 @@ target 'Cenes' do
   pod 'Alamofire', '~> 4.4'
   pod 'ActionButton'
   pod 'Google/SignIn'
-  pod 'NVActivityIndicatorView'
+  pod 'NVActivityIndicatorView/Extended'
   pod 'p2.OAuth2', '~> 4.2'
   pod 'SideMenu'
   pod 'GoogleAnalytics'
@@ -28,6 +26,11 @@ target 'Cenes' do
   pod 'SQLite.swift'
   pod 'Mixpanel-swift'
   pod 'ShimmerSwift'
+  pod 'GoogleMaps', '~> 3.10.0-beta'
+  pod 'GooglePlaces', '~> 3.10.0-beta'
+  #pod 'Firebase/Crashlytics'
+  # Recommended: Add the Firebase pod for Google Analytics
+  #pod 'Firebase/Analytics'
 
   target 'CenesTests' do
     inherit! :search_paths
@@ -35,7 +38,6 @@ target 'Cenes' do
   end
 
   target 'CenesUITests' do
-    inherit! :search_paths
     # Pods for testing
   end
 

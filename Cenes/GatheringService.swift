@@ -12,16 +12,19 @@ import Alamofire
 class GatheringService {
     
     let get_gatherings_by_status: String = "api/user/gatherings/v2"; //user_id, status
-    let get_gathering_data: String = "/api/event/details"; //eventId
+    let get_gathering_data: String = "api/event/details"; //eventId
     let get_delete_event_api: String = "api/event/delete";//event_id
-    let get_update_invitation_api: String = "/api/event/memberStatusUpdate";
+    let get_update_invitation_api: String = "api/event/memberStatusUpdate";
     let get_predictive_api: String = "api/predictive/calendar/v2";
     let get_event_by_key: String = "api/event/invitation/";
+    let get_event_categories: String = "api/event/categories";
     static let get_event_chat_by_eventId: String = "api/eventchat/byEventId";
 
     let post_event_image_upload = "api/event/upload";
     let post_event_image_upload_v2 = "api/event/uploadv2";
     let post_event_create_v2 = "api/event/create";
+    let post_covid_stats = "api/event/covidstats";
+
     static let post_event_chat_api: String = "api/eventchat/create";
     
     var requestArray = NSMutableArray()
@@ -324,7 +327,10 @@ class GatheringService {
     }
 
     func gatheringCommonGetAPI(api: String, queryStr: String,token: String, complete: @escaping(NSDictionary)->Void) {
-        let newApi = "\(api)?\(queryStr)";
+        var newApi = "\(api)"
+        if (queryStr.count > 0) {
+            newApi = newApi + "?\(queryStr)";
+        }
         print("API Url : \(newApi)")
         HttpService().getMethod(url: newApi, token: token, complete: {(response) in
             print(response);

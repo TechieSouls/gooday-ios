@@ -225,16 +225,27 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         self.inviteFriendsDto.filteredEventMembers = [];
         
         if (str == "") {
-            self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
+            //self.inviteFriendsDto.filteredEventMembers = self.inviteFriendsDto.allEventMembers;
+                //It means cenes contact list is visible and we will search by cenes name
+                self.inviteFriendsDto.filteredEventMembers = UserContact().filteredByCenesName(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
+            let friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
+            self.inviteFriendsDto.allContacts = friendListDtos;
+            
+                self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.allEventMembers);
+
         } else {
             
             if (self.inviteFriendsDto.isAllContactsView == false) {
                 //It means cenes contact list is visible and we will search by cenes name
                 self.inviteFriendsDto.filteredEventMembers = UserContact().filteredByCenesName(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
+                self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.filteredEventMembers);
+
                 
             } else {
                 self.inviteFriendsDto.filteredEventMembers = UserContact().filtered(userContacts: self.inviteFriendsDto.allEventMembers, predicate: str);
-                
+                let friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
+                self.inviteFriendsDto.allContacts = friendListDtos;
+
             }
             //self.inviteFriendsDto.filteredEventMembers = EventMember().filteredEventMemberMO(eventMembers: self.inviteFriendsDto.allEventMembers, predicate: str);
         }
@@ -244,9 +255,6 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
             self.inviteFriendsDto.userContactIdMapList[Int(userContact.userContactId)] = userContact;
         }
         
-        let friendListDtos = GatheringManager().parseFriendsListResults(friendList: self.inviteFriendsDto.filteredEventMembers);
-        self.inviteFriendsDto.allContacts = friendListDtos;
-        self.inviteFriendsDto.cenesContacts = GatheringManager().getCenesContacts(friendList: self.inviteFriendsDto.filteredEventMembers);
         
         /*if (inviteFriendsDto.isSearchOn == false) {
             self.inviteFriendsDto.alphabetStrip = [];
@@ -521,9 +529,14 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
             if (self.inviteFriendsDto.cenesContacts.count != 0 && meTimeAddViewControllerProtocolDelegate == nil) {
                           
                       if (self.inviteFriendsDto.isAllContactsView == true) {
-                          cell.switchLabel.text = "Cenes Contacts (\(self.inviteFriendsDto.cenesContacts.count))";
+                        
+                        var cenesContactCounts = 0;
+                        for inviteFriendDto in self.inviteFriendsDto.cenesContacts {
+                            cenesContactCounts = cenesContactCounts + inviteFriendDto.sectionObjects.count;
+                        }
+                        cell.switchLabel.text = "Cenes Contacts (\(cenesContactCounts))";
                       } else {
-                          cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.filteredEventMembers.count))";
+                          cell.switchLabel.text = "All Contacts (\(self.inviteFriendsDto.allEventMembers.count))";
                       }
                       return cell
             } else {
@@ -639,8 +652,8 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (self.inviteFriendsDto.totalNumberOfRows == 2) {
-            if (indexPath.row == 0) {
+        if (self.inviteFriendsDto.totalNumberOfRows == 3) {
+            if (indexPath.row == 1) {
                 //If user clicked on 1 row
                 // and first row is all cenes contacts switch
                 if (self.inviteFriendsDto.selectedFriendCollectionViewList.count == 0) {
@@ -653,7 +666,8 @@ extension FriendsViewController: UITableViewDelegate, UITableViewDataSource {
                     self.friendTableView.reloadData();
                 }
             }
-        } else if (self.inviteFriendsDto.totalNumberOfRows == 3) {
+        } else if (self.inviteFriendsDto.totalNumberOfRows == 4) {
+            print(indexPath.row);
             if (indexPath.row == 1) {
                     if (self.inviteFriendsDto.isAllContactsView == true) {
                         self.inviteFriendsDto.isAllContactsView = false;

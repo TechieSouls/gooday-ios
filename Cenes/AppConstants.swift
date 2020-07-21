@@ -76,3 +76,4 @@ let GOOGLE_PLACE_SLIDER_PHOTOS_API: String = "https://maps.googleapis.com/maps/a
 
 let  GOOGLE_PLACE_THUMBNAIL_PHOTOS_API: String = "https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&maxwidth=200&photoreference=";
 let  GOOGLE_PLACE_SMALL_THUMBNAIL_PHOTOS_API: String = "https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyAg8FTMwwY2LwneObVbjcjj-9DYZkrTR58&maxwidth=100&photoreference=";
+let covidDisclaimerLink = "https://cenesgroup.com/app/csd";

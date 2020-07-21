@@ -39,6 +39,7 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
             cell.distanceInKm.isHidden = false;
             
             let dist = Double(LocationManager().getDistanceInKilometres(currentLatitude: self.currentLatitude, currentLongitude: self.currentLongitude, destLatitude: nearbyLocObj.latitudeDouble, destLongitude: nearbyLocObj.longitudeDouble))!;
+            
             if (Double(dist) > Double(9000)) {
                 cell.distanceInKm.isHidden = true;
             } else {
@@ -66,8 +67,43 @@ extension CreateGatheringLocationViewController: UITableViewDelegate, UITableVie
                     nearByLocObje.longitudeDouble = latLong.value(forKey: "lng") as! Double
                 }
                 if (nearByLocObje.placeId == nil) {
-                    nearByLocObje.placeId = data["place_id"] as! String;
+                    nearByLocObje.placeId = (data["place_id"] as! String);
                 }
+                if let openingHours = data.value(forKey: "opening_hours") as? NSDictionary {
+                    nearByLocObje.openNow = (openingHours.value(forKey: "open_now") as! Bool);
+                }
+                if let internationalPhoneNumber = data.value(forKey: "international_phone_number") as? String {
+                    nearByLocObje.phoneNumber = internationalPhoneNumber;
+                } else if let formattedPhoneNumber = data.value(forKey: "formatted_phone_number") as? String {
+                    nearByLocObje.phoneNumber = formattedPhoneNumber;
+                }
+                
+                //Lets find out country, state, county
+                if let addressComponents = data.value(forKey: "address_components") as? NSArray {
+                    
+                    for addressItem in addressComponents {
+                        let addressItemDict = addressItem as! NSDictionary;
+                        if let types = addressItemDict.value(forKey: "types") as? NSArray {
+                            
+                            for typeItem in types {
+                                let typeOfAddress = typeItem as! String;
+                                
+                                //Finding Country
+                                if (typeOfAddress == "country") {
+                                    
+                                    nearByLocObje.country = (addressItemDict.value(forKey: "long_name") as! String);
+                                    nearByLocObje.countryISO2Code = (addressItemDict.value(forKey: "short_name") as! String);
+                                } else if (typeOfAddress == "administrative_area_level_1") {                             //Finding State
+                                    nearByLocObje.state = (addressItemDict.value(forKey: "long_name") as! String);
+                                } else if (typeOfAddress == "administrative_area_level_2") {//Finding County
+                                    //Finding County
+                                    nearByLocObje.county = (addressItemDict.value(forKey: "long_name") as! String);
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 self.selectedLocationProtocolDelegate.locationSelected(location: nearByLocObje);
 
             }

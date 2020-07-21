@@ -177,6 +177,8 @@ class NotificationViewController: UIViewController, NVActivityIndicatorViewable,
                     self.errorAlert(message: response["message"] as! String)
                 }
             });
+        } else {
+            self.refreshControl.endRefreshing();
         }
         
     }

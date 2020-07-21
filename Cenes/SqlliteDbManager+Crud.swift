@@ -22,6 +22,7 @@ extension SqlliteDbManager {
         sqlDatabaseManager.deleteAllEventChats();
         sqlDatabaseManager.deleteAllCalendarSyncTokens();
         sqlDatabaseManager.deleteAllRecurringEventMembers();
+        sqlDatabaseManager.deleteAllEventCategories();
     }
     
     func createDatabase() {
@@ -37,6 +38,7 @@ extension SqlliteDbManager {
         sqlDatabaseManager.createTableEventChats();
         sqlDatabaseManager.createTableCalendarSyncToken();
         sqlDatabaseManager.createTableRecurringEventMember();
+        sqlDatabaseManager.createTableEventCategory();
     }
     
     func createEventTable() {
@@ -110,7 +112,7 @@ extension SqlliteDbManager {
         
         var dbEvent = Event();
         if (event.eventId != nil) {
-            dbEvent = findEventByEventIdAndDisplayScreenAt(eventId: event.eventId, displayScreenAt: event.displayScreenAt);
+            dbEvent = findEventByEventId(eventId: event.eventId);
         }
         if (dbEvent.title == nil) {
          
@@ -391,6 +393,86 @@ extension SqlliteDbManager {
           }
         return offlineEvents;
     }
+    
+    func findHomeScreenEvents(userId: Int32) -> [Event] {
+        
+        var offlineEvents = [Event]();
+        do {
+            let selectEventsQuery = "SELECT e.* from events e LEFT JOIN event_members em on e.event_id = em.event_id where em.status = ? and em.user_id = ? and e.expired = ? order by start_time asc";
+            print("Select Event Query : ",selectEventsQuery);
+            let selectStmt = try database.prepare(selectEventsQuery);
+            for event in  try selectStmt.run(EventMemberStatus.GOING, Int64(userId), false) {
+               //print("Event Title : ", event[1]!);
+                let offlineEvent = processSqlLiveEventData(event: event);
+                offlineEvents.append(offlineEvent);
+            }
+               
+           } catch {
+              print("Insert event error ",error)
+          }
+        return offlineEvents;
+    }
+    
+    func findAcceptedEvents(userId: Int32) -> [Event] {
+        
+        var offlineEvents = [Event]();
+        do {
+            let selectEventsQuery = "SELECT e.* from events e LEFT JOIN event_members em on e.event_id = em.event_id where schedule_as = ? and em.status = ? and em.user_id = ? and e.expired = ? order by start_time asc";
+            print("Select Event Query : ",selectEventsQuery);
+            let selectStmt = try database.prepare(selectEventsQuery);
+            for event in  try selectStmt.run(EventScheduleAs.GATHERING, EventMemberStatus.GOING, Int64(userId), false) {
+               //print("Event Title : ", event[1]!);
+                let offlineEvent = processSqlLiveEventData(event: event);
+                offlineEvents.append(offlineEvent);
+            }
+               
+           } catch {
+              print("Insert event error ",error)
+          }
+        return offlineEvents;
+    }
+
+    func findPendingEvents(userId: Int32) -> [Event] {
+        
+        var offlineEvents = [Event]();
+        do {
+            let selectEventsQuery = "SELECT e.* from events e LEFT JOIN event_members em on e.event_id = em.event_id where schedule_as = ? and em.status != ? and em.status != ? and em.user_id = ? and e.expired = ? order by start_time asc";
+            print("Select Event Query : ",selectEventsQuery);
+            let selectStmt = try database.prepare(selectEventsQuery);
+            for event in  try selectStmt.run(EventScheduleAs.GATHERING, EventMemberStatus.GOING, EventMemberStatus.NOTGOING, Int64(userId), false) {
+               //print("Event Title : ", event[1]!);
+                let offlineEvent = processSqlLiveEventData(event: event);
+                offlineEvents.append(offlineEvent);
+            }
+               
+           } catch {
+              print("Insert event error ",error)
+          }
+        return offlineEvents;
+    }
+
+    func findDeclinedEvents(userId: Int32) -> [Event] {
+        
+        var offlineEvents = [Event]();
+        do {
+            let selectEventsQuery = "SELECT e.* from events e LEFT JOIN event_members em on e.event_id = em.event_id where schedule_as = ? and em.status = ? and em.user_id = ? and e.expired = ? order by start_time asc";
+            print("Select Event Query : ",selectEventsQuery);
+            let selectStmt = try database.prepare(selectEventsQuery);
+            for event in  try selectStmt.run(EventScheduleAs.GATHERING, EventMemberStatus.NOTGOING, Int64(userId), false) {
+               //print("Event Title : ", event[1]!);
+                let offlineEvent = processSqlLiveEventData(event: event);
+                offlineEvents.append(offlineEvent);
+            }
+               
+           } catch {
+              print("Insert event error ",error)
+          }
+        return offlineEvents;
+    }
+
+    
+    
+    
     
     func findHomeScreenEvents(loggedInUserId: Int32) -> [Event] {
         

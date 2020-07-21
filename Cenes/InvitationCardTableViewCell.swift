@@ -8,6 +8,7 @@
 
 import UIKit
 import Mixpanel
+import GoogleMaps
 
 class InvitationCardTableViewCell: UITableViewCell {
 
@@ -38,6 +39,7 @@ class InvitationCardTableViewCell: UITableViewCell {
     @IBOutlet weak var topHeaderView: UIView!
     
     var gatheringInvitaionViewControllerDelegate: GatheringInvitationViewController!
+    var locationAlertView: LocationAlertView!;
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -107,12 +109,16 @@ class InvitationCardTableViewCell: UITableViewCell {
                         locAlertView.removeFromSuperview();
                     }
                 }
-                let locationAlertView = LocationAlertView.instanceFromNib() as! LocationAlertView;
+                locationAlertView = LocationAlertView.instanceFromNib() as! LocationAlertView;
                 locationAlertView.frame = gatheringInvitaionViewControllerDelegate.view.frame;
                 locationAlertView.lblLocation.text = gatheringInvitaionViewControllerDelegate.event.location;
                 
                 let backDroptapGesture = UITapGestureRecognizer.init(target: self, action: #selector(backDropPressed));
                 locationAlertView.alertBackdropView.addGestureRecognizer(backDroptapGesture);
+                
+                let alertWhiteViewtapGesture = UITapGestureRecognizer.init(target: self, action: #selector(alertWhiteViewPressed));
+                locationAlertView.alertWhiteView.addGestureRecognizer(alertWhiteViewtapGesture);
+
                 
                 let getDirectionsTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(getDirectionsPressed));
                 locationAlertView.lblGetDirections.addGestureRecognizer(getDirectionsTapGesture);
@@ -134,8 +140,90 @@ class InvitationCardTableViewCell: UITableViewCell {
                     
                     photoIndex = photoIndex +  1;
                 }
+                
+                locationAlertView.newCasesLabel.text = gatheringInvitaionViewControllerDelegate.locationBo.newCases;
+                locationAlertView.locationPhoneLabel.text = gatheringInvitaionViewControllerDelegate.locationBo.phoneNumber;
+                
+                if (gatheringInvitaionViewControllerDelegate.locationBo.openNow != nil) {
+                    if (gatheringInvitaionViewControllerDelegate.locationBo.openNow == true) {
+                        locationAlertView.openNowLabel.text = "Open";
+                        locationAlertView.openNowLabel.textColor = UIColor.green
+                    } else {
+                        locationAlertView.openNowLabel.text = "Closed";
+                        locationAlertView.openNowLabel.textColor = UIColor.red
+                    }
+                } else {
+                    locationAlertView.openNowLabel.text = "No Data";
+                    locationAlertView.openNowLabel.textColor = UIColor.lightGray
+                }
+                
+                if (gatheringInvitaionViewControllerDelegate.locationBo.phoneNumber != nil) {
+                    locationAlertView.locationPhoneLabel.text = gatheringInvitaionViewControllerDelegate.locationBo.phoneNumber;
+                } else {
+                    locationAlertView.locationPhoneLabel.text = "No Data";
+                    locationAlertView.locationPhoneLabel.textColor = UIColor.lightGray
+                }
+                
                 locationAlertView.scrollViewPlacePhotos.contentSize.width = scrollViewContentSize;
+                
+                let aboutThisIconTap = UITapGestureRecognizer.init(target: self, action: #selector(aboutThisDataIconPressed));
+                locationAlertView.aboutCovidIcon.addGestureRecognizer(aboutThisIconTap);
+
+               
+                let covidShowHideTapGesture = CovidShowHideTapGesture.init(target: self, action: #selector(updateShowCovidDataStatus(sender:)))
+                covidShowHideTapGesture.showCovidData = true;
+                locationAlertView.showLatestCovidInfoLabel.addGestureRecognizer(covidShowHideTapGesture)
+                
+               
+                let donotShowCovidShowHideTapGesture = CovidShowHideTapGesture.init(target: self, action: #selector(updateShowCovidDataStatus(sender:)))
+                donotShowCovidShowHideTapGesture.showCovidData = false;
+                locationAlertView.donotShowThisDataLabel.addGestureRecognizer(donotShowCovidShowHideTapGesture)
+
+                if (gatheringInvitaionViewControllerDelegate.loggedInUser.showCovidLocationData == true) {
+                    locationAlertView.covidDataViewContainer.isHidden = false;
+                    locationAlertView.showLatestCovidInfoView.isHidden = true;
+                } else {
+                    locationAlertView.covidDataViewContainer.isHidden = true;
+                    locationAlertView.showLatestCovidInfoView.isHidden = false;
+                    
+                    self.locationAlertView.bottomSeparatorView.frame = CGRect.init(x: self.locationAlertView.bottomSeparatorView.frame.origin.x, y: self.locationAlertView.showLatestCovidInfoView.frame.origin.y + self.locationAlertView.showLatestCovidInfoView.frame.height, width: self.locationAlertView.bottomSeparatorView.frame.width, height: self.locationAlertView.bottomSeparatorView.frame.height);
+                    
+                    self.locationAlertView.lblGetDirections.frame = CGRect.init(x: self.locationAlertView.lblGetDirections.frame.origin.x, y: self.locationAlertView.bottomSeparatorView.frame.origin.y + self.locationAlertView.bottomSeparatorView.frame.height + 9, width: self.locationAlertView.lblGetDirections.frame.width, height: self.locationAlertView.lblGetDirections.frame.height);
+                    
+                    
+                    let yPositionOfAlert: CGFloat = CGFloat(self.gatheringInvitaionViewControllerDelegate.view.frame.height/2) - CGFloat((389 + 40 - 148)/2);
+                    self.locationAlertView.alertWhiteView.frame = CGRect.init(x: self.locationAlertView.alertWhiteView.frame.origin.x, y: yPositionOfAlert, width: self.locationAlertView.alertWhiteView.frame.width, height: (389 - 148) + 40);
+
+                }
+                
+                let latDegrees = CLLocationDegrees.init(self.gatheringInvitaionViewControllerDelegate.event.latitude)
+                let longDegrees = CLLocationDegrees.init(self.gatheringInvitaionViewControllerDelegate.event.longitude)
                 gatheringInvitaionViewControllerDelegate.view.addSubview(locationAlertView);
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    // your code here
+                    self.locationAlertView.locationMap.clear();
+                    // Creates a marker in the center of the map.
+                    let marker = GMSMarker()
+                    marker.position = CLLocationCoordinate2D(latitude: latDegrees!, longitude: longDegrees!)
+                    
+                    if (self.gatheringInvitaionViewControllerDelegate.locationBo.county != nil) {
+                        marker.title = self.gatheringInvitaionViewControllerDelegate.locationBo.county;
+                    } else if (self.gatheringInvitaionViewControllerDelegate.locationBo.state != nil) {
+                        marker.title = self.gatheringInvitaionViewControllerDelegate.locationBo.state;
+                    } else if (self.gatheringInvitaionViewControllerDelegate.locationBo.country != nil) {
+                        marker.title = self.gatheringInvitaionViewControllerDelegate.locationBo.country
+                    }
+                    marker.snippet = self.gatheringInvitaionViewControllerDelegate.locationBo.markerSnippet;
+                    marker.map = self.locationAlertView.locationMap;
+                    let camera = GMSCameraPosition.camera(withLatitude: latDegrees!, longitude: longDegrees!, zoom: 6.0)
+                    self.locationAlertView.locationMap.camera = camera;
+                    self.locationAlertView.locationMap.animate(toLocation: marker.position);
+                    self.locationAlertView.locationMap.selectedMarker = marker;
+                }
+
+                
+                
             } else {
                 let alert = UIAlertController(title: nil, message: gatheringInvitaionViewControllerDelegate.event.location, preferredStyle: .alert);
                 alert.addAction(UIAlertAction(title: "Get Directions", style: .default, handler: {(resp) in
@@ -205,6 +293,11 @@ class InvitationCardTableViewCell: UITableViewCell {
             }
             
             if (isScrollViewPresent == true) {
+                
+                if (self.gatheringInvitaionViewControllerDelegate.event.expired == false) {
+                    self.gatheringInvitaionViewControllerDelegate.setSwipeRestrictions();
+                }
+                
                 for uiview in self.gatheringInvitaionViewControllerDelegate.view.subviews {
                     if (uiview is ChatFeatureView) {
                         uiview.removeFromSuperview();
@@ -212,18 +305,26 @@ class InvitationCardTableViewCell: UITableViewCell {
                 }
                 self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
                 self.descriptionView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
-                
                 self.gatheringInvitaionViewControllerDelegate.invitationCardTableView.isScrollEnabled = true;
 
             } else {
 
-                if (gatheringInvitaionViewControllerDelegate.event.expired == false && gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
+                if (gatheringInvitaionViewControllerDelegate.event.eventId != nil) {
                     gatheringInvitaionViewControllerDelegate.addChatScrollView();
                     gatheringInvitaionViewControllerDelegate.makeMessagesAsRead();
+                   
+                    self.gatheringInvitaionViewControllerDelegate.leftToRightGestureEnabled = false;
+                    self.gatheringInvitaionViewControllerDelegate.rightToLeftGestureEnabled = false;
+
                     self.gatheringInvitaionViewControllerDelegate.invitationCardTableView.isScrollEnabled = false;
+                    
                 } else {
+                    
                     if (self.descriptionUILabelHolder.isHidden) {
                         
+                        self.gatheringInvitaionViewControllerDelegate.leftToRightGestureEnabled = false;
+                        self.gatheringInvitaionViewControllerDelegate.rightToLeftGestureEnabled = false;
+
                         self.descriptionUILabelHolder.isHidden = false;
                         let height = self.heightForViewDesc(text:gatheringInvitaionViewControllerDelegate.event.description!, font: self.descriptionUILabel.font, width: self.descriptionUILabel.frame.width);
                         
@@ -236,6 +337,11 @@ class InvitationCardTableViewCell: UITableViewCell {
                         self.chatProfilePic.isHidden = false;
                         
                     } else {
+                        
+                        if (self.gatheringInvitaionViewControllerDelegate.event.expired == false) {
+                            self.gatheringInvitaionViewControllerDelegate.setSwipeRestrictions();
+                        }
+                        
                         self.descriptionView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
                         self.descriptionUILabelHolder.isHidden = true;
                         self.chatProfilePic.isHidden = true;
@@ -344,6 +450,12 @@ class InvitationCardTableViewCell: UITableViewCell {
                 self.descriptionUILabelHolder.isHidden = true;
                 self.chatProfilePic.isHidden = true;
                 self.descViewMessageIcon.image = UIImage.init(named: "message_off_icon");
+                for uiview in self.gatheringInvitaionViewControllerDelegate.view.subviews {
+                    if (uiview is ChatFeatureView) {
+                        uiview.removeFromSuperview();
+                    }
+                }
+                self.gatheringInvitaionViewControllerDelegate.invitationCardTableView.isScrollEnabled = true;
             }
         }
     }
@@ -367,6 +479,10 @@ class InvitationCardTableViewCell: UITableViewCell {
         }
         self.locationView.backgroundColor = UIColor.init(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3);
         self.locationViewLocationIcon.image = UIImage.init(named: "location_off_icon")
+    }
+    
+    @objc func alertWhiteViewPressed() {
+        
     }
     
     @objc func getDirectionsPressed() {
@@ -464,6 +580,52 @@ class InvitationCardTableViewCell: UITableViewCell {
             gatheringInvitaionViewControllerDelegate.rejectedImageiew.isHidden = false;
         }
     }
+    
+    @objc func updateShowCovidDataStatus(sender: CovidShowHideTapGesture) {
+        
+        var postData = [String: Any]();
+        postData["userId"] = self.gatheringInvitaionViewControllerDelegate.loggedInUser.userId;
+        postData["showCovidLocationData"] = sender.showCovidData;
+        
+        let url = "\(apiUrl)\(UserService().post_userdetails)";
+        UserService().commonPostCall(postData: postData, token: self.gatheringInvitaionViewControllerDelegate.loggedInUser.token, apiEndPoint: url, complete: {(response) in
+            
+            self.gatheringInvitaionViewControllerDelegate.loggedInUser.showCovidLocationData = sender.showCovidData;
+            User().updateUserValuesInUserDefaults(user: self.gatheringInvitaionViewControllerDelegate.loggedInUser);
+           
+            if (sender.showCovidData == true) {
+                self.locationAlertView.covidDataViewContainer.isHidden = false;
+                self.locationAlertView.showLatestCovidInfoView.isHidden = true;
+                
+                self.locationAlertView.bottomSeparatorView.frame = CGRect.init(x: self.locationAlertView.bottomSeparatorView.frame.origin.x, y: self.locationAlertView.covidDataViewContainer.frame.origin.y + self.locationAlertView.covidDataViewContainer.frame.height + 12, width: self.locationAlertView.bottomSeparatorView.frame.width, height: self.locationAlertView.bottomSeparatorView.frame.height);
+                
+                
+                self.locationAlertView.lblGetDirections.frame = CGRect.init(x: self.locationAlertView.lblGetDirections.frame.origin.x, y: self.locationAlertView.bottomSeparatorView.frame.origin.y + self.locationAlertView.bottomSeparatorView.frame.height + 9, width: self.locationAlertView.lblGetDirections.frame.width, height: self.locationAlertView.lblGetDirections.frame.height);
+                
+                let yPositionOfAlert = self.gatheringInvitaionViewControllerDelegate.view.frame.height/2 - 550/2;
+                self.locationAlertView.alertWhiteView.frame = CGRect.init(x: self.locationAlertView.alertWhiteView.frame.origin.x, y: yPositionOfAlert, width: self.locationAlertView.alertWhiteView.frame.width, height: 550);
+                
+            } else {
+                self.locationAlertView.covidDataViewContainer.isHidden = true;
+                self.locationAlertView.showLatestCovidInfoView.isHidden = false;
+                
+                self.locationAlertView.bottomSeparatorView.frame = CGRect.init(x: self.locationAlertView.bottomSeparatorView.frame.origin.x, y: self.locationAlertView.showLatestCovidInfoView.frame.origin.y + self.locationAlertView.showLatestCovidInfoView.frame.height, width: self.locationAlertView.bottomSeparatorView.frame.width, height: self.locationAlertView.bottomSeparatorView.frame.height);
+                
+                self.locationAlertView.lblGetDirections.frame = CGRect.init(x: self.locationAlertView.lblGetDirections.frame.origin.x, y: self.locationAlertView.bottomSeparatorView.frame.origin.y + self.locationAlertView.bottomSeparatorView.frame.height + 9, width: self.locationAlertView.lblGetDirections.frame.width, height: self.locationAlertView.lblGetDirections.frame.height);
+                
+                
+                let yPositionOfAlert:CGFloat = CGFloat(self.gatheringInvitaionViewControllerDelegate.view.frame.height/2) - CGFloat((389 + 40 - 148)/2);
+                self.locationAlertView.alertWhiteView.frame = CGRect.init(x: self.locationAlertView.alertWhiteView.frame.origin.x, y: yPositionOfAlert, width: self.locationAlertView.alertWhiteView.frame.width, height: (389 - 148) + 40);
+
+            }
+        });
+    }
+    
+    @objc func aboutThisDataIconPressed() {
+           
+           let viewController = self.gatheringInvitaionViewControllerDelegate.storyboard?.instantiateViewController(withIdentifier: "WeblinkInAppViewController") as! WeblinkInAppViewController;
+           viewController.urlToOpen = "\(covidDisclaimerLink)"; self.gatheringInvitaionViewControllerDelegate.navigationController?.pushViewController(viewController, animated: true);
+       }
 }
 
 public class LocationImageTagGesture: UITapGestureRecognizer {
